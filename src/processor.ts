@@ -28,7 +28,9 @@ processor.addEventHandler('balances.Withdraw', balanceHandlers.handleWithdrawEve
 processor.addEventHandler('balances.Slashed', balanceHandlers.handleSlashedEvent)
 
 processor.addEventHandler('staking.Rewarded', stakingHandlers.handleRewardedEvent)
+processor.addEventHandler('staking.Reward', (ctx) => stakingHandlers.handleRewardedEvent(ctx, true))
 processor.addEventHandler('staking.Slashed', stakingHandlers.handleSlashedEvent)
+processor.addEventHandler('staking.Slash', (ctx) => stakingHandlers.handleSlashedEvent(ctx, true))
 processor.addEventHandler('staking.Bonded', stakingHandlers.handleBondedEvent)
 processor.addEventHandler('staking.Unbonded', stakingHandlers.handleUnbondedEvent)
 processor.addEventHandler('staking.Withdrawn', stakingHandlers.handleWithdrawnEvent)

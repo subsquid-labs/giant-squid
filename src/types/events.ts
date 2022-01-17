@@ -491,6 +491,27 @@ export class StakingPayoutStartedEvent {
   }
 }
 
+export class StakingRewardEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'staking.Reward')
+  }
+
+  /**
+   *  The staker has been rewarded by this amount. `AccountId` is the stash account.
+   */
+  get isLatest(): boolean {
+    return this.ctx._chain.getEventHash('staking.Reward') === '0932e6d4b4a568796adb7119d09859e0df58228c7394b5d0173a5c5ce093a34d'
+  }
+
+  /**
+   *  The staker has been rewarded by this amount. `AccountId` is the stash account.
+   */
+  get asLatest(): [Uint8Array, bigint] {
+    assert(this.isLatest)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+}
+
 export class StakingRewardedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'staking.Rewarded')
@@ -505,6 +526,27 @@ export class StakingRewardedEvent {
 
   /**
    *  The nominator has been rewarded by this amount. \[stash, amount\]
+   */
+  get asLatest(): [Uint8Array, bigint] {
+    assert(this.isLatest)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+}
+
+export class StakingSlashEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'staking.Slash')
+  }
+
+  /**
+   *  One validator (and its nominators) has been slashed by the given amount.
+   */
+  get isLatest(): boolean {
+    return this.ctx._chain.getEventHash('staking.Slash') === '9642dd0541643e506f19da33b70f164668e0832df885607cb887c01fe713159b'
+  }
+
+  /**
+   *  One validator (and its nominators) has been slashed by the given amount.
    */
   get asLatest(): [Uint8Array, bigint] {
     assert(this.isLatest)
