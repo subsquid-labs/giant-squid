@@ -34,7 +34,6 @@ processor.addEventHandler('staking.Slash', (ctx) => stakingHandlers.handleSlashe
 processor.addEventHandler('staking.Bonded', stakingHandlers.handleBondedEvent)
 processor.addEventHandler('staking.Unbonded', stakingHandlers.handleUnbondedEvent)
 processor.addEventHandler('staking.Withdrawn', stakingHandlers.handleWithdrawnEvent)
-processor.addEventHandler('staking.Chilled', stakingHandlers.handleChilledEvent)
 
 processor.run()
 

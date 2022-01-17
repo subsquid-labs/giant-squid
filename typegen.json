@@ -21,8 +21,6 @@
     "staking.Bonded",
     "staking.Unbonded",
     "staking.Withdrawn",
-    "staking.Kicked",
-    "staking.Chilled",
     "staking.PayoutStarted"
   ],
   "calls": []

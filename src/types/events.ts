@@ -401,29 +401,6 @@ export class StakingBondedEvent {
   }
 }
 
-export class StakingChilledEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'staking.Chilled')
-  }
-
-  /**
-   *  An account has stopped participating as either a validator or nominator.
-   *  \[stash\]
-   */
-  get isLatest(): boolean {
-    return this.ctx._chain.getEventHash('staking.Chilled') === '277bfbb0f4821e3730eae77d40973d141b17f1d7aae8bb600de85ed5c0216e9f'
-  }
-
-  /**
-   *  An account has stopped participating as either a validator or nominator.
-   *  \[stash\]
-   */
-  get asLatest(): Uint8Array {
-    assert(this.isLatest)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-}
-
 export class StakingEraPaidEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'staking.EraPaid')
@@ -444,27 +421,6 @@ export class StakingEraPaidEvent {
    *  \[era_index, validator_payout, remainder\]
    */
   get asLatest(): [number, bigint, bigint] {
-    assert(this.isLatest)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-}
-
-export class StakingKickedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'staking.Kicked')
-  }
-
-  /**
-   *  A nominator has been kicked from a validator. \[nominator, stash\]
-   */
-  get isLatest(): boolean {
-    return this.ctx._chain.getEventHash('staking.Kicked') === 'b15e7348562872ef8dafa8cae20587e2ca3135c76ed98cdaf592440ad606c23a'
-  }
-
-  /**
-   *  A nominator has been kicked from a validator. \[nominator, stash\]
-   */
-  get asLatest(): [Uint8Array, Uint8Array] {
     assert(this.isLatest)
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }

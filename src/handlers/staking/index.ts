@@ -1,5 +1,4 @@
 export * from './bonded'
-export * from './chilled'
 export * from './rewarded'
 export * from './slashed'
 export * from './unbonded'

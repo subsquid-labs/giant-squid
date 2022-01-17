@@ -4,6 +4,4 @@ export enum StakingEventType {
   Bonded = "Bonded",
   Unbonded = "Unbonded",
   Withdrawn = "Withdrawn",
-  Kicked = "Kicked",
-  Chilled = "Chilled",
 }
