@@ -1,5 +1,7 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
 import * as marshal from "./marshal"
+
+import {Column as Column_, Entity as Entity_, Index as Index_, PrimaryColumn as PrimaryColumn_} from "typeorm"
+
 import {BalanceData} from "./_balanceData"
 import {BalanceEventType} from "./_balanceEventType"
 
@@ -24,6 +26,7 @@ export class BalanceTransaction {
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
 
+  @Index_()
   @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : new BalanceData(undefined, obj)}, nullable: true})
   data!: BalanceData | undefined | null
 
