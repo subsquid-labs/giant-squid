@@ -2,7 +2,6 @@ import * as marshal from "./marshal"
 
 import {Column as Column_, Entity as Entity_, Index as Index_, PrimaryColumn as PrimaryColumn_} from "typeorm"
 
-import {BalanceData} from "./_balanceData"
 import {BalanceEventType} from "./_balanceEventType"
 
 @Entity_()
@@ -26,10 +25,30 @@ export class BalanceTransaction {
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
 
-  @Index_()
-  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : new BalanceData(undefined, obj)}, nullable: true})
-  data!: BalanceData | undefined | null
-
   @Column_("varchar", {length: 18, nullable: true})
   event!: BalanceEventType | undefined | null
+
+  @Index_()
+  @Column_("text", {nullable: true})
+  from!: string | undefined | null
+
+  @Index_()
+  @Column_("text", {nullable: true})
+  to!: string | undefined | null
+  
+  @Index_()
+  @Column_("text", {nullable: true})
+  account!: string | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  amount!: bigint | undefined | null
+
+  @Column_("text", {nullable: true})
+  status!: string | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  free!: bigint | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  reserved!: bigint | undefined | null
 }

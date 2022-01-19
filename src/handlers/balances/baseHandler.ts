@@ -1,4 +1,5 @@
-import { BalanceData, BalanceEventType, BalanceTransaction } from "../../model"
+import { BalanceData, CommonData, SetBalanceData, TransferData } from "./balanceData"
+import { BalanceEventType, BalanceTransaction } from "../../model"
 
 import { EventHandlerContext } from "@subsquid/substrate-processor"
 
@@ -13,8 +14,15 @@ export async function handleBalanceEvent(ctx: EventHandlerContext,
         blockNumber: ctx.event.blockNumber,
         extrinisicHash: ctx.extrinsic?.hash,
         date: new Date(ctx.block.timestamp),
+        event: eventType,
+        from: (data as TransferData).from,
+        to: (data as TransferData).to,
+        account: (data as CommonData | SetBalanceData).account,
+        amount: (data as CommonData | TransferData).amount,
+        status: (data as TransferData).status,
+        free: (data as SetBalanceData).free,
+        reserved: (data as SetBalanceData).reserved
     })
-    transaction.data = data
-    transaction.event = eventType
+
     await ctx.store.save(transaction)
 }

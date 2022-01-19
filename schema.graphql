@@ -35,11 +35,7 @@ type BalanceTransaction implements TransactionBase @entity {
   blockHash: String!
   blockNumber: Int!
   extrinisicHash: String
-  data: BalanceData
   event: BalanceEventType
-}
-
-type BalanceData {
   from: String
   to: String
   account: String

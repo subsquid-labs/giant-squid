@@ -1,5 +1,4 @@
 export * from "./balanceTransaction.model"
-export * from "./_balanceData"
 export * from "./_balanceEventType"
 export * from "./stakingTransaction.model"
 export * from "./_stakingData"
