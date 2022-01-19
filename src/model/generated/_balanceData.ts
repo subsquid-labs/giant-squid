@@ -1,10 +1,19 @@
-import assert from "assert"
 import * as marshal from "./marshal"
 
+import {Index, Index as Index_} from "typeorm"
+
+import assert from "assert"
+
 export class BalanceData {
+  @Index_()
   private _from!: string | undefined | null
+  
+  @Index_()
   private _to!: string | undefined | null
+
+  @Index_()
   private _account!: string | undefined | null
+  
   private _amount!: bigint | undefined | null
   private _status!: string | undefined | null
   private _free!: bigint | undefined | null

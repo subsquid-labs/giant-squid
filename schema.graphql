@@ -40,9 +40,9 @@ type BalanceTransaction implements TransactionBase @entity {
 }
 
 type BalanceData {
-  from: ID
-  to: ID
-  account: ID
+  from: String
+  to: String
+  account: String
   amount: BigInt
   status: String
   free: BigInt

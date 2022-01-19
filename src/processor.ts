@@ -7,7 +7,7 @@ const processor = new SubstrateProcessor('polkadot_balances')
 
 
 processor.setTypesBundle('polkadot')
-processor.setBatchSize(150)
+processor.setBatchSize(125)
 
 processor.setDataSource({
     archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
