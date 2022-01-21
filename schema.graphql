@@ -1,25 +1,23 @@
+# enum BalanceEventType {
+#   Endowed
+#   DustLost
+#   Transfer
+#   BalanceSet
+#   Reserved
+#   Unreserved
+#   ReserveRepatriated
+#   Deposit
+#   Withdraw
+#   Slashed
+# }
 
-
-enum BalanceEventType {
-  Endowed
-  DustLost
-  Transfer
-  BalanceSet
-  Reserved
-  Unreserved
-  ReserveRepatriated
-  Deposit
-  Withdraw
-  Slashed
-}
-
-enum StakingEventType {
-  Rewarded
-  Slashed
-  Bonded
-  Unbonded
-  Withdrawn
-}
+# enum StakingEventType {
+#   Rewarded
+#   Slashed
+#   Bonded
+#   Unbonded
+#   Withdrawn
+# }
 
 interface TransactionBase {
   id: ID!
@@ -27,6 +25,8 @@ interface TransactionBase {
   blockHash: String!
   blockNumber: Int!
   extrinisicHash: String
+  chainName: String!
+  event: String!
 }
 
 type BalanceTransaction implements TransactionBase @entity {
@@ -35,14 +35,15 @@ type BalanceTransaction implements TransactionBase @entity {
   blockHash: String!
   blockNumber: Int!
   extrinisicHash: String
-  event: BalanceEventType
+  event: String!
   from: String
   to: String
   account: String
   amount: BigInt
-  status: String
+  balanceStatus: String
   free: BigInt
   reserved: BigInt
+  chainName: String!
 }
 
 # type SetBalanceData {
@@ -62,11 +63,8 @@ type StakingTransaction implements TransactionBase @entity {
   blockHash: String!
   blockNumber: Int!
   extrinisicHash: String
-  data: StakingData
-  event: StakingEventType
-}
-
-type StakingData {
-  account: ID!
-  amount: BigInt
+  event: String!
+  chainName: String!
+  account: String!
+  amount: BigInt!
 }

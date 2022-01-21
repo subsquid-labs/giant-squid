@@ -1,7 +1,5 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
 import * as marshal from "./marshal"
-import {StakingData} from "./_stakingData"
-import {StakingEventType} from "./_stakingEventType"
 
 @Entity_()
 export class StakingTransaction {
@@ -24,9 +22,15 @@ export class StakingTransaction {
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
 
-  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : new StakingData(undefined, obj)}, nullable: true})
-  data!: StakingData | undefined | null
+  @Column_("text", {nullable: false})
+  event!: string
 
-  @Column_("varchar", {length: 9, nullable: true})
-  event!: StakingEventType | undefined | null
+  @Column_("text", {nullable: false})
+  chainName!: string
+
+  @Column_("text", {nullable: false})
+  account!: string
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  amount!: bigint
 }
