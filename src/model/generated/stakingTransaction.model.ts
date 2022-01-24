@@ -1,5 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
 import * as marshal from "./marshal"
+
+import {Column as Column_, Entity as Entity_, Index, PrimaryColumn as PrimaryColumn_} from "typeorm"
 
 @Entity_()
 export class StakingTransaction {
@@ -25,9 +26,11 @@ export class StakingTransaction {
   @Column_("text", {nullable: false})
   event!: string
 
+  @Index()
   @Column_("text", {nullable: false})
   chainName!: string
 
+  @Index()
   @Column_("text", {nullable: false})
   account!: string
 

@@ -50,6 +50,7 @@ export class BalanceTransaction {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   reserved!: bigint | undefined | null
 
+  @Index()
   @Column_("text", {nullable: false})
   chainName!: string
 }
