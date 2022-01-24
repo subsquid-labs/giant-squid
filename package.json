@@ -20,14 +20,14 @@
     "@subsquid/substrate-processor": "^0.2.3",
     "dotenv": "^10.0.0",
     "pg": "^8.7.1",
-    "typeorm": "^0.2.41"
+    "typeorm": "^0.2.41",
+    "npm-run-all": "^4.1.5"
   },
   "devDependencies": {
     "@subsquid/cli": "^0.0.3",
     "@subsquid/substrate-metadata-explorer": "^0.0.6",
     "@subsquid/substrate-typegen": "^0.0.6",
     "@types/node": "^16.11.17",
-    "npm-run-all": "^4.1.5",
     "typescript": "~4.5.4"
   }
 }
