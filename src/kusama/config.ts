@@ -8,7 +8,7 @@ const config: ProcessorConfig = {
     idPrefix: 'ksm',
     dataSource: {
         archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io'
+        chain: 'wss://kusama.api.onfinality.io/public-ws'
     },
     typesBundle: 'kusama',
     batchSize: 100,
