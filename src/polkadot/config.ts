@@ -11,7 +11,7 @@ const config: ProcessorConfig = {
         chain: 'wss://rpc.polkadot.io'
     },
     typesBundle: 'polkadot',
-    batchSize: 125,
+    batchSize: 100,
     port: 3001,
     eventHandlers: {
         //balances

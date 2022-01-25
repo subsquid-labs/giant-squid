@@ -11,7 +11,7 @@ const config: ProcessorConfig = {
         chain: 'wss://kusama-rpc.polkadot.io'
     },
     typesBundle: 'kusama',
-    batchSize: 125,
+    batchSize: 100,
     port: 3000,
     eventHandlers: {
         //balances
