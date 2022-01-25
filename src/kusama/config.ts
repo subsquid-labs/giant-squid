@@ -12,6 +12,7 @@ const config: ProcessorConfig = {
     },
     typesBundle: 'kusama',
     batchSize: 125,
+    port: 3000,
     eventHandlers: {
         //balances
         'balances.Endowed': balanceHandlers.handleEndowedEvent,

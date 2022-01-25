@@ -12,6 +12,7 @@ const config: ProcessorConfig = {
     },
     typesBundle: 'polkadot',
     batchSize: 125,
+    port: 3001,
     eventHandlers: {
         //balances
         'balances.Endowed': balanceHandlers.handleEndowedEvent,

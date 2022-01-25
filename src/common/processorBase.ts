@@ -9,7 +9,8 @@ export interface ProcessorConfig {
     typesBundle: Parameters<SubstrateProcessor["setTypesBundle"]>[0]
     batchSize: Parameters<SubstrateProcessor["setBatchSize"]>[0]
     eventHandlers: Record<string, Parameters<SubstrateProcessor["addEventHandler"]>[2]>
-    idPrefix: string
+    idPrefix: string,
+    port: Parameters<SubstrateProcessor["setPrometheusPort"]>[0]
 }
 
 export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
@@ -18,6 +19,7 @@ export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
     processor.setTypesBundle(config.typesBundle)
     processor.setBatchSize(config.batchSize)
     processor.setDataSource(config.dataSource)
+    processor.setPrometheusPort(config.port)
     
     for (const eventName in config.eventHandlers)
         processor.addEventHandler(eventName, config.eventHandlers[eventName])
