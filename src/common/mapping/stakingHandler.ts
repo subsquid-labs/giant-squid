@@ -1,4 +1,5 @@
-import { EventHandlerContext } from "@subsquid/substrate-processor"
+import { EventHandlerContext, Store } from "@subsquid/substrate-processor"
+
 import { ProcessorConfig } from "../processorBase"
 import { StakingData } from "./stakingData"
 import { StakingTransaction } from "../../model"
@@ -19,5 +20,9 @@ export async function handleStakingEvent(ctx: EventHandlerContext,
         amount: data.amount,
     })
 
-    await ctx.store.save(transaction)
+    await save(ctx.store, transaction);
+}
+
+async function save(store: Store, transaction: StakingTransaction) {
+    await store.save(transaction).catch(e => save(store, transaction))
 }

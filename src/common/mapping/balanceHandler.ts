@@ -1,7 +1,7 @@
 import { BalanceData, CommonData, SetBalanceData, TransferData } from "./balanceData"
+import { EventHandlerContext, Store } from "@subsquid/substrate-processor"
 
 import { BalanceTransaction } from "../../model"
-import { EventHandlerContext } from "@subsquid/substrate-processor"
 import { ProcessorConfig } from "../processorBase"
 
 export async function handleBalanceEvent(ctx: EventHandlerContext,
@@ -25,5 +25,9 @@ export async function handleBalanceEvent(ctx: EventHandlerContext,
         reserved: (data as SetBalanceData).reserved,
     })
 
-    await ctx.store.save(transaction)
+    await save(ctx.store, transaction);
+}
+
+async function save(store: Store, transaction: BalanceTransaction) {
+    await store.save(transaction).catch(e => save(store, transaction))
 }
