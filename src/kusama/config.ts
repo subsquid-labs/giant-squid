@@ -11,7 +11,7 @@ const config: ProcessorConfig = {
         chain: 'wss://kusama.api.onfinality.io/public-ws'
     },
     typesBundle: 'kusama',
-    batchSize: 10,
+    batchSize: 1,
     port: 3000,
     eventHandlers: {
         //balances
