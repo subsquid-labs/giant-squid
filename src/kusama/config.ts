@@ -26,13 +26,13 @@ const config: ProcessorConfig = {
         'balances.Withdraw': balanceHandlers.handleWithdrawEvent,
         'balances.Slashed': balanceHandlers.handleSlashedEvent,
         //staking
-        'staking.Rewarded': stakingHandlers.handleRewardedEvent,
-        'staking.Reward': stakingHandlers.handleRewardEvent,
-        'staking.Slashed': stakingHandlers.handleSlashedEvent,
-        'staking.Slash': stakingHandlers.handleSlashEvent,
-        'staking.Bonded': stakingHandlers.handleBondedEvent,
-        'staking.Unbonded': stakingHandlers.handleUnbondedEvent,
-        'staking.Withdrawn': stakingHandlers.handleWithdrawnEvent
+        // 'staking.Rewarded': stakingHandlers.handleRewardedEvent,
+        // 'staking.Reward': stakingHandlers.handleRewardEvent,
+        // 'staking.Slashed': stakingHandlers.handleSlashedEvent,
+        // 'staking.Slash': stakingHandlers.handleSlashEvent,
+        // 'staking.Bonded': stakingHandlers.handleBondedEvent,
+        // 'staking.Unbonded': stakingHandlers.handleUnbondedEvent,
+        // 'staking.Withdrawn': stakingHandlers.handleWithdrawnEvent
         //crowdloans
     }
 }
