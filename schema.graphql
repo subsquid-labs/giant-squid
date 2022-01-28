@@ -1,48 +1,49 @@
+# enum BalanceEventType {
+#   Endowed
+#   DustLost
+#   Transfer
+#   BalanceSet
+#   Reserved
+#   Unreserved
+#   ReserveRepatriated
+#   Deposit
+#   Withdraw
+#   Slashed
+# }
 
+# enum StakingEventType {
+#   Rewarded
+#   Slashed
+#   Bonded
+#   Unbonded
+#   Withdrawn
+# }
 
-enum BalanceEventType {
-  Endowed
-  DustLost
-  Transfer
-  BalanceSet
-  Reserved
-  Unreserved
-  ReserveRepatriated
-  Deposit
-  Withdraw
-  Slashed
-}
-
-enum StakingEventType {
-  Rewarded
-  Slashed
-  Bonded
-  Unbonded
-  Withdrawn
-}
-
-interface TransactionBase {
+interface EventBase {
   id: ID!
   date: DateTime!
   blockHash: String!
-  blockNumber: Int!
+  blockNumber: BigInt!
   extrinisicHash: String
+  chainName: String!
+  event: String!
 }
 
-type BalanceTransaction implements TransactionBase @entity {
+type BalanceEvent implements EventBase @entity {
   id: ID!
   date: DateTime!
   blockHash: String!
-  blockNumber: Int!
+  blockNumber: BigInt!
   extrinisicHash: String
-  event: BalanceEventType
-  from: String
-  to: String
-  account: String
+  event: String!
+  from: String @index
+  to: String @index
+  account: String @index
   amount: BigInt
-  status: String
+  balanceStatus: String
   free: BigInt
   reserved: BigInt
+  chainName: String! @index
 }
 
 # type SetBalanceData {
@@ -56,17 +57,36 @@ type BalanceTransaction implements TransactionBase @entity {
 #   amount: BigInt!
 # }
 
-type StakingTransaction implements TransactionBase @entity {
+type StakingEvent implements EventBase @entity {
   id: ID!
   date: DateTime!
   blockHash: String!
-  blockNumber: Int!
+  blockNumber: BigInt!
   extrinisicHash: String
-  data: StakingData
-  event: StakingEventType
+  event: String!
+  chainName: String! @index
+  account: String! @index
+  amount: BigInt!
 }
 
-type StakingData {
-  account: ID!
-  amount: BigInt
+type Crowdloan @entity {
+  id: ID!
+  cap: BigInt!
+  firstPeriod: BigInt!
+  lastPeriod: BigInt!
+  end: BigInt!
+  contributors: [String]
+  raised: BigInt!
+}
+
+type CrowdloanEvent implements EventBase @entity {
+  id: ID!
+  date: DateTime!
+  blockHash: String!
+  blockNumber: BigInt!
+  extrinisicHash: String
+  event: String!
+  chainName: String!
+  crowdloan: Crowdloan!
+  amount: BigInt!
 }
