@@ -20,8 +20,7 @@ export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
     processor.setBatchSize(config.batchSize)
     processor.setDataSource(config.dataSource)
     processor.setPrometheusPort(config.port)
-    // processor.setBlockRange({from: 2307543})
-
+    
     for (const eventName in config.eventHandlers)
         processor.addEventHandler(eventName, config.eventHandlers[eventName])
     

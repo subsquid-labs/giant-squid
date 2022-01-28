@@ -1,5 +1,5 @@
 import assert from 'assert'
-import {EventContext, Result} from './support'
+import {EventContext, Result, deprecateLatest} from './support'
 import * as v8 from './v8'
 import * as v9122 from './v9122'
 import * as v9140 from './v9140'
@@ -27,16 +27,26 @@ export class BalancesBalanceSetEvent {
   /**
    * A balance was set by root.
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.BalanceSet') === '83f90320fcee34b0ccab7d8893f1c4f21dfe5ef623391171b12b112107efa2b1'
   }
 
   /**
    * A balance was set by root.
    */
-  get asLatest(): {who: v9140.AccountId32, free: bigint, reserved: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {who: v9140.AccountId32, free: bigint, reserved: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {who: v9140.AccountId32, free: bigint, reserved: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -63,16 +73,26 @@ export class BalancesDepositEvent {
   /**
    * Some amount was deposited (e.g. for transaction fees).
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.Deposit') === '042054185e0c4221bfb671c8699bcdbefc2f6daba2dddfe3c36a647fd3bf8f88'
   }
 
   /**
    * Some amount was deposited (e.g. for transaction fees).
    */
-  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {who: v9140.AccountId32, amount: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -102,7 +122,7 @@ export class BalancesDustLostEvent {
    * An account was removed whose balance was non-zero but below ExistentialDeposit,
    * resulting in an outright loss.
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.DustLost') === 'a5120e116c962665deb90888f63997f80bf264736905d1919c950d4ec72b8135'
   }
 
@@ -110,9 +130,19 @@ export class BalancesDustLostEvent {
    * An account was removed whose balance was non-zero but below ExistentialDeposit,
    * resulting in an outright loss.
    */
-  get asLatest(): {account: v9140.AccountId32, amount: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {account: v9140.AccountId32, amount: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {account: v9140.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -139,16 +169,26 @@ export class BalancesEndowedEvent {
   /**
    * An account was created with some free balance.
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.Endowed') === '11ab78688223cb378b33ad036f9e746b6b063bc2df7a3250d58ea34ae6c4771f'
   }
 
   /**
    * An account was created with some free balance.
    */
-  get asLatest(): {account: v9140.AccountId32, freeBalance: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {account: v9140.AccountId32, freeBalance: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {account: v9140.AccountId32, freeBalance: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -178,7 +218,7 @@ export class BalancesReserveRepatriatedEvent {
    * Some balance was moved from the reserve of the first account to the second account.
    * Final argument indicates the destination balance type.
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.ReserveRepatriated') === '258088f3091b3ed69ad6c19a26b970315b35949bca136ef52b036d10f5c98170'
   }
 
@@ -186,9 +226,19 @@ export class BalancesReserveRepatriatedEvent {
    * Some balance was moved from the reserve of the first account to the second account.
    * Final argument indicates the destination balance type.
    */
-  get asLatest(): {from: v9140.AccountId32, to: v9140.AccountId32, amount: bigint, destinationStatus: v9140.BalanceStatus} {
-    assert(this.isLatest)
+  get asV9140(): {from: v9140.AccountId32, to: v9140.AccountId32, amount: bigint, destinationStatus: v9140.BalanceStatus} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {from: v9140.AccountId32, to: v9140.AccountId32, amount: bigint, destinationStatus: v9140.BalanceStatus} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -215,16 +265,26 @@ export class BalancesReservedEvent {
   /**
    * Some balance was reserved (moved from free to reserved).
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.Reserved') === '086dab867f35715cb62257a9ecba6b7fe895885e87598482c4888d2fe1cb73d4'
   }
 
   /**
    * Some balance was reserved (moved from free to reserved).
    */
-  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {who: v9140.AccountId32, amount: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -253,16 +313,26 @@ export class BalancesSlashedEvent {
   /**
    * Some amount was removed from the account (e.g. for misbehavior).
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.Slashed') === '20ecfc9158e36663830a8e3932996d1284032a25c6c1416f814bcee83a31147b'
   }
 
   /**
    * Some amount was removed from the account (e.g. for misbehavior).
    */
-  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {who: v9140.AccountId32, amount: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -289,16 +359,26 @@ export class BalancesTransferEvent {
   /**
    * Transfer succeeded.
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.Transfer') === '68dcb27fbf3d9279c1115ef6dd9d30a3852b23d8e91c1881acd12563a212512d'
   }
 
   /**
    * Transfer succeeded.
    */
-  get asLatest(): {from: v9140.AccountId32, to: v9140.AccountId32, amount: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {from: v9140.AccountId32, to: v9140.AccountId32, amount: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {from: v9140.AccountId32, to: v9140.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -325,16 +405,26 @@ export class BalancesUnreservedEvent {
   /**
    * Some balance was unreserved (moved from reserved to free).
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.Unreserved') === 'ab10c2de5bc4158553e3a9e616bbe18ae186166f3b08734579777a05b485f8bb'
   }
 
   /**
    * Some balance was unreserved (moved from reserved to free).
    */
-  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {who: v9140.AccountId32, amount: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -361,16 +451,26 @@ export class BalancesWithdrawEvent {
   /**
    * Some amount was withdrawn from the account (e.g. for transaction fees).
    */
-  get isLatest(): boolean {
+  get isV9140(): boolean {
     return this.ctx._chain.getEventHash('balances.Withdraw') === 'c215bc1c909253586ca430cd5d467093dcfc83a323efa63a29550508bc8c5408'
   }
 
   /**
    * Some amount was withdrawn from the account (e.g. for transaction fees).
    */
-  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
-    assert(this.isLatest)
+  get asV9140(): {who: v9140.AccountId32, amount: bigint} {
+    assert(this.isV9140)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {who: v9140.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV9140
   }
 }
 
@@ -385,7 +485,7 @@ export class StakingBondedEvent {
    *  NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
    *  it will not be emitted for staking rewards when they are added to stake.
    */
-  get isLatest(): boolean {
+  get isV0(): boolean {
     return this.ctx._chain.getEventHash('staking.Bonded') === '47facb114cad5e5d0612ab12cd27899aed054423f61b0ee4027c8d49284108a0'
   }
 
@@ -395,9 +495,19 @@ export class StakingBondedEvent {
    *  NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
    *  it will not be emitted for staking rewards when they are added to stake.
    */
-  get asLatest(): [Uint8Array, bigint] {
-    assert(this.isLatest)
+  get asV0(): [Uint8Array, bigint] {
+    assert(this.isV0)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV0
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV0
   }
 }
 
@@ -411,7 +521,7 @@ export class StakingEraPaidEvent {
    *  the remainder from the maximum amount of reward.
    *  \[era_index, validator_payout, remainder\]
    */
-  get isLatest(): boolean {
+  get isV9090(): boolean {
     return this.ctx._chain.getEventHash('staking.EraPaid') === '22f74c47ab34944f74004b6c3cb555af12518e637b6d8db16a901b18618e5933'
   }
 
@@ -420,9 +530,19 @@ export class StakingEraPaidEvent {
    *  the remainder from the maximum amount of reward.
    *  \[era_index, validator_payout, remainder\]
    */
-  get asLatest(): [number, bigint, bigint] {
-    assert(this.isLatest)
+  get asV9090(): [number, bigint, bigint] {
+    assert(this.isV9090)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9090
+  }
+
+  get asLatest(): [number, bigint, bigint] {
+    deprecateLatest()
+    return this.asV9090
   }
 }
 
@@ -434,16 +554,26 @@ export class StakingPayoutStartedEvent {
   /**
    *  The stakers' rewards are getting paid. \[era_index, validator_stash\]
    */
-  get isLatest(): boolean {
+  get isV9090(): boolean {
     return this.ctx._chain.getEventHash('staking.PayoutStarted') === 'fab307ca7bd42c66aab423faaa3fc048c24ed48a378aca6eea33d7408d1b0328'
   }
 
   /**
    *  The stakers' rewards are getting paid. \[era_index, validator_stash\]
    */
-  get asLatest(): [number, Uint8Array] {
-    assert(this.isLatest)
+  get asV9090(): [number, Uint8Array] {
+    assert(this.isV9090)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9090
+  }
+
+  get asLatest(): [number, Uint8Array] {
+    deprecateLatest()
+    return this.asV9090
   }
 }
 
@@ -455,16 +585,26 @@ export class StakingRewardEvent {
   /**
    *  The staker has been rewarded by this amount. `AccountId` is the stash account.
    */
-  get isLatest(): boolean {
+  get isV0(): boolean {
     return this.ctx._chain.getEventHash('staking.Reward') === '0932e6d4b4a568796adb7119d09859e0df58228c7394b5d0173a5c5ce093a34d'
   }
 
   /**
    *  The staker has been rewarded by this amount. `AccountId` is the stash account.
    */
-  get asLatest(): [Uint8Array, bigint] {
-    assert(this.isLatest)
+  get asV0(): [Uint8Array, bigint] {
+    assert(this.isV0)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV0
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV0
   }
 }
 
@@ -476,16 +616,26 @@ export class StakingRewardedEvent {
   /**
    *  The nominator has been rewarded by this amount. \[stash, amount\]
    */
-  get isLatest(): boolean {
+  get isV9090(): boolean {
     return this.ctx._chain.getEventHash('staking.Rewarded') === '0fb941f3870a0949228cdacebcebdb221028e93af89d7c2935bb73d066386b13'
   }
 
   /**
    *  The nominator has been rewarded by this amount. \[stash, amount\]
    */
-  get asLatest(): [Uint8Array, bigint] {
-    assert(this.isLatest)
+  get asV9090(): [Uint8Array, bigint] {
+    assert(this.isV9090)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9090
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV9090
   }
 }
 
@@ -497,16 +647,26 @@ export class StakingSlashEvent {
   /**
    *  One validator (and its nominators) has been slashed by the given amount.
    */
-  get isLatest(): boolean {
+  get isV0(): boolean {
     return this.ctx._chain.getEventHash('staking.Slash') === '9642dd0541643e506f19da33b70f164668e0832df885607cb887c01fe713159b'
   }
 
   /**
    *  One validator (and its nominators) has been slashed by the given amount.
    */
-  get asLatest(): [Uint8Array, bigint] {
-    assert(this.isLatest)
+  get asV0(): [Uint8Array, bigint] {
+    assert(this.isV0)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV0
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV0
   }
 }
 
@@ -519,7 +679,7 @@ export class StakingSlashedEvent {
    *  One validator (and its nominators) has been slashed by the given amount.
    *  \[validator, amount\]
    */
-  get isLatest(): boolean {
+  get isV9090(): boolean {
     return this.ctx._chain.getEventHash('staking.Slashed') === 'f6a852921cc26702b5320a65eeb483c7cd25e856e09e930a476eeb05dae41665'
   }
 
@@ -527,9 +687,19 @@ export class StakingSlashedEvent {
    *  One validator (and its nominators) has been slashed by the given amount.
    *  \[validator, amount\]
    */
-  get asLatest(): [Uint8Array, bigint] {
-    assert(this.isLatest)
+  get asV9090(): [Uint8Array, bigint] {
+    assert(this.isV9090)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9090
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV9090
   }
 }
 
@@ -541,16 +711,26 @@ export class StakingUnbondedEvent {
   /**
    *  An account has unbonded this amount.
    */
-  get isLatest(): boolean {
+  get isV0(): boolean {
     return this.ctx._chain.getEventHash('staking.Unbonded') === '285f3d8850d41cfb19105193c25afbd8f44056ce2ac4b135a1fa1607c5eb5f96'
   }
 
   /**
    *  An account has unbonded this amount.
    */
-  get asLatest(): [Uint8Array, bigint] {
-    assert(this.isLatest)
+  get asV0(): [Uint8Array, bigint] {
+    assert(this.isV0)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV0
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV0
   }
 }
 
@@ -563,7 +743,7 @@ export class StakingWithdrawnEvent {
    *  An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
    *  from the unlocking queue.
    */
-  get isLatest(): boolean {
+  get isV0(): boolean {
     return this.ctx._chain.getEventHash('staking.Withdrawn') === '7c8d62b0b7929c5620715729b1a4142fc288b28f3dcd67e9d58303a2bea399d3'
   }
 
@@ -571,8 +751,18 @@ export class StakingWithdrawnEvent {
    *  An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
    *  from the unlocking queue.
    */
-  get asLatest(): [Uint8Array, bigint] {
-    assert(this.isLatest)
+  get asV0(): [Uint8Array, bigint] {
+    assert(this.isV0)
     return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV0
+  }
+
+  get asLatest(): [Uint8Array, bigint] {
+    deprecateLatest()
+    return this.asV0
   }
 }

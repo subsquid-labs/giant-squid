@@ -2,27 +2,28 @@ import { EventHandlerContext, Store } from "@subsquid/substrate-processor"
 
 import { ProcessorConfig } from "../processorBase"
 import { StakingData } from "./stakingData"
-import { StakingTransaction } from "../../model"
+import { StakingEvent } from "../../model"
+import { createEvent } from "../helpers"
 
 export async function handleStakingEvent(ctx: EventHandlerContext,
     getter: (ctx: EventHandlerContext) => StakingData, config: ProcessorConfig) {
     let data = getter(ctx)
+    const id = `${config.idPrefix}-${ctx.event.id}`
 
-    let transaction = new StakingTransaction({
-        id: `${config.idPrefix}-${ctx.event.id}`,
-        chainName: config.chainName,
-        blockHash: ctx.block.hash,
-        blockNumber: ctx.event.blockNumber,
-        extrinisicHash: ctx.extrinsic?.hash,
-        date: new Date(ctx.block.timestamp),
-        event: ctx.event.name,
-        account: data.account,
-        amount: data.amount,
-    })
+    const event = await createEvent(
+        StakingEvent,
+        ctx,
+        id,
+        {
+            chainName: config.chainName,
+            account: data.account,
+            amount: data.amount,
+        }
+    )
 
-    await save(ctx.store, transaction);
+    await save(ctx.store, event);
 }
 
-async function save(store: Store, transaction: StakingTransaction) {
+async function save(store: Store, transaction: StakingEvent) {
     await store.save(transaction).catch(e => save(store, transaction))
 }

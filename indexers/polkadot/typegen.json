@@ -1,0 +1,29 @@
+{
+  "outDir": "../../src/polkadot/types",
+  "chainVersions": "./versions.json",
+  "typesBundle": "polkadot",
+  "events": [
+    "balances.Endowed",
+    "balances.DustLost",
+    "balances.Transfer",
+    "balances.BalanceSet",
+    "balances.Reserved",
+    "balances.Unreserved",
+    "balances.ReserveRepatriated",
+    "balances.Deposit",
+    "balances.Withdraw",
+    "balances.Slashed",
+    "staking.EraPaid",
+    "staking.Rewarded",
+    "staking.Reward",
+    "staking.Slashed",
+    "staking.Slash",
+    "staking.Bonded",
+    "staking.Unbonded",
+    "staking.Withdrawn",
+    "staking.PayoutStarted"
+  ],
+  "calls": [
+
+  ]
+}

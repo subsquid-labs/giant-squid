@@ -19,31 +19,31 @@
 #   Withdrawn
 # }
 
-interface TransactionBase {
+interface EventBase {
   id: ID!
   date: DateTime!
   blockHash: String!
-  blockNumber: Int!
+  blockNumber: BigInt!
   extrinisicHash: String
   chainName: String!
   event: String!
 }
 
-type BalanceTransaction implements TransactionBase @entity {
+type BalanceEvent implements EventBase @entity {
   id: ID!
   date: DateTime!
   blockHash: String!
-  blockNumber: Int!
+  blockNumber: BigInt!
   extrinisicHash: String
   event: String!
-  from: String
-  to: String
-  account: String
+  from: String @index
+  to: String @index
+  account: String @index
   amount: BigInt
   balanceStatus: String
   free: BigInt
   reserved: BigInt
-  chainName: String!
+  chainName: String! @index
 }
 
 # type SetBalanceData {
@@ -57,14 +57,36 @@ type BalanceTransaction implements TransactionBase @entity {
 #   amount: BigInt!
 # }
 
-type StakingTransaction implements TransactionBase @entity {
+type StakingEvent implements EventBase @entity {
   id: ID!
   date: DateTime!
   blockHash: String!
-  blockNumber: Int!
+  blockNumber: BigInt!
+  extrinisicHash: String
+  event: String!
+  chainName: String! @index
+  account: String! @index
+  amount: BigInt!
+}
+
+type Crowdloan @entity {
+  id: ID!
+  cap: BigInt!
+  firstPeriod: BigInt!
+  lastPeriod: BigInt!
+  end: BigInt!
+  contributors: [String]
+  raised: BigInt!
+}
+
+type CrowdloanEvent implements EventBase @entity {
+  id: ID!
+  date: DateTime!
+  blockHash: String!
+  blockNumber: BigInt!
   extrinisicHash: String
   event: String!
   chainName: String!
-  account: String!
+  crowdloan: Crowdloan!
   amount: BigInt!
 }
