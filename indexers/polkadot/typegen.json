@@ -21,9 +21,9 @@
     "staking.Bonded",
     "staking.Unbonded",
     "staking.Withdrawn",
-    "staking.PayoutStarted"
+    "staking.PayoutStarted",
+    "crowdloan.Contributed",
+    "crowdloan.Dissolved"
   ],
-  "calls": [
-
-  ]
+  "calls": []
 }
