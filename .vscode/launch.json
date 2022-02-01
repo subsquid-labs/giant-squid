@@ -11,10 +11,14 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\kusama\\processor.ts",
+            "program": "${workspaceFolder}\\src\\processor.ts",
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
+            ],
+            "runtimeArgs": [
+                "--harmony",
+                "--no-deprecation"
             ]
         }
     ],

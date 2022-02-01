@@ -12,8 +12,11 @@
     "emitDecoratorMetadata": true,
     "skipLibCheck": true
   },
-  "include": ["src", "handlers", "balances"],
+  "include": [
+    "src"
+  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/**/!*"
   ]
 }

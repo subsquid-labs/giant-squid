@@ -1,57 +1,31 @@
-import * as ss58 from "@subsquid/ss58"
-import { EventHandlerContext, Store } from "@subsquid/substrate-processor";
+import * as ss58 from '@subsquid/ss58'
+import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { EXTRINSIC_SUCCESS } from './consts'
 
-export function encodeID(ID: Uint8Array, chainName: string) {
-    return ss58.codec(chainName).encode(ID);
-}
-
-export async function getOrCreate<T extends { id: string }>(
-    store: Store,
-    entityConstructor: EntityConstructor<T>,
-    id: string,
-): Promise<T> {
-
-    let e = await store.get<T>(entityConstructor, {
-        where: { id },
-    })
-
-    if (e == null) {
-        e = new entityConstructor()
-        e.id = id
+export function encodeID(ID: Uint8Array, prefix: string | number) {
+    let ret: string | null
+    try {
+        ret = ss58.codec(prefix).encode(ID)
+    } catch (e) {
+        ret = null
     }
 
-    return e
+    return ret
 }
 
-export async function createEvent<T extends EventBase>(
-    entityConstructor: EntityConstructor<T>,
-    ctx: EventHandlerContext,
-    id: string,
-    data: Omit<T, keyof EventBase>
-) {
-    let event = await getOrCreate(ctx.store, entityConstructor, id)
-
-    event = Object.assign(event, {
-        blockHash: ctx.block.hash,
-        blockNumber: ctx.event.blockNumber,
-        extrinisicHash: ctx.extrinsic?.hash,
-        date: new Date(ctx.block.timestamp),
-        event: ctx.event.name,
-        ...data
-    })
-
-    return event
+export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
+    entity.extrinsicHash = ctx.extrinsic?.hash
+    entity.blockNumber = BigInt(ctx.block.height)
+    entity.date = new Date(ctx.block.timestamp)
 }
 
-export interface EventBase {
+export interface ItemBase {
     id: string
-    date: Date
-    blockHash: string
-    blockNumber: bigint
-    extrinisicHash?: string | null
-    event: string
+    date: Date | null | undefined
+    blockNumber: bigint | null | undefined
+    extrinsicHash: string | null | undefined
 }
 
-type EntityConstructor<T> = {
-    new(...args: any[]): T
+export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {
+    return ctx.event.name === EXTRINSIC_SUCCESS
 }

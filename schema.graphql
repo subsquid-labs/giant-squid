@@ -1,92 +1,52 @@
-# enum BalanceEventType {
-#   Endowed
-#   DustLost
-#   Transfer
-#   BalanceSet
-#   Reserved
-#   Unreserved
-#   ReserveRepatriated
-#   Deposit
-#   Withdraw
-#   Slashed
-# }
-
-# enum StakingEventType {
-#   Rewarded
-#   Slashed
-#   Bonded
-#   Unbonded
-#   Withdrawn
-# }
-
-interface EventBase {
+type Account @entity {
   id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
-  extrinisicHash: String
-  chainName: String!
-  event: String!
+  transfers: [AccountTransfer!] @derivedFrom(field: "account")
+  chain: Chain!
 }
 
-type BalanceEvent implements EventBase @entity {
+type Chain @entity {
   id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
-  extrinisicHash: String
-  event: String!
-  from: String @index
-  to: String @index
-  account: String @index
+  token: Token!
+}
+
+type Token {
+  symbol: String
+  decimals: Int
+}
+
+enum TransferDicrection {
+  FROM
+  TO
+}
+
+interface Item {
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String
+  chain: Chain!
   amount: BigInt
-  balanceStatus: String
-  free: BigInt
-  reserved: BigInt
-  chainName: String! @index
 }
 
-# type SetBalanceData {
-#   who: ID!
-#   free: BigInt!
-#   reserved: BigInt!
-# }
-
-# type MainBalanceData {
-#   account: ID!
-#   amount: BigInt!
-# }
-
-type StakingEvent implements EventBase @entity {
-  id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
-  extrinisicHash: String
-  event: String!
-  chainName: String! @index
-  account: String! @index
-  amount: BigInt!
+interface CanFail {
+  success: Boolean
 }
 
-type Crowdloan @entity {
+type Transfer implements Item & CanFail @entity {
   id: ID!
-  cap: BigInt!
-  firstPeriod: BigInt!
-  lastPeriod: BigInt!
-  end: BigInt!
-  contributors: [String]
-  raised: BigInt!
+  chain: Chain! @index
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String @index
+  to: Account!
+  from: Account!
+  amount: BigInt
+  success: Boolean @index
+  name: String
 }
 
-type CrowdloanEvent implements EventBase @entity {
+type AccountTransfer @entity {
   id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
-  extrinisicHash: String
-  event: String!
-  chainName: String!
-  crowdloan: Crowdloan!
-  amount: BigInt!
+  transfer: Transfer
+  account: Account!
+  direction: TransferDicrection
 }

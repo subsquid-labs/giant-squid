@@ -1,4 +1,4 @@
-process:
+process: migrate
 	@node -r dotenv/config lib/processor.js
 
 
@@ -22,16 +22,16 @@ codegen:
 	@npx sqd codegen
 
 
-typegen: kusamaVersions.json
-	@npx squid-substrate-typegen typegen.json
+typegen: ./typegen/versions.json
+	@npx squid-substrate-typegen ./typegen/typegen.json
 
 
-kusamaVersions.json:
+./typegen/versions.json:
 	@make explore
 
 
 explore:
-	@npx squid-substrate-metadata-explorer --chain wss://kusama-rpc.polkadot.io --archive https://kusama.indexer.gc.subsquid.io/v4/graphql --out kusamaVersions.json
+	@npx squid-substrate-metadata-explorer --chain wss://statemine.api.onfinality.io/public-ws --archive https://statemine.indexer.gc.subsquid.io/v4/graphql --out ./typegen/versions.json
 
 
 up:
@@ -42,4 +42,4 @@ down:
 	@docker-compose down
 
 
-.PHONY: process serve start codegen migration migrate up down
+.PHONY: process serve start codegen migration migrate up down typegen

@@ -1,0 +1,14 @@
+{
+  "outDir": "../src/types/generated",
+  "chainVersions": "./versions.json",
+  "typesBundle": "./typesBundle.json",
+  "events": [
+    "balances.Transfer"
+  ],
+  "calls": [
+    "balances.transfer",
+    "balances.force_transfer",
+    "balances.transfer_keep_alive",
+    "balances.transfer_all"
+  ]
+}
