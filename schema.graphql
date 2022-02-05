@@ -1,24 +1,57 @@
-# enum BalanceEventType {
-#   Endowed
-#   DustLost
-#   Transfer
-#   BalanceSet
-#   Reserved
-#   Unreserved
-#   ReserveRepatriated
-#   Deposit
-#   Withdraw
-#   Slashed
-# }
+type Parachain @entity {
+  id: ID!
+  name: String
+  crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
+}
 
-# enum StakingEventType {
-#   Rewarded
-#   Slashed
-#   Bonded
-#   Unbonded
-#   Withdrawn
-# }
+type Crowdloan @entity {
+  id: ID!
+  cap: BigInt
+  firstPeriod: BigInt
+  lastPeriod: BigInt
+  end: BigInt
+  contributors: [String]
+  raised: BigInt
+  parachain: Parachain
+}
 
+interface ItemBase {
+  id: ID!
+  date: DateTime
+  blockHash: String
+  blockNumber: BigInt
+  extrinisicHash: String
+  chainName: String
+  success: Boolean
+}
+
+type Contribution @entity implements ItemBase{
+  id: ID!
+  date: DateTime
+  blockHash: String
+  blockNumber: BigInt
+  extrinisicHash: String
+  chainName: String
+  crowdloan: Crowdloan
+  success: Boolean
+  account: String @index
+  amount: BigInt
+}
+
+
+type Transfer @entity implements ItemBase{
+  id: ID!
+  blockNumber: BigInt
+  extrinisicHash: String
+  to: String @index
+  from: String @index
+  amount: BigInt
+  success: Boolean
+  name: String
+  date: DateTime
+}
+
+# Old stuff needs to be remade or removed
 interface EventBase {
   id: ID!
   date: DateTime!
@@ -46,17 +79,6 @@ type BalanceEvent implements EventBase @entity {
   chainName: String! @index
 }
 
-# type SetBalanceData {
-#   who: ID!
-#   free: BigInt!
-#   reserved: BigInt!
-# }
-
-# type MainBalanceData {
-#   account: ID!
-#   amount: BigInt!
-# }
-
 type StakingEvent implements EventBase @entity {
   id: ID!
   date: DateTime!
@@ -67,47 +89,4 @@ type StakingEvent implements EventBase @entity {
   chainName: String! @index
   account: String! @index
   amount: BigInt!
-}
-
-type Crowdloan @entity {
-  id: ID!
-  cap: BigInt
-  firstPeriod: BigInt
-  lastPeriod: BigInt
-  end: BigInt
-  contributors: [String]
-  raised: BigInt
-  parachain: Parachain
-}
-
-type Contribution @entity {
-  id: ID!
-  date: DateTime
-  blockHash: String
-  blockNumber: BigInt
-  extrinisicHash: String
-  event: String
-  chainName: String
-  crowdloan: Crowdloan
-  success: Boolean
-  account: String @index
-  amount: BigInt
-}
-
-type Parachain @entity {
-  id: ID!
-  name: String
-  crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
-}
-
-type Transfer @entity{
-  id: ID!
-  blockNumber: BigInt
-  extrinisicHash: String
-  to: String @index
-  from: String @index
-  amount: BigInt
-  success: Boolean
-  name: String
-  date: DateTime
 }
