@@ -1,5 +1,6 @@
 import * as ss58 from "@subsquid/ss58"
-import { EventHandlerContext, Store } from "@subsquid/substrate-processor";
+import { EventHandlerContext, ExtrinsicHandlerContext, Store, SubstrateExtrinsic } from "@subsquid/substrate-processor";
+import { boolean } from "../model/generated/marshal";
 
 export function encodeID(ID: Uint8Array, chainName: string) {
     return ss58.codec(chainName).encode(ID);
@@ -52,6 +53,10 @@ export interface EventBase {
     event: string
 }
 
-type EntityConstructor<T> = {
+export type EntityConstructor<T> = {
     new(...args: any[]): T
+}
+
+export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {
+    return ctx.event.method == 'ExtrinsicSuccess'
 }

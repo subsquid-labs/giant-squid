@@ -71,22 +71,43 @@ type StakingEvent implements EventBase @entity {
 
 type Crowdloan @entity {
   id: ID!
-  cap: BigInt!
-  firstPeriod: BigInt!
-  lastPeriod: BigInt!
-  end: BigInt!
+  cap: BigInt
+  firstPeriod: BigInt
+  lastPeriod: BigInt
+  end: BigInt
   contributors: [String]
-  raised: BigInt!
+  raised: BigInt
+  parachain: Parachain
 }
 
-type CrowdloanEvent implements EventBase @entity {
+type Contribution @entity {
   id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
+  date: DateTime
+  blockHash: String
+  blockNumber: BigInt
   extrinisicHash: String
-  event: String!
-  chainName: String!
-  crowdloan: Crowdloan!
-  amount: BigInt!
+  event: String
+  chainName: String
+  crowdloan: Crowdloan
+  success: Boolean
+  account: String @index
+  amount: BigInt
+}
+
+type Parachain @entity {
+  id: ID!
+  name: String
+  crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
+}
+
+type Transfer @entity{
+  id: ID!
+  blockNumber: BigInt
+  extrinisicHash: String
+  to: String @index
+  from: String @index
+  amount: BigInt
+  success: Boolean
+  name: String
+  date: DateTime
 }

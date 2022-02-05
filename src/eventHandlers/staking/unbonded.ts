@@ -1,12 +1,12 @@
 import * as events from "../../types/events"
 
 import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { StakingData } from "../../../common/mapping/stakingData"
+import { StakingData } from "../../common/mapping/stakingData"
 import config from "../../config"
-import { encodeID } from "../../../common/helpers"
-import { handleStakingEvent } from "../../../common/mapping/stakingHandler"
+import { encodeID } from "../../common/helpers"
+import { handleStakingEvent } from "../../common/mapping/stakingHandler"
 
-function getUnbondedEvent(ctx: EventHandlerContext): StakingData {
+function getEventData(ctx: EventHandlerContext): StakingData {
     let event = new events.StakingUnbondedEvent(ctx)
 
     let [ account, amount ] = event.asLatest
@@ -18,5 +18,6 @@ function getUnbondedEvent(ctx: EventHandlerContext): StakingData {
 
 
 export async function handleUnbondedEvent(ctx: EventHandlerContext) {
-    await handleStakingEvent(ctx, getUnbondedEvent, config)
+    const data = getEventData(ctx)
+    await handleStakingEvent(ctx, data, config)
 }

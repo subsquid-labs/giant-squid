@@ -25,5 +25,13 @@
     "crowdloan.Contributed",
     "crowdloan.Dissolved"
   ],
-  "calls": []
+  "calls": [
+    "crowdloan.create",
+    "crowdloan.contribute",
+    "proxy.proxy",
+    "balances.transfer",
+    "balances.force_transfer",
+    "balances.transfer_keep_alive",
+    "balances.transfer_all"
+  ]
 }

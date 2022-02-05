@@ -1,10 +1,9 @@
 export type BalanceData = TransferData | CommonData | SetBalanceData
 
 export interface TransferData {
-    from: string
-    to: string
-    amount: bigint
-    status?: string
+    from?: Uint8Array
+    to: Uint8Array
+    amount?: bigint
 }
 
 export interface CommonData {

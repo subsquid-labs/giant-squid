@@ -1,31 +1,52 @@
-import * as events from "../../types/events"
+import { BalancesTransferEvent } from "../../types/events"
 
-import { BalanceData } from "../../../common/mapping/balanceData"
-import { EventHandlerContext } from "@subsquid/substrate-processor"
+import { TransferData } from "../../common/mapping/balanceData"
+import { EventHandlerContext, SubstrateExtrinsic } from "@subsquid/substrate-processor"
 import config from "../../config"
-import { encodeID } from "../../../common/helpers"
-import { handleBalanceEvent } from "../../../common/mapping/balanceHandler"
+import { encodeID, getOrCreate } from "../../common/helpers"
+import { Transfer } from "../../model"
+import { snakeCase } from "snake-case"
 
-function getTransferEvent(ctx: EventHandlerContext): BalanceData {
-    let event = new events.BalancesTransferEvent(ctx)
+function getEventData(ctx: EventHandlerContext): TransferData {
+    let event = new BalancesTransferEvent(ctx)
     if (event.isV0) {
         let [from, to, amount] = event.asV0
         return {
-            from: encodeID(from, config.chainName),
-            to: encodeID(to, config.chainName),
+            from: from,
+            to: to,
             amount: amount
         }
     } else {
         let { from, to, amount } = event.asLatest
         return {
-            from: encodeID(from, config.chainName),
-            to: encodeID(to, config.chainName),
+            from: from,
+            to: to,
             amount: amount
         }
     }
 }
 
+function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
+    return extrinsic.section == 'balances' &&
+        Object.keys(config.extrinsicsHandlers || {}).find(name => extrinsic.name == name) != undefined
+}
 
 export async function handleTransferEvent(ctx: EventHandlerContext) {
-    await handleBalanceEvent(ctx, getTransferEvent, config)
+    if (ctx.extrinsic)
+        ctx.extrinsic.name = `${ctx.extrinsic.section}.${snakeCase(ctx.extrinsic.method)}`
+
+    if (!ctx.extrinsic || !checkExtrinsic(ctx.extrinsic))
+        return;
+
+    const data = getEventData(ctx)
+    const id = `${ctx.extrinsic.id}`
+
+    const transfer = await getOrCreate(ctx.store, Transfer, id)
+
+    transfer.amount = data.amount
+    transfer.from = encodeID(data.from!, config.chainName)
+    transfer.to = encodeID(data.to, config.chainName)
+    transfer.date = transfer.date || new Date(ctx.event.blockTimestamp)
+
+    await ctx.store.save(transfer)
 }

@@ -1,10 +1,10 @@
 import * as events from "../../types/events"
 
 import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { StakingData } from "../../../common/mapping/stakingData"
+import { StakingData } from "../../common/mapping/stakingData"
 import config from "../../config"
-import { encodeID } from "../../../common/helpers"
-import { handleStakingEvent } from "../../../common/mapping/stakingHandler"
+import { encodeID } from "../../common/helpers"
+import { handleStakingEvent } from "../../common/mapping/stakingHandler"
 
 function getRewardedEvent(ctx: EventHandlerContext): StakingData {
     let event = new events.StakingRewardedEvent(ctx)
@@ -27,7 +27,8 @@ function getRewardEvent(ctx: EventHandlerContext): StakingData {
 }
 
 export async function handleRewardedEvent(ctx: EventHandlerContext, old: boolean = false) {
-    await handleStakingEvent(ctx, old ? getRewardEvent : getRewardedEvent, config)
+    const data = old ? getRewardEvent(ctx) : getRewardedEvent(ctx)
+    await handleStakingEvent(ctx, data, config)
 }
 
 export const handleRewardEvent = (ctx: EventHandlerContext) => {return handleRewardedEvent(ctx, true)}

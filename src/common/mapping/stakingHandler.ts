@@ -6,9 +6,8 @@ import { StakingEvent } from "../../model"
 import { createEvent } from "../helpers"
 
 export async function handleStakingEvent(ctx: EventHandlerContext,
-    getter: (ctx: EventHandlerContext) => StakingData, config: ProcessorConfig) {
-    let data = getter(ctx)
-    const id = `${config.idPrefix}-${ctx.event.id}`
+    data: StakingData, config: ProcessorConfig) {
+    const id = `${ctx.event.id}`
 
     const event = await createEvent(
         StakingEvent,

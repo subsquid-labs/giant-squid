@@ -22,16 +22,16 @@ codegen:
 	@npx sqd codegen
 
 
-typegen: kusamaVersions.json
-	@npx squid-substrate-typegen typegen.json
+typegen: versions.json
+	@npx squid-substrate-typegen ./indexers/typegen.json
 
 
-kusamaVersions.json:
+versions.json:
 	@make explore
 
 
 explore:
-	@npx squid-substrate-metadata-explorer --chain wss://kusama-rpc.polkadot.io --archive https://kusama.indexer.gc.subsquid.io/v4/graphql --out kusamaVersions.json
+	@npx squid-substrate-metadata-explorer --chain wss://rpc.polkadot.io --archive https://polkadot.indexer.gc.subsquid.io/v4/graphql --out ./indexers/versions.json
 
 
 up:

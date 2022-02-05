@@ -1,4 +1,6 @@
 export * from "./balanceEvent.model"
 export * from "./stakingEvent.model"
 export * from "./crowdloan.model"
-export * from "./crowdloanEvent.model"
+export * from "./contribution.model"
+export * from "./parachain.model"
+export * from "./transfer.model"
