@@ -16,7 +16,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
     }
 }
 
-export async function handleCreateBase(ctx: ExtrinsicHandlerContext, data: CreateData) {
+export async function parseCreateCall(ctx: ExtrinsicHandlerContext, data: CreateData) {
     const parachain = await getParachain(ctx.store, data.index)
 
     const crowdloanNum = parachain.crowdloans.length + 1
@@ -27,11 +27,12 @@ export async function handleCreateBase(ctx: ExtrinsicHandlerContext, data: Creat
     crowdloan.firstPeriod = BigInt(data.firstPeriod)
     crowdloan.lastPeriod = BigInt(data.lastPeriod)
     crowdloan.parachain = parachain
+    crowdloan.chainName = config.chainName
 
     await ctx.store.save(crowdloan)
 }
 
 export async function handleCreate(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx);
-    await handleCreateBase(ctx, data)
+    await parseCreateCall(ctx, data)
 }

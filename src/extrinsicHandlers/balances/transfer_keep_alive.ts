@@ -3,7 +3,7 @@ import { TransferData } from "../../common/mapping/balanceData";
 import {
     BalancesTransferKeepAliveCall
 } from "../../types/calls"
-import { handleTransferBase } from "./base";
+import { parseTransferCall } from "./transferBase";
 import { snakeCase } from "snake-case";
 
 function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
@@ -40,5 +40,5 @@ export async function handleTransferKeepAlive(ctx: ExtrinsicHandlerContext) {
     ctx.extrinsic.name = `${ctx.extrinsic.section}.${ctx.extrinsic.method}`;
     const data = getCallData(ctx)
 
-    await handleTransferBase(ctx, data)
+    await parseTransferCall(ctx, data)
 }

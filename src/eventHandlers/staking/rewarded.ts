@@ -1,34 +1,31 @@
-import * as events from "../../types/events"
-
+import { StakingRewardedEvent, StakingRewardEvent } from "../../types/events"
 import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { StakingData } from "../../common/mapping/stakingData"
-import config from "../../config"
-import { encodeID } from "../../common/helpers"
-import { handleStakingEvent } from "../../common/mapping/stakingHandler"
+import { RewardData } from "../../common/mapping/stakingData"
+import { parseRewardEvent } from "./base"
 
-function getRewardedEvent(ctx: EventHandlerContext): StakingData {
-    let event = new events.StakingRewardedEvent(ctx)
+function getRewardedEventData(ctx: EventHandlerContext): RewardData {
+    let event = new StakingRewardedEvent(ctx)
 
-    let [ account, amount ] = event.asLatest
+    let [account, amount] = event.asLatest
     return {
-        account: encodeID(account, config.chainName),
+        account: account,
         amount: amount,
     }
 }
 
-function getRewardEvent(ctx: EventHandlerContext): StakingData {
-    let event = new events.StakingRewardEvent(ctx)
+function getRewardEventData(ctx: EventHandlerContext): RewardData {
+    let event = new StakingRewardEvent(ctx)
 
-    let [ account, amount ] = event.asLatest
+    let [account, amount] = event.asLatest
     return {
-        account: encodeID(account, config.chainName),
+        account: account,
         amount: amount,
     }
 }
 
-export async function handleRewardedEvent(ctx: EventHandlerContext, old: boolean = false) {
-    const data = old ? getRewardEvent(ctx) : getRewardedEvent(ctx)
-    await handleStakingEvent(ctx, data, config)
+export async function handleRewarded(ctx: EventHandlerContext, old: boolean = false) {
+    const data = old ? getRewardEventData(ctx) : getRewardedEventData(ctx)
+    await parseRewardEvent(ctx, data)
 }
 
-export const handleRewardEvent = (ctx: EventHandlerContext) => {return handleRewardedEvent(ctx, true)}
+export const handleReward = (ctx: EventHandlerContext) => { return handleRewarded(ctx, true) }

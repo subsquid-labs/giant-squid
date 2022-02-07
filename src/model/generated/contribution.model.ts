@@ -14,17 +14,11 @@ export class Contribution {
   @Column_("timestamp with time zone", {nullable: true})
   date!: Date | undefined | null
 
-  @Column_("text", {nullable: true})
-  blockHash!: string | undefined | null
-
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null
 
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
-
-  @Column_("text", {nullable: true})
-  event!: string | undefined | null
 
   @Column_("text", {nullable: true})
   chainName!: string | undefined | null
@@ -42,4 +36,7 @@ export class Contribution {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
+
+  @Column_("text", {nullable: true})
+  name!: string | undefined | null
 }

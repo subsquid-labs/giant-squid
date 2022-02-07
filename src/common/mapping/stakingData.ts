@@ -1,4 +1,9 @@
-export interface StakingData {
+export interface RewardData {
     amount: bigint
-    account: string
+    account: Uint8Array
+}
+
+export interface PayoutData {
+    era: number
+    validator: Uint8Array
 }

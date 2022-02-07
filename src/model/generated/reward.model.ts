@@ -2,13 +2,16 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 
 @Entity_()
-export class Transfer {
-  constructor(props?: Partial<Transfer>) {
+export class Reward {
+  constructor(props?: Partial<Reward>) {
     Object.assign(this, props)
   }
 
   @PrimaryColumn_()
   id!: string
+
+  @Column_("timestamp with time zone", {nullable: true})
+  date!: Date | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null
@@ -16,26 +19,25 @@ export class Transfer {
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
 
-  @Index_()
   @Column_("text", {nullable: true})
-  to!: string | undefined | null
-
-  @Index_()
-  @Column_("text", {nullable: true})
-  from!: string | undefined | null
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  amount!: bigint | undefined | null
+  chainName!: string | undefined | null
 
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
 
+  @Index_()
+  @Column_("text", {nullable: true})
+  account!: string | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  amount!: bigint | undefined | null
+
   @Column_("text", {nullable: true})
   name!: string | undefined | null
 
-  @Column_("timestamp with time zone", {nullable: true})
-  date!: Date | undefined | null
+  @Column_("integer", {nullable: true})
+  era!: number | undefined | null
 
   @Column_("text", {nullable: true})
-  chainName!: string | undefined | null
+  validator!: string | undefined | null
 }

@@ -1,8 +1,7 @@
 
 import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
-import { encodeID, getOrCreate, isExtrinsicSuccess } from "../../common/helpers";
-import { ContributionData, CreateData } from "../../common/mapping/crowdloanData";
-import { getParachain } from "../../common/parachain";
+import { getOrCreate, isExtrinsicSuccess } from "../../common/helpers";
+import { ContributionData } from "../../common/mapping/crowdloanData";
 import config from "../../config";
 import { Contribution, Crowdloan, Parachain } from "../../model";
 import { CrowdloanContributeCall } from "../../types/calls";
@@ -25,7 +24,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
     }
 }
 
-export async function handleContributeBase(ctx: ExtrinsicHandlerContext, data: ContributionData) {
+export async function parseContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {
     const id = `${ctx.extrinsic.id}`
 
     const contribution = await getOrCreate(ctx.store, Contribution, id)
@@ -34,7 +33,8 @@ export async function handleContributeBase(ctx: ExtrinsicHandlerContext, data: C
     contribution.blockNumber = contribution.blockNumber || BigInt(ctx.block.height)
     contribution.success = contribution.success || isExtrinsicSuccess(ctx)
     contribution.date = contribution.date || new Date(ctx.event.blockTimestamp)
-    
+    contribution.chainName = config.chainName
+
     const parachain = await ctx.store.findOne(Parachain, `${data.paraId}`)
     const crowdloanNum = parachain?.crowdloans.length || 0
     contribution.crowdloan = await ctx.store.findOne(Crowdloan, `${data.paraId}-${crowdloanNum}`)
@@ -47,5 +47,5 @@ export async function handleContributeBase(ctx: ExtrinsicHandlerContext, data: C
 
 export async function handleContribute(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx);
-    await handleContributeBase(ctx, data)
+    await parseContributeCall(ctx, data)
 }

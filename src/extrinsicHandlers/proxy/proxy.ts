@@ -1,7 +1,7 @@
 import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
 import { ProxyProxyCall } from "../../types/calls"
-import { handleTransferBase } from "../balances/base";
-import { handleCreateBase } from "../crowdloan/create";
+import { parseTransferCall } from "../balances/transferBase";
+import { parseCreateCall } from "../crowdloan/create";
 
 function getProxyCall(ctx: ExtrinsicHandlerContext) {
     let event = new ProxyProxyCall(ctx)
@@ -22,7 +22,7 @@ export async function handleProxy(ctx: ExtrinsicHandlerContext) {
         case 'Crowdloan':
             switch (call.value.__kind) {
                 case 'create':
-                    handleCreateBase(ctx, call.value)
+                    parseCreateCall(ctx, call.value)
                     break
             }
             break;
@@ -30,20 +30,20 @@ export async function handleProxy(ctx: ExtrinsicHandlerContext) {
             switch (call.value.__kind) {
                 case 'transfer':
                 case 'transfer_keep_alive':
-                    handleTransferBase(ctx, {
+                    parseTransferCall(ctx, {
                         to: call.value.dest.value as Uint8Array,
                         amount: call.value.value
                     })
                     break
                 case 'force_transfer':
-                    handleTransferBase(ctx, {
+                    parseTransferCall(ctx, {
                         to: call.value.dest.value as Uint8Array,
                         from: call.value.source.value as Uint8Array,
                         amount: call.value.value
                     })
                     break
                 case 'transfer_all':
-                    handleTransferBase(ctx, {
+                    parseTransferCall(ctx, {
                         to: call.value.dest.value as Uint8Array,
                     })
                     break

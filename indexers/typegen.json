@@ -32,6 +32,8 @@
     "balances.transfer",
     "balances.force_transfer",
     "balances.transfer_keep_alive",
-    "balances.transfer_all"
+    "balances.transfer_all",
+    "staking.payout_stakers",
+    "utility.batch"
   ]
 }

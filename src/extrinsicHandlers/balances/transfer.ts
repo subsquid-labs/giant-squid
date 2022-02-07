@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
 import { TransferData } from "../../common/mapping/balanceData";
 import {
     BalancesTransferCall} from "../../types/calls"
-import { handleTransferBase } from "./base";
+import { parseTransferCall } from "./transferBase";
 import { snakeCase } from "snake-case";
 
 function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
@@ -40,5 +40,5 @@ export async function handleTransfer(ctx: ExtrinsicHandlerContext) {
 
     const data = getCallData(ctx)
     
-    await handleTransferBase(ctx, data)
+    await parseTransferCall(ctx, data)
 }

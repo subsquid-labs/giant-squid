@@ -1,5 +1,6 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
+import * as v0 from './v0'
 import * as v10 from './v10'
 import * as v11 from './v11'
 import * as v13 from './v13'
@@ -1703,6 +1704,1390 @@ export class ProxyProxyCall {
   }
 
   get asLatest(): {real: v9140.AccountId32, forceProxyType: (v9140.ProxyType | undefined), call: v9140.Call} {
+    deprecateLatest()
+    return this.asV9140
+  }
+}
+
+export class StakingPayoutStakersCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.payoutStakers' || this.ctx.extrinsic.name === 'staking.payout_stakers')
+  }
+
+  /**
+   *  Pay out all the stakers behind a single validator for a single era.
+   * 
+   *  - `validator_stash` is the stash account of the validator. Their nominators, up to
+   *    `T::MaxNominatorRewardedPerValidator`, will also receive their rewards.
+   *  - `era` may be any era between `[current_era - history_depth; current_era]`.
+   * 
+   *  The origin of this call must be _Signed_. Any account can call this function, even if
+   *  it is not one of the stakers.
+   * 
+   *  This can only be called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Time complexity: at most O(MaxNominatorRewardedPerValidator).
+   *  - Contains a limited number of reads and writes.
+   *  -----------
+   *  N is the Number of payouts for the validator (including the validator)
+   *  Base Weight: 110 + 54.2 * N µs (Median Slopes)
+   *  DB Weight:
+   *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, MigrateEra, ErasValidatorReward,
+   *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
+   *  - Read Each: Bonded, Ledger, Payee, Locks, System Account (5 items)
+   *  - Write Each: System Account, Locks, Ledger (3 items)
+   *  # </weight>
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getCallHash('staking.payout_stakers') === '1fed710492a18f6b425d1332be2515dc1402588e0b4798e067293eb2104339e1'
+  }
+
+  /**
+   *  Pay out all the stakers behind a single validator for a single era.
+   * 
+   *  - `validator_stash` is the stash account of the validator. Their nominators, up to
+   *    `T::MaxNominatorRewardedPerValidator`, will also receive their rewards.
+   *  - `era` may be any era between `[current_era - history_depth; current_era]`.
+   * 
+   *  The origin of this call must be _Signed_. Any account can call this function, even if
+   *  it is not one of the stakers.
+   * 
+   *  This can only be called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Time complexity: at most O(MaxNominatorRewardedPerValidator).
+   *  - Contains a limited number of reads and writes.
+   *  -----------
+   *  N is the Number of payouts for the validator (including the validator)
+   *  Base Weight: 110 + 54.2 * N µs (Median Slopes)
+   *  DB Weight:
+   *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, MigrateEra, ErasValidatorReward,
+   *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
+   *  - Read Each: Bonded, Ledger, Payee, Locks, System Account (5 items)
+   *  - Write Each: System Account, Locks, Ledger (3 items)
+   *  # </weight>
+   */
+  get asV0(): {validatorStash: Uint8Array, era: number} {
+    assert(this.isV0)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV0
+  }
+
+  get asLatest(): {validatorStash: Uint8Array, era: number} {
+    deprecateLatest()
+    return this.asV0
+  }
+}
+
+export class UtilityBatchCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'utility.batch')
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV0(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'ffb6d56b21b4b772a691acae174ed594bf8f6ff20a8349608219c795c31f1ae2'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV0(): {calls: v0.Type_21[]} {
+    assert(this.isV0)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV5(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'f2d99bd2da30b3ffa472a1b2156d075ea20c831b5dae8075783450e3b4c196d9'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV5(): {calls: v5.Type_21[]} {
+    assert(this.isV5)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV6(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'ffe8c34ef54f7fdeba1f7204bc73d900a0ebe4d643f816acef724f7ce4d4a83d'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV6(): {calls: v6.Type_21[]} {
+    assert(this.isV6)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV7(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'e0e06f902aca309322d3110b17514f3b84d53849fd10cb69ad87c9a1ad4a4dfb'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop. Calls must fulfil the
+   *  `IsCallable` filter unless the origin is `Root`.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV7(): {calls: v7.Type_21[]} {
+    assert(this.isV7)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'a0bfe28a0355c56918287aba24d2683fb0cc9ac71ce641517aedeccc6cf34365'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9(): {calls: v9.Type_21[]} {
+    assert(this.isV9)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV10(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '8a82471a7fdab64d166dac0c0aeb108ae040f201bbc78218acae74e0da3d3942'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV10(): {calls: v10.Type_21[]} {
+    assert(this.isV10)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV11(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '077865553935b4f510aa668a5d4c3607882c095efaaa9d402774cb698987e523'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV11(): {calls: v11.Type_21[]} {
+    assert(this.isV11)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV13(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'e15522ea901a949ee96baea4cfa177f531319915fcbed9945b0ad01daf515905'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV13(): {calls: v13.Type_21[]} {
+    assert(this.isV13)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV14(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'e5fc5db7adb2e74b850324b28db0cbaf36122dc76f954c8c16891570936ca579'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV14(): {calls: v14.Type_21[]} {
+    assert(this.isV14)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV15(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '7f414e5b7d49aa8e48d6c7770d6ff62418ee229a3278b1991a3b9890720cdc99'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV15(): {calls: v15.Type_21[]} {
+    assert(this.isV15)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV17(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'b66b9be598882029cd0e02be324912bf85927d9a7a95b1ab7d14a5abe52a9047'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV17(): {calls: v17.Type_21[]} {
+    assert(this.isV17)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV18(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'a5e5268e39ff4ad7e714e66b8c0ffd5e87476a8005a619aa66ade9cc80563f98'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV18(): {calls: v18.Type_21[]} {
+    assert(this.isV18)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV23(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'eeed88f8ccb46637be05b355de0362bc1cc8b57341ab625b81599b973adad22b'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV23(): {calls: v23.Type_21[]} {
+    assert(this.isV23)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV24(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '4202cd18751387919f0dc8948e2f07d682ee8fcc4459681a281b20a32c5c0e17'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV24(): {calls: v24.Type_21[]} {
+    assert(this.isV24)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV25(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'e30f054052822967e49eecd679fd0bcae698b00dcdcf1bb49dd48ddbb635e487'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV25(): {calls: v25.Type_21[]} {
+    assert(this.isV25)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV26(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '66d959c328a330f9e4cba37610e06004a4dbee6a2a196754d6d6adabd5bd1507'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Trait::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV26(): {calls: v26.Type_21[]} {
+    assert(this.isV26)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV28(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '075fff7f40b55192fd2eeaab690083c5d7014932c9f121646c85262aeeef06aa'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV28(): {calls: v28.Type_21[]} {
+    assert(this.isV28)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV29(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '984d6b1dc7386c82d0219a4cadd30742a507dbe422f2b2931e93ebd4116962b0'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV29(): {calls: v29.Type_21[]} {
+    assert(this.isV29)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV30(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '51ab26095f821e257e2975a5c16029953c90f82154e229f2cbbefce7c134df5c'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV30(): {calls: v30.Type_21[]} {
+    assert(this.isV30)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9050(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'e032f2e9d1e852ae22701cf33127cef1c3c277d465ae14c5aeb2b1fa9ed99697'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9050(): {calls: v9050.Type_21[]} {
+    assert(this.isV9050)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9080(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'dc293a9774b79deb3c8ca6adde6cf337731021f85e92bcc7a83db641b2fbe415'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9080(): {calls: v9080.Type_21[]} {
+    assert(this.isV9080)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9090(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'd53c6dd4597b4e75d194b5da29e28eaa9d7b562f3b69a08797506268a4bfe122'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9090(): {calls: v9090.Type_21[]} {
+    assert(this.isV9090)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9100(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '6f845619491413fe6f0a99b2e0ffec66e9b024b1aa708df60c02a450277a2d23'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *    exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9100(): {calls: v9100.Type_21[]} {
+    assert(this.isV9100)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get isV9110(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'f39ae1811b29c793caae130369024178bb4f3dd97321d077c6133e9068865eaf'
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get asV9110(): {calls: v9110.Call[]} {
+    assert(this.isV9110)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get isV9140(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'e80fd4ee582fb3e10b4838ccd53d0dbad856a56b0583f004844a55046c69b1c6'
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get asV9140(): {calls: v9140.Call[]} {
+    assert(this.isV9140)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9140
+  }
+
+  get asLatest(): {calls: v9140.Call[]} {
     deprecateLatest()
     return this.asV9140
   }

@@ -13,22 +13,22 @@ type Crowdloan @entity {
   contributors: [String]
   raised: BigInt
   parachain: Parachain
+  chainName: String
 }
 
 interface ItemBase {
   id: ID!
   date: DateTime
-  blockHash: String
   blockNumber: BigInt
   extrinisicHash: String
   chainName: String
   success: Boolean
+  name: String
 }
 
-type Contribution @entity implements ItemBase{
+type Contribution implements ItemBase @entity {
   id: ID!
   date: DateTime
-  blockHash: String
   blockNumber: BigInt
   extrinisicHash: String
   chainName: String
@@ -36,10 +36,10 @@ type Contribution @entity implements ItemBase{
   success: Boolean
   account: String @index
   amount: BigInt
+  name: String
 }
 
-
-type Transfer @entity implements ItemBase{
+type Transfer implements ItemBase @entity {
   id: ID!
   blockNumber: BigInt
   extrinisicHash: String
@@ -49,44 +49,19 @@ type Transfer @entity implements ItemBase{
   success: Boolean
   name: String
   date: DateTime
+  chainName: String
 }
 
-# Old stuff needs to be remade or removed
-interface EventBase {
+type Reward implements ItemBase @entity  {
   id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
+  date: DateTime
+  blockNumber: BigInt
   extrinisicHash: String
-  chainName: String!
-  event: String!
-}
-
-type BalanceEvent implements EventBase @entity {
-  id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
-  extrinisicHash: String
-  event: String!
-  from: String @index
-  to: String @index
+  chainName: String
+  success: Boolean
   account: String @index
   amount: BigInt
-  balanceStatus: String
-  free: BigInt
-  reserved: BigInt
-  chainName: String! @index
-}
-
-type StakingEvent implements EventBase @entity {
-  id: ID!
-  date: DateTime!
-  blockHash: String!
-  blockNumber: BigInt!
-  extrinisicHash: String
-  event: String!
-  chainName: String! @index
-  account: String! @index
-  amount: BigInt!
+  name: String
+  era: Int
+  validator: String
 }

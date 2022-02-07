@@ -31,15 +31,8 @@ function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
         Object.keys(config.extrinsicsHandlers || {}).find(name => extrinsic.name == name) != undefined
 }
 
-export async function handleTransferEvent(ctx: EventHandlerContext) {
-    if (ctx.extrinsic)
-        ctx.extrinsic.name = `${ctx.extrinsic.section}.${snakeCase(ctx.extrinsic.method)}`
-
-    if (!ctx.extrinsic || !checkExtrinsic(ctx.extrinsic))
-        return;
-
-    const data = getEventData(ctx)
-    const id = `${ctx.extrinsic.id}`
+async function parseTransferEvent(ctx: EventHandlerContext, data: TransferData) {
+    const id = `${ctx.extrinsic?.id}`
 
     const transfer = await getOrCreate(ctx.store, Transfer, id)
 
@@ -49,4 +42,16 @@ export async function handleTransferEvent(ctx: EventHandlerContext) {
     transfer.date = transfer.date || new Date(ctx.event.blockTimestamp)
 
     await ctx.store.save(transfer)
+}
+
+export async function handleTransfer(ctx: EventHandlerContext) {
+    if (ctx.extrinsic)
+        ctx.extrinsic.name = `${ctx.extrinsic.section}.${snakeCase(ctx.extrinsic.method)}`
+
+    if (!ctx.extrinsic || !checkExtrinsic(ctx.extrinsic))
+        return;
+
+    const data = getEventData(ctx)
+
+    await parseTransferEvent(ctx, data)
 }

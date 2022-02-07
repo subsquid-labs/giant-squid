@@ -12,13 +12,12 @@ export async function getOrCreate<T extends { id: string }>(
     id: string,
 ): Promise<T> {
 
-    let e = await store.get<T>(entityConstructor, {
-        where: { id },
-    })
+    let e = await store.findOne<T>(entityConstructor, id)
 
     if (e == null) {
         e = new entityConstructor()
         e.id = id
+        await store.save(e)
     }
 
     return e

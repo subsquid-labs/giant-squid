@@ -19,7 +19,7 @@ const config: ProcessorConfig = {
         // 'balances.Endowed': events.balances.handleEndowedEvent,
         // 'balances.DustLost': events.balances.handleDustLostEvent,
         'balances.Transfer': {
-            handler: events.balances.handleTransferEvent
+            handler: events.balances.handleTransfer
         },
         // 'balances.BalanceSet': events.balances.handleBalanceSetEvent,
         // 'balances.Reserved': events.balances.handleReservedEvent,

@@ -1,34 +1,34 @@
 import * as events from "../../types/events"
 
 import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { StakingData } from "../../common/mapping/stakingData"
-import config from "../../config"
-import { encodeID } from "../../common/helpers"
-import { handleStakingEvent } from "../../common/mapping/stakingHandler"
+import { RewardData } from "../../common/mapping/stakingData"
+import { parseRewardEvent } from "./base"
 
-function getSlashedEvent(ctx: EventHandlerContext, old: boolean = false): StakingData {
+function getSlashedEvent(ctx: EventHandlerContext, old: boolean = false): RewardData {
     let event = new events.StakingSlashedEvent(ctx)
 
-    let [ account, amount ] = event.asLatest
+    let [account, amount] = event.asLatest
     return {
-        account: encodeID(account, config.chainName),
+        account: account,
         amount: amount,
     }
 }
 
-function getSlashEvent(ctx: EventHandlerContext): StakingData {
+function getSlashEvent(ctx: EventHandlerContext): RewardData {
     let event = new events.StakingSlashEvent(ctx)
 
-    let [ account, amount ] = event.asLatest
+    let [account, amount] = event.asLatest
     return {
-        account: encodeID(account, config.chainName),
+        account: account,
         amount: amount,
     }
 }
+
+const parseSlashEvent = parseRewardEvent
 
 export async function handleSlashedEvent(ctx: EventHandlerContext, old: boolean = false) {
     const data = old ? getSlashEvent(ctx) : getSlashedEvent(ctx)
-    await handleStakingEvent(ctx, data, config)
+    await parseSlashEvent(ctx, data)
 }
 
-export const handleSlashEvent = (ctx: EventHandlerContext) => {return handleSlashedEvent(ctx, true)}
+export const handleSlashEvent = (ctx: EventHandlerContext) => { return handleSlashedEvent(ctx, true) }
