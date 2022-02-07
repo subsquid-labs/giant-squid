@@ -1,5 +1,4 @@
 import { BalancesTransferEvent } from "../../types/events"
-
 import { TransferData } from "../../common/mapping/balanceData"
 import { EventHandlerContext, SubstrateExtrinsic } from "@subsquid/substrate-processor"
 import config from "../../config"
@@ -27,31 +26,33 @@ function getEventData(ctx: EventHandlerContext): TransferData {
 }
 
 function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
+    const methods = Object.keys(config.extrinsicsHandlers?.['balances'] || {})
     return extrinsic.section == 'balances' &&
-        Object.keys(config.extrinsicsHandlers || {}).find(name => extrinsic.name == name) != undefined
+        methods.includes(snakeCase(extrinsic.method))
 }
 
-async function parseTransferEvent(ctx: EventHandlerContext, data: TransferData) {
+async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData) {
     const id = `${ctx.extrinsic?.id}`
 
     const transfer = await getOrCreate(ctx.store, Transfer, id)
 
-    transfer.amount = data.amount
-    transfer.from = encodeID(data.from!, config.chainName)
-    transfer.to = encodeID(data.to, config.chainName)
-    transfer.date = transfer.date || new Date(ctx.event.blockTimestamp)
+    transfer.date ??= new Date(ctx.event.blockTimestamp)
+    transfer.blockNumber ??= BigInt(ctx.block.height)
+    transfer.extrinisicHash ??= ctx.event.extrinsic?.hash
+    transfer.chainName ??= config.chainName
+
+    transfer.amount ??= data.amount
+    transfer.from ??= encodeID(data.from!, config.chainName)
+    transfer.to ??= encodeID(data.to, config.chainName)
 
     await ctx.store.save(transfer)
 }
 
 export async function handleTransfer(ctx: EventHandlerContext) {
-    if (ctx.extrinsic)
-        ctx.extrinsic.name = `${ctx.extrinsic.section}.${snakeCase(ctx.extrinsic.method)}`
-
     if (!ctx.extrinsic || !checkExtrinsic(ctx.extrinsic))
         return;
 
     const data = getEventData(ctx)
 
-    await parseTransferEvent(ctx, data)
+    await saveTransferEvent(ctx, data)
 }

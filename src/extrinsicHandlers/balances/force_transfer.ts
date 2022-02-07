@@ -3,8 +3,7 @@ import { TransferData } from "../../common/mapping/balanceData";
 import {
     BalancesForceTransferCall
 } from "../../types/calls"
-import { parseTransferCall } from "./transferBase";
-import { snakeCase } from "snake-case";
+import { saveTransferCall } from "./transferBase";
 
 function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
     const call = new BalancesForceTransferCall(ctx)
@@ -40,9 +39,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
 }
 
 export async function handleForceTransfer(ctx: ExtrinsicHandlerContext) {
-    ctx.extrinsic.method = snakeCase(ctx.extrinsic.method);
-    ctx.extrinsic.name = `${ctx.extrinsic.section}.${ctx.extrinsic.method}`;
     const data = getCallData(ctx)
 
-    await parseTransferCall(ctx, data)
+    await saveTransferCall(ctx, data)
 }

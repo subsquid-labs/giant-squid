@@ -16,7 +16,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
     }
 }
 
-export async function parseCreateCall(ctx: ExtrinsicHandlerContext, data: CreateData) {
+export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateData) {
     const parachain = await getParachain(ctx.store, data.index)
 
     const crowdloanNum = parachain.crowdloans.length + 1
@@ -34,5 +34,5 @@ export async function parseCreateCall(ctx: ExtrinsicHandlerContext, data: Create
 
 export async function handleCreate(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx);
-    await parseCreateCall(ctx, data)
+    await saveCreateCall(ctx, data)
 }

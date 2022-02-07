@@ -4,23 +4,21 @@ import { TransferData } from "../../common/mapping/balanceData";
 import config from "../../config";
 import { Transfer } from "../../model";
 
-export async function parseTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData) {
+export async function saveTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData) {
     const id = `${ctx.extrinsic.id}`
 
     const transfer = await getOrCreate(ctx.store, Transfer, id)
 
-    transfer.name = transfer.name || ctx.extrinsic.name
-    transfer.extrinisicHash = transfer.extrinisicHash || ctx.extrinsic.hash
-    transfer.blockNumber = transfer.blockNumber || BigInt(ctx.block.height)
-    transfer.success = transfer.success || isExtrinsicSuccess(ctx)
-    transfer.date = transfer.date || new Date(ctx.event.blockTimestamp)
-    transfer.chainName = config.chainName
+    transfer.name ??= ctx.extrinsic.name
+    transfer.extrinisicHash ??= ctx.extrinsic.hash
+    transfer.blockNumber ??= BigInt(ctx.block.height)
+    transfer.success ??= isExtrinsicSuccess(ctx)
+    transfer.date ??= new Date(ctx.event.blockTimestamp)
+    transfer.chainName ??= config.chainName
 
-    if (!transfer.success) {
-        transfer.from = data.from ? encodeID(data.from, config.chainName) : ctx.extrinsic.signer
-        transfer.to = encodeID(data.to, config.chainName)
-        transfer.amount = data.amount || 0n
-    }
+    transfer.from ??= data.from ? encodeID(data.from, config.chainName) : ctx.extrinsic.signer
+    transfer.to ??= data.to ? encodeID(data.to, config.chainName) : null
+    transfer.amount ??= data.amount ?? 0n
 
     ctx.store.save(transfer)
 }

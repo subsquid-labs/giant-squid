@@ -1,15 +1,24 @@
 import { StakingRewardedEvent, StakingRewardEvent } from "../../types/events"
 import { EventHandlerContext } from "@subsquid/substrate-processor"
 import { RewardData } from "../../common/mapping/stakingData"
-import { parseRewardEvent } from "./base"
+import { saveRewardEvent } from "./base"
 
 function getRewardedEventData(ctx: EventHandlerContext): RewardData {
     let event = new StakingRewardedEvent(ctx)
 
-    let [account, amount] = event.asLatest
-    return {
-        account: account,
-        amount: amount,
+    if (event.isV9090) {
+        let [account, amount] = event.asV9090
+        return {
+            account: account,
+            amount: amount,
+        }
+    }
+    else {
+        let [account, amount] = event.asLatest
+        return {
+            account: account,
+            amount: amount,
+        }
     }
 }
 
@@ -25,7 +34,7 @@ function getRewardEventData(ctx: EventHandlerContext): RewardData {
 
 export async function handleRewarded(ctx: EventHandlerContext, old: boolean = false) {
     const data = old ? getRewardEventData(ctx) : getRewardedEventData(ctx)
-    await parseRewardEvent(ctx, data)
+    await saveRewardEvent(ctx, data)
 }
 
 export const handleReward = (ctx: EventHandlerContext) => { return handleRewarded(ctx, true) }

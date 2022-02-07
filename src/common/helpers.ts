@@ -3,7 +3,15 @@ import { EventHandlerContext, ExtrinsicHandlerContext, Store, SubstrateExtrinsic
 import { boolean } from "../model/generated/marshal";
 
 export function encodeID(ID: Uint8Array, chainName: string) {
-    return ss58.codec(chainName).encode(ID);
+    let ret: string | null
+    try {
+        ret = ss58.codec(chainName).encode(ID);
+    }
+    catch (e) {
+        ret = null
+    }
+
+    return ret
 }
 
 export async function getOrCreate<T extends { id: string }>(
@@ -11,10 +19,9 @@ export async function getOrCreate<T extends { id: string }>(
     entityConstructor: EntityConstructor<T>,
     id: string,
 ): Promise<T> {
-
     let e = await store.findOne<T>(entityConstructor, id)
 
-    if (e == null) {
+    if (!e) {
         e = new entityConstructor()
         e.id = id
         await store.save(e)
@@ -33,7 +40,7 @@ export async function createEvent<T extends EventBase>(
 
     event = Object.assign(event, {
         blockHash: ctx.block.hash,
-        blockNumber: ctx.event.blockNumber,
+        blockNumber: ctx.block.height,
         extrinisicHash: ctx.extrinsic?.hash,
         date: new Date(ctx.block.timestamp),
         event: ctx.event.name,

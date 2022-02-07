@@ -22,9 +22,6 @@ export class Reward {
   @Column_("text", {nullable: true})
   chainName!: string | undefined | null
 
-  @Column_("bool", {nullable: true})
-  success!: boolean | undefined | null
-
   @Index_()
   @Column_("text", {nullable: true})
   account!: string | undefined | null

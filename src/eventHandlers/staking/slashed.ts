@@ -2,7 +2,7 @@ import * as events from "../../types/events"
 
 import { EventHandlerContext } from "@subsquid/substrate-processor"
 import { RewardData } from "../../common/mapping/stakingData"
-import { parseRewardEvent } from "./base"
+import { saveRewardEvent } from "./base"
 
 function getSlashedEvent(ctx: EventHandlerContext, old: boolean = false): RewardData {
     let event = new events.StakingSlashedEvent(ctx)
@@ -24,11 +24,11 @@ function getSlashEvent(ctx: EventHandlerContext): RewardData {
     }
 }
 
-const parseSlashEvent = parseRewardEvent
+const saveSlashEvent = saveRewardEvent
 
 export async function handleSlashedEvent(ctx: EventHandlerContext, old: boolean = false) {
     const data = old ? getSlashEvent(ctx) : getSlashedEvent(ctx)
-    await parseSlashEvent(ctx, data)
+    await saveSlashEvent(ctx, data)
 }
 
 export const handleSlashEvent = (ctx: EventHandlerContext) => { return handleSlashedEvent(ctx, true) }

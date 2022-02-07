@@ -24,7 +24,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
     }
 }
 
-export async function parseContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {
+export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {
     const id = `${ctx.extrinsic.id}`
 
     const contribution = await getOrCreate(ctx.store, Contribution, id)
@@ -47,5 +47,5 @@ export async function parseContributeCall(ctx: ExtrinsicHandlerContext, data: Co
 
 export async function handleContribute(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx);
-    await parseContributeCall(ctx, data)
+    await saveContributeCall(ctx, data)
 }
