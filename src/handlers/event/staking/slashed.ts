@@ -26,9 +26,9 @@ function getSlashEvent(ctx: EventHandlerContext): RewardData {
 
 const saveSlashEvent = saveRewardEvent
 
-export async function handleSlashedEvent(ctx: EventHandlerContext, old: boolean = false) {
+export async function handleSlashed(ctx: EventHandlerContext, old: boolean = false) {
     const data = old ? getSlashEvent(ctx) : getSlashedEvent(ctx)
     await saveSlashEvent(ctx, data)
 }
 
-export const handleSlashEvent = (ctx: EventHandlerContext) => { return handleSlashedEvent(ctx, true) }
+export const handleSlash = (ctx: EventHandlerContext) => { return handleSlashed(ctx, true) }

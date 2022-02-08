@@ -26,6 +26,12 @@ const config: ProcessorConfig = {
             'Reward': {
                 handler: events.staking.handleReward
             },
+            'Slashed': {
+                handler: events.staking.handleSlashed
+            },
+            'Slash': {
+                handler: events.staking.handleSlash
+            },
         },
         'crowdloan':{
             'Dissolved': {
