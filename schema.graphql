@@ -6,14 +6,15 @@ type Parachain @entity {
 
 type Crowdloan @entity {
   id: ID!
-  cap: BigInt
-  firstPeriod: BigInt
-  lastPeriod: BigInt
-  end: BigInt
-  contributors: [String]
-  raised: BigInt
-  parachain: Parachain
-  chainName: String
+  cap: BigInt!
+  firstPeriod: BigInt!
+  lastPeriod: BigInt!
+  end: BigInt!
+  contributors: [String!]
+  raised: BigInt!
+  parachain: Parachain!
+  chainName: String!
+  blockNumber: BigInt
 }
 
 interface ItemBase {
@@ -22,20 +23,18 @@ interface ItemBase {
   blockNumber: BigInt
   extrinisicHash: String
   chainName: String
-  name: String
 }
 
 type Contribution implements ItemBase @entity {
   id: ID!
-  date: DateTime
-  blockNumber: BigInt
+  date: DateTime!
+  blockNumber: BigInt!
   extrinisicHash: String
-  chainName: String
-  crowdloan: Crowdloan
-  success: Boolean
-  account: String @index
-  amount: BigInt
-  name: String
+  chainName: String!
+  crowdloan: Crowdloan!
+  success: Boolean!
+  account: String! @index
+  amount: BigInt!
 }
 
 type Transfer implements ItemBase @entity {

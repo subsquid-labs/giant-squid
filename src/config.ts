@@ -26,13 +26,22 @@ const config: ProcessorConfig = {
             'Reward': {
                 handler: events.staking.handleReward
             },
+        },
+        'crowdloan':{
+            'Dissolved': {
+                handler: events.crowdloan.handleDissolved
+            }
         }
     },
     extrinsicsHandlers: {
         'crowdloan': {
             'create': {
-                handler: extrins.crowdloan.handleCreate
+                handler: extrins.crowdloan.handleCreate,
             },
+            'contribute': {
+                handler: extrins.crowdloan.handleContribute,
+
+            }
         },
         'staking': {
             'payout_stakers': {
@@ -64,12 +73,13 @@ const config: ProcessorConfig = {
                     triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed']
                 }
             },
-        }
-        // 'proxy.proxy': {
-        //     handler: extrins.proxy.handleProxy
-        // },
+        },
+        'proxy': {
+            'proxy': {
+                handler: extrins.proxy.handleProxy
+            },
+        },
     },
-    // blockRange: { from: 8924645 }
+    blockRange: { from: 7567658 }
 }
-
 export default config

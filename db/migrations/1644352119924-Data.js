@@ -1,11 +1,11 @@
-module.exports = class Data1644267552062 {
-  name = 'Data1644267552062'
+module.exports = class Data1644352119924 {
+  name = 'Data1644352119924'
 
   async up(db) {
-    await db.query(`CREATE TABLE "crowdloan" ("id" character varying NOT NULL, "cap" numeric, "first_period" numeric, "last_period" numeric, "end" numeric, "contributors" text array, "raised" numeric, "chain_name" text, "parachain_id" character varying, CONSTRAINT "PK_19a05e349701577c8c1679ae84d" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "crowdloan" ("id" character varying NOT NULL, "cap" numeric NOT NULL, "first_period" numeric NOT NULL, "last_period" numeric NOT NULL, "end" numeric NOT NULL, "contributors" text array, "raised" numeric NOT NULL, "chain_name" text NOT NULL, "block_number" numeric, "parachain_id" character varying NOT NULL, CONSTRAINT "PK_19a05e349701577c8c1679ae84d" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_005883fcd4519fa5ae88706b3a" ON "crowdloan" ("parachain_id") `)
     await db.query(`CREATE TABLE "parachain" ("id" character varying NOT NULL, "name" text, CONSTRAINT "PK_0f6ac85862a6ca7c8873f699b61" PRIMARY KEY ("id"))`)
-    await db.query(`CREATE TABLE "contribution" ("id" character varying NOT NULL, "date" TIMESTAMP WITH TIME ZONE, "block_number" numeric, "extrinisic_hash" text, "chain_name" text, "success" boolean, "account" text, "amount" numeric, "name" text, "crowdloan_id" character varying, CONSTRAINT "PK_878330fa5bb34475732a5883d58" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "contribution" ("id" character varying NOT NULL, "date" TIMESTAMP WITH TIME ZONE NOT NULL, "block_number" numeric NOT NULL, "extrinisic_hash" text, "chain_name" text NOT NULL, "success" boolean NOT NULL, "account" text NOT NULL, "amount" numeric NOT NULL, "crowdloan_id" character varying NOT NULL, CONSTRAINT "PK_878330fa5bb34475732a5883d58" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_34a9b7747fbe547737724da5a3" ON "contribution" ("crowdloan_id") `)
     await db.query(`CREATE INDEX "IDX_0ae793de797f960ee329368a5e" ON "contribution" ("account") `)
     await db.query(`CREATE TABLE "transfer" ("id" character varying NOT NULL, "block_number" numeric, "extrinisic_hash" text, "to" text, "from" text, "amount" numeric, "success" boolean, "name" text, "date" TIMESTAMP WITH TIME ZONE, "chain_name" text, CONSTRAINT "PK_fd9ddbdd49a17afcbe014401295" PRIMARY KEY ("id"))`)

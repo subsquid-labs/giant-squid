@@ -11,32 +11,29 @@ export class Contribution {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("timestamp with time zone", {nullable: true})
-  date!: Date | undefined | null
+  @Column_("timestamp with time zone", {nullable: false})
+  date!: Date
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  blockNumber!: bigint
 
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
 
-  @Column_("text", {nullable: true})
-  chainName!: string | undefined | null
+  @Column_("text", {nullable: false})
+  chainName!: string
 
   @Index_()
-  @ManyToOne_(() => Crowdloan, {nullable: true})
-  crowdloan!: Crowdloan | undefined | null
+  @ManyToOne_(() => Crowdloan, {nullable: false})
+  crowdloan!: Crowdloan
 
-  @Column_("bool", {nullable: true})
-  success!: boolean | undefined | null
+  @Column_("bool", {nullable: false})
+  success!: boolean
 
   @Index_()
-  @Column_("text", {nullable: true})
-  account!: string | undefined | null
+  @Column_("text", {nullable: false})
+  account!: string
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  amount!: bigint | undefined | null
-
-  @Column_("text", {nullable: true})
-  name!: string | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  amount!: bigint
 }

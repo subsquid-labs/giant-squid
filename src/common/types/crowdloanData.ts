@@ -11,3 +11,7 @@ export interface CreateData {
     lastPeriod: number,
     end: number
 }
+
+export interface DissolvedData {
+    index: number,
+}

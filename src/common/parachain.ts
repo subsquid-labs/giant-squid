@@ -4,7 +4,9 @@ import { getOrCreate } from "./helpers";
 
 
 export async function getParachain(store: Store, id: number | string): Promise<Parachain> {
-    let parachain = (await store.findOne(Parachain, id.toString()))
+    let parachain = await store.findOne(Parachain, id, {
+        relations: ['crowdloans']
+    })
 
     if (!parachain)
         parachain = await createParachain(store, id)

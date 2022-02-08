@@ -11,28 +11,31 @@ export class Crowdloan {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  cap!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  cap!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  firstPeriod!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  firstPeriod!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  lastPeriod!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  lastPeriod!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  end!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  end!: bigint
 
   @Column_("text", {array: true, nullable: true})
-  contributors!: (string | undefined | null)[] | undefined | null
+  contributors!: (string)[] | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  raised!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  raised!: bigint
 
   @Index_()
-  @ManyToOne_(() => Parachain, {nullable: true})
-  parachain!: Parachain | undefined | null
+  @ManyToOne_(() => Parachain, {nullable: false})
+  parachain!: Parachain
 
-  @Column_("text", {nullable: true})
-  chainName!: string | undefined | null
+  @Column_("text", {nullable: false})
+  chainName!: string
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  blockNumber!: bigint | undefined | null
 }

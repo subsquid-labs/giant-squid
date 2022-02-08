@@ -22,12 +22,15 @@ export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateD
     const crowdloanNum = parachain.crowdloans.length + 1
     const crowdloan = await getOrCreate(ctx.store, Crowdloan, `${data.index}-${crowdloanNum}`)
 
-    crowdloan.cap = data.cap
-    crowdloan.end = BigInt(data.end)
-    crowdloan.firstPeriod = BigInt(data.firstPeriod)
-    crowdloan.lastPeriod = BigInt(data.lastPeriod)
-    crowdloan.parachain = parachain
-    crowdloan.chainName = config.chainName
+    crowdloan.cap ??= data.cap
+    crowdloan.end ??= BigInt(data.end)
+    crowdloan.firstPeriod ??= BigInt(data.firstPeriod)
+    crowdloan.lastPeriod ??= BigInt(data.lastPeriod)
+    crowdloan.parachain ??= parachain
+    crowdloan.chainName ??= config.chainName
+    crowdloan.contributors ??= []
+    crowdloan.raised ??= 0n
+    crowdloan.blockNumber = BigInt(ctx.block.height)
 
     await ctx.store.save(crowdloan)
 }

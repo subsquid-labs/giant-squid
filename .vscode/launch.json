@@ -15,6 +15,10 @@
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/lib/**/*.js"
+            ],
+            "runtimeArgs": [
+                "--harmony",
+                "--no-deprecation"
             ]
         }
     ],
