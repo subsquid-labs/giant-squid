@@ -1,10 +1,11 @@
 import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
-import { TransferData } from "../../common/mapping/balanceData";
-import { BalancesTransferKeepAliveCall } from "../../types/calls"
+import { TransferData } from "../../../common/types/balanceData";
+import {
+    BalancesTransferCall} from "../../../types/calls"
 import { saveTransferCall } from "./transferBase";
 
 function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
-    const call = new BalancesTransferKeepAliveCall(ctx)
+    const call = new BalancesTransferCall(ctx)
     if (call.isV0) {
         let { dest, value } = call.asV0
         return {
@@ -32,8 +33,9 @@ function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
     }
 }
 
-export async function handleTransferKeepAlive(ctx: ExtrinsicHandlerContext) {
-    const data = getCallData(ctx)
+export async function handleTransfer(ctx: ExtrinsicHandlerContext) {
 
+    const data = getCallData(ctx)
+    
     await saveTransferCall(ctx, data)
 }

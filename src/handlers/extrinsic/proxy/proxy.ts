@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
-import { ProxyProxyCall } from "../../types/calls"
+import { ProxyProxyCall } from "../../../types/calls"
 import { saveTransferCall } from "../balances/transferBase";
 import { saveCreateCall } from "../crowdloan/create";
 

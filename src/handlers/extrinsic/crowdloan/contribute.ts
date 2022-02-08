@@ -1,10 +1,10 @@
 
 import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
-import { getOrCreate, isExtrinsicSuccess } from "../../common/helpers";
-import { ContributionData } from "../../common/mapping/crowdloanData";
-import config from "../../config";
-import { Contribution, Crowdloan, Parachain } from "../../model";
-import { CrowdloanContributeCall } from "../../types/calls";
+import { getOrCreate, isExtrinsicSuccess } from "../../../common/helpers";
+import { ContributionData } from "../../../common/types/crowdloanData";
+import config from "../../../config";
+import { Contribution, Crowdloan, Parachain } from "../../../model";
+import { CrowdloanContributeCall } from "../../../types/calls";
 
 function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
     const call = new CrowdloanContributeCall(ctx)

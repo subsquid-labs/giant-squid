@@ -1,8 +1,8 @@
 import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { encodeID, getOrCreate } from "../../common/helpers"
-import { RewardData } from "../../common/mapping/stakingData"
-import config from "../../config"
-import { Reward } from "../../model"
+import { encodeID, getOrCreate } from "../../../common/helpers"
+import { RewardData } from "../../../common/types/stakingData"
+import config from "../../../config"
+import { Reward } from "../../../model"
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const id = `${ctx.event.id}`

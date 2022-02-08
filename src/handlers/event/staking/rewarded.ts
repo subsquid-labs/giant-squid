@@ -1,6 +1,6 @@
-import { StakingRewardedEvent, StakingRewardEvent } from "../../types/events"
+import { StakingRewardedEvent, StakingRewardEvent } from "../../../types/events"
 import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { RewardData } from "../../common/mapping/stakingData"
+import { RewardData } from "../../../common/types/stakingData"
 import { saveRewardEvent } from "./base"
 
 function getRewardedEventData(ctx: EventHandlerContext): RewardData {

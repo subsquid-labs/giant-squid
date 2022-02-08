@@ -1,11 +1,11 @@
 import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
 import { notEqual } from "assert";
 import { Equal, IsNull, Not } from "typeorm";
-import { encodeID } from "../../common/helpers";
-import { PayoutData } from "../../common/mapping/stakingData";
-import config from "../../config";
-import { Reward } from "../../model";
-import { StakingPayoutStakersCall } from "../../types/calls";
+import { encodeID } from "../../../common/helpers";
+import { PayoutData } from "../../../common/types/stakingData";
+import config from "../../../config";
+import { Reward } from "../../../model";
+import { StakingPayoutStakersCall } from "../../../types/calls";
 
 function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
     const call = new StakingPayoutStakersCall(ctx)

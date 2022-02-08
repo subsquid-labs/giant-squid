@@ -1,7 +1,7 @@
 // import * as balances from "./eventHandlers/balances"
 // import * as staking from "./eventHandlers/staking"
-import events from "./eventHandlers"
-import extrins from "./extrinsicHandlers"
+import events from "./handlers/event"
+import extrins from "./handlers/extrinsic"
 
 import { ProcessorConfig } from "./common/processorBase"
 

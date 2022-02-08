@@ -1,9 +1,9 @@
-import { BalancesTransferEvent } from "../../types/events"
-import { TransferData } from "../../common/mapping/balanceData"
+import { BalancesTransferEvent } from "../../../types/events"
+import { TransferData } from "../../../common/types/balanceData"
 import { EventHandlerContext, SubstrateExtrinsic } from "@subsquid/substrate-processor"
-import config from "../../config"
-import { encodeID, getOrCreate } from "../../common/helpers"
-import { Transfer } from "../../model"
+import config from "../../../config"
+import { encodeID, getOrCreate } from "../../../common/helpers"
+import { Transfer } from "../../../model"
 import { snakeCase } from "snake-case"
 
 function getEventData(ctx: EventHandlerContext): TransferData {
