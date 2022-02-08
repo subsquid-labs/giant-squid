@@ -80,6 +80,6 @@ const config: ProcessorConfig = {
             },
         },
     },
-    blockRange: { from: 7567658 }
+    // blockRange: { from: 7567658 }
 }
 export default config
