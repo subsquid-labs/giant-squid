@@ -7,7 +7,7 @@ import { Crowdloan } from '../../../model'
 import * as calls from '../../../types/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
-    let event = new calls.CrowdloanCreateCall(ctx)
+    const event = new calls.CrowdloanCreateCall(ctx)
     if (event.isV9110) {
         return event.asV9110
     } else {

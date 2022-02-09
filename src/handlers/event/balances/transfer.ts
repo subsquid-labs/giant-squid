@@ -7,27 +7,27 @@ import { Transfer } from '../../../model'
 import { snakeCase } from 'snake-case'
 
 function getEventData(ctx: EventHandlerContext): TransferData {
-    let event = new BalancesTransferEvent(ctx)
+    const event = new BalancesTransferEvent(ctx)
     if (event.isV0) {
-        let [from, to, amount] = event.asV0
+        const [from, to, amount] = event.asV0
         return {
-            from: from,
-            to: to,
-            amount: amount,
+            from,
+            to,
+            amount,
         }
     } else {
-        let { from, to, amount } = event.asLatest
+        const { from, to, amount } = event.asLatest
         return {
-            from: from,
-            to: to,
-            amount: amount,
+            from,
+            to,
+            amount,
         }
     }
 }
 
 function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
     const methods = Object.keys(config.extrinsicsHandlers?.['balances'] || {})
-    return extrinsic.section == 'balances' && methods.includes(snakeCase(extrinsic.method))
+    return extrinsic.section === 'balances' && methods.includes(snakeCase(extrinsic.method))
 }
 
 async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData) {
@@ -40,7 +40,7 @@ async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData) {
     transfer.chainName ??= config.chainName
 
     transfer.amount ??= data.amount
-    transfer.from ??= encodeID(data.from!, config.chainName)
+    transfer.from ??= data.from ? encodeID(data.from, config.chainName) : null
     transfer.to ??= encodeID(data.to, config.chainName)
 
     await ctx.store.save(transfer)

@@ -3,42 +3,55 @@ import { SubstrateProcessor } from '@subsquid/substrate-processor'
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
 type ChainName = 'polkadot' | 'kusama'
 
+enum HandlerParams {
+    NAME,
+    OPTIONS,
+    FUNC,
+}
+
 type Handlers<T> = Record<
     string,
     Record<
         string,
         {
-            handler: Parameters<T>[2]
-            options?: Parameters<T>[1]
+            handler: Parameters<T>[HandlerParams.FUNC]
+            options?: Parameters<T>[HandlerParams.OPTIONS]
         }
     >
 >
 
 export interface ProcessorConfig {
     chainName: ChainName
-    dataSource: Parameters<SubstrateProcessor['setDataSource']>[0]
-    typesBundle: Parameters<SubstrateProcessor['setTypesBundle']>[0]
-    batchSize?: Parameters<SubstrateProcessor['setBatchSize']>[0]
+    dataSource: Parameters<SubstrateProcessor['setDataSource']>[HandlerParams.NAME]
+    typesBundle: Parameters<SubstrateProcessor['setTypesBundle']>[HandlerParams.NAME]
+    batchSize?: Parameters<SubstrateProcessor['setBatchSize']>[HandlerParams.NAME]
     eventHandlers?: Handlers<SubstrateProcessor['addEventHandler']>
     extrinsicsHandlers?: Handlers<SubstrateProcessor['addExtrinsicHandler']>
-    port?: Parameters<SubstrateProcessor['setPrometheusPort']>[0]
-    blockRange?: Parameters<SubstrateProcessor['setBlockRange']>[0]
+    port?: Parameters<SubstrateProcessor['setPrometheusPort']>[HandlerParams.NAME]
+    blockRange?: Parameters<SubstrateProcessor['setBlockRange']>[HandlerParams.NAME]
 }
+
+const DEFAULT_BATCH_SIZE = 500
+const DEFAULT_PORT = 3000
 
 export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
     const processor = new SubstrateProcessor(`${config.chainName}-processor`)
 
     processor.setTypesBundle(config.typesBundle)
-    processor.setBatchSize(config.batchSize || 500)
+    processor.setBatchSize(config.batchSize || DEFAULT_BATCH_SIZE)
     processor.setDataSource(config.dataSource)
-    processor.setPrometheusPort(config.port || 3000)
+    processor.setPrometheusPort(config.port || DEFAULT_PORT)
     processor.setBlockRange(config.blockRange || { from: 0 })
 
     for (const sectionName in config.eventHandlers) {
         const section = config.eventHandlers[sectionName]
         for (const methodName in section) {
             const method = section[methodName]
-            processor.addEventHandler(`${sectionName}.${methodName}`, method.options || {}, method.handler)
+            processor.addEventHandler(
+                `${sectionName}.${methodName}`,
+                method.options || {},
+                method.handler
+            )
         }
     }
 
@@ -46,7 +59,11 @@ export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
         const section = config.extrinsicsHandlers[sectionName]
         for (const methodName in section) {
             const method = section[methodName]
-            processor.addExtrinsicHandler(`${sectionName}.${methodName}`, method.options || {}, method.handler)
+            processor.addExtrinsicHandler(
+                `${sectionName}.${methodName}`,
+                method.options || {},
+                method.handler
+            )
         }
     }
 

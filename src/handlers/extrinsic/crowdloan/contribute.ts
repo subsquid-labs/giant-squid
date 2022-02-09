@@ -3,7 +3,7 @@ import { getOrCreate, isExtrinsicSuccess, populateMeta } from '../../../common/h
 import { getOrCreateParachain } from '../../../common/parachain'
 import { ContributionData } from '../../../common/types/crowdloanData'
 import config from '../../../config'
-import { Contribution, Crowdloan, Parachain } from '../../../model'
+import { Contribution, Crowdloan } from '../../../model'
 import { CrowdloanContributeCall } from '../../../types/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
@@ -40,11 +40,14 @@ export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: Con
 
     contribution.crowdloan ??= crowdloan
     contribution.account ??= ctx.extrinsic.signer
-    contribution.amount ??= data.amount || 0n
+    contribution.amount ??= data.amount
 
     ctx.store.save(contribution)
 
-    if (!crowdloan.contributors?.includes(contribution.account)) crowdloan.contributors?.push(contribution.account)
+    crowdloan.contributors ??= []
+    if (!crowdloan.contributors.includes(contribution.account))
+        crowdloan.contributors.push(contribution.account)
+
     crowdloan.raised += BigInt(contribution.amount)
 
     ctx.store.save(crowdloan)

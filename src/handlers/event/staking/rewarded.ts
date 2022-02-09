@@ -4,34 +4,34 @@ import { RewardData } from '../../../common/types/stakingData'
 import { saveRewardEvent } from './base'
 
 function getRewardedEventData(ctx: EventHandlerContext): RewardData {
-    let event = new StakingRewardedEvent(ctx)
+    const event = new StakingRewardedEvent(ctx)
 
     if (event.isV9090) {
-        let [account, amount] = event.asV9090
+        const [account, amount] = event.asV9090
         return {
-            account: account,
-            amount: amount,
+            account,
+            amount,
         }
     } else {
-        let [account, amount] = event.asLatest
+        const [account, amount] = event.asLatest
         return {
-            account: account,
-            amount: amount,
+            account,
+            amount,
         }
     }
 }
 
 function getRewardEventData(ctx: EventHandlerContext): RewardData {
-    let event = new StakingRewardEvent(ctx)
+    const event = new StakingRewardEvent(ctx)
 
-    let [account, amount] = event.asLatest
+    const [account, amount] = event.asLatest
     return {
-        account: account,
-        amount: amount,
+        account,
+        amount,
     }
 }
 
-export async function handleRewarded(ctx: EventHandlerContext, old: boolean = false) {
+export async function handleRewarded(ctx: EventHandlerContext, old = false) {
     const data = old ? getRewardEventData(ctx) : getRewardedEventData(ctx)
     await saveRewardEvent(ctx, data)
 }

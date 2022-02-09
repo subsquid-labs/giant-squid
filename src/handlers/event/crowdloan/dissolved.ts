@@ -1,7 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { getOrCreateParachain } from '../../../common/parachain'
 import { DissolvedData } from '../../../common/types/crowdloanData'
-import { Crowdloan } from '../../../model'
 import { CrowdloanDissolvedEvent } from '../../../types/events'
 
 function getEventData(ctx: EventHandlerContext): DissolvedData {

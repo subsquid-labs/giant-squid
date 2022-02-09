@@ -1,9 +1,8 @@
-// import * as balances from "./eventHandlers/balances"
-// import * as staking from "./eventHandlers/staking"
 import events from './handlers/event'
 import extrins from './handlers/extrinsic'
 
 import { ProcessorConfig } from './common/processorBase'
+import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
 
 const config: ProcessorConfig = {
     chainName: 'polkadot',
@@ -83,25 +82,25 @@ const config: ProcessorConfig = {
             transfer: {
                 handler: extrins.balances.handleTransfer,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                    triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             transfer_keep_alive: {
                 handler: extrins.balances.handleTransferKeepAlive,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                    triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             force_transfer: {
                 handler: extrins.balances.handleForceTransfer,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                    triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             transfer_all: {
                 handler: extrins.balances.handleTransferAll,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                    triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
         },

@@ -1,7 +1,6 @@
 import * as ss58 from '@subsquid/ss58'
-import { EventHandlerContext, ExtrinsicHandlerContext, Store, SubstrateExtrinsic } from '@subsquid/substrate-processor'
-import { Entity } from 'typeorm'
-import { boolean } from '../model/generated/marshal'
+import { EventHandlerContext, ExtrinsicHandlerContext, Store } from '@subsquid/substrate-processor'
+import { EXTRINSIC_SUCCESS } from './consts'
 
 export function encodeID(ID: Uint8Array, chainName: string) {
     let ret: string | null
@@ -37,7 +36,7 @@ export interface ItemBase {
     id: string
     date: Date | null | undefined
     blockNumber: bigint | null | undefined
-    extrinisicHash?: string | null | undefined
+    extrinisicHash: string | null | undefined
 }
 
 export type EntityConstructor<T> = {
@@ -45,5 +44,5 @@ export type EntityConstructor<T> = {
 }
 
 export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {
-    return ctx.event.method == 'ExtrinsicSuccess'
+    return ctx.event.name === EXTRINSIC_SUCCESS
 }
