@@ -7,5 +7,5 @@ export default {
     crowdloan,
     proxy,
     balances,
-    staking
+    staking,
 }

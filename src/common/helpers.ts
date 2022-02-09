@@ -1,25 +1,20 @@
-import * as ss58 from "@subsquid/ss58"
-import { EventHandlerContext, ExtrinsicHandlerContext, Store, SubstrateExtrinsic } from "@subsquid/substrate-processor";
-import { Entity } from "typeorm";
-import { boolean } from "../model/generated/marshal";
+import * as ss58 from '@subsquid/ss58'
+import { EventHandlerContext, ExtrinsicHandlerContext, Store, SubstrateExtrinsic } from '@subsquid/substrate-processor'
+import { Entity } from 'typeorm'
+import { boolean } from '../model/generated/marshal'
 
 export function encodeID(ID: Uint8Array, chainName: string) {
     let ret: string | null
     try {
-        ret = ss58.codec(chainName).encode(ID);
-    }
-    catch (e) {
+        ret = ss58.codec(chainName).encode(ID)
+    } catch (e) {
         ret = null
     }
 
     return ret
 }
 
-export async function getOrCreate<T extends { id: string }>(
-    store: Store,
-    entityConstructor: EntityConstructor<T>,
-    id: string,
-): Promise<T> {
+export async function getOrCreate<T extends { id: string }>(store: Store, entityConstructor: EntityConstructor<T>, id: string): Promise<T> {
     let e = await store.findOne<T>(entityConstructor, id)
 
     if (!e) {
@@ -46,7 +41,7 @@ export interface ItemBase {
 }
 
 export type EntityConstructor<T> = {
-    new(...args: any[]): T
+    new (...args: any[]): T
 }
 
 export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {

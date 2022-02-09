@@ -1,7 +1,7 @@
-import { StakingRewardedEvent, StakingRewardEvent } from "../../../types/events"
-import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { RewardData } from "../../../common/types/stakingData"
-import { saveRewardEvent } from "./base"
+import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/events'
+import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { RewardData } from '../../../common/types/stakingData'
+import { saveRewardEvent } from './base'
 
 function getRewardedEventData(ctx: EventHandlerContext): RewardData {
     let event = new StakingRewardedEvent(ctx)
@@ -12,8 +12,7 @@ function getRewardedEventData(ctx: EventHandlerContext): RewardData {
             account: account,
             amount: amount,
         }
-    }
-    else {
+    } else {
         let [account, amount] = event.asLatest
         return {
             account: account,
@@ -37,4 +36,6 @@ export async function handleRewarded(ctx: EventHandlerContext, old: boolean = fa
     await saveRewardEvent(ctx, data)
 }
 
-export const handleReward = (ctx: EventHandlerContext) => { return handleRewarded(ctx, true) }
+export const handleReward = (ctx: EventHandlerContext) => {
+    return handleRewarded(ctx, true)
+}

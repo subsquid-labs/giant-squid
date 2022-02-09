@@ -1,2 +1,2 @@
 export * as events from './event'
-export *  from './extrinsic'
+export * from './extrinsic'

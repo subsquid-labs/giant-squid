@@ -1,1 +1,1 @@
-export { handlePauoutStakers } from "./payout_stakers"
+export { handlePauoutStakers } from './payout_stakers'

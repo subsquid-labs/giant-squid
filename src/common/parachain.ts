@@ -1,15 +1,12 @@
-import { Store } from "@subsquid/substrate-processor";
-import { Parachain } from "../model";
-import { getOrCreate } from "./helpers";
+import { Store } from '@subsquid/substrate-processor'
+import { Parachain } from '../model'
 
-
-export async function getParachain(store: Store, id: number | string): Promise<Parachain> {
+export async function getOrCreateParachain(store: Store, id: number | string): Promise<Parachain> {
     let parachain = await store.findOne(Parachain, id, {
-        relations: ['crowdloans']
+        relations: ['crowdloans'],
     })
 
-    if (!parachain)
-        parachain = await createParachain(store, id)
+    if (!parachain) parachain = await createParachain(store, id)
 
     return parachain
 }

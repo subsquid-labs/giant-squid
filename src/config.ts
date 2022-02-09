@@ -15,6 +15,10 @@ const config: ProcessorConfig = {
     batchSize: 100,
     eventHandlers: {
         'balances': {
+            /**
+             * Used to handle only success Transfers. 
+             * Also provide balance info for 'balances.transfer_all' call
+             */
             'Transfer': {
                 handler: events.balances.handleTransfer
             }
@@ -23,23 +27,35 @@ const config: ProcessorConfig = {
             'Rewarded': {
                 handler: events.staking.handleRewarded
             },
+            /**
+             * Old name of Rewarded event
+             */
             'Reward': {
                 handler: events.staking.handleReward
             },
             'Slashed': {
                 handler: events.staking.handleSlashed
             },
+            /**
+             * Old name of Slashed event
+             */
             'Slash': {
                 handler: events.staking.handleSlash
             },
         },
-        'crowdloan':{
+        'crowdloan': {
+            /**
+             * Used to handle crowdloan dissolve
+             */
             'Dissolved': {
                 handler: events.crowdloan.handleDissolved
             }
         }
     },
     extrinsicsHandlers: {
+        /**
+         * Used to handle crowdloan create
+         */
         'crowdloan': {
             'create': {
                 handler: extrins.crowdloan.handleCreate,
@@ -49,11 +65,21 @@ const config: ProcessorConfig = {
 
             }
         },
+        /**
+         * Used to hadle validator and era of payout.
+         * Works in pair with 'staking.Rewarded' event.
+         * Can be removed if you don't need it.
+         */
         'staking': {
             'payout_stakers': {
                 handler: extrins.staking.handlePauoutStakers
             }
         },
+        /**
+         * Used only to get success of transaction and fill failed Transfers item.
+         * Works in pair with 'balances.Transfer' event.
+         * Can be removed if you don't need it.
+         */
         'balances': {
             'transfer': {
                 handler: extrins.balances.handleTransfer,
@@ -80,6 +106,9 @@ const config: ProcessorConfig = {
                 }
             },
         },
+        /**
+         * Used to handle 'crowdloan.create' call which wraped in proxy.
+         */
         'proxy': {
             'proxy': {
                 handler: extrins.proxy.handleProxy

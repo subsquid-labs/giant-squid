@@ -1,11 +1,11 @@
-import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
-import { notEqual } from "assert";
-import { Equal, IsNull, Not } from "typeorm";
-import { encodeID } from "../../../common/helpers";
-import { PayoutData } from "../../../common/types/stakingData";
-import config from "../../../config";
-import { Reward } from "../../../model";
-import { StakingPayoutStakersCall } from "../../../types/calls";
+import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { notEqual } from 'assert'
+import { Equal, IsNull, Not } from 'typeorm'
+import { encodeID } from '../../../common/helpers'
+import { PayoutData } from '../../../common/types/stakingData'
+import config from '../../../config'
+import { Reward } from '../../../model'
+import { StakingPayoutStakersCall } from '../../../types/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
     const call = new StakingPayoutStakersCall(ctx)
@@ -14,23 +14,24 @@ function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
         const { validatorStash, era } = call.asV0
         return {
             validator: validatorStash,
-            era
+            era,
         }
-    }
-    else {
+    } else {
         const { validatorStash, era } = call.asLatest
         return {
             validator: validatorStash,
-            era
+            era,
         }
     }
 }
 
 export async function savePauoutStakersCall(ctx: ExtrinsicHandlerContext, data: PayoutData) {
     const rewards = await ctx.store.find(Reward, {
-        where: [{
-            extrinisicHash: ctx.extrinsic.hash,
-        }]
+        where: [
+            {
+                extrinisicHash: ctx.extrinsic.hash,
+            },
+        ],
     })
 
     for (const reward of rewards) {

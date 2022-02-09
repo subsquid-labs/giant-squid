@@ -1,8 +1,8 @@
-import * as events from "../../../types/events"
+import * as events from '../../../types/events'
 
-import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { RewardData } from "../../../common/types/stakingData"
-import { saveRewardEvent } from "./base"
+import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { RewardData } from '../../../common/types/stakingData'
+import { saveRewardEvent } from './base'
 
 function getSlashedEvent(ctx: EventHandlerContext, old: boolean = false): RewardData {
     let event = new events.StakingSlashedEvent(ctx)
@@ -31,4 +31,6 @@ export async function handleSlashed(ctx: EventHandlerContext, old: boolean = fal
     await saveSlashEvent(ctx, data)
 }
 
-export const handleSlash = (ctx: EventHandlerContext) => { return handleSlashed(ctx, true) }
+export const handleSlash = (ctx: EventHandlerContext) => {
+    return handleSlashed(ctx, true)
+}

@@ -1,23 +1,22 @@
-import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
-import { getOrCreate } from "../../../common/helpers";
-import { CreateData } from "../../../common/types/crowdloanData";
-import { getParachain } from "../../../common/parachain";
-import config from "../../../config";
-import { Crowdloan } from "../../../model";
-import * as calls from "../../../types/calls"
+import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { getOrCreate } from '../../../common/helpers'
+import { CreateData } from '../../../common/types/crowdloanData'
+import { getOrCreateParachain } from '../../../common/parachain'
+import config from '../../../config'
+import { Crowdloan } from '../../../model'
+import * as calls from '../../../types/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
     let event = new calls.CrowdloanCreateCall(ctx)
     if (event.isV9110) {
         return event.asV9110
-    }
-    else {
+    } else {
         return event.asLatest
     }
 }
 
 export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateData) {
-    const parachain = await getParachain(ctx.store, data.index)
+    const parachain = await getOrCreateParachain(ctx.store, data.index)
 
     const crowdloanNum = parachain.crowdloans.length + 1
     const crowdloan = await getOrCreate(ctx.store, Crowdloan, `${data.index}-${crowdloanNum}`)
@@ -36,6 +35,6 @@ export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateD
 }
 
 export async function handleCreate(ctx: ExtrinsicHandlerContext) {
-    const data = getCallData(ctx);
+    const data = getCallData(ctx)
     await saveCreateCall(ctx, data)
 }

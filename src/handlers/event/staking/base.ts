@@ -1,8 +1,8 @@
-import { EventHandlerContext } from "@subsquid/substrate-processor"
-import { encodeID, getOrCreate, populateMeta } from "../../../common/helpers"
-import { RewardData } from "../../../common/types/stakingData"
-import config from "../../../config"
-import { Reward } from "../../../model"
+import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { encodeID, getOrCreate, populateMeta } from '../../../common/helpers'
+import { RewardData } from '../../../common/types/stakingData'
+import config from '../../../config'
+import { Reward } from '../../../model'
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const id = `${ctx.event.id}`
@@ -10,7 +10,7 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
     const reward = await getOrCreate(ctx.store, Reward, id)
 
     populateMeta(ctx, reward)
-    
+
     reward.name ??= ctx.event.name
     reward.chainName ??= config.chainName
 
