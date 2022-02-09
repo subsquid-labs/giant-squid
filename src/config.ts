@@ -1,117 +1,116 @@
 // import * as balances from "./eventHandlers/balances"
 // import * as staking from "./eventHandlers/staking"
-import events from "./handlers/event"
-import extrins from "./handlers/extrinsic"
+import events from './handlers/event'
+import extrins from './handlers/extrinsic'
 
-import { ProcessorConfig } from "./common/processorBase"
+import { ProcessorConfig } from './common/processorBase'
 
 const config: ProcessorConfig = {
     chainName: 'polkadot',
     dataSource: {
         archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
-        chain: 'wss://rpc.polkadot.io'
+        chain: 'wss://rpc.polkadot.io',
     },
     typesBundle: 'polkadot',
     batchSize: 100,
     eventHandlers: {
-        'balances': {
+        balances: {
             /**
-             * Used to handle only success Transfers. 
+             * Used to handle only success Transfers.
              * Also provide balance info for 'balances.transfer_all' call
              */
-            'Transfer': {
-                handler: events.balances.handleTransfer
-            }
+            Transfer: {
+                handler: events.balances.handleTransfer,
+            },
         },
-        'staking': {
-            'Rewarded': {
-                handler: events.staking.handleRewarded
+        staking: {
+            Rewarded: {
+                handler: events.staking.handleRewarded,
             },
             /**
              * Old name of Rewarded event
              */
-            'Reward': {
-                handler: events.staking.handleReward
+            Reward: {
+                handler: events.staking.handleReward,
             },
-            'Slashed': {
-                handler: events.staking.handleSlashed
+            Slashed: {
+                handler: events.staking.handleSlashed,
             },
             /**
              * Old name of Slashed event
              */
-            'Slash': {
-                handler: events.staking.handleSlash
+            Slash: {
+                handler: events.staking.handleSlash,
             },
         },
-        'crowdloan': {
+        crowdloan: {
             /**
              * Used to handle crowdloan dissolve
              */
-            'Dissolved': {
-                handler: events.crowdloan.handleDissolved
-            }
-        }
+            Dissolved: {
+                handler: events.crowdloan.handleDissolved,
+            },
+        },
     },
     extrinsicsHandlers: {
         /**
          * Used to handle crowdloan create
          */
-        'crowdloan': {
-            'create': {
+        crowdloan: {
+            create: {
                 handler: extrins.crowdloan.handleCreate,
             },
-            'contribute': {
+            contribute: {
                 handler: extrins.crowdloan.handleContribute,
-
-            }
+            },
         },
         /**
          * Used to hadle validator and era of payout.
          * Works in pair with 'staking.Rewarded' event.
          * Can be removed if you don't need it.
          */
-        'staking': {
-            'payout_stakers': {
-                handler: extrins.staking.handlePauoutStakers
-            }
+        staking: {
+            payout_stakers: {
+                handler: extrins.staking.handlePauoutStakers,
+            },
         },
         /**
          * Used only to get success of transaction and fill failed Transfers item.
          * Works in pair with 'balances.Transfer' event.
          * Can be removed if you don't need it.
          */
-        'balances': {
-            'transfer': {
+        balances: {
+            transfer: {
                 handler: extrins.balances.handleTransfer,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed']
-                }
+                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                },
             },
-            'transfer_keep_alive': {
+            transfer_keep_alive: {
                 handler: extrins.balances.handleTransferKeepAlive,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed']
-                }
+                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                },
             },
-            'force_transfer': {
+            force_transfer: {
                 handler: extrins.balances.handleForceTransfer,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed']
-                }
+                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                },
             },
-            'transfer_all': {
+            transfer_all: {
                 handler: extrins.balances.handleTransferAll,
                 options: {
-                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed']
-                }
+                    triggerEvents: ['system.ExtrinsicSuccess', 'system.ExtrinsicFailed'],
+                },
             },
         },
         /**
          * Used to handle 'crowdloan.create' call which wraped in proxy.
          */
-        'proxy': {
-            'proxy': {
-                handler: extrins.proxy.handleProxy
+        proxy: {
+            proxy: {
+                handler: extrins.proxy.handleProxy,
             },
         },
     },
