@@ -105,7 +105,7 @@ const config: ProcessorConfig = {
             },
         },
         /**
-         * Used to handle 'crowdloan.create' call which wraped in proxy.
+         * Used to handle 'crowdloan.create' call wrapped in proxy.
          */
         proxy: {
             proxy: {

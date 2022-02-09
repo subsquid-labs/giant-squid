@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID } from '../../../common/helpers'
+import { encodeID, populateMeta } from '../../../common/helpers'
 import { PayoutData } from '../../../common/types/stakingData'
 import config from '../../../config'
 import { Reward } from '../../../model'
@@ -33,8 +33,8 @@ export async function savePauoutStakersCall(ctx: ExtrinsicHandlerContext, data: 
     })
 
     for (const reward of rewards) {
-        reward.blockNumber ??= BigInt(ctx.block.height)
-        reward.date ??= new Date(ctx.event.blockTimestamp)
+        populateMeta(ctx, reward)
+
         reward.name ??= ctx.event.name
         reward.chainName ??= config.chainName
 
