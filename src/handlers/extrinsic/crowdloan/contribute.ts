@@ -1,6 +1,6 @@
 
 import { ExtrinsicHandlerContext } from "@subsquid/substrate-processor";
-import { getOrCreate, isExtrinsicSuccess } from "../../../common/helpers";
+import { getOrCreate, isExtrinsicSuccess, populateMeta } from "../../../common/helpers";
 import { getParachain } from "../../../common/parachain";
 import { ContributionData } from "../../../common/types/crowdloanData";
 import config from "../../../config";
@@ -36,11 +36,10 @@ export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: Con
 
     const contribution = await getOrCreate(ctx.store, Contribution, id)
 
-    contribution.extrinisicHash ??= ctx.extrinsic.hash
-    contribution.blockNumber ??= BigInt(ctx.block.height)
-    contribution.success ??= isExtrinsicSuccess(ctx)
-    contribution.date ??= new Date(ctx.event.blockTimestamp)
+    populateMeta(ctx, contribution)
+    
     contribution.chainName ??= config.chainName
+    contribution.success ??= isExtrinsicSuccess(ctx)
 
     contribution.crowdloan ??= crowdloan
     contribution.account ??= ctx.extrinsic.signer

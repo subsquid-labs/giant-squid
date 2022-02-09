@@ -1,5 +1,6 @@
 import * as ss58 from "@subsquid/ss58"
 import { EventHandlerContext, ExtrinsicHandlerContext, Store, SubstrateExtrinsic } from "@subsquid/substrate-processor";
+import { Entity } from "typeorm";
 import { boolean } from "../model/generated/marshal";
 
 export function encodeID(ID: Uint8Array, chainName: string) {
@@ -29,33 +30,19 @@ export async function getOrCreate<T extends { id: string }>(
     return e
 }
 
-export async function createEvent<T extends EventBase>(
-    entityConstructor: EntityConstructor<T>,
-    ctx: EventHandlerContext,
-    id: string,
-    data: Omit<T, keyof EventBase>
-) {
-    let event = await getOrCreate(ctx.store, entityConstructor, id)
-
-    event = Object.assign(event, {
-        blockHash: ctx.block.hash,
-        blockNumber: ctx.block.height,
-        extrinisicHash: ctx.extrinsic?.hash,
-        date: new Date(ctx.block.timestamp),
-        event: ctx.event.name,
-        ...data
-    })
-
-    return event
+export function populateMeta<T extends ItemBase>(ctx: EventHandlerContext, entity: T): void
+export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext, entity: T): void
+export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
+    entity.extrinisicHash ??= ctx.extrinsic?.hash
+    entity.blockNumber ??= BigInt(ctx.block.height)
+    entity.date ??= new Date(ctx.block.timestamp)
 }
 
-export interface EventBase {
+export interface ItemBase {
     id: string
-    date: Date
-    blockHash: string
-    blockNumber: bigint
-    extrinisicHash?: string | null
-    event: string
+    date: Date | null | undefined
+    blockNumber: bigint | null | undefined
+    extrinisicHash?: string | null | undefined
 }
 
 export type EntityConstructor<T> = {

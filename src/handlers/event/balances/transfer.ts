@@ -2,7 +2,7 @@ import { BalancesTransferEvent } from "../../../types/events"
 import { TransferData } from "../../../common/types/balanceData"
 import { EventHandlerContext, SubstrateExtrinsic } from "@subsquid/substrate-processor"
 import config from "../../../config"
-import { encodeID, getOrCreate } from "../../../common/helpers"
+import { encodeID, getOrCreate, populateMeta } from "../../../common/helpers"
 import { Transfer } from "../../../model"
 import { snakeCase } from "snake-case"
 
@@ -36,9 +36,8 @@ async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData) {
 
     const transfer = await getOrCreate(ctx.store, Transfer, id)
 
-    transfer.date ??= new Date(ctx.event.blockTimestamp)
-    transfer.blockNumber ??= BigInt(ctx.block.height)
-    transfer.extrinisicHash ??= ctx.event.extrinsic?.hash
+    populateMeta(ctx, transfer)
+
     transfer.chainName ??= config.chainName
 
     transfer.amount ??= data.amount
