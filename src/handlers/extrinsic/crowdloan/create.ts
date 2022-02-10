@@ -3,7 +3,7 @@ import { getOrCreate } from '../../../common/helpers'
 import { CreateData } from '../../../common/types/crowdloanData'
 import { getOrCreateParachain } from '../../../common/parachain'
 import config from '../../../config'
-import { Crowdloan } from '../../../model'
+import { Crowdloan, Parachain } from '../../../model'
 import * as calls from '../../../types/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
@@ -15,10 +15,18 @@ function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
     }
 }
 
+function getCrowdloanNum(parachain: Parachain, blockNumber: bigint) {
+    const crowdloanIndex = parachain.crowdloans.findIndex(
+        (crowdloan) => crowdloan.blockNumber === blockNumber
+    )
+
+    return crowdloanIndex > 0 ? crowdloanIndex + 1: parachain.crowdloans.length + 1
+}
+
 export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateData) {
     const parachain = await getOrCreateParachain(ctx.store, data.index)
 
-    const crowdloanNum = parachain.crowdloans.length + 1
+    const crowdloanNum = getCrowdloanNum(parachain, BigInt(ctx.block.height))
     const crowdloan = await getOrCreate(ctx.store, Crowdloan, `${data.index}-${crowdloanNum}`)
 
     crowdloan.cap ??= data.cap
