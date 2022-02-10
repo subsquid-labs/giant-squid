@@ -2,6 +2,7 @@ module.exports = class Data1644527888771 {
   name = 'Data1644527888771'
 
   async up(db) {
+    await db.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`)
     await db.query(`CREATE TABLE "crowdloan" ("id" character varying NOT NULL, "cap" numeric NOT NULL, "first_period" numeric NOT NULL, "last_period" numeric NOT NULL, "end" numeric NOT NULL, "contributors" jsonb, "raised" numeric NOT NULL, "chain_name" text NOT NULL, "block_number" numeric, "status" character varying(9), "parachain_id" character varying NOT NULL, CONSTRAINT "PK_19a05e349701577c8c1679ae84d" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_005883fcd4519fa5ae88706b3a" ON "crowdloan" ("parachain_id") `)
     await db.query(`CREATE INDEX "IDX_c7f626a4ebde04b5e0c5b829a6" ON "crowdloan" ("chain_name") `)
