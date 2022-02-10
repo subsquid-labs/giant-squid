@@ -24,7 +24,7 @@ function getCallData(ctx: ExtrinsicHandlerContext) {
         }
     }
 
-    if (__kind !== 'Crowdloan' && value.__kind !== 'create') return undefined
+    if (__kind !== 'Crowdloan' || value.__kind !== 'create') return undefined
 
     return {
         index: value.index,
@@ -52,6 +52,5 @@ export async function handleAsMulti(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
-    console.log(`extrinsic: ${ctx.extrinsic.id}`)
     if (isCrowdloanCreateValid(ctx)) await saveCreateCall(ctx, data)
 }

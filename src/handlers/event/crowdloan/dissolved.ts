@@ -1,6 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { getOrCreateParachain } from '../../../common/parachain'
 import { DissolvedData } from '../../../common/types/crowdloanData'
+import { Contribution } from '../../../model'
 import { CrowdloanDissolvedEvent } from '../../../types/events'
 
 function getEventData(ctx: EventHandlerContext): DissolvedData {
@@ -22,6 +23,10 @@ export async function dissolveCrowdloan(ctx: EventHandlerContext, data: Dissolve
 
     const lastCrowdloan = parachain.crowdloans[parachain.crowdloans.length - 1]
     if (!lastCrowdloan) return
+
+    await ctx.store.delete(Contribution, {
+        crowdloan: lastCrowdloan
+    })
 
     await ctx.store.remove(lastCrowdloan)
 }
