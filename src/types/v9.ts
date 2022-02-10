@@ -1,37 +1,8 @@
 import type {Result} from './support'
 
-export type ProxyType = ProxyType_Any | ProxyType_NonTransfer | ProxyType_Governance | ProxyType_Staking | ProxyType_UnusedSudoBalances | ProxyType_IdentityJudgement | ProxyType_CancelProxy | ProxyType_Auction
-
-export interface ProxyType_Any {
-  __kind: 'Any'
-}
-
-export interface ProxyType_NonTransfer {
-  __kind: 'NonTransfer'
-}
-
-export interface ProxyType_Governance {
-  __kind: 'Governance'
-}
-
-export interface ProxyType_Staking {
-  __kind: 'Staking'
-}
-
-export interface ProxyType_UnusedSudoBalances {
-  __kind: 'UnusedSudoBalances'
-}
-
-export interface ProxyType_IdentityJudgement {
-  __kind: 'IdentityJudgement'
-}
-
-export interface ProxyType_CancelProxy {
-  __kind: 'CancelProxy'
-}
-
-export interface ProxyType_Auction {
-  __kind: 'Auction'
+export interface Timepoint {
+  height: number
+  index: number
 }
 
 export type Type_21 = Type_21_System | Type_21_Scheduler | Type_21_Timestamp | Type_21_Indices | Type_21_Balances | Type_21_Authorship | Type_21_Staking | Type_21_Session | Type_21_FinalityTracker | Type_21_Grandpa | Type_21_ImOnline | Type_21_Democracy | Type_21_Council | Type_21_TechnicalCommittee | Type_21_ElectionsPhragmen | Type_21_TechnicalMembership | Type_21_Treasury | Type_21_Parachains | Type_21_Attestations | Type_21_Slots | Type_21_Registrar | Type_21_Claims | Type_21_Vesting | Type_21_Utility | Type_21_Sudo | Type_21_Identity | Type_21_Proxy | Type_21_Multisig
@@ -174,6 +145,40 @@ export interface Type_21_Proxy {
 export interface Type_21_Multisig {
   __kind: 'Multisig'
   value: MultisigCall
+}
+
+export type ProxyType = ProxyType_Any | ProxyType_NonTransfer | ProxyType_Governance | ProxyType_Staking | ProxyType_UnusedSudoBalances | ProxyType_IdentityJudgement | ProxyType_CancelProxy | ProxyType_Auction
+
+export interface ProxyType_Any {
+  __kind: 'Any'
+}
+
+export interface ProxyType_NonTransfer {
+  __kind: 'NonTransfer'
+}
+
+export interface ProxyType_Governance {
+  __kind: 'Governance'
+}
+
+export interface ProxyType_Staking {
+  __kind: 'Staking'
+}
+
+export interface ProxyType_UnusedSudoBalances {
+  __kind: 'UnusedSudoBalances'
+}
+
+export interface ProxyType_IdentityJudgement {
+  __kind: 'IdentityJudgement'
+}
+
+export interface ProxyType_CancelProxy {
+  __kind: 'CancelProxy'
+}
+
+export interface ProxyType_Auction {
+  __kind: 'Auction'
 }
 
 export type SystemCall = SystemCall_fill_block | SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_changes_trie_config | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_suicide
@@ -4260,11 +4265,6 @@ export interface IdentityJudgement_LowQuality {
 export interface IdentityJudgement_Erroneous {
   __kind: 'Erroneous'
   value: null
-}
-
-export interface Timepoint {
-  height: number
-  index: number
 }
 
 export interface Digest {

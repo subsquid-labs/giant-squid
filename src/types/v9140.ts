@@ -12,34 +12,9 @@ export interface BalanceStatus_Reserved {
   __kind: 'Reserved'
 }
 
-export type ProxyType = ProxyType_Any | ProxyType_NonTransfer | ProxyType_Governance | ProxyType_Staking | ProxyType_IdentityJudgement | ProxyType_CancelProxy | ProxyType_Auction
-
-export interface ProxyType_Any {
-  __kind: 'Any'
-}
-
-export interface ProxyType_NonTransfer {
-  __kind: 'NonTransfer'
-}
-
-export interface ProxyType_Governance {
-  __kind: 'Governance'
-}
-
-export interface ProxyType_Staking {
-  __kind: 'Staking'
-}
-
-export interface ProxyType_IdentityJudgement {
-  __kind: 'IdentityJudgement'
-}
-
-export interface ProxyType_CancelProxy {
-  __kind: 'CancelProxy'
-}
-
-export interface ProxyType_Auction {
-  __kind: 'Auction'
+export interface Timepoint {
+  height: number
+  index: number
 }
 
 export type Call = Call_System | Call_Scheduler | Call_Babe | Call_Timestamp | Call_Indices | Call_Balances | Call_Authorship | Call_Staking | Call_Session | Call_Grandpa | Call_ImOnline | Call_Democracy | Call_Council | Call_TechnicalCommittee | Call_PhragmenElection | Call_TechnicalMembership | Call_Treasury | Call_Claims | Call_Vesting | Call_Utility | Call_Identity | Call_Proxy | Call_Multisig | Call_Bounties | Call_Tips | Call_ElectionProviderMultiPhase | Call_BagsList | Call_Configuration | Call_ParasShared | Call_ParaInclusion | Call_ParaInherent | Call_Paras | Call_Initializer | Call_Dmp | Call_Ump | Call_Hrmp | Call_Registrar | Call_Slots | Call_Auctions | Call_Crowdloan | Call_XcmPallet
@@ -247,6 +222,38 @@ export interface Call_Crowdloan {
 export interface Call_XcmPallet {
   __kind: 'XcmPallet'
   value: XcmPalletCall
+}
+
+export type WrapperKeepOpaque = [number, Call]
+
+export type ProxyType = ProxyType_Any | ProxyType_NonTransfer | ProxyType_Governance | ProxyType_Staking | ProxyType_IdentityJudgement | ProxyType_CancelProxy | ProxyType_Auction
+
+export interface ProxyType_Any {
+  __kind: 'Any'
+}
+
+export interface ProxyType_NonTransfer {
+  __kind: 'NonTransfer'
+}
+
+export interface ProxyType_Governance {
+  __kind: 'Governance'
+}
+
+export interface ProxyType_Staking {
+  __kind: 'Staking'
+}
+
+export interface ProxyType_IdentityJudgement {
+  __kind: 'IdentityJudgement'
+}
+
+export interface ProxyType_CancelProxy {
+  __kind: 'CancelProxy'
+}
+
+export interface ProxyType_Auction {
+  __kind: 'Auction'
 }
 
 /**
@@ -5530,13 +5537,6 @@ export interface Judgement_LowQuality {
 export interface Judgement_Erroneous {
   __kind: 'Erroneous'
 }
-
-export interface Timepoint {
-  height: number
-  index: number
-}
-
-export type WrapperKeepOpaque = [number, Call]
 
 export interface RawSolution {
   solution: NposCompactSolution16

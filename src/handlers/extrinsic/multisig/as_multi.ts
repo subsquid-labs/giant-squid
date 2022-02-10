@@ -1,34 +1,37 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { CreateData } from '../../../common/types/crowdloanData'
 import { saveCreateCall } from '../crowdloan/create'
 
-const CROWDLOAN_CREATE = '0x4900'
-const PROXY_CALL_DATA = 2
+const AS_MULTI_CALL_DATA = 3
 
 /**
  * Temporary solution. Will be removed with new archive release.
  * Now it handles only 'crowdloan.create' calls.
  */
-function getCallData(ctx: ExtrinsicHandlerContext): CreateData | undefined {
-    const { callIndex, args } = ctx.extrinsic.args[PROXY_CALL_DATA].value as {
-        callIndex: string
-        args: {
+function getCallData(ctx: ExtrinsicHandlerContext) {
+    const hex = ctx.extrinsic.args[AS_MULTI_CALL_DATA].value
+    const {__kind, value} = (ctx._chain as any).jsonCodec.scaleCodec.decodeBinary(
+        ctx._chain.description.call,
+        hex
+    ) as {
+        __kind: string
+        value: {
+            __kind: string
             index: number
             cap: string
             end: number
-            first_period: number
-            last_period: number
+            firstPeriod: number
+            lastPeriod: number
         }
     }
 
-    if (callIndex !== CROWDLOAN_CREATE) return undefined
+    if (__kind !== 'Crowdloan' && value.__kind !== 'create') return undefined
 
     return {
-        index: args.index,
-        cap: BigInt(args.cap),
-        firstPeriod: args.first_period,
-        lastPeriod: args.last_period,
-        end: args.end,
+        index: value.index,
+        cap: BigInt(value.cap),
+        firstPeriod: value.firstPeriod,
+        lastPeriod: value.lastPeriod,
+        end: value.end,
     }
 }
 
@@ -45,9 +48,8 @@ function isCrowdloanCreateValid(ctx: ExtrinsicHandlerContext): boolean {
     return extrinsicEvents.find((event) => event.name === 'crowdloan.Created') !== undefined
 }
 
-export async function handleProxy(ctx: ExtrinsicHandlerContext) {
+export async function handleAsMulti(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
-
     if (!data) return
 
     if (isCrowdloanCreateValid(ctx)) await saveCreateCall(ctx, data)

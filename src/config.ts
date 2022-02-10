@@ -1,10 +1,9 @@
 import events from './handlers/event'
 import extrins from './handlers/extrinsic'
-
 import { ProcessorConfig } from './common/processorBase'
 import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
 
-const config: ProcessorConfig = {
+export default {
     chainName: 'polkadot',
     dataSource: {
         archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
@@ -44,7 +43,8 @@ const config: ProcessorConfig = {
         },
         crowdloan: {
             /**
-             * Used to handle crowdloan dissolve
+             * Used to handle crowdloan dissolve.
+             * Last crowdloan of paraId parachain will be dissolved.
              */
             Dissolved: {
                 handler: events.crowdloan.handleDissolved,
@@ -91,6 +91,7 @@ const config: ProcessorConfig = {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
+
             force_transfer: {
                 handler: extrins.balances.handleForceTransfer,
                 options: {
@@ -112,7 +113,12 @@ const config: ProcessorConfig = {
                 handler: extrins.proxy.handleProxy,
             },
         },
+        multisig: {
+            as_multi: {
+                handler: extrins.multisig.handleAsMulti,
+            },
+        },
     },
     // blockRange: { from: 7567658 }
-}
-export default config
+    blockRange: { from: 7763085 },
+} as ProcessorConfig

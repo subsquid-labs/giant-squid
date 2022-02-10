@@ -34,6 +34,7 @@
     "balances.transfer_keep_alive",
     "balances.transfer_all",
     "staking.payout_stakers",
-    "utility.batch"
+    "utility.batch",
+    "multisig.as_multi"
   ]
 }

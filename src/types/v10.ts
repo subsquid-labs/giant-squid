@@ -1,5 +1,10 @@
 import type {Result} from './support'
 
+export interface Timepoint {
+  height: number
+  index: number
+}
+
 export type ProxyType = ProxyType_Any | ProxyType_NonTransfer | ProxyType_Governance | ProxyType_Staking | ProxyType_UnusedSudoBalances | ProxyType_IdentityJudgement | ProxyType_CancelProxy | ProxyType_Auction
 
 export interface ProxyType_Any {
@@ -4289,11 +4294,6 @@ export interface IdentityJudgement_LowQuality {
 export interface IdentityJudgement_Erroneous {
   __kind: 'Erroneous'
   value: null
-}
-
-export interface Timepoint {
-  height: number
-  index: number
 }
 
 export interface Digest {

@@ -13,7 +13,11 @@ export function encodeID(ID: Uint8Array, chainName: string) {
     return ret
 }
 
-export async function getOrCreate<T extends { id: string }>(store: Store, entityConstructor: EntityConstructor<T>, id: string): Promise<T> {
+export async function getOrCreate<T extends { id: string }>(
+    store: Store,
+    entityConstructor: EntityConstructor<T>,
+    id: string
+): Promise<T> {
     let e = await store.findOne<T>(entityConstructor, id)
 
     if (!e) {
@@ -26,7 +30,10 @@ export async function getOrCreate<T extends { id: string }>(store: Store, entity
 
 export function populateMeta<T extends ItemBase>(ctx: EventHandlerContext, entity: T): void
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext, entity: T): void
-export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
+export function populateMeta<T extends ItemBase>(
+    ctx: ExtrinsicHandlerContext | EventHandlerContext,
+    entity: T
+): void {
     entity.extrinisicHash ??= ctx.extrinsic?.hash
     entity.blockNumber ??= BigInt(ctx.block.height)
     entity.date ??= new Date(ctx.block.timestamp)

@@ -21,6 +21,7 @@ export async function dissolveCrowdloan(ctx: EventHandlerContext, data: Dissolve
     const parachain = await getOrCreateParachain(ctx.store, `${data.index}`)
 
     const lastCrowdloan = parachain.crowdloans[parachain.crowdloans.length - 1]
+    if (!lastCrowdloan) return
 
     await ctx.store.remove(lastCrowdloan)
 }

@@ -1,17 +1,29 @@
 {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "ecmaVersion": 2020,
-        "project": "./tsconfig.json"
+      "project": "./tsconfig.json",
+      "jsx": false
     },
-    "plugins": [
-        "@typescript-eslint",
-        "prettier"
-    ],
+    "rules": {
+      "max-len": [
+        "error",
+        {
+          "code": 130,
+          "ignoreComments": true,
+          "ignoreStrings": true,
+          "ignoreTemplateLiterals": true
+        }
+      ],
+      "no-throw-literal": "off",
+      "@typescript-eslint/no-object-literal-type-assertion": "off",
+      "@typescript-eslint/no-non-null-assertion": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-use-before-define": "off"
+    },
     "extends": [
-        "plugin:@typescript-eslint/recommended",
-        "prettier/@typescript-eslint",
-        "prettier"
-    ],
-    "rules": {}
-}
+      "plugin:@typescript-eslint/recommended",
+      "plugin:sonarjs/recommended",
+      "prettier"
+    ]
+  }

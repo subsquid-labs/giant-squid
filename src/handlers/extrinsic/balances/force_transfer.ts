@@ -1,7 +1,7 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { saveTransferCall } from './transferBase'
 import { TransferData } from '../../../common/types/balanceData'
 import { BalancesForceTransferCall } from '../../../types/calls'
-import { saveTransferCall } from './transferBase'
 
 function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
     const call = new BalancesForceTransferCall(ctx)
