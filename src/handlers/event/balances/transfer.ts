@@ -54,7 +54,8 @@ async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData) {
     populateMeta(ctx, transfer)
 
     transfer.chainName ??= config.chainName
-    transfer.success = true
+    transfer.success ??= true
+    transfer.name ??= ctx.extrinsic?.name
 
     transfer.amount ??= data.amount
     transfer.from ??= data.from ? encodeID(data.from, config.chainName) : null
