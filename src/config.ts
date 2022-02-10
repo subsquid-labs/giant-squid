@@ -46,9 +46,9 @@ export default {
              * Used to handle crowdloan dissolve.
              * Last crowdloan of paraId parachain will be dissolved.
              */
-            Dissolved: {
-                handler: events.crowdloan.handleDissolved,
-            },
+            // Dissolved: {
+            //     handler: events.crowdloan.handleDissolved,
+            // },
         },
     },
     extrinsicsHandlers: {
