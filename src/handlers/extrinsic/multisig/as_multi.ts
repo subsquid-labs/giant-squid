@@ -52,5 +52,6 @@ export async function handleAsMulti(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
+    console.log(`extrinsic: ${ctx.extrinsic.id}`)
     if (isCrowdloanCreateValid(ctx)) await saveCreateCall(ctx, data)
 }
