@@ -10,7 +10,7 @@ export default {
         chain: 'wss://kusama-rpc.polkadot.io',
     },
     typesBundle: 'kusama',
-    batchSize: 1,
+    batchSize: 10,
     eventHandlers: {
         balances: {
             /**
