@@ -55,15 +55,23 @@ export default {
         },
     },
     extrinsicsHandlers: {
-        /**
-         * Used to handle crowdloan create
-         */
         crowdloan: {
+            /**
+             * Used to handle new crowdloan and create them
+             */
             create: {
                 handler: extrins.crowdloan.handleCreate,
             },
+            /**
+             * Used only to get success of transaction and fill failed Cuntribute item.
+             * Works in pair with 'crowdloan.Contributed' event.
+             * Can be removed if you don't need it.
+             */
             contribute: {
                 handler: extrins.crowdloan.handleContribute,
+                options: {
+                    triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
+                },
             },
         },
         /**

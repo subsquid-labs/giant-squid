@@ -35,7 +35,7 @@ async function saveContributedEvent(ctx: EventHandlerContext, data: Contribution
     if (!crowdloan) return
 
     const contribution = await getOrCreate(ctx.store, Contribution, {
-        eventId: eventId
+        eventId
     })
 
     populateMeta(ctx, contribution)
