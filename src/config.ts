@@ -4,7 +4,7 @@ import { ProcessorConfig } from './common/processorBase'
 import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
 
 export default {
-    chainName: 'polkadot',
+    chainName: 'kusama',
     dataSource: {
         archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
         chain: 'wss://kusama-rpc.polkadot.io',
@@ -124,5 +124,5 @@ export default {
     },
     // blockRange: { from: 7567658 }, //proxy
     // blockRange: { from: 8179623 }, //as_multi
-    // blockRange: { from: 8270311 }
+    blockRange: { from: 7828000 },
 } as ProcessorConfig

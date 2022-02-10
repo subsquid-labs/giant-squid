@@ -27,7 +27,7 @@ export async function savePauoutStakersCall(ctx: ExtrinsicHandlerContext, data: 
     const rewards = await ctx.store.find(Reward, {
         where: [
             {
-                extrinisicHash: ctx.extrinsic.hash,
+                extrinsicHash: ctx.extrinsic.hash,
             },
         ],
     })
