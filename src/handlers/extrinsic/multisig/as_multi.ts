@@ -9,7 +9,7 @@ const AS_MULTI_CALL_DATA = 3
  */
 function getCallData(ctx: ExtrinsicHandlerContext) {
     const hex = ctx.extrinsic.args[AS_MULTI_CALL_DATA].value
-    const {__kind, value} = (ctx._chain as any).jsonCodec.scaleCodec.decodeBinary(
+    const { __kind, value } = (ctx._chain as any).jsonCodec.scaleCodec.decodeBinary(
         ctx._chain.description.call,
         hex
     ) as {
@@ -49,8 +49,10 @@ function isCrowdloanCreateValid(ctx: ExtrinsicHandlerContext): boolean {
 }
 
 export async function handleAsMulti(ctx: ExtrinsicHandlerContext) {
+    if (!isCrowdloanCreateValid(ctx)) return
+
     const data = getCallData(ctx)
     if (!data) return
 
-    if (isCrowdloanCreateValid(ctx)) await saveCreateCall(ctx, data)
+    await saveCreateCall(ctx, data)
 }

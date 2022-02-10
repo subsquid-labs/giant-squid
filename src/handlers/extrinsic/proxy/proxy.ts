@@ -46,9 +46,10 @@ function isCrowdloanCreateValid(ctx: ExtrinsicHandlerContext): boolean {
 }
 
 export async function handleProxy(ctx: ExtrinsicHandlerContext) {
-    const data = getCallData(ctx)
+    if (!isCrowdloanCreateValid(ctx)) return
 
+    const data = getCallData(ctx)
     if (!data) return
 
-    if (isCrowdloanCreateValid(ctx)) await saveCreateCall(ctx, data)
+    await saveCreateCall(ctx, data)
 }
