@@ -135,5 +135,5 @@ export default {
     },
     // blockRange: { from: 7567658 }, //proxy
     // blockRange: { from: 8179623 }, //as_multi
-    blockRange: { from: 7828000 },
+    // blockRange: { from: 7828000 },
 } as ProcessorConfig
