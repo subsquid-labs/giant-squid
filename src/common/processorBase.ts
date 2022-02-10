@@ -1,5 +1,6 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
 type ChainName = 'polkadot' | 'kusama'
 

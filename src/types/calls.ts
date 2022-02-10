@@ -1,30 +1,38 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
-import * as v0 from './v0'
-import * as v10 from './v10'
-import * as v11 from './v11'
-import * as v13 from './v13'
-import * as v14 from './v14'
-import * as v15 from './v15'
-import * as v17 from './v17'
-import * as v18 from './v18'
-import * as v23 from './v23'
-import * as v24 from './v24'
-import * as v25 from './v25'
-import * as v26 from './v26'
-import * as v28 from './v28'
-import * as v29 from './v29'
-import * as v30 from './v30'
-import * as v5 from './v5'
-import * as v6 from './v6'
-import * as v7 from './v7'
-import * as v9 from './v9'
+import * as v1032 from './v1032'
+import * as v1038 from './v1038'
+import * as v1039 from './v1039'
+import * as v1040 from './v1040'
+import * as v1042 from './v1042'
+import * as v1050 from './v1050'
+import * as v1054 from './v1054'
+import * as v1055 from './v1055'
+import * as v1058 from './v1058'
+import * as v1062 from './v1062'
+import * as v2005 from './v2005'
+import * as v2007 from './v2007'
+import * as v2011 from './v2011'
+import * as v2013 from './v2013'
+import * as v2015 from './v2015'
+import * as v2022 from './v2022'
+import * as v2023 from './v2023'
+import * as v2024 from './v2024'
+import * as v2025 from './v2025'
+import * as v2026 from './v2026'
+import * as v2028 from './v2028'
+import * as v2029 from './v2029'
+import * as v2030 from './v2030'
+import * as v9010 from './v9010'
+import * as v9030 from './v9030'
+import * as v9040 from './v9040'
 import * as v9050 from './v9050'
 import * as v9080 from './v9080'
 import * as v9090 from './v9090'
 import * as v9100 from './v9100'
-import * as v9110 from './v9110'
-import * as v9140 from './v9140'
+import * as v9111 from './v9111'
+import * as v9122 from './v9122'
+import * as v9130 from './v9130'
 
 export class BalancesForceTransferCall {
   constructor(private ctx: CallContext) {
@@ -34,25 +42,34 @@ export class BalancesForceTransferCall {
   /**
    *  Exactly as `transfer`, except the origin must be root and the source account may be
    *  specified.
-   *  # <weight>
-   *  - Same as transfer, but additional read and write because the source account is
-   *    not assumed to be in the overlay.
-   *  # </weight>
    */
-  get isV0(): boolean {
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('balances.force_transfer') === '798e78230462c072eb835843b15e5dbb52ed7e48c4659c7771edf93678da5d1a'
+  }
+
+  /**
+   *  Exactly as `transfer`, except the origin must be root and the source account may be
+   *  specified.
+   */
+  get asV1020(): {source: never, dest: never, value: bigint} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Exactly as `transfer`, except the origin must be root and the source account may be
+   *  specified.
+   */
+  get isV1050(): boolean {
     return this.ctx._chain.getCallHash('balances.force_transfer') === '48ccdb7abfac6d3acb339fd1d6912592ff73e36843f4c2ff2a6391d0bc52c47b'
   }
 
   /**
    *  Exactly as `transfer`, except the origin must be root and the source account may be
    *  specified.
-   *  # <weight>
-   *  - Same as transfer, but additional read and write because the source account is
-   *    not assumed to be in the overlay.
-   *  # </weight>
    */
-  get asV0(): {source: Uint8Array, dest: Uint8Array, value: bigint} {
-    assert(this.isV0)
+  get asV1050(): {source: Uint8Array, dest: Uint8Array, value: bigint} {
+    assert(this.isV1050)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -64,7 +81,7 @@ export class BalancesForceTransferCall {
    *    not assumed to be in the overlay.
    *  # </weight>
    */
-  get isV28(): boolean {
+  get isV2028(): boolean {
     return this.ctx._chain.getCallHash('balances.force_transfer') === '74e0c568fd6aca804d5c95e3415122299eca0afd4f876360f062e58d8881cb81'
   }
 
@@ -76,8 +93,8 @@ export class BalancesForceTransferCall {
    *    not assumed to be in the overlay.
    *  # </weight>
    */
-  get asV28(): {source: v28.GenericMultiAddress, dest: v28.GenericMultiAddress, value: bigint} {
-    assert(this.isV28)
+  get asV2028(): {source: v2028.GenericMultiAddress, dest: v2028.GenericMultiAddress, value: bigint} {
+    assert(this.isV2028)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -89,7 +106,7 @@ export class BalancesForceTransferCall {
    *   assumed to be in the overlay.
    * # </weight>
    */
-  get isV9110(): boolean {
+  get isV9111(): boolean {
     return this.ctx._chain.getCallHash('balances.force_transfer') === 'd28a011034c5f4a4fcd372830bec93a4de8ca0c3249ed0cf9cfa7a996e4699ad'
   }
 
@@ -101,19 +118,19 @@ export class BalancesForceTransferCall {
    *   assumed to be in the overlay.
    * # </weight>
    */
-  get asV9110(): {source: v9110.MultiAddress, dest: v9110.MultiAddress, value: bigint} {
-    assert(this.isV9110)
+  get asV9111(): {source: v9111.MultiAddress, dest: v9111.MultiAddress, value: bigint} {
+    assert(this.isV9111)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9110
+    return this.isV9111
   }
 
-  get asLatest(): {source: v9110.MultiAddress, dest: v9110.MultiAddress, value: bigint} {
+  get asLatest(): {source: v9111.MultiAddress, dest: v9111.MultiAddress, value: bigint} {
     deprecateLatest()
-    return this.asV9110
+    return this.asV9111
   }
 }
 
@@ -142,16 +159,76 @@ export class BalancesTransferCall {
    *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
    *    - Transferring balances to accounts that did not exist before will cause
    *       `T::OnNewAccount::on_new_account` to be called.
+   *    - Removing enough funds from an account will trigger
+   *      `T::DustRemoval::on_unbalanced` and `T::OnFreeBalanceZero::on_free_balance_zero`.
+   *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
+   *      check that the transfer will not kill the origin account.
+   * 
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('balances.transfer') === 'd3ee17e0bcb8d69e4c8fcae25b4558989323bae7b3b4dbf1d41a6f8c34690c5d'
+  }
+
+  /**
+   *  Transfer some liquid free balance to another account.
+   * 
+   *  `transfer` will set the `FreeBalance` of the sender and receiver.
+   *  It will decrease the total issuance of the system by the `TransferFee`.
+   *  If the sender's account is below the existential deposit as a result
+   *  of the transfer, the account will be reaped.
+   * 
+   *  The dispatch origin for this call must be `Signed` by the transactor.
+   * 
+   *  # <weight>
+   *  - Dependent on arguments but not critical, given proper implementations for
+   *    input config types. See related functions below.
+   *  - It contains a limited number of reads and writes internally and no complex computation.
+   * 
+   *  Related functions:
+   * 
+   *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
+   *    - Transferring balances to accounts that did not exist before will cause
+   *       `T::OnNewAccount::on_new_account` to be called.
+   *    - Removing enough funds from an account will trigger
+   *      `T::DustRemoval::on_unbalanced` and `T::OnFreeBalanceZero::on_free_balance_zero`.
+   *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
+   *      check that the transfer will not kill the origin account.
+   * 
+   *  # </weight>
+   */
+  get asV1020(): {dest: never, value: bigint} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Transfer some liquid free balance to another account.
+   * 
+   *  `transfer` will set the `FreeBalance` of the sender and receiver.
+   *  It will decrease the total issuance of the system by the `TransferFee`.
+   *  If the sender's account is below the existential deposit as a result
+   *  of the transfer, the account will be reaped.
+   * 
+   *  The dispatch origin for this call must be `Signed` by the transactor.
+   * 
+   *  # <weight>
+   *  - Dependent on arguments but not critical, given proper implementations for
+   *    input config types. See related functions below.
+   *  - It contains a limited number of reads and writes internally and no complex computation.
+   * 
+   *  Related functions:
+   * 
+   *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
+   *    - Transferring balances to accounts that did not exist before will cause
+   *       `T::OnNewAccount::on_new_account` to be called.
    *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
    *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
    *      check that the transfer will not kill the origin account.
-   *  ---------------------------------
-   *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-   *  - DB Weight: 1 Read and 1 Write to destination account
-   *  - Origin account is already in memory, so no DB operations for them.
+   * 
    *  # </weight>
    */
-  get isV0(): boolean {
+  get isV1050(): boolean {
     return this.ctx._chain.getCallHash('balances.transfer') === '1b7076e31a9d48be4c397b21777c6c35944b02b8844b65d1277f5450f865914f'
   }
 
@@ -178,14 +255,11 @@ export class BalancesTransferCall {
    *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
    *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
    *      check that the transfer will not kill the origin account.
-   *  ---------------------------------
-   *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-   *  - DB Weight: 1 Read and 1 Write to destination account
-   *  - Origin account is already in memory, so no DB operations for them.
+   * 
    *  # </weight>
    */
-  get asV0(): {dest: Uint8Array, value: bigint} {
-    assert(this.isV0)
+  get asV1050(): {dest: Uint8Array, value: bigint} {
+    assert(this.isV1050)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -218,7 +292,7 @@ export class BalancesTransferCall {
    *  - Origin account is already in memory, so no DB operations for them.
    *  # </weight>
    */
-  get isV28(): boolean {
+  get isV2028(): boolean {
     return this.ctx._chain.getCallHash('balances.transfer') === '05861090e3108003cb97b4ef075bbc3dfe3882247b47c71f4b64e099139d62f0'
   }
 
@@ -251,8 +325,8 @@ export class BalancesTransferCall {
    *  - Origin account is already in memory, so no DB operations for them.
    *  # </weight>
    */
-  get asV28(): {dest: v28.GenericMultiAddress, value: bigint} {
-    assert(this.isV28)
+  get asV2028(): {dest: v2028.GenericMultiAddress, value: bigint} {
+    assert(this.isV2028)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -286,7 +360,7 @@ export class BalancesTransferCall {
    * - Origin account is already in memory, so no DB operations for them.
    * # </weight>
    */
-  get isV9110(): boolean {
+  get isV9111(): boolean {
     return this.ctx._chain.getCallHash('balances.transfer') === 'ff4b494557a07e4b7ad8549ff49c59a84a533072550505647509d9073121b8b0'
   }
 
@@ -320,19 +394,19 @@ export class BalancesTransferCall {
    * - Origin account is already in memory, so no DB operations for them.
    * # </weight>
    */
-  get asV9110(): {dest: v9110.MultiAddress, value: bigint} {
-    assert(this.isV9110)
+  get asV9111(): {dest: v9111.MultiAddress, value: bigint} {
+    assert(this.isV9111)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9110
+    return this.isV9111
   }
 
-  get asLatest(): {dest: v9110.MultiAddress, value: bigint} {
+  get asLatest(): {dest: v9111.MultiAddress, value: bigint} {
     deprecateLatest()
-    return this.asV9110
+    return this.asV9111
   }
 }
 
@@ -409,7 +483,7 @@ export class BalancesTransferAllCall {
    * - O(1). Just like transfer, but reading the user's transferable balance first.
    *   #</weight>
    */
-  get isV9110(): boolean {
+  get isV9111(): boolean {
     return this.ctx._chain.getCallHash('balances.transfer_all') === '522b34dee997311495b019abaa49d6d9881169474c06e6adb08ca8ccec3ee5a2'
   }
 
@@ -432,19 +506,19 @@ export class BalancesTransferAllCall {
    * - O(1). Just like transfer, but reading the user's transferable balance first.
    *   #</weight>
    */
-  get asV9110(): {dest: v9110.MultiAddress, keepAlive: boolean} {
-    assert(this.isV9110)
+  get asV9111(): {dest: v9111.MultiAddress, keepAlive: boolean} {
+    assert(this.isV9111)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9110
+    return this.isV9111
   }
 
-  get asLatest(): {dest: v9110.MultiAddress, keepAlive: boolean} {
+  get asLatest(): {dest: v9111.MultiAddress, keepAlive: boolean} {
     deprecateLatest()
-    return this.asV9110
+    return this.asV9111
   }
 }
 
@@ -460,13 +534,33 @@ export class BalancesTransferKeepAliveCall {
    *  99% of the time you want [`transfer`] instead.
    * 
    *  [`transfer`]: struct.Module.html#method.transfer
-   *  # <weight>
-   *  - Cheaper than transfer because account cannot be killed.
-   *  - Base Weight: 51.4 µs
-   *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-   *  #</weight>
    */
-  get isV0(): boolean {
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === '96f186815eb585bfce3949c41c64261322e2585e0b7a6ed52ede080e889d50ae'
+  }
+
+  /**
+   *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
+   *  origin account.
+   * 
+   *  99% of the time you want [`transfer`] instead.
+   * 
+   *  [`transfer`]: struct.Module.html#method.transfer
+   */
+  get asV1020(): {dest: never, value: bigint} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
+   *  origin account.
+   * 
+   *  99% of the time you want [`transfer`] instead.
+   * 
+   *  [`transfer`]: struct.Module.html#method.transfer
+   */
+  get isV1050(): boolean {
     return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === '16b20d76aac049e10c74897f02f21e245d6d33ee473533aa8c2c686fd0be5afc'
   }
 
@@ -477,14 +571,9 @@ export class BalancesTransferKeepAliveCall {
    *  99% of the time you want [`transfer`] instead.
    * 
    *  [`transfer`]: struct.Module.html#method.transfer
-   *  # <weight>
-   *  - Cheaper than transfer because account cannot be killed.
-   *  - Base Weight: 51.4 µs
-   *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-   *  #</weight>
    */
-  get asV0(): {dest: Uint8Array, value: bigint} {
-    assert(this.isV0)
+  get asV1050(): {dest: Uint8Array, value: bigint} {
+    assert(this.isV1050)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -501,7 +590,7 @@ export class BalancesTransferKeepAliveCall {
    *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    *  #</weight>
    */
-  get isV28(): boolean {
+  get isV2028(): boolean {
     return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === '84fead3d66e86fa3ddf466cc911cf8795e024963ea9f8de058d40a6c76610b16'
   }
 
@@ -518,8 +607,8 @@ export class BalancesTransferKeepAliveCall {
    *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    *  #</weight>
    */
-  get asV28(): {dest: v28.GenericMultiAddress, value: bigint} {
-    assert(this.isV28)
+  get asV2028(): {dest: v2028.GenericMultiAddress, value: bigint} {
+    assert(this.isV2028)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -536,7 +625,7 @@ export class BalancesTransferKeepAliveCall {
    * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    * #</weight>
    */
-  get isV9110(): boolean {
+  get isV9111(): boolean {
     return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === 'c4b844c5a53c671fa5f15670e214796fc7f80b16157126b329fc150eabda8a85'
   }
 
@@ -553,19 +642,19 @@ export class BalancesTransferKeepAliveCall {
    * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    * #</weight>
    */
-  get asV9110(): {dest: v9110.MultiAddress, value: bigint} {
-    assert(this.isV9110)
+  get asV9111(): {dest: v9111.MultiAddress, value: bigint} {
+    assert(this.isV9111)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9110
+    return this.isV9111
   }
 
-  get asLatest(): {dest: v9110.MultiAddress, value: bigint} {
+  get asLatest(): {dest: v9111.MultiAddress, value: bigint} {
     deprecateLatest()
-    return this.asV9110
+    return this.asV9111
   }
 }
 
@@ -575,30 +664,30 @@ export class CrowdloanContributeCall {
   }
 
   /**
-   * Contribute to a crowd sale. This will transfer some balance over to fund a parachain
-   * slot. It will be withdrawable when the crowdloan has ended and the funds are unused.
+   *  Contribute to a crowd sale. This will transfer some balance over to fund a parachain
+   *  slot. It will be withdrawable when the crowdloan has ended and the funds are unused.
    */
-  get isV9110(): boolean {
+  get isV9010(): boolean {
     return this.ctx._chain.getCallHash('crowdloan.contribute') === '7e270a150cdcaaeedcd4d5f9f63c1aca1458511945179275ed4a8011802c9802'
   }
 
   /**
-   * Contribute to a crowd sale. This will transfer some balance over to fund a parachain
-   * slot. It will be withdrawable when the crowdloan has ended and the funds are unused.
+   *  Contribute to a crowd sale. This will transfer some balance over to fund a parachain
+   *  slot. It will be withdrawable when the crowdloan has ended and the funds are unused.
    */
-  get asV9110(): {index: number, value: bigint, signature: (v9110.MultiSignature | undefined)} {
-    assert(this.isV9110)
+  get asV9010(): {index: number, value: bigint, signature: (v9010.MultiSignature | undefined)} {
+    assert(this.isV9010)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9110
+    return this.isV9010
   }
 
-  get asLatest(): {index: number, value: bigint, signature: (v9110.MultiSignature | undefined)} {
+  get asLatest(): {index: number, value: bigint, signature: (v9010.MultiSignature | undefined)} {
     deprecateLatest()
-    return this.asV9110
+    return this.asV9010
   }
 }
 
@@ -608,34 +697,34 @@ export class CrowdloanCreateCall {
   }
 
   /**
-   * Create a new crowdloaning campaign for a parachain slot with the given lease period range.
+   *  Create a new crowdloaning campaign for a parachain slot with the given lease period range.
    * 
-   * This applies a lock to your parachain configuration, ensuring that it cannot be changed
-   * by the parachain manager.
+   *  This applies a lock to your parachain configuration, ensuring that it cannot be changed
+   *  by the parachain manager.
    */
-  get isV9110(): boolean {
+  get isV9010(): boolean {
     return this.ctx._chain.getCallHash('crowdloan.create') === 'e59ab6ad69501285e01e5938c0ce77c0c2a17e4d3514776d15b694fdbc734fcd'
   }
 
   /**
-   * Create a new crowdloaning campaign for a parachain slot with the given lease period range.
+   *  Create a new crowdloaning campaign for a parachain slot with the given lease period range.
    * 
-   * This applies a lock to your parachain configuration, ensuring that it cannot be changed
-   * by the parachain manager.
+   *  This applies a lock to your parachain configuration, ensuring that it cannot be changed
+   *  by the parachain manager.
    */
-  get asV9110(): {index: number, cap: bigint, firstPeriod: number, lastPeriod: number, end: number, verifier: (v9110.MultiSigner | undefined)} {
-    assert(this.isV9110)
+  get asV9010(): {index: number, cap: bigint, firstPeriod: number, lastPeriod: number, end: number, verifier: (v9010.MultiSigner | undefined)} {
+    assert(this.isV9010)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9110
+    return this.isV9010
   }
 
-  get asLatest(): {index: number, cap: bigint, firstPeriod: number, lastPeriod: number, end: number, verifier: (v9110.MultiSigner | undefined)} {
+  get asLatest(): {index: number, cap: bigint, firstPeriod: number, lastPeriod: number, end: number, verifier: (v9010.MultiSigner | undefined)} {
     deprecateLatest()
-    return this.asV9110
+    return this.asV9010
   }
 }
 
@@ -697,8 +786,8 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get isV5(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === '1b3f04d033d8704889fdcf012f802ae7ed23ff89610e0404158a3280c3062e56'
+  get isV2005(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '338f0eaa430150c20e52fa22cf1209b1826cf91a9cdbe2e62a267f93baab7c1b'
   }
 
   /**
@@ -754,8 +843,8 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get asV5(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v5.Timepoint | undefined), call: v5.Type_21} {
-    assert(this.isV5)
+  get asV2005(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v2005.Timepoint | undefined), call: v2005.Type_172} {
+    assert(this.isV2005)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -812,8 +901,8 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get isV6(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === 'f92ddd11c2e5df879229b0d16fee82a4e1e0a81306a4453d40967eac6e3ae1ff'
+  get isV2007(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === 'd4c817e1f8e7e842dcca9746be641bca3fc09fc7ad20eabf02cca6ae3f6a14cc'
   }
 
   /**
@@ -869,236 +958,8 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get asV6(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v6.Timepoint | undefined), call: v6.Type_21} {
-    assert(this.isV6)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Register approval for a dispatch to be made from a deterministic composite account if
-   *  approved by a total of `threshold - 1` of `other_signatories`.
-   * 
-   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
-   *  filter.
-   * 
-   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-   *  is cancelled.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-   *  - `other_signatories`: The accounts (other than the sender) who can approve this
-   *  dispatch. May not be empty.
-   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-   *  not the first approval, then it must be `Some`, with the timepoint (block number and
-   *  transaction index) of the first approval transaction.
-   *  - `call`: The call to be executed.
-   * 
-   *  NOTE: Unless this is the final approval, you will generally want to use
-   *  `approve_as_multi` instead, since it only requires a hash of the call.
-   * 
-   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-   *  on success, result is `Ok` and the result from the interior call, if it was executed,
-   *  may be found in the deposited `MultisigExecuted` event.
-   * 
-   *  # <weight>
-   *  - `O(S + Z + Call)`.
-   *  - Up to one balance-reserve or unreserve operation.
-   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-   *  - One encode & hash, both of complexity `O(S)`.
-   *  - Up to one binary search and insert (`O(logS + S)`).
-   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-   *  - One event.
-   *  - The weight of the `call`.
-   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-   *    deposit taken for its lifetime of
-   *    `DepositBase + threshold * DepositFactor`.
-   *  -------------------------------
-   *  - Base Weight:
-   *      - Create: 46.55 + 0.089 * S µs
-   *      - Approve: 34.03 + .112 * S µs
-   *      - Complete: 40.36 + .225 * S µs
-   *  - DB Weight:
-   *      - Reads: Multisig Storage, [Caller Account]
-   *      - Writes: Multisig Storage, [Caller Account]
-   *  - Plus Call Weight
-   *  # </weight>
-   */
-  get isV7(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === 'd1a2a0b421bb6becbfa022b70a2c96d8ed7a181e2e3844ddf6f887e238159987'
-  }
-
-  /**
-   *  Register approval for a dispatch to be made from a deterministic composite account if
-   *  approved by a total of `threshold - 1` of `other_signatories`.
-   * 
-   *  If there are enough, then dispatch the call. Calls must each fulfil the `IsCallable`
-   *  filter.
-   * 
-   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-   *  is cancelled.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-   *  - `other_signatories`: The accounts (other than the sender) who can approve this
-   *  dispatch. May not be empty.
-   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-   *  not the first approval, then it must be `Some`, with the timepoint (block number and
-   *  transaction index) of the first approval transaction.
-   *  - `call`: The call to be executed.
-   * 
-   *  NOTE: Unless this is the final approval, you will generally want to use
-   *  `approve_as_multi` instead, since it only requires a hash of the call.
-   * 
-   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-   *  on success, result is `Ok` and the result from the interior call, if it was executed,
-   *  may be found in the deposited `MultisigExecuted` event.
-   * 
-   *  # <weight>
-   *  - `O(S + Z + Call)`.
-   *  - Up to one balance-reserve or unreserve operation.
-   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-   *  - One encode & hash, both of complexity `O(S)`.
-   *  - Up to one binary search and insert (`O(logS + S)`).
-   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-   *  - One event.
-   *  - The weight of the `call`.
-   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-   *    deposit taken for its lifetime of
-   *    `DepositBase + threshold * DepositFactor`.
-   *  -------------------------------
-   *  - Base Weight:
-   *      - Create: 46.55 + 0.089 * S µs
-   *      - Approve: 34.03 + .112 * S µs
-   *      - Complete: 40.36 + .225 * S µs
-   *  - DB Weight:
-   *      - Reads: Multisig Storage, [Caller Account]
-   *      - Writes: Multisig Storage, [Caller Account]
-   *  - Plus Call Weight
-   *  # </weight>
-   */
-  get asV7(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v7.Timepoint | undefined), call: v7.Type_21} {
-    assert(this.isV7)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Register approval for a dispatch to be made from a deterministic composite account if
-   *  approved by a total of `threshold - 1` of `other_signatories`.
-   * 
-   *  If there are enough, then dispatch the call.
-   * 
-   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-   *  is cancelled.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-   *  - `other_signatories`: The accounts (other than the sender) who can approve this
-   *  dispatch. May not be empty.
-   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-   *  not the first approval, then it must be `Some`, with the timepoint (block number and
-   *  transaction index) of the first approval transaction.
-   *  - `call`: The call to be executed.
-   * 
-   *  NOTE: Unless this is the final approval, you will generally want to use
-   *  `approve_as_multi` instead, since it only requires a hash of the call.
-   * 
-   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-   *  on success, result is `Ok` and the result from the interior call, if it was executed,
-   *  may be found in the deposited `MultisigExecuted` event.
-   * 
-   *  # <weight>
-   *  - `O(S + Z + Call)`.
-   *  - Up to one balance-reserve or unreserve operation.
-   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-   *  - One encode & hash, both of complexity `O(S)`.
-   *  - Up to one binary search and insert (`O(logS + S)`).
-   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-   *  - One event.
-   *  - The weight of the `call`.
-   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-   *    deposit taken for its lifetime of
-   *    `DepositBase + threshold * DepositFactor`.
-   *  -------------------------------
-   *  - Base Weight:
-   *      - Create: 46.55 + 0.089 * S µs
-   *      - Approve: 34.03 + .112 * S µs
-   *      - Complete: 40.36 + .225 * S µs
-   *  - DB Weight:
-   *      - Reads: Multisig Storage, [Caller Account]
-   *      - Writes: Multisig Storage, [Caller Account]
-   *  - Plus Call Weight
-   *  # </weight>
-   */
-  get isV9(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === 'bcedf1064b24145d140218761e9ad60d3a56a6575b5157f4af1e08a46c796058'
-  }
-
-  /**
-   *  Register approval for a dispatch to be made from a deterministic composite account if
-   *  approved by a total of `threshold - 1` of `other_signatories`.
-   * 
-   *  If there are enough, then dispatch the call.
-   * 
-   *  Payment: `DepositBase` will be reserved if this is the first approval, plus
-   *  `threshold` times `DepositFactor`. It is returned once this dispatch happens or
-   *  is cancelled.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  - `threshold`: The total number of approvals for this dispatch before it is executed.
-   *  - `other_signatories`: The accounts (other than the sender) who can approve this
-   *  dispatch. May not be empty.
-   *  - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
-   *  not the first approval, then it must be `Some`, with the timepoint (block number and
-   *  transaction index) of the first approval transaction.
-   *  - `call`: The call to be executed.
-   * 
-   *  NOTE: Unless this is the final approval, you will generally want to use
-   *  `approve_as_multi` instead, since it only requires a hash of the call.
-   * 
-   *  Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
-   *  on success, result is `Ok` and the result from the interior call, if it was executed,
-   *  may be found in the deposited `MultisigExecuted` event.
-   * 
-   *  # <weight>
-   *  - `O(S + Z + Call)`.
-   *  - Up to one balance-reserve or unreserve operation.
-   *  - One passthrough operation, one insert, both `O(S)` where `S` is the number of
-   *    signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
-   *  - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
-   *  - One encode & hash, both of complexity `O(S)`.
-   *  - Up to one binary search and insert (`O(logS + S)`).
-   *  - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
-   *  - One event.
-   *  - The weight of the `call`.
-   *  - Storage: inserts one item, value size bounded by `MaxSignatories`, with a
-   *    deposit taken for its lifetime of
-   *    `DepositBase + threshold * DepositFactor`.
-   *  -------------------------------
-   *  - Base Weight:
-   *      - Create: 46.55 + 0.089 * S µs
-   *      - Approve: 34.03 + .112 * S µs
-   *      - Complete: 40.36 + .225 * S µs
-   *  - DB Weight:
-   *      - Reads: Multisig Storage, [Caller Account]
-   *      - Writes: Multisig Storage, [Caller Account]
-   *  - Plus Call Weight
-   *  # </weight>
-   */
-  get asV9(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v9.Timepoint | undefined), call: v9.Type_21} {
-    assert(this.isV9)
+  get asV2007(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v2007.Timepoint | undefined), call: v2007.Type_173} {
+    assert(this.isV2007)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1155,7 +1016,7 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get isV10(): boolean {
+  get isV2011(): boolean {
     return this.ctx._chain.getCallHash('multisig.as_multi') === 'c3ad21e6a8dba21f6f9ff577e771da2dd39de77d4f19e6eaa98c5ea81564f0a8'
   }
 
@@ -1212,8 +1073,8 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get asV10(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v10.Timepoint | undefined), call: Uint8Array, storeCall: boolean, maxWeight: bigint} {
-    assert(this.isV10)
+  get asV2011(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v2011.Timepoint | undefined), call: Uint8Array, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV2011)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1264,8 +1125,8 @@ export class MultisigAsMultiCall {
    * - Plus Call Weight
    * # </weight>
    */
-  get isV9140(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === '22adb5f1369b06ec2f5044a7d14c6d256d4344f96d8a2b693eac2bb471b63110'
+  get isV9130(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === 'a066899c7faab921281944c8a59478f726dec1b38979db02f92a1e34ec156893'
   }
 
   /**
@@ -1315,19 +1176,19 @@ export class MultisigAsMultiCall {
    * - Plus Call Weight
    * # </weight>
    */
-  get asV9140(): {threshold: number, otherSignatories: v9140.AccountId32[], maybeTimepoint: (v9140.Timepoint | undefined), call: v9140.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
-    assert(this.isV9140)
+  get asV9130(): {threshold: number, otherSignatories: v9130.AccountId32[], maybeTimepoint: (v9130.Timepoint | undefined), call: v9130.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV9130)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9140
+    return this.isV9130
   }
 
-  get asLatest(): {threshold: number, otherSignatories: v9140.AccountId32[], maybeTimepoint: (v9140.Timepoint | undefined), call: v9140.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+  get asLatest(): {threshold: number, otherSignatories: v9130.AccountId32[], maybeTimepoint: (v9130.Timepoint | undefined), call: v9130.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
     deprecateLatest()
-    return this.asV9140
+    return this.asV9130
   }
 }
 
@@ -1354,8 +1215,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get isV5(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '91581eafe240d3795fd1f48c04c236837779f7fa11b5de7553585faaa67de11c'
+  get isV2005(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '10ba5d3574fc0541d87644a73415434a33cbe3596ae1b4e9eb1713c79edbac6f'
   }
 
   /**
@@ -1376,8 +1237,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV5(): {real: Uint8Array, forceProxyType: (v5.ProxyType | undefined), call: v5.Type_21} {
-    assert(this.isV5)
+  get asV2005(): {real: Uint8Array, forceProxyType: (v2005.ProxyType | undefined), call: v2005.Type_172} {
+    assert(this.isV2005)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1399,8 +1260,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get isV6(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '92fe3c52ab0574459ef04a3d5e02ff515930ba0180e15c2b4315d9d1231ab209'
+  get isV2007(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'e7dabe970d689aaeb0670439ce9f58db5ed6299586c898f7ae5812229cec14f5'
   }
 
   /**
@@ -1421,8 +1282,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV6(): {real: Uint8Array, forceProxyType: (v6.ProxyType | undefined), call: v6.Type_21} {
-    assert(this.isV6)
+  get asV2007(): {real: Uint8Array, forceProxyType: (v2007.ProxyType | undefined), call: v2007.Type_173} {
+    assert(this.isV2007)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1444,8 +1305,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get isV7(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'ccd02cbaaefc20d19dd6600053c8a1b02948953a8b73a63432dadb5f4d33062b'
+  get isV2011(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '0c1fbca210a9579248c21af47c94b470536c5f83eb99c8c2ef3ada7cb042369e'
   }
 
   /**
@@ -1466,8 +1327,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV7(): {real: Uint8Array, forceProxyType: (v7.ProxyType | undefined), call: v7.Type_21} {
-    assert(this.isV7)
+  get asV2011(): {real: Uint8Array, forceProxyType: (v2011.ProxyType | undefined), call: v2011.Type_174} {
+    assert(this.isV2011)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1489,8 +1350,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get isV9(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '7c0f3157b647c6e3220ac1abfabef24156fcf5a70451edefa4fc56400ad14d61'
+  get isV2013(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '287b08dd13dd18f4f497ac668d3bd3756edf38bd029d969c3d12941680b1dfc2'
   }
 
   /**
@@ -1511,8 +1372,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV9(): {real: Uint8Array, forceProxyType: (v9.ProxyType | undefined), call: v9.Type_21} {
-    assert(this.isV9)
+  get asV2013(): {real: Uint8Array, forceProxyType: (v2013.ProxyType | undefined), call: v2013.Type_174} {
+    assert(this.isV2013)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1534,8 +1395,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get isV10(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '75f596d0b67de4f716c1c9fbd613ca3779696e75aa307a00be646f6dc1975bca'
+  get isV2015(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '93e28c4ad41d13437918a18e29fdf44e32c02f653983f22e3cabc3d3699fc826'
   }
 
   /**
@@ -1556,8 +1417,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV10(): {real: Uint8Array, forceProxyType: (v10.ProxyType | undefined), call: v10.Type_21} {
-    assert(this.isV10)
+  get asV2015(): {real: Uint8Array, forceProxyType: (v2015.ProxyType | undefined), call: v2015.Type_177} {
+    assert(this.isV2015)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1579,8 +1440,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get isV11(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '1743602abb7e8146384178b157e16850955f36cec47e005850264310b0fe716c'
+  get isV2022(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'e924e50c55c262628e0edc824af59c73c204da6f9e3c29b9494895d5fa3119fe'
   }
 
   /**
@@ -1601,233 +1462,8 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV11(): {real: Uint8Array, forceProxyType: (v11.ProxyType | undefined), call: v11.Type_21} {
-    assert(this.isV11)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get isV13(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'e0b94cc72966a99487944703f6d769ae13f4ec6c4b03b8941edfecb4b57228ce'
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get asV13(): {real: Uint8Array, forceProxyType: (v13.ProxyType | undefined), call: v13.Type_21} {
-    assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get isV14(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '810b638e489f45c455a16a9a8ee576439c3422494cf4f9cd2516240a56e585c4'
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get asV14(): {real: Uint8Array, forceProxyType: (v14.ProxyType | undefined), call: v14.Type_21} {
-    assert(this.isV14)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get isV15(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '72b477b8e7265a8bb3dd66a2ec0f55f135bda9c0bc8b31593f83affefa266d6d'
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get asV15(): {real: Uint8Array, forceProxyType: (v15.ProxyType | undefined), call: v15.Type_21} {
-    assert(this.isV15)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get isV17(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '029eeb0db35dab2a4fa2a7ba5a5bb550040963cef1895ebb365c68ad076760b4'
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get asV17(): {real: Uint8Array, forceProxyType: (v17.ProxyType | undefined), call: v17.Type_21} {
-    assert(this.isV17)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get isV18(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '080c6c85d55f689fc0bed9e5ab53cd65593b6eb6df87b243e5fab54ee2934517'
-  }
-
-  /**
-   *  Dispatch the given `call` from an account that the sender is authorised for through
-   *  `add_proxy`.
-   * 
-   *  The dispatch origin for this call must be _Signed_.
-   * 
-   *  Parameters:
-   *  - `real`: The account that the proxy will make a call on behalf of.
-   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
-   *  - `call`: The call to be made by the `real` account.
-   * 
-   *  # <weight>
-   *  P is the number of proxies the user has
-   *  - Base weight: 19.87 + .141 * P µs
-   *  - DB weight: 1 storage read.
-   *  - Plus the weight of the `call`
-   *  # </weight>
-   */
-  get asV18(): {real: Uint8Array, forceProxyType: (v18.ProxyType | undefined), call: v18.Type_21} {
-    assert(this.isV18)
+  get asV2022(): {real: Uint8Array, forceProxyType: (v2022.ProxyType | undefined), call: v2022.Type_177} {
+    assert(this.isV2022)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1848,8 +1484,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get isV23(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '468950256045858308e2fba8093686a291e5eb9af51ae43b24abd6da8fcb7db2'
+  get isV2023(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'a77060748152621f1a126e8a33238e45f5158e4cb790fce676d893c41cd0af3c'
   }
 
   /**
@@ -1869,8 +1505,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV23(): {real: Uint8Array, forceProxyType: (v23.ProxyType | undefined), call: v23.Type_21} {
-    assert(this.isV23)
+  get asV2023(): {real: Uint8Array, forceProxyType: (v2023.ProxyType | undefined), call: v2023.Type_179} {
+    assert(this.isV2023)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1891,8 +1527,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get isV24(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'd6d61b9d1ce251904fa28c103e5c2f324195fffc933ff32445473c0a04f48bcd'
+  get isV2024(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'ae4248447ac98328f94f615fdfa27d5bda054b1b569de90be64b91496dab735b'
   }
 
   /**
@@ -1912,8 +1548,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV24(): {real: Uint8Array, forceProxyType: (v24.ProxyType | undefined), call: v24.Type_21} {
-    assert(this.isV24)
+  get asV2024(): {real: Uint8Array, forceProxyType: (v2024.ProxyType | undefined), call: v2024.Type_179} {
+    assert(this.isV2024)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1934,8 +1570,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get isV25(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '3899037070d474b8204d480e123ca05a782b3a039e374d648debce1e655628de'
+  get isV2025(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '4196f56daf7309175f355c3735e6b48f813e743529f0fb528cdb5e80e73d676f'
   }
 
   /**
@@ -1955,8 +1591,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV25(): {real: Uint8Array, forceProxyType: (v25.ProxyType | undefined), call: v25.Type_21} {
-    assert(this.isV25)
+  get asV2025(): {real: Uint8Array, forceProxyType: (v2025.ProxyType | undefined), call: v2025.Type_180} {
+    assert(this.isV2025)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -1977,8 +1613,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get isV26(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'f26db2ed8342512327328aa08a4827c2e5b3b7838de65553691882ee97e2f594'
+  get isV2026(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '69fae078ddc6e83fb5caee192b5cc467561dc2165eefd27ba7fb1437deed0bf6'
   }
 
   /**
@@ -1998,8 +1634,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV26(): {real: Uint8Array, forceProxyType: (v26.ProxyType | undefined), call: v26.Type_21} {
-    assert(this.isV26)
+  get asV2026(): {real: Uint8Array, forceProxyType: (v2026.ProxyType | undefined), call: v2026.Type_179} {
+    assert(this.isV2026)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2020,8 +1656,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get isV28(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '978f4648c42d0b742ac602c8e954aeac9ff678877866a74da9318d60d6cc9909'
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'a288ba5835e5859212e95373e56a0617706151bd69d335bd747a140230e3dbb2'
   }
 
   /**
@@ -2041,8 +1677,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV28(): {real: Uint8Array, forceProxyType: (v28.ProxyType | undefined), call: v28.Type_21} {
-    assert(this.isV28)
+  get asV2028(): {real: Uint8Array, forceProxyType: (v2028.ProxyType | undefined), call: v2028.Type_184} {
+    assert(this.isV2028)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2063,8 +1699,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get isV29(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '175afc811fd8e9f62a7e1cf15517cf4f68a682efeff298ecc21c479779d23aed'
+  get isV2029(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'bc61adc641a91d78c969b9b1ac241a823c3603f33171b5ad930fc9a5678f14c4'
   }
 
   /**
@@ -2084,8 +1720,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV29(): {real: Uint8Array, forceProxyType: (v29.ProxyType | undefined), call: v29.Type_21} {
-    assert(this.isV29)
+  get asV2029(): {real: Uint8Array, forceProxyType: (v2029.ProxyType | undefined), call: v2029.Type_184} {
+    assert(this.isV2029)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2106,8 +1742,8 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get isV30(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'e2381ce2ec4fd5e56a11c68361f0a09ba5661ffc71b203e304ef858a9a82375a'
+  get isV2030(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '55c98637c394a0ec28de21bbf16e80e260169a31ef45d71f8282469f43b49862'
   }
 
   /**
@@ -2127,8 +1763,137 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV30(): {real: Uint8Array, forceProxyType: (v30.ProxyType | undefined), call: v30.Type_21} {
-    assert(this.isV30)
+  get asV2030(): {real: Uint8Array, forceProxyType: (v2030.ProxyType | undefined), call: v2030.Type_123} {
+    assert(this.isV2030)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Dispatch the given `call` from an account that the sender is authorised for through
+   *  `add_proxy`.
+   * 
+   *  Removes any corresponding announcement(s).
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Parameters:
+   *  - `real`: The account that the proxy will make a call on behalf of.
+   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   *  - `call`: The call to be made by the `real` account.
+   * 
+   *  # <weight>
+   *  Weight is a function of the number of proxies the user has (P).
+   *  # </weight>
+   */
+  get isV9010(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'a5bca5e035d02c07e4e64d6d4f817c493abef27dec0e0698bd1224bbc476d364'
+  }
+
+  /**
+   *  Dispatch the given `call` from an account that the sender is authorised for through
+   *  `add_proxy`.
+   * 
+   *  Removes any corresponding announcement(s).
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Parameters:
+   *  - `real`: The account that the proxy will make a call on behalf of.
+   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   *  - `call`: The call to be made by the `real` account.
+   * 
+   *  # <weight>
+   *  Weight is a function of the number of proxies the user has (P).
+   *  # </weight>
+   */
+  get asV9010(): {real: Uint8Array, forceProxyType: (v9010.ProxyType | undefined), call: v9010.Type_123} {
+    assert(this.isV9010)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Dispatch the given `call` from an account that the sender is authorised for through
+   *  `add_proxy`.
+   * 
+   *  Removes any corresponding announcement(s).
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Parameters:
+   *  - `real`: The account that the proxy will make a call on behalf of.
+   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   *  - `call`: The call to be made by the `real` account.
+   * 
+   *  # <weight>
+   *  Weight is a function of the number of proxies the user has (P).
+   *  # </weight>
+   */
+  get isV9030(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'a5341ce82509e36d57f79a670770af967e0cbd1d16b157efa0c84479467f6298'
+  }
+
+  /**
+   *  Dispatch the given `call` from an account that the sender is authorised for through
+   *  `add_proxy`.
+   * 
+   *  Removes any corresponding announcement(s).
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Parameters:
+   *  - `real`: The account that the proxy will make a call on behalf of.
+   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   *  - `call`: The call to be made by the `real` account.
+   * 
+   *  # <weight>
+   *  Weight is a function of the number of proxies the user has (P).
+   *  # </weight>
+   */
+  get asV9030(): {real: Uint8Array, forceProxyType: (v9030.ProxyType | undefined), call: v9030.Type_123} {
+    assert(this.isV9030)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Dispatch the given `call` from an account that the sender is authorised for through
+   *  `add_proxy`.
+   * 
+   *  Removes any corresponding announcement(s).
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Parameters:
+   *  - `real`: The account that the proxy will make a call on behalf of.
+   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   *  - `call`: The call to be made by the `real` account.
+   * 
+   *  # <weight>
+   *  Weight is a function of the number of proxies the user has (P).
+   *  # </weight>
+   */
+  get isV9040(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'eaf79e33ad215005987d7d90c0cc1e112def25bdb3415f6692dca8954828edf6'
+  }
+
+  /**
+   *  Dispatch the given `call` from an account that the sender is authorised for through
+   *  `add_proxy`.
+   * 
+   *  Removes any corresponding announcement(s).
+   * 
+   *  The dispatch origin for this call must be _Signed_.
+   * 
+   *  Parameters:
+   *  - `real`: The account that the proxy will make a call on behalf of.
+   *  - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   *  - `call`: The call to be made by the `real` account.
+   * 
+   *  # <weight>
+   *  Weight is a function of the number of proxies the user has (P).
+   *  # </weight>
+   */
+  get asV9040(): {real: Uint8Array, forceProxyType: (v9040.ProxyType | undefined), call: v9040.Type_123} {
+    assert(this.isV9040)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2150,7 +1915,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9050(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '97d476d6a6ec22cadf0476e2204450199564e7e7f814a944b99d4df8129dddd7'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'e866454e8a257b911db866eaaf9277f6feeb6da591d259e09f466f4aa7fba7bc'
   }
 
   /**
@@ -2170,7 +1935,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9050(): {real: Uint8Array, forceProxyType: (v9050.ProxyType | undefined), call: v9050.Type_21} {
+  get asV9050(): {real: Uint8Array, forceProxyType: (v9050.ProxyType | undefined), call: v9050.Type_124} {
     assert(this.isV9050)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2193,7 +1958,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9080(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '960063fda2afa5c524ac0d0fd237020e013c81919651dc52e53c8a906bf0604d'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'f93f44f11a5ac822bb77ecb21a673451caa59ba6659b8ca67fc412632a3fa4db'
   }
 
   /**
@@ -2213,7 +1978,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9080(): {real: Uint8Array, forceProxyType: (v9080.ProxyType | undefined), call: v9080.Type_21} {
+  get asV9080(): {real: Uint8Array, forceProxyType: (v9080.ProxyType | undefined), call: v9080.Type_125} {
     assert(this.isV9080)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2236,7 +2001,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '4696518390efb1385e00cb4da05d6e8fd687af80d9630bf23e76e7801af28abb'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '29b45b98913f0a1e5dfe6d1b86585806a9c1e9ce0355d61eac6c3ae1b79ba940'
   }
 
   /**
@@ -2256,7 +2021,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9090(): {real: Uint8Array, forceProxyType: (v9090.ProxyType | undefined), call: v9090.Type_21} {
+  get asV9090(): {real: Uint8Array, forceProxyType: (v9090.ProxyType | undefined), call: v9090.Type_125} {
     assert(this.isV9090)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2279,7 +2044,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9100(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '888e016db4f4a5fad4b7d49fe27f8fab527c66942acc5a43fe7591e2d56840cf'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '0571ac3ece42527e35b9e74f1eb22d8f7d9ca513b83be2a2a17e2bb77e0bb8ee'
   }
 
   /**
@@ -2299,7 +2064,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9100(): {real: Uint8Array, forceProxyType: (v9100.ProxyType | undefined), call: v9100.Type_21} {
+  get asV9100(): {real: Uint8Array, forceProxyType: (v9100.ProxyType | undefined), call: v9100.Type_125} {
     assert(this.isV9100)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2321,8 +2086,8 @@ export class ProxyProxyCall {
    * Weight is a function of the number of proxies the user has (P).
    * # </weight>
    */
-  get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '3afa09e273646a88390cca540d4ef660dd017a379c5092db2f1ecd8cd0b6c027'
+  get isV9111(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '8eee0b89adff35d10ec00a70ed7e5e48004853d0cdbdc45d54cde55b8cfb66a2'
   }
 
   /**
@@ -2342,8 +2107,8 @@ export class ProxyProxyCall {
    * Weight is a function of the number of proxies the user has (P).
    * # </weight>
    */
-  get asV9110(): {real: v9110.AccountId32, forceProxyType: (v9110.ProxyType | undefined), call: v9110.Call} {
-    assert(this.isV9110)
+  get asV9111(): {real: v9111.AccountId32, forceProxyType: (v9111.ProxyType | undefined), call: v9111.Call} {
+    assert(this.isV9111)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2364,8 +2129,8 @@ export class ProxyProxyCall {
    * Weight is a function of the number of proxies the user has (P).
    * # </weight>
    */
-  get isV9140(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '630a6c3af0ceb18d48c22b7a2e2b246f4cd59c9428013cfe8f4792d72ae6418b'
+  get isV9122(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '53cdaecda92f976ffdbcdab61f955c71d869ece53af31e578934736f5439acf8'
   }
 
   /**
@@ -2385,19 +2150,62 @@ export class ProxyProxyCall {
    * Weight is a function of the number of proxies the user has (P).
    * # </weight>
    */
-  get asV9140(): {real: v9140.AccountId32, forceProxyType: (v9140.ProxyType | undefined), call: v9140.Call} {
-    assert(this.isV9140)
+  get asV9122(): {real: v9122.AccountId32, forceProxyType: (v9122.ProxyType | undefined), call: v9122.Call} {
+    assert(this.isV9122)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   * 
+   * Removes any corresponding announcement(s).
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   * 
+   * # <weight>
+   * Weight is a function of the number of proxies the user has (P).
+   * # </weight>
+   */
+  get isV9130(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '7c64c41198293d1d964fbea2395cfb0ae9d7263e72e2a3788e03f168d7a34cd9'
+  }
+
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   * 
+   * Removes any corresponding announcement(s).
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   * 
+   * # <weight>
+   * Weight is a function of the number of proxies the user has (P).
+   * # </weight>
+   */
+  get asV9130(): {real: v9130.AccountId32, forceProxyType: (v9130.ProxyType | undefined), call: v9130.Call} {
+    assert(this.isV9130)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9140
+    return this.isV9130
   }
 
-  get asLatest(): {real: v9140.AccountId32, forceProxyType: (v9140.ProxyType | undefined), call: v9140.Call} {
+  get asLatest(): {real: v9130.AccountId32, forceProxyType: (v9130.ProxyType | undefined), call: v9130.Call} {
     deprecateLatest()
-    return this.asV9140
+    return this.asV9130
   }
 }
 
@@ -2421,17 +2229,9 @@ export class StakingPayoutStakersCall {
    *  # <weight>
    *  - Time complexity: at most O(MaxNominatorRewardedPerValidator).
    *  - Contains a limited number of reads and writes.
-   *  -----------
-   *  N is the Number of payouts for the validator (including the validator)
-   *  Base Weight: 110 + 54.2 * N µs (Median Slopes)
-   *  DB Weight:
-   *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, MigrateEra, ErasValidatorReward,
-   *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
-   *  - Read Each: Bonded, Ledger, Payee, Locks, System Account (5 items)
-   *  - Write Each: System Account, Locks, Ledger (3 items)
    *  # </weight>
    */
-  get isV0(): boolean {
+  get isV1058(): boolean {
     return this.ctx._chain.getCallHash('staking.payout_stakers') === '1fed710492a18f6b425d1332be2515dc1402588e0b4798e067293eb2104339e1'
   }
 
@@ -2450,29 +2250,21 @@ export class StakingPayoutStakersCall {
    *  # <weight>
    *  - Time complexity: at most O(MaxNominatorRewardedPerValidator).
    *  - Contains a limited number of reads and writes.
-   *  -----------
-   *  N is the Number of payouts for the validator (including the validator)
-   *  Base Weight: 110 + 54.2 * N µs (Median Slopes)
-   *  DB Weight:
-   *  - Read: EraElectionStatus, CurrentEra, HistoryDepth, MigrateEra, ErasValidatorReward,
-   *          ErasStakersClipped, ErasRewardPoints, ErasValidatorPrefs (8 items)
-   *  - Read Each: Bonded, Ledger, Payee, Locks, System Account (5 items)
-   *  - Write Each: System Account, Locks, Ledger (3 items)
    *  # </weight>
    */
-  get asV0(): {validatorStash: Uint8Array, era: number} {
-    assert(this.isV0)
+  get asV1058(): {validatorStash: Uint8Array, era: number} {
+    assert(this.isV1058)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV0
+    return this.isV1058
   }
 
   get asLatest(): {validatorStash: Uint8Array, era: number} {
     deprecateLatest()
-    return this.asV0
+    return this.asV1058
   }
 }
 
@@ -2484,17 +2276,15 @@ export class UtilityBatchCall {
   /**
    *  Send a batch of dispatch calls.
    * 
-   *  This will execute until the first one fails and then stop. Calls must fulfil the
-   *  `IsCallable` filter unless the origin is `Root`.
+   *  This will execute until the first one fails and then stop.
    * 
    *  May be called from any origin.
    * 
    *  - `calls`: The calls to be dispatched from the same origin.
    * 
    *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
    *  # </weight>
    * 
    *  This will return `Ok` in all circumstances. To determine the success of the batch, an
@@ -2503,15 +2293,431 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV0(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'ffb6d56b21b4b772a691acae174ed594bf8f6ff20a8349608219c795c31f1ae2'
+  get isV1032(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '88f814e44093e0c061b09015f36d6755aa1c5c550e13782f3b00c0621b1c2a3e'
   }
 
   /**
    *  Send a batch of dispatch calls.
    * 
-   *  This will execute until the first one fails and then stop. Calls must fulfil the
-   *  `IsCallable` filter unless the origin is `Root`.
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1032(): {calls: v1032.Type_93[]} {
+    assert(this.isV1032)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1038(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'bae654ce98a764ca4a084837a134444611398744a9219656ee2cbc2e0b41b271'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1038(): {calls: v1038.Type_93[]} {
+    assert(this.isV1038)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1039(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'c387bb2d9e1be522ac46cb3538105a56718fefe213a9453ca82478f0f60aca66'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1039(): {calls: v1039.Type_93[]} {
+    assert(this.isV1039)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1040(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'ca5f17ef29d359e451876fdfea2622fc003d64ce220f0bf3a1bbc23a4a514620'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1040(): {calls: v1040.Type_93[]} {
+    assert(this.isV1040)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1042(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '861dfda4c7fc29999d51b2b3b73be6d5d676215ba91ead2ddc4797729f9081f4'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1042(): {calls: v1042.Type_93[]} {
+    assert(this.isV1042)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1050(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '40f33674bb296ed2978a07fe08d3bd0d368e6ef5b87ddc56d845c14108ec1484'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1050(): {calls: v1050.Type_97[]} {
+    assert(this.isV1050)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1054(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '4aebba3033f08bfb3791c6da1fbd7d00ec0fa6c1730119f9cf49870ae17a2339'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1054(): {calls: v1054.Type_97[]} {
+    assert(this.isV1054)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1055(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '4d0c2804e114cde37c396eedb806e269ba0f34e27703dc0954c2678142613963'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1055(): {calls: v1055.Type_100[]} {
+    assert(this.isV1055)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV1058(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '7e73d82ee02dbedbd5cad8f6a04e0f0d31168d7afc7bcc0536afe7a270c71561'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - The sum of the weights of the `calls`.
+   *  - One event.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1058(): {calls: v1058.Type_160[]} {
+    assert(this.isV1058)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
    * 
    *  May be called from any origin.
    * 
@@ -2529,8 +2735,33 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV0(): {calls: v0.Type_21[]} {
-    assert(this.isV0)
+  get isV1062(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'a05d20f5ef52f74da7542ee4d651ff35aad10f18a051c4712c5bee6d3fa9b97a'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  This will execute until the first one fails and then stop.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  # <weight>
+   *  - Base weight: 14.39 + .987 * c µs
+   *  - Plus the sum of the weights of the `calls`.
+   *  - Plus one additional event. (repeat read/write)
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV1062(): {calls: v1062.Type_159[]} {
+    assert(this.isV1062)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2556,8 +2787,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV5(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'f2d99bd2da30b3ffa472a1b2156d075ea20c831b5dae8075783450e3b4c196d9'
+  get isV2005(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '2bcde12ecde5a78dd86b6d965bd8a01c776bf336661f229cd73f106c56c5c470'
   }
 
   /**
@@ -2582,61 +2813,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV5(): {calls: v5.Type_21[]} {
-    assert(this.isV5)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  This will execute until the first one fails and then stop. Calls must fulfil the
-   *  `IsCallable` filter unless the origin is `Root`.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get isV6(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'ffe8c34ef54f7fdeba1f7204bc73d900a0ebe4d643f816acef724f7ce4d4a83d'
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  This will execute until the first one fails and then stop. Calls must fulfil the
-   *  `IsCallable` filter unless the origin is `Root`.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get asV6(): {calls: v6.Type_21[]} {
-    assert(this.isV6)
+  get asV2005(): {calls: v2005.Type_172[]} {
+    assert(this.isV2005)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2662,8 +2840,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV7(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'e0e06f902aca309322d3110b17514f3b84d53849fd10cb69ad87c9a1ad4a4dfb'
+  get isV2007(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '8a751dc225fab1d7974d240412880326921b7cd72062138161570329b67fc05e'
   }
 
   /**
@@ -2688,8 +2866,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV7(): {calls: v7.Type_21[]} {
-    assert(this.isV7)
+  get asV2007(): {calls: v2007.Type_173[]} {
+    assert(this.isV2007)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2715,8 +2893,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV9(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'a0bfe28a0355c56918287aba24d2683fb0cc9ac71ce641517aedeccc6cf34365'
+  get isV2011(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '38376d6f335f176751e87537121157606acb29b9b502a4f85dabaa167fdd6df9'
   }
 
   /**
@@ -2741,8 +2919,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9(): {calls: v9.Type_21[]} {
-    assert(this.isV9)
+  get asV2011(): {calls: v2011.Type_174[]} {
+    assert(this.isV2011)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2768,8 +2946,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV10(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '8a82471a7fdab64d166dac0c0aeb108ae040f201bbc78218acae74e0da3d3942'
+  get isV2013(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'c2845ed42dc788fd5d77672fabe58226310484cc1caf87eb2ecd5663c1c1b8d0'
   }
 
   /**
@@ -2794,8 +2972,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV10(): {calls: v10.Type_21[]} {
-    assert(this.isV10)
+  get asV2013(): {calls: v2013.Type_174[]} {
+    assert(this.isV2013)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2821,8 +2999,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV11(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '077865553935b4f510aa668a5d4c3607882c095efaaa9d402774cb698987e523'
+  get isV2015(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '1bb359d68743464f0fad7598d4b1a28bf01db0658b6532f89750af872d1ec94d'
   }
 
   /**
@@ -2847,8 +3025,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV11(): {calls: v11.Type_21[]} {
-    assert(this.isV11)
+  get asV2015(): {calls: v2015.Type_177[]} {
+    assert(this.isV2015)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2874,8 +3052,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV13(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'e15522ea901a949ee96baea4cfa177f531319915fcbed9945b0ad01daf515905'
+  get isV2022(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '679b20b7590dc9727bc3d5266cbe8d1008c093d644aea69d25e24b2b43ea6ad5'
   }
 
   /**
@@ -2900,8 +3078,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV13(): {calls: v13.Type_21[]} {
-    assert(this.isV13)
+  get asV2022(): {calls: v2022.Type_177[]} {
+    assert(this.isV2022)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2927,8 +3105,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV14(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'e5fc5db7adb2e74b850324b28db0cbaf36122dc76f954c8c16891570936ca579'
+  get isV2023(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '1467e10b50ed17cf201b45190bb4c14eea7030ca9ad4e8a4c8bbf572a7b2bb05'
   }
 
   /**
@@ -2953,8 +3131,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV14(): {calls: v14.Type_21[]} {
-    assert(this.isV14)
+  get asV2023(): {calls: v2023.Type_179[]} {
+    assert(this.isV2023)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -2980,8 +3158,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV15(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '7f414e5b7d49aa8e48d6c7770d6ff62418ee229a3278b1991a3b9890720cdc99'
+  get isV2024(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '006e4f8a42bc40152a24b4e7e8fdfbea947e7d890e956d6307358f4f2ff685e9'
   }
 
   /**
@@ -3006,8 +3184,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV15(): {calls: v15.Type_21[]} {
-    assert(this.isV15)
+  get asV2024(): {calls: v2024.Type_179[]} {
+    assert(this.isV2024)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -3033,8 +3211,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV17(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'b66b9be598882029cd0e02be324912bf85927d9a7a95b1ab7d14a5abe52a9047'
+  get isV2025(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'b00627745bf5ef94256e2e8ae37f4d2a931e840a6ac2b6cb2950271f22ffbf62'
   }
 
   /**
@@ -3059,220 +3237,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV17(): {calls: v17.Type_21[]} {
-    assert(this.isV17)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get isV18(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'a5e5268e39ff4ad7e714e66b8c0ffd5e87476a8005a619aa66ade9cc80563f98'
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get asV18(): {calls: v18.Type_21[]} {
-    assert(this.isV18)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get isV23(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'eeed88f8ccb46637be05b355de0362bc1cc8b57341ab625b81599b973adad22b'
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get asV23(): {calls: v23.Type_21[]} {
-    assert(this.isV23)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get isV24(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '4202cd18751387919f0dc8948e2f07d682ee8fcc4459681a281b20a32c5c0e17'
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get asV24(): {calls: v24.Type_21[]} {
-    assert(this.isV24)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get isV25(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'e30f054052822967e49eecd679fd0bcae698b00dcdcf1bb49dd48ddbb635e487'
-  }
-
-  /**
-   *  Send a batch of dispatch calls.
-   * 
-   *  May be called from any origin.
-   * 
-   *  - `calls`: The calls to be dispatched from the same origin.
-   * 
-   *  If origin is root then call are dispatch without checking origin filter. (This includes
-   *  bypassing `frame_system::Trait::BaseCallFilter`).
-   * 
-   *  # <weight>
-   *  - Base weight: 14.39 + .987 * c µs
-   *  - Plus the sum of the weights of the `calls`.
-   *  - Plus one additional event. (repeat read/write)
-   *  # </weight>
-   * 
-   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
-   *  event is deposited. If a call failed and the batch was interrupted, then the
-   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
-   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
-   *  event is deposited.
-   */
-  get asV25(): {calls: v25.Type_21[]} {
-    assert(this.isV25)
+  get asV2025(): {calls: v2025.Type_180[]} {
+    assert(this.isV2025)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -3296,8 +3262,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV26(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '66d959c328a330f9e4cba37610e06004a4dbee6a2a196754d6d6adabd5bd1507'
+  get isV2026(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '7d2c4e3ee05fe7d4643a8298248180b1be09501911241bd0f941c31a06fd202d'
   }
 
   /**
@@ -3320,8 +3286,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV26(): {calls: v26.Type_21[]} {
-    assert(this.isV26)
+  get asV2026(): {calls: v2026.Type_179[]} {
+    assert(this.isV2026)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -3345,8 +3311,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV28(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '075fff7f40b55192fd2eeaab690083c5d7014932c9f121646c85262aeeef06aa'
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '99e4556ecdc31a54936a6b872dc84ef381c9d81d99569a2346839d27447ff6e5'
   }
 
   /**
@@ -3369,8 +3335,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV28(): {calls: v28.Type_21[]} {
-    assert(this.isV28)
+  get asV2028(): {calls: v2028.Type_184[]} {
+    assert(this.isV2028)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -3394,8 +3360,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV29(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '984d6b1dc7386c82d0219a4cadd30742a507dbe422f2b2931e93ebd4116962b0'
+  get isV2029(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '14e6bde245842198f92b4cffd80d9efab52b76e166063d4076b50e7dbad7d8d3'
   }
 
   /**
@@ -3418,8 +3384,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV29(): {calls: v29.Type_21[]} {
-    assert(this.isV29)
+  get asV2029(): {calls: v2029.Type_184[]} {
+    assert(this.isV2029)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -3443,8 +3409,8 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get isV30(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '51ab26095f821e257e2975a5c16029953c90f82154e229f2cbbefce7c134df5c'
+  get isV2030(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '75a740d44fb05691178c6706ed1ec4203cdf534597a51ef24edac9b7c925ab1d'
   }
 
   /**
@@ -3467,8 +3433,155 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV30(): {calls: v30.Type_21[]} {
-    assert(this.isV30)
+  get asV2030(): {calls: v2030.Type_123[]} {
+    assert(this.isV2030)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9010(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'a09825fbbedf49c006f8abe98732a207ab4ee2b877f806c671db233dbbf2b0a6'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9010(): {calls: v9010.Type_123[]} {
+    assert(this.isV9010)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9030(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '431d7602b704b1e5fa23a542e8cdd7426c572a9d7ea0c5987b2a9e1f485c506e'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9030(): {calls: v9030.Type_123[]} {
+    assert(this.isV9030)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get isV9040(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'bf3565f0804b61fd40a3be5a6b02f3132e0f4d6bcb8a1bee608927636ce6ac3d'
+  }
+
+  /**
+   *  Send a batch of dispatch calls.
+   * 
+   *  May be called from any origin.
+   * 
+   *  - `calls`: The calls to be dispatched from the same origin.
+   * 
+   *  If origin is root then call are dispatch without checking origin filter. (This includes
+   *  bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   *  # <weight>
+   *  - Complexity: O(C) where C is the number of calls to be batched.
+   *  # </weight>
+   * 
+   *  This will return `Ok` in all circumstances. To determine the success of the batch, an
+   *  event is deposited. If a call failed and the batch was interrupted, then the
+   *  `BatchInterrupted` event is deposited, along with the number of successful calls made
+   *  and the error of the failed call. If all were successful, then the `BatchCompleted`
+   *  event is deposited.
+   */
+  get asV9040(): {calls: v9040.Type_123[]} {
+    assert(this.isV9040)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -3493,7 +3606,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9050(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'e032f2e9d1e852ae22701cf33127cef1c3c277d465ae14c5aeb2b1fa9ed99697'
+    return this.ctx._chain.getCallHash('utility.batch') === '67eaa7d27e09b54a5f4d674bc7e240dcca966e1562133db98588867361f513bd'
   }
 
   /**
@@ -3516,7 +3629,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9050(): {calls: v9050.Type_21[]} {
+  get asV9050(): {calls: v9050.Type_124[]} {
     assert(this.isV9050)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3542,7 +3655,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9080(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'dc293a9774b79deb3c8ca6adde6cf337731021f85e92bcc7a83db641b2fbe415'
+    return this.ctx._chain.getCallHash('utility.batch') === 'f900726c727cdd29d0f59d6efbaac348e562d80d67eb76d7b0c40b7bab6324b8'
   }
 
   /**
@@ -3565,7 +3678,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9080(): {calls: v9080.Type_21[]} {
+  get asV9080(): {calls: v9080.Type_125[]} {
     assert(this.isV9080)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3592,7 +3705,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'd53c6dd4597b4e75d194b5da29e28eaa9d7b562f3b69a08797506268a4bfe122'
+    return this.ctx._chain.getCallHash('utility.batch') === '3896200420112de76c8c77db08fcf5d5ac1b24f276ce0059dea0f4f635b99a89'
   }
 
   /**
@@ -3616,7 +3729,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9090(): {calls: v9090.Type_21[]} {
+  get asV9090(): {calls: v9090.Type_125[]} {
     assert(this.isV9090)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3643,7 +3756,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9100(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '6f845619491413fe6f0a99b2e0ffec66e9b024b1aa708df60c02a450277a2d23'
+    return this.ctx._chain.getCallHash('utility.batch') === '296d333e75d778cc4e77496344978bd10519d93c1dea9f8112e20e860be42abc'
   }
 
   /**
@@ -3667,7 +3780,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9100(): {calls: v9100.Type_21[]} {
+  get asV9100(): {calls: v9100.Type_125[]} {
     assert(this.isV9100)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3693,8 +3806,8 @@ export class UtilityBatchCall {
    * and the error of the failed call. If all were successful, then the `BatchCompleted`
    * event is deposited.
    */
-  get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'f39ae1811b29c793caae130369024178bb4f3dd97321d077c6133e9068865eaf'
+  get isV9111(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '58226b61f7873fdcdb59614550a3f152e3be6e2025100abcbce278af91346273'
   }
 
   /**
@@ -3718,8 +3831,8 @@ export class UtilityBatchCall {
    * and the error of the failed call. If all were successful, then the `BatchCompleted`
    * event is deposited.
    */
-  get asV9110(): {calls: v9110.Call[]} {
-    assert(this.isV9110)
+  get asV9111(): {calls: v9111.Call[]} {
+    assert(this.isV9111)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
@@ -3744,8 +3857,8 @@ export class UtilityBatchCall {
    * and the error of the failed call. If all were successful, then the `BatchCompleted`
    * event is deposited.
    */
-  get isV9140(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'e80fd4ee582fb3e10b4838ccd53d0dbad856a56b0583f004844a55046c69b1c6'
+  get isV9122(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'c60231c6d5432b95b103c729355bccf3bbb78db929e3bc36e89af6655781630d'
   }
 
   /**
@@ -3769,18 +3882,69 @@ export class UtilityBatchCall {
    * and the error of the failed call. If all were successful, then the `BatchCompleted`
    * event is deposited.
    */
-  get asV9140(): {calls: v9140.Call[]} {
-    assert(this.isV9140)
+  get asV9122(): {calls: v9122.Call[]} {
+    assert(this.isV9122)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get isV9130(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '24073583c2749160a5e9c61ab70b5be6d8ec930e4774b556bcba2c5424c568dc'
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get asV9130(): {calls: v9130.Call[]} {
+    assert(this.isV9130)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV9140
+    return this.isV9130
   }
 
-  get asLatest(): {calls: v9140.Call[]} {
+  get asLatest(): {calls: v9130.Call[]} {
     deprecateLatest()
-    return this.asV9140
+    return this.asV9130
   }
 }

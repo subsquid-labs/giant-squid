@@ -21,18 +21,30 @@ function getRewardedEventData(ctx: EventHandlerContext): RewardData {
     }
 }
 
-function getRewardEventData(ctx: EventHandlerContext): RewardData {
+function getRewardEventData(ctx: EventHandlerContext): RewardData | undefined {
     const event = new StakingRewardEvent(ctx)
 
-    const [account, amount] = event.asLatest
-    return {
-        account,
-        amount,
+    if (event.isV1020) {
+        return undefined
+    } else if (event.isV1050) {
+        const [account, amount] = event.asV1050
+        return {
+            account,
+            amount,
+        }
+    } else {
+        const [account, amount] = event.asLatest
+        return {
+            account,
+            amount,
+        }
     }
 }
 
 export async function handleRewarded(ctx: EventHandlerContext, old = false) {
     const data = old ? getRewardEventData(ctx) : getRewardedEventData(ctx)
+    if (!data) return
+
     await saveRewardEvent(ctx, data)
 }
 

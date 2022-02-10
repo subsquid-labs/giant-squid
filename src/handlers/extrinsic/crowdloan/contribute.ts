@@ -8,8 +8,8 @@ import { CrowdloanContributeCall } from '../../../types/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
     const call = new CrowdloanContributeCall(ctx)
-    if (call.isV9110) {
-        const { index, value } = call.asV9110
+    if (call.isV9010) {
+        const { index, value } = call.asV9010
         return {
             paraId: index,
             amount: value,
@@ -24,14 +24,16 @@ function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
 }
 
 export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {
-    const id = `${ctx.extrinsic.id}`
+    const extrinsicId = ctx.extrinsic.id
 
     const parachain = await getOrCreateParachain(ctx.store, `${data.paraId}`)
     const crowdloanNum = parachain?.crowdloans.length || 0
     const crowdloan = await ctx.store.findOne(Crowdloan, `${data.paraId}-${crowdloanNum}`)
     if (!crowdloan) return
 
-    const contribution = await getOrCreate(ctx.store, Contribution, id)
+    const contribution = await getOrCreate(ctx.store, Contribution, {
+        extrinsicId
+    })
 
     populateMeta(ctx, contribution)
 
@@ -43,14 +45,6 @@ export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: Con
     contribution.amount ??= data.amount
 
     ctx.store.save(contribution)
-
-    crowdloan.contributors ??= []
-    if (!crowdloan.contributors.includes(contribution.account))
-        crowdloan.contributors.push(contribution.account)
-
-    crowdloan.raised += BigInt(contribution.amount)
-
-    ctx.store.save(crowdloan)
 }
 
 export async function handleContribute(ctx: ExtrinsicHandlerContext) {

@@ -3,13 +3,13 @@ import { getOrCreate } from '../../../common/helpers'
 import { CreateData } from '../../../common/types/crowdloanData'
 import { getOrCreateParachain } from '../../../common/parachain'
 import config from '../../../config'
-import { Crowdloan, Parachain } from '../../../model'
+import { Crowdloan, CrowdloanStatus, Parachain } from '../../../model'
 import * as calls from '../../../types/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
     const event = new calls.CrowdloanCreateCall(ctx)
-    if (event.isV9110) {
-        return event.asV9110
+    if (event.isV9010) {
+        return event.asV9010
     } else {
         return event.asLatest
     }
@@ -20,14 +20,16 @@ function getCrowdloanNum(parachain: Parachain, blockNumber: bigint) {
         (crowdloan) => crowdloan.blockNumber === blockNumber
     )
 
-    return crowdloanIndex > 0 ? crowdloanIndex + 1: parachain.crowdloans.length + 1
+    return crowdloanIndex >= 0 ? crowdloanIndex + 1 : parachain.crowdloans.length + 1
 }
 
 export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateData) {
     const parachain = await getOrCreateParachain(ctx.store, data.index)
 
     const crowdloanNum = getCrowdloanNum(parachain, BigInt(ctx.block.height))
-    const crowdloan = await getOrCreate(ctx.store, Crowdloan, `${data.index}-${crowdloanNum}`)
+    const crowdloan = await getOrCreate(ctx.store, Crowdloan, {
+        id: `${data.index}-${crowdloanNum}`,
+    })
 
     crowdloan.cap ??= data.cap
     crowdloan.end ??= BigInt(data.end)
@@ -37,7 +39,8 @@ export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateD
     crowdloan.chainName ??= config.chainName
     crowdloan.contributors ??= []
     crowdloan.raised ??= 0n
-    crowdloan.blockNumber = BigInt(ctx.block.height)
+    crowdloan.blockNumber ??= BigInt(ctx.block.height)
+    crowdloan.status ??= CrowdloanStatus.Created
 
     await ctx.store.save(crowdloan)
 }

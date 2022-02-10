@@ -8,8 +8,22 @@ import { snakeCase } from 'snake-case'
 
 function getEventData(ctx: EventHandlerContext): TransferData {
     const event = new BalancesTransferEvent(ctx)
-    if (event.isV0) {
-        const [from, to, amount] = event.asV0
+    if (event.isV1020) {
+        const [from, to, amount] = event.asV1020
+        return {
+            from,
+            to,
+            amount,
+        }
+    } else if (event.isV1050) {
+        const [from, to, amount] = event.asV1050
+        return {
+            from,
+            to,
+            amount,
+        }
+    } else if (event.isV9130) {
+        const { from, to, amount } = event.asV9130
         return {
             from,
             to,
@@ -31,13 +45,16 @@ function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
 }
 
 async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData) {
-    const id = `${ctx.extrinsic?.id}`
+    const eventId = ctx.event.id
 
-    const transfer = await getOrCreate(ctx.store, Transfer, id)
+    const transfer = await getOrCreate(ctx.store, Transfer, {
+        eventId,
+    })
 
     populateMeta(ctx, transfer)
 
     transfer.chainName ??= config.chainName
+    transfer.success = true
 
     transfer.amount ??= data.amount
     transfer.from ??= data.from ? encodeID(data.from, config.chainName) : null

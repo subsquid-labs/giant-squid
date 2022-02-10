@@ -1,7 +1,7 @@
 {
   "outDir": "../src/types",
   "chainVersions": "./versions.json",
-  "typesBundle": "polkadot",
+  "typesBundle": "kusama",
   "events": [
     "balances.Endowed",
     "balances.DustLost",

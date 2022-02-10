@@ -13,37 +13,44 @@ export function encodeID(ID: Uint8Array, chainName: string) {
     return ret
 }
 
+type GetByID = { id: string }
+type GetByEventID = { eventId: string }
+type GetByExtrinsicID = { extrinsicId: string }
+
 export async function getOrCreate<T extends { id: string }>(
     store: Store,
     entityConstructor: EntityConstructor<T>,
-    id: string
+    options: GetByID | GetByEventID | GetByExtrinsicID
 ): Promise<T> {
-    let e = await store.findOne<T>(entityConstructor, id)
+    let e = await store.findOne<T>(entityConstructor, {
+        where: options,
+    })
 
     if (!e) {
         e = new entityConstructor()
-        e.id = id
+        Object.assign(e, options)
     }
 
     return e
 }
 
-export function populateMeta<T extends ItemBase>(ctx: EventHandlerContext, entity: T): void
-export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext, entity: T): void
 export function populateMeta<T extends ItemBase>(
     ctx: ExtrinsicHandlerContext | EventHandlerContext,
     entity: T
 ): void {
-    entity.extrinisicHash ??= ctx.extrinsic?.hash
+    entity.extrinsicId ??= ctx.extrinsic?.id
+    entity.extrinsicHash ??= ctx.extrinsic?.hash
     entity.blockNumber ??= BigInt(ctx.block.height)
     entity.date ??= new Date(ctx.block.timestamp)
 }
 
 export interface ItemBase {
     id: string
+    eventId: string | null | undefined
+    extrinsicId: string | null | undefined
     date: Date | null | undefined
     blockNumber: bigint | null | undefined
-    extrinisicHash: string | null | undefined
+    extrinsicHash: string | null | undefined
 }
 
 export type EntityConstructor<T> = {

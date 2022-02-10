@@ -4,23 +4,39 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { RewardData } from '../../../common/types/stakingData'
 import { saveRewardEvent } from './base'
 
-function getSlashedEvent(ctx: EventHandlerContext, old = false): RewardData {
+function getSlashedEvent(ctx: EventHandlerContext): RewardData {
     const event = new events.StakingSlashedEvent(ctx)
 
-    const [account, amount] = event.asLatest
-    return {
-        account,
-        amount,
+    if (event.isV9090) {
+        const [account, amount] = event.asV9090
+        return {
+            account,
+            amount,
+        }
+    } else {
+        const [account, amount] = event.asLatest
+        return {
+            account,
+            amount,
+        }
     }
 }
 
 function getSlashEvent(ctx: EventHandlerContext): RewardData {
     const event = new events.StakingSlashEvent(ctx)
 
-    const [account, amount] = event.asLatest
-    return {
-        account,
-        amount,
+    if (event.isV1020) {
+        const [account, amount] = event.asV1020
+        return {
+            account,
+            amount,
+        }
+    } else {
+        const [account, amount] = event.asLatest
+        return {
+            account,
+            amount,
+        }
     }
 }
 

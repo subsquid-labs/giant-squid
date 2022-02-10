@@ -4,43 +4,58 @@ type Parachain @entity {
   crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
 }
 
+enum CrowdloanStatus {
+  Created
+  Won
+  Dissolved
+}
+
+type Contributor {
+  id: ID!
+  amount: BigInt!
+}
+
 type Crowdloan @entity {
   id: ID!
   cap: BigInt!
   firstPeriod: BigInt!
   lastPeriod: BigInt!
   end: BigInt!
-  contributors: [String!]
+  contributors: [Contributor!]
   raised: BigInt!
   parachain: Parachain!
   chainName: String! @index
   blockNumber: BigInt
+  status: CrowdloanStatus
 }
 
 interface ItemBase {
-  id: ID!
   date: DateTime
   blockNumber: BigInt
-  extrinisicHash: String
+  eventId: String
+  extrinsicId: String
+  extrinsicHash: String
   chainName: String 
 }
 
 type Contribution implements ItemBase @entity {
-  id: ID!
-  date: DateTime!
-  blockNumber: BigInt!
-  extrinisicHash: String
+  eventId: String
+  extrinsicId: String
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String
   chainName: String! @index
-  crowdloan: Crowdloan!
-  success: Boolean!
-  account: String! @index
-  amount: BigInt!
+  crowdloan: Crowdloan
+  success: Boolean
+  account: String @index
+  amount: BigInt
 }
 
 type Transfer implements ItemBase @entity {
-  id: ID!
+  eventId: String
+  extrinsicId: String
   blockNumber: BigInt
-  extrinisicHash: String
+  extrinsicHash: String
   to: String @index
   from: String @index
   amount: BigInt
@@ -51,10 +66,11 @@ type Transfer implements ItemBase @entity {
 }
 
 type Reward implements ItemBase @entity  {
-  id: ID!
+  eventId: String
+  extrinsicId: String
   date: DateTime
   blockNumber: BigInt
-  extrinisicHash: String
+  extrinsicHash: String
   chainName: String @index
   account: String @index
   amount: BigInt

@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, PrimaryGeneratedColumn} from "typeorm"
 import * as marshal from "./marshal"
 
 @Entity_()
@@ -7,8 +7,14 @@ export class Reward {
     Object.assign(this, props)
   }
 
-  @PrimaryColumn_()
+  @PrimaryGeneratedColumn('uuid')
   id!: string
+
+  @Column_("text", {nullable: true})
+  eventId!: string | undefined | null
+
+  @Column_("text", {nullable: true})
+  extrinsicId!: string | undefined | null
 
   @Column_("timestamp with time zone", {nullable: true})
   date!: Date | undefined | null
@@ -17,7 +23,7 @@ export class Reward {
   blockNumber!: bigint | undefined | null
 
   @Column_("text", {nullable: true})
-  extrinisicHash!: string | undefined | null
+  extrinsicHash!: string | undefined | null
 
   @Index_()
   @Column_("text", {nullable: true})

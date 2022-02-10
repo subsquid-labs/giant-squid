@@ -1,13 +1,15 @@
-import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { encodeID, getOrCreate, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { TransferData } from '../../../common/types/balanceData'
 import config from '../../../config'
 import { Transfer } from '../../../model'
 
 export async function saveTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData) {
-    const id = `${ctx.extrinsic.id}`
+    const extrinsicId = ctx.extrinsic.id
 
-    const transfer = await getOrCreate(ctx.store, Transfer, id)
+    const transfer = await getOrCreate(ctx.store, Transfer, {
+        extrinsicId
+    })
 
     populateMeta(ctx, transfer)
 

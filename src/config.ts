@@ -6,11 +6,11 @@ import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
 export default {
     chainName: 'polkadot',
     dataSource: {
-        archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
-        chain: 'wss://rpc.polkadot.io',
+        archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
+        chain: 'wss://kusama-rpc.polkadot.io',
     },
-    typesBundle: 'polkadot',
-    batchSize: 100,
+    typesBundle: 'kusama',
+    batchSize: 1,
     eventHandlers: {
         balances: {
             /**
