@@ -19,6 +19,7 @@ export class Reward {
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
 
+  @Index_()
   @Column_("text", {nullable: true})
   chainName!: string | undefined | null
 

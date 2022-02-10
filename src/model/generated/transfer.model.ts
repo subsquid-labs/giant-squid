@@ -36,6 +36,7 @@ export class Transfer {
   @Column_("timestamp with time zone", {nullable: true})
   date!: Date | undefined | null
 
+  @Index_()
   @Column_("text", {nullable: true})
   chainName!: string | undefined | null
 }

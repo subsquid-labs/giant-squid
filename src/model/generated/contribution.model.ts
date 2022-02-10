@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Crowdloan} from "./crowdloan.model"
 
@@ -20,6 +20,7 @@ export class Contribution {
   @Column_("text", {nullable: true})
   extrinisicHash!: string | undefined | null
 
+  @Index_()
   @Column_("text", {nullable: false})
   chainName!: string
 

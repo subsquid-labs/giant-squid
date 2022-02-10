@@ -113,6 +113,9 @@ export default {
                 handler: extrins.proxy.handleProxy,
             },
         },
+        /**
+         * Used to handle 'crowdloan.create' call wrapped in as_multi.
+         */
         multisig: {
             as_multi: {
                 handler: extrins.multisig.handleAsMulti,

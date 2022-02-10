@@ -33,6 +33,7 @@ export class Crowdloan {
   @ManyToOne_(() => Parachain, {nullable: false})
   parachain!: Parachain
 
+  @Index_()
   @Column_("text", {nullable: false})
   chainName!: string
 
