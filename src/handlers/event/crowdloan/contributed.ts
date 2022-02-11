@@ -34,7 +34,9 @@ async function saveContributedEvent(ctx: EventHandlerContext, data: Contribution
     const crowdloan = await ctx.store.findOne(Crowdloan, `${data.paraId}-${crowdloanNum}`)
     if (!crowdloan) return
 
-    const contribution = await getOrCreate(ctx.store, Contribution, id)
+    const contribution = await getOrCreate(ctx.store, Contribution, {
+        eventId: id,
+    })
 
     populateMeta(ctx, contribution)
 

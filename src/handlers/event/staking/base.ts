@@ -7,7 +7,9 @@ import { Reward } from '../../../model'
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const id = ctx.event.id
 
-    const reward = await getOrCreate(ctx.store, Reward, id)
+    const reward = await getOrCreate(ctx.store, Reward, {
+        eventId: id,
+    })
 
     populateMeta(ctx, reward)
 

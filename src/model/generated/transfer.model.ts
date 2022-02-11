@@ -12,6 +12,10 @@ export class Transfer {
 
   @Index_()
   @Column_("text", {nullable: true})
+  eventId!: string | undefined | null
+
+  @Index_()
+  @Column_("text", {nullable: true})
   extrinsicId!: string | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
