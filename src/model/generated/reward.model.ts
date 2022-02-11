@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, PrimaryGeneratedColumn} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 
 @Entity_()
@@ -7,12 +7,14 @@ export class Reward {
     Object.assign(this, props)
   }
 
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn_()
   id!: string
 
+  @Index_()
   @Column_("text", {nullable: true})
   eventId!: string | undefined | null
 
+  @Index_()
   @Column_("text", {nullable: true})
   extrinsicId!: string | undefined | null
 

@@ -39,8 +39,8 @@ interface ItemBase {
 }
 
 type Contribution implements ItemBase @entity {
-  eventId: String
-  extrinsicId: String
+  eventId: String @index
+  extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String
@@ -52,8 +52,8 @@ type Contribution implements ItemBase @entity {
 }
 
 type Transfer implements ItemBase @entity {
-  eventId: String
-  extrinsicId: String
+  eventId: String @index
+  extrinsicId: String @index
   blockNumber: BigInt
   extrinsicHash: String
   to: String @index
@@ -66,8 +66,8 @@ type Transfer implements ItemBase @entity {
 }
 
 type Reward implements ItemBase @entity  {
-  eventId: String
-  extrinsicId: String
+  eventId: String @index
+  extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String

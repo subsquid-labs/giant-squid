@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_, PrimaryGeneratedColumn} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Crowdloan} from "./crowdloan.model"
 
@@ -8,12 +8,14 @@ export class Contribution {
     Object.assign(this, props)
   }
 
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryColumn_()
   id!: string
 
+  @Index_()
   @Column_("text", {nullable: true})
   eventId!: string | undefined | null
 
+  @Index_()
   @Column_("text", {nullable: true})
   extrinsicId!: string | undefined | null
 
