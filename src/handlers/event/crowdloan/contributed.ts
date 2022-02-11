@@ -27,7 +27,7 @@ function getEventData(ctx: EventHandlerContext): ContributionData {
 }
 
 async function saveContributedEvent(ctx: EventHandlerContext, data: ContributionData) {
-    const eventId = ctx.event.id
+    const id = ctx.event.id
 
     const parachain = await getOrCreateParachain(ctx.store, `${data.paraId}`)
     const crowdloanNum = parachain?.crowdloans.length || 0
@@ -35,7 +35,7 @@ async function saveContributedEvent(ctx: EventHandlerContext, data: Contribution
     if (!crowdloan) return
 
     const contribution = await getOrCreate(ctx.store, Contribution, {
-        eventId,
+        id,
     })
 
     populateMeta(ctx, contribution)

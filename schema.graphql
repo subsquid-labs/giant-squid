@@ -32,14 +32,12 @@ type Crowdloan @entity {
 interface ItemBase {
   date: DateTime
   blockNumber: BigInt
-  eventId: String
   extrinsicId: String
   extrinsicHash: String
   chainName: String 
 }
 
 type Contribution implements ItemBase @entity {
-  eventId: String @index
   extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt
@@ -52,7 +50,6 @@ type Contribution implements ItemBase @entity {
 }
 
 type Transfer implements ItemBase @entity {
-  eventId: String @index
   extrinsicId: String @index
   blockNumber: BigInt
   extrinsicHash: String
@@ -66,7 +63,6 @@ type Transfer implements ItemBase @entity {
 }
 
 type Reward implements ItemBase @entity  {
-  eventId: String @index
   extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt

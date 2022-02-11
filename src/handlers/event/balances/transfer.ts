@@ -45,10 +45,10 @@ function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
 }
 
 async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData) {
-    const eventId = ctx.event.id
+    const id = ctx.event.id
 
     const transfer = await getOrCreate(ctx.store, Transfer, {
-        eventId,
+        id,
     })
 
     populateMeta(ctx, transfer)

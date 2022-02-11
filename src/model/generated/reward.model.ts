@@ -12,10 +12,6 @@ export class Reward {
 
   @Index_()
   @Column_("text", {nullable: true})
-  eventId!: string | undefined | null
-
-  @Index_()
-  @Column_("text", {nullable: true})
   extrinsicId!: string | undefined | null
 
   @Column_("timestamp with time zone", {nullable: true})

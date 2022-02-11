@@ -14,13 +14,12 @@ export function encodeID(ID: Uint8Array, chainName: string) {
 }
 
 type GetByID = { id: string }
-type GetByEventID = { eventId: string }
 type GetByExtrinsicID = { extrinsicId: string }
 
 export async function getOrCreate<T extends { id: string }>(
     store: Store,
     entityConstructor: EntityConstructor<T>,
-    options: GetByID | GetByEventID | GetByExtrinsicID
+    options: GetByID | GetByExtrinsicID
 ): Promise<T> {
     let e = await store.findOne<T>(entityConstructor, {
         where: options,
@@ -34,14 +33,6 @@ export async function getOrCreate<T extends { id: string }>(
     return e
 }
 
-function toHex(a: string | number) {
-    return a
-        .toString()
-        .split('')
-        .map((b) => b.charCodeAt(0).toString(16))
-        .join('')
-}
-
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
     entity.id ??= ctx.event.id
     entity.extrinsicId ??= ctx.extrinsic?.id
@@ -52,7 +43,6 @@ export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | 
 
 export interface ItemBase {
     id: string
-    eventId: string | null | undefined
     extrinsicId: string | null | undefined
     date: Date | null | undefined
     blockNumber: bigint | null | undefined
