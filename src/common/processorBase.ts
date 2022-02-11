@@ -48,11 +48,7 @@ export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
         const section = config.eventHandlers[sectionName]
         for (const methodName in section) {
             const method = section[methodName]
-            processor.addEventHandler(
-                `${sectionName}.${methodName}`,
-                method.options || {},
-                method.handler
-            )
+            processor.addEventHandler(`${sectionName}.${methodName}`, method.options || {}, method.handler)
         }
     }
 
@@ -60,11 +56,7 @@ export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
         const section = config.extrinsicsHandlers[sectionName]
         for (const methodName in section) {
             const method = section[methodName]
-            processor.addExtrinsicHandler(
-                `${sectionName}.${methodName}`,
-                method.options || {},
-                method.handler
-            )
+            processor.addExtrinsicHandler(`${sectionName}.${methodName}`, method.options || {}, method.handler)
         }
     }
 

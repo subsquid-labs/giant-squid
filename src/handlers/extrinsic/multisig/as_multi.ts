@@ -9,6 +9,7 @@ const AS_MULTI_CALL_DATA = 3
  */
 function getCallData(ctx: ExtrinsicHandlerContext) {
     const hex = ctx.extrinsic.args[AS_MULTI_CALL_DATA].value
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { __kind, value } = (ctx._chain as any).jsonCodec.scaleCodec.decodeBinary(
         ctx._chain.description.call,
         hex
@@ -41,9 +42,7 @@ function getCallData(ctx: ExtrinsicHandlerContext) {
  * so it needs to be handled
  */
 function isCrowdloanCreateValid(ctx: ExtrinsicHandlerContext): boolean {
-    const extrinsicEvents = ctx.block.events.filter(
-        (event) => event.extrinsicId === ctx.extrinsic.id
-    )
+    const extrinsicEvents = ctx.block.events.filter((event) => event.extrinsicId === ctx.extrinsic.id)
 
     return extrinsicEvents.find((event) => event.name === 'crowdloan.Created') !== undefined
 }

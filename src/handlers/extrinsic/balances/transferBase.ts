@@ -5,10 +5,8 @@ import config from '../../../config'
 import { Transfer } from '../../../model'
 
 export async function saveTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData) {
-    const extrinsicId = ctx.extrinsic.id
-
     const transfer = await getOrCreate(ctx.store, Transfer, {
-        extrinsicId
+        extrinsicHash: ctx.extrinsic.hash,
     })
 
     populateMeta(ctx, transfer)

@@ -10,13 +10,10 @@ export class Transfer {
   @PrimaryColumn_()
   id!: string
 
-  @Index_()
-  @Column_("text", {nullable: true})
-  extrinsicId!: string | undefined | null
-
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null
 
+  @Index_()
   @Column_("text", {nullable: true})
   extrinsicHash!: string | undefined | null
 

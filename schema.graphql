@@ -32,17 +32,15 @@ type Crowdloan @entity {
 interface ItemBase {
   date: DateTime
   blockNumber: BigInt
-  extrinsicId: String
   extrinsicHash: String
   chainName: String 
 }
 
 type Contribution implements ItemBase @entity {
   id: ID! @index
-  extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt
-  extrinsicHash: String
+  extrinsicHash: String @index
   chainName: String! @index
   crowdloan: Crowdloan
   success: Boolean
@@ -52,9 +50,8 @@ type Contribution implements ItemBase @entity {
 
 type Transfer implements ItemBase @entity {
   id: ID! @index
-  extrinsicId: String @index
   blockNumber: BigInt
-  extrinsicHash: String
+  extrinsicHash: String @index
   to: String @index
   from: String @index
   amount: BigInt
@@ -66,10 +63,9 @@ type Transfer implements ItemBase @entity {
 
 type Reward implements ItemBase @entity  {
   id: ID! @index
-  extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt
-  extrinsicHash: String
+  extrinsicHash: String @index
   chainName: String @index
   account: String @index
   amount: BigInt

@@ -24,15 +24,13 @@ function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
 }
 
 export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {
-    const extrinsicId = ctx.extrinsic.id
-
     const parachain = await getOrCreateParachain(ctx.store, `${data.paraId}`)
     const crowdloanNum = parachain?.crowdloans.length || 0
     const crowdloan = await ctx.store.findOne(Crowdloan, `${data.paraId}-${crowdloanNum}`)
     if (!crowdloan) return
 
     const contribution = await getOrCreate(ctx.store, Contribution, {
-        extrinsicId
+        extrinsicHash: ctx.extrinsic.hash,
     })
 
     populateMeta(ctx, contribution)

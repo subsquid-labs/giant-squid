@@ -49,7 +49,6 @@ export async function getOrCreate<T extends { id: string }>(
 
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
     entity.id ??= ctx.event.id
-    entity.extrinsicId ??= ctx.extrinsic?.id
     entity.extrinsicHash ??= ctx.extrinsic?.hash
     entity.blockNumber ??= BigInt(ctx.block.height)
     entity.date ??= new Date(ctx.block.timestamp)
@@ -57,7 +56,6 @@ export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | 
 
 export interface ItemBase {
     id: string
-    extrinsicId: string | null | undefined
     date: Date | null | undefined
     blockNumber: bigint | null | undefined
     extrinsicHash: string | null | undefined

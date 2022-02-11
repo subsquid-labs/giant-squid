@@ -38,9 +38,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): CreateData | undefined {
  * so it needs to be handled
  */
 function isCrowdloanCreateValid(ctx: ExtrinsicHandlerContext): boolean {
-    const extrinsicEvents = ctx.block.events.filter(
-        (event) => event.extrinsicId === ctx.extrinsic.id
-    )
+    const extrinsicEvents = ctx.block.events.filter((event) => event.extrinsicId === ctx.extrinsic.id)
 
     return extrinsicEvents.find((event) => event.name === 'crowdloan.Created') !== undefined
 }
