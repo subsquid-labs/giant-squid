@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, PrimaryGeneratedColumn} from "typeorm"
 import * as marshal from "./marshal"
 
 @Entity_()
@@ -7,7 +7,7 @@ export class Reward {
     Object.assign(this, props)
   }
 
-  @PrimaryColumn_()
+  @PrimaryGeneratedColumn('uuid')
   id!: string
 
   @Index_()
