@@ -1,7 +1,10 @@
-export interface ContributionData {
-    account?: Uint8Array
+export interface ContributeData {
     paraId: number
     amount: bigint
+}
+
+export interface ContributedData extends ContributeData {
+    account: Uint8Array
 }
 
 export interface CreateData {

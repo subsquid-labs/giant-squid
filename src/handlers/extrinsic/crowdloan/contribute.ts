@@ -1,12 +1,12 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { getOrCreate, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { getOrCreateParachain } from '../../../common/parachain'
-import { ContributionData } from '../../../common/types/crowdloanData'
+import { ContributeData } from '../../../common/types/crowdloanData'
 import config from '../../../config'
 import { Contribution, Crowdloan } from '../../../model'
 import { CrowdloanContributeCall } from '../../../types/calls'
 
-function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
+function getCallData(ctx: ExtrinsicHandlerContext): ContributeData {
     const call = new CrowdloanContributeCall(ctx)
     if (call.isV9010) {
         const { index, value } = call.asV9010
@@ -23,7 +23,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
     }
 }
 
-export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {
+export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributeData) {
     const parachain = await getOrCreateParachain(ctx.store, `${data.paraId}`)
     const crowdloanNum = parachain?.crowdloans.length || 0
     const crowdloan = await ctx.store.findOne(Crowdloan, `${data.paraId}-${crowdloanNum}`)

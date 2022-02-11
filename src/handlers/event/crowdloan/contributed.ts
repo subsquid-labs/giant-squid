@@ -1,12 +1,12 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { EventHandlerContext, Store } from '@subsquid/substrate-processor'
 import { encodeID, getOrCreate, populateMeta } from '../../../common/helpers'
 import { getOrCreateParachain } from '../../../common/parachain'
-import { ContributionData } from '../../../common/types/crowdloanData'
+import { ContributedData } from '../../../common/types/crowdloanData'
 import config from '../../../config'
 import { Contribution, Contributor, Crowdloan } from '../../../model'
 import { CrowdloanContributedEvent } from '../../../types/events'
 
-function getEventData(ctx: EventHandlerContext): ContributionData {
+function getEventData(ctx: EventHandlerContext): ContributedData {
     const event = new CrowdloanContributedEvent(ctx)
 
     if (event.isV9010) {
@@ -26,7 +26,30 @@ function getEventData(ctx: EventHandlerContext): ContributionData {
     }
 }
 
-async function saveContributedEvent(ctx: EventHandlerContext, data: ContributionData) {
+async function updateCrowdloanContributions(
+    store: Store,
+    options: { crowdloan: Crowdloan; contribution: Contribution }
+) {
+    const { crowdloan, contribution } = options
+
+    crowdloan.contributors ??= []
+
+    let contributor = crowdloan.contributors.find((contributor) => contributor.id === contribution.account)
+    if (!contributor) {
+        contributor = new Contributor({
+            id: contribution.account as string,
+            amount: 0n,
+        })
+        crowdloan.contributors.push(contributor)
+    }
+
+    contributor.amount += BigInt(contribution.amount || 0)
+    crowdloan.raised += BigInt(contribution.amount || 0)
+
+    await store.save(crowdloan)
+}
+
+async function saveContributedEvent(ctx: EventHandlerContext, data: ContributedData) {
     const id = ctx.event.id
 
     const parachain = await getOrCreateParachain(ctx.store, `${data.paraId}`)
@@ -39,31 +62,15 @@ async function saveContributedEvent(ctx: EventHandlerContext, data: Contribution
     populateMeta(ctx, contribution)
 
     contribution.chainName ??= config.chainName
-    contribution.success = true
+    contribution.success ??= true
 
     contribution.amount ??= data.amount
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    contribution.account ??= encodeID(data.account!, config.chainName)
+    contribution.account ??= encodeID(data.account, config.chainName)
     contribution.crowdloan ??= crowdloan
 
     await ctx.store.save(contribution)
 
-    crowdloan.contributors ??= []
-
-    let contributor = crowdloan.contributors.find((contributor) => contributor.id === contribution.account)
-    if (!contributor) {
-        contributor = new Contributor({
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            id: contribution.account!,
-            amount: 0n,
-        })
-        crowdloan.contributors.push(contributor)
-    }
-
-    contributor.amount += BigInt(contribution.amount)
-    crowdloan.raised += BigInt(contribution.amount)
-
-    await ctx.store.save(crowdloan)
+    await updateCrowdloanContributions(ctx.store, { crowdloan, contribution })
 }
 
 export async function handleContributed(ctx: EventHandlerContext) {

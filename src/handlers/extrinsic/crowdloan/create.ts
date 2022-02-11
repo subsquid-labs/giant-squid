@@ -16,9 +16,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
 }
 
 function getCrowdloanNum(parachain: Parachain, blockNumber: bigint) {
-    const crowdloanIndex = parachain.crowdloans.findIndex(
-        (crowdloan) => crowdloan.blockNumber === blockNumber
-    )
+    const crowdloanIndex = parachain.crowdloans.findIndex((crowdloan) => crowdloan.blockNumber === blockNumber)
 
     return crowdloanIndex >= 0 ? crowdloanIndex + 1 : parachain.crowdloans.length + 1
 }
