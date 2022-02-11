@@ -34,10 +34,16 @@ export async function getOrCreate<T extends { id: string }>(
     return e
 }
 
-export function populateMeta<T extends ItemBase>(
-    ctx: ExtrinsicHandlerContext | EventHandlerContext,
-    entity: T
-): void {
+function toHex(a: string | number) {
+    return a
+        .toString()
+        .split('')
+        .map((b) => b.charCodeAt(0).toString(16))
+        .join('')
+}
+
+export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
+    entity.id ??= ctx.event.id
     entity.extrinsicId ??= ctx.extrinsic?.id
     entity.extrinsicHash ??= ctx.extrinsic?.hash
     entity.blockNumber ??= BigInt(ctx.block.height)
