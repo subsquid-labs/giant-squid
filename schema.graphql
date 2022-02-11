@@ -44,7 +44,7 @@ type Contribution implements ItemBase @entity {
   blockNumber: BigInt
   extrinsicHash: String
   chainName: String! @index
-  crowdloan: Crowdloan @index
+  crowdloan: Crowdloan
   success: Boolean
   account: String @index
   amount: BigInt
