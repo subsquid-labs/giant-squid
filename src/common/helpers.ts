@@ -13,21 +13,35 @@ export function encodeID(ID: Uint8Array, chainName: string) {
     return ret
 }
 
-type GetByID = { id: string }
-type GetByExtrinsicID = { extrinsicId: string }
-
 export async function getOrCreate<T extends { id: string }>(
     store: Store,
     entityConstructor: EntityConstructor<T>,
-    options: GetByID | GetByExtrinsicID
+    id: string
+): Promise<T>
+export async function getOrCreate<T extends { id: string }>(
+    store: Store,
+    entityConstructor: EntityConstructor<T>,
+    id: Partial<T>
+): Promise<T>
+export async function getOrCreate<T extends { id: string }>(
+    store: Store,
+    entityConstructor: EntityConstructor<T>,
+    idOrOptions: string | Partial<T>
 ): Promise<T> {
-    let e = await store.findOne<T>(entityConstructor, {
-        where: options,
-    })
+    let e
+
+    if (typeof idOrOptions == 'string') {
+        e = await store.findOne<T>(entityConstructor, idOrOptions)
+    } else {
+        e = await store.findOne<T>(entityConstructor, { where: idOrOptions })
+    }
 
     if (!e) {
-        e = new entityConstructor()
-        Object.assign(e, options)
+        if (typeof idOrOptions == 'string') {
+            e = new entityConstructor({ id: idOrOptions })
+        } else {
+            e = new entityConstructor(idOrOptions)
+        }
     }
 
     return e

@@ -1,5 +1,5 @@
 type Parachain @entity {
-  id: ID!
+  id: ID! @index
   name: String
   crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
 }
@@ -16,7 +16,7 @@ type Contributor {
 }
 
 type Crowdloan @entity {
-  id: ID!
+  id: ID! @index
   cap: BigInt!
   firstPeriod: BigInt!
   lastPeriod: BigInt!
@@ -38,18 +38,20 @@ interface ItemBase {
 }
 
 type Contribution implements ItemBase @entity {
+  id: ID! @index
   extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String
   chainName: String! @index
-  crowdloan: Crowdloan
+  crowdloan: Crowdloan @index
   success: Boolean
   account: String @index
   amount: BigInt
 }
 
 type Transfer implements ItemBase @entity {
+  id: ID! @index
   extrinsicId: String @index
   blockNumber: BigInt
   extrinsicHash: String
@@ -63,6 +65,7 @@ type Transfer implements ItemBase @entity {
 }
 
 type Reward implements ItemBase @entity  {
+  id: ID! @index
   extrinsicId: String @index
   date: DateTime
   blockNumber: BigInt
