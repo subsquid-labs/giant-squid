@@ -122,6 +122,9 @@ export default {
         proxy: {
             proxy: {
                 handler: extrins.proxy.handleProxy,
+                options: {
+                    triggerEvents: ['crowdloan.Created'],
+                },
             },
         },
         /**
@@ -130,6 +133,9 @@ export default {
         multisig: {
             as_multi: {
                 handler: extrins.multisig.handleAsMulti,
+                options: {
+                    triggerEvents: ['crowdloan.Created'],
+                },
             },
         },
     },
