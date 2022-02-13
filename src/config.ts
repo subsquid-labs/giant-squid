@@ -63,7 +63,7 @@ export default {
                 handler: extrins.crowdloan.handleCreate,
             },
             /**
-             * Used only to get success of transaction and fill failed Cuntribute item.
+             * Used only to get result of transaction and fill failed Cuntribute item.
              * Works in pair with 'crowdloan.Contributed' event.
              * Can be removed if you don't need it.
              */
@@ -85,7 +85,7 @@ export default {
             },
         },
         /**
-         * Used only to get success of transaction and fill failed Transfers item.
+         * Used only to get result of transaction and fill failed Transfers item.
          * Works in pair with 'balances.Transfer' event.
          * Can be removed if you don't need it.
          */
@@ -102,7 +102,6 @@ export default {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
-
             force_transfer: {
                 handler: extrins.balances.handleForceTransfer,
                 options: {
