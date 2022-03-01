@@ -84,7 +84,10 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
 
 export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, success = true) {
     //NEED TO FIX
-    ctx.event.method = ctx.extrinsic?.method === 'unbond' ? 'Unbonded' : 'Bonded'
+    if (ctx.extrinsic) {
+        ctx.event.method = ctx.extrinsic.method === 'unbond' ? 'Unbonded' : 'Bonded'
+        ctx.event.name = `staking.${ctx.event.method}`
+    }
 
     const id = ctx.event.id
 
