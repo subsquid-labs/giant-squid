@@ -40,6 +40,12 @@ export default {
             Slash: {
                 handler: modules.staking.events.handleSlash,
             },
+            Bonded: {
+                handler: modules.staking.events.handleBonded,
+            },
+            Unbonded: {
+                handler: modules.staking.events.handleUnbonded,
+            },
         },
         crowdloan: {
             Contributed: {
