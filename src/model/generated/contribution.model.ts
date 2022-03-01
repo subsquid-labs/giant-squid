@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Crowdloan} from "./crowdloan.model"
+import {Account} from "./account.model"
 
 @Entity_()
 export class Contribution {
@@ -10,6 +11,10 @@ export class Contribution {
 
   @PrimaryColumn_()
   id!: string
+
+  @Index_()
+  @Column_("text", {nullable: false})
+  chainName!: string
 
   @Column_("timestamp with time zone", {nullable: true})
   date!: Date | undefined | null
@@ -22,10 +27,6 @@ export class Contribution {
   extrinsicHash!: string | undefined | null
 
   @Index_()
-  @Column_("text", {nullable: false})
-  chainName!: string
-
-  @Index_()
   @ManyToOne_(() => Crowdloan, {nullable: true})
   crowdloan!: Crowdloan | undefined | null
 
@@ -33,8 +34,8 @@ export class Contribution {
   success!: boolean | undefined | null
 
   @Index_()
-  @Column_("text", {nullable: true})
-  account!: string | undefined | null
+  @ManyToOne_(() => Account, {nullable: true})
+  account!: Account | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null

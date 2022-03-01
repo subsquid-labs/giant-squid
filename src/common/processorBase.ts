@@ -2,7 +2,6 @@ import { SubstrateProcessor } from '@subsquid/substrate-processor'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
-type ChainName = 'polkadot' | 'kusama'
 
 enum HandlerParams {
     NAME,
@@ -22,7 +21,8 @@ type Handlers<T> = Record<
 >
 
 export interface ProcessorConfig {
-    chainName: ChainName
+    chainName: string
+    prefix: number | string
     dataSource: Parameters<SubstrateProcessor['setDataSource']>[HandlerParams.NAME]
     typesBundle: Parameters<SubstrateProcessor['setTypesBundle']>[HandlerParams.NAME]
     batchSize?: Parameters<SubstrateProcessor['setBatchSize']>[HandlerParams.NAME]

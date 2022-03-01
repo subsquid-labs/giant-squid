@@ -1,10 +1,10 @@
-import events from './handlers/event'
-import extrins from './handlers/extrinsic'
+import modules from './handlers'
 import { ProcessorConfig } from './common/processorBase'
 import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
 
 export default {
     chainName: 'kusama',
+    prefix: 'kusama',
     dataSource: {
         archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
         chain: 'wss://kusama-rpc.polkadot.io',
@@ -18,39 +18,39 @@ export default {
              * Also provide balance info for 'balances.transfer_all' call
              */
             Transfer: {
-                handler: events.balances.handleTransfer,
+                handler: modules.balances.events.handleTransfer,
             },
         },
         staking: {
             Rewarded: {
-                handler: events.staking.handleRewarded,
+                handler: modules.staking.events.handleRewarded,
             },
             /**
              * Old name of Rewarded event
              */
             Reward: {
-                handler: events.staking.handleReward,
+                handler: modules.staking.events.handleReward,
             },
             Slashed: {
-                handler: events.staking.handleSlashed,
+                handler: modules.staking.events.handleSlashed,
             },
             /**
              * Old name of Slashed event
              */
             Slash: {
-                handler: events.staking.handleSlash,
+                handler: modules.staking.events.handleSlash,
             },
         },
         crowdloan: {
             Contributed: {
-                handler: events.crowdloan.handleContributed,
+                handler: modules.crowdloan.events.handleContributed,
             },
             /**
              * Used to handle crowdloan dissolve.
              * Last crowdloan of paraId parachain will change status to dissolved.
              */
             Dissolved: {
-                handler: events.crowdloan.handleDissolved,
+                handler: modules.crowdloan.events.handleDissolved,
             },
         },
     },
@@ -60,7 +60,10 @@ export default {
              * Used to handle new crowdloan and create them
              */
             create: {
-                handler: extrins.crowdloan.handleCreate,
+                handler: modules.crowdloan.extrinsics.handleCreate,
+                options: {
+                    triggerEvents: ['crowdloan.Created'],
+                },
             },
             /**
              * Used only to get result of transaction and fill failed Cuntribute item.
@@ -68,7 +71,7 @@ export default {
              * Can be removed if you don't need it.
              */
             contribute: {
-                handler: extrins.crowdloan.handleContribute,
+                handler: modules.crowdloan.extrinsics.handleContribute,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
@@ -81,7 +84,7 @@ export default {
          */
         staking: {
             payout_stakers: {
-                handler: extrins.staking.handlePauoutStakers,
+                handler: modules.staking.extrinsics.handlePauoutStakers,
             },
         },
         /**
@@ -91,25 +94,25 @@ export default {
          */
         balances: {
             transfer: {
-                handler: extrins.balances.handleTransfer,
+                handler: modules.balances.extrinsics.handleTransfer,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             transfer_keep_alive: {
-                handler: extrins.balances.handleTransferKeepAlive,
+                handler: modules.balances.extrinsics.handleTransferKeepAlive,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             force_transfer: {
-                handler: extrins.balances.handleForceTransfer,
+                handler: modules.balances.extrinsics.handleForceTransfer,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             transfer_all: {
-                handler: extrins.balances.handleTransferAll,
+                handler: modules.balances.extrinsics.handleTransferAll,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
@@ -120,7 +123,7 @@ export default {
          */
         proxy: {
             proxy: {
-                handler: extrins.proxy.handleProxy,
+                handler: modules.proxy.extrinsics.handleProxy,
                 options: {
                     triggerEvents: ['crowdloan.Created'],
                 },
@@ -131,7 +134,7 @@ export default {
          */
         multisig: {
             as_multi: {
-                handler: extrins.multisig.handleAsMulti,
+                handler: modules.multisig.extrinsics.handleAsMulti,
                 options: {
                     triggerEvents: ['crowdloan.Created'],
                 },

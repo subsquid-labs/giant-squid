@@ -3,8 +3,8 @@ import * as marshal from "./marshal"
 import {Account} from "./account.model"
 
 @Entity_()
-export class Reward {
-  constructor(props?: Partial<Reward>) {
+export class Stake {
+  constructor(props?: Partial<Stake>) {
     Object.assign(this, props)
   }
 
@@ -31,12 +31,6 @@ export class Reward {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
-
-  @Column_("integer", {nullable: true})
-  era!: number | undefined | null
-
-  @Column_("text", {nullable: true})
-  validator!: string | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   total!: bigint | undefined | null

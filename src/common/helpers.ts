@@ -1,16 +1,33 @@
 import * as ss58 from '@subsquid/ss58'
 import { EventHandlerContext, ExtrinsicHandlerContext, Store } from '@subsquid/substrate-processor'
+import { Account } from '../model'
 import { EXTRINSIC_SUCCESS } from './consts'
 
-export function encodeID(ID: Uint8Array, chainName: string) {
+export function encodeID(ID: Uint8Array, prefix: string | number) {
     let ret: string | null
     try {
-        ret = ss58.codec(chainName).encode(ID)
+        ret = ss58.codec(prefix).encode(ID)
     } catch (e) {
         ret = null
     }
 
     return ret
+}
+
+export async function getAccount(store: Store, id: string) {
+    let account = await store.findOne(Account, id, { cache: true })
+
+    if (!account) {
+        account = new Account({
+            id: id,
+            totalReward: 0n,
+            totalStake: 0n,
+        })
+
+        await store.save(account)
+    }
+
+    return account
 }
 
 export async function getOrCreate<T extends { id: string }>(
