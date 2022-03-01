@@ -3,14 +3,11 @@ import { StakeData } from '../../../common/types/stakingData'
 import { StakingBondCall } from '../../../types/calls'
 import { saveStakeCall } from '../utils/base'
 
-function getCallData(ctx: ExtrinsicHandlerContext): StakeData {
+function getCallData(ctx: ExtrinsicHandlerContext): StakeData | undefined {
     const call = new StakingBondCall(ctx)
 
     if (call.isV1020) {
-        const { value } = call.asV1020
-        return {
-            amount: value,
-        }
+        return undefined
     } else if (call.isV1050) {
         const { value } = call.asV1050
         return {
@@ -36,6 +33,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): StakeData {
 
 export async function handleBond(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
+    if (!data) return
 
     await saveStakeCall(ctx, data)
 }
