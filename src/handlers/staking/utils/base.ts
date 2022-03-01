@@ -41,7 +41,7 @@ async function calculateTotalReward(
 
     if (!account) return
 
-    account.totalReward = (account.totalReward || 0n) + (isReward(ctx) ? data.amount : 0n)
+    account.totalReward = (account.totalReward || 0n) + BigInt(isReward(ctx) ? data.amount : 0n)
     reward.total = account.totalReward
 
     await ctx.store.save(account)
@@ -65,7 +65,7 @@ async function calculateTotalStake(
 
     if (!account) return
 
-    account.totalReward = (account.totalReward || 0n) + (isStakeBond(ctx) ? data.amount : -data.amount)
+    account.totalReward = (account.totalReward || 0n) + BigInt(isStakeBond(ctx) ? data.amount : -data.amount)
     stake.total = account.totalReward
 
     await ctx.store.save(account)
