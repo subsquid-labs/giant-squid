@@ -5,7 +5,7 @@ export interface RewardData {
 
 export interface StakeData {
     amount: bigint
-    account: Uint8Array
+    account?: Uint8Array
 }
 export interface PayoutData {
     era: number

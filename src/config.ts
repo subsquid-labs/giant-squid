@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import modules from './handlers'
 import { ProcessorConfig } from './common/processorBase'
 import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
@@ -91,6 +92,15 @@ export default {
         staking: {
             payout_stakers: {
                 handler: modules.staking.extrinsics.handlePauoutStakers,
+            },
+            bond: {
+                handler: modules.staking.extrinsics.handleBond,
+            },
+            bond_extra: {
+                handler: modules.staking.extrinsics.handleBondExtra,
+            },
+            unbund: {
+                handler: modules.staking.extrinsics.handleUnbond,
             },
         },
         /**

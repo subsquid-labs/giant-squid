@@ -95,5 +95,6 @@ type Stake implements Item @entity  {
   account: Account @index
   amount: BigInt
   total: BigInt
+  success: Boolean
   name: String
 }

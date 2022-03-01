@@ -1,5 +1,6 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
+import * as v1020 from './v1020'
 import * as v1032 from './v1032'
 import * as v1038 from './v1038'
 import * as v1039 from './v1039'
@@ -33,6 +34,8 @@ import * as v9100 from './v9100'
 import * as v9111 from './v9111'
 import * as v9122 from './v9122'
 import * as v9130 from './v9130'
+import * as v9160 from './v9160'
+import * as v9170 from './v9170'
 
 export class BalancesForceTransferCall {
   constructor(private ctx: CallContext) {
@@ -787,7 +790,7 @@ export class MultisigAsMultiCall {
    *  # </weight>
    */
   get isV2005(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === '338f0eaa430150c20e52fa22cf1209b1826cf91a9cdbe2e62a267f93baab7c1b'
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '0696015b14ba0046b29b768f6a5c1f1eb101764e27916868e0fd70e9eb3675a8'
   }
 
   /**
@@ -902,7 +905,7 @@ export class MultisigAsMultiCall {
    *  # </weight>
    */
   get isV2007(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === 'd4c817e1f8e7e842dcca9746be641bca3fc09fc7ad20eabf02cca6ae3f6a14cc'
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '53b449b960428dfb4887d788bb8cfe2d3ea1eb1b3196f80a81c8504387191835'
   }
 
   /**
@@ -1181,14 +1184,220 @@ export class MultisigAsMultiCall {
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9130
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get isV9160(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '01139c8c1dbc4a6dd2200571fccc8157774e5eda230f68544ed8f673aab612c2'
   }
 
-  get asLatest(): {threshold: number, otherSignatories: v9130.AccountId32[], maybeTimepoint: (v9130.Timepoint | undefined), call: v9130.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get asV9160(): {threshold: number, otherSignatories: v9160.AccountId32[], maybeTimepoint: (v9160.Timepoint | undefined), call: v9160.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV9160)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '877c3cf4e37d2d40010c6733329f3c20cd2fa4ddd814902ff7075818af0d15f2'
+  }
+
+  /**
+   * Register approval for a dispatch to be made from a deterministic composite account if
+   * approved by a total of `threshold - 1` of `other_signatories`.
+   * 
+   * If there are enough, then dispatch the call.
+   * 
+   * Payment: `DepositBase` will be reserved if this is the first approval, plus
+   * `threshold` times `DepositFactor`. It is returned once this dispatch happens or
+   * is cancelled.
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * - `threshold`: The total number of approvals for this dispatch before it is executed.
+   * - `other_signatories`: The accounts (other than the sender) who can approve this
+   * dispatch. May not be empty.
+   * - `maybe_timepoint`: If this is the first approval, then this must be `None`. If it is
+   * not the first approval, then it must be `Some`, with the timepoint (block number and
+   * transaction index) of the first approval transaction.
+   * - `call`: The call to be executed.
+   * 
+   * NOTE: Unless this is the final approval, you will generally want to use
+   * `approve_as_multi` instead, since it only requires a hash of the call.
+   * 
+   * Result is equivalent to the dispatched result if `threshold` is exactly `1`. Otherwise
+   * on success, result is `Ok` and the result from the interior call, if it was executed,
+   * may be found in the deposited `MultisigExecuted` event.
+   * 
+   * # <weight>
+   * - `O(S + Z + Call)`.
+   * - Up to one balance-reserve or unreserve operation.
+   * - One passthrough operation, one insert, both `O(S)` where `S` is the number of
+   *   signatories. `S` is capped by `MaxSignatories`, with weight being proportional.
+   * - One call encode & hash, both of complexity `O(Z)` where `Z` is tx-len.
+   * - One encode & hash, both of complexity `O(S)`.
+   * - Up to one binary search and insert (`O(logS + S)`).
+   * - I/O: 1 read `O(S)`, up to 1 mutate `O(S)`. Up to one remove.
+   * - One event.
+   * - The weight of the `call`.
+   * - Storage: inserts one item, value size bounded by `MaxSignatories`, with a deposit
+   *   taken for its lifetime of `DepositBase + threshold * DepositFactor`.
+   * -------------------------------
+   * - DB Weight:
+   *     - Reads: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   *     - Writes: Multisig Storage, [Caller Account], Calls (if `store_call`)
+   * - Plus Call Weight
+   * # </weight>
+   */
+  get asV9170(): {threshold: number, otherSignatories: v9170.AccountId32[], maybeTimepoint: (v9170.Timepoint | undefined), call: v9170.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV9130
+    return this.isV9170
+  }
+
+  get asLatest(): {threshold: number, otherSignatories: v9170.AccountId32[], maybeTimepoint: (v9170.Timepoint | undefined), call: v9170.WrapperKeepOpaque, storeCall: boolean, maxWeight: bigint} {
+    deprecateLatest()
+    return this.asV9170
   }
 }
 
@@ -1216,7 +1425,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2005(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '10ba5d3574fc0541d87644a73415434a33cbe3596ae1b4e9eb1713c79edbac6f'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '2022f1cb61f3947648a5729eb43ab009f8c369d8ee5cbd8e6950779a39bb93e5'
   }
 
   /**
@@ -1261,7 +1470,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2007(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'e7dabe970d689aaeb0670439ce9f58db5ed6299586c898f7ae5812229cec14f5'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '595c204099c24eec43206509f48724187450e4f15153374269fe2515e404613c'
   }
 
   /**
@@ -1306,7 +1515,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2011(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '0c1fbca210a9579248c21af47c94b470536c5f83eb99c8c2ef3ada7cb042369e'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '0746c12c0104b1fffdbce4a4db847c50d88966e0f98f5eee58572d881980e0d5'
   }
 
   /**
@@ -1351,7 +1560,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2013(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '287b08dd13dd18f4f497ac668d3bd3756edf38bd029d969c3d12941680b1dfc2'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '82623b19da45432307574d59bf0438fba1d30a1fbffc4b15bccf6694e203ee2c'
   }
 
   /**
@@ -1396,7 +1605,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2015(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '93e28c4ad41d13437918a18e29fdf44e32c02f653983f22e3cabc3d3699fc826'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '06a28adee6f7dbf324f165505c739fd986e2c5884131c45c3af8dfcdd374d3c7'
   }
 
   /**
@@ -1441,7 +1650,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2022(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'e924e50c55c262628e0edc824af59c73c204da6f9e3c29b9494895d5fa3119fe'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '923382d39ad97aea8b3c36ea2640a2c7d9da24f7423621ec232a60ff5e93c9d4'
   }
 
   /**
@@ -1485,7 +1694,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2023(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'a77060748152621f1a126e8a33238e45f5158e4cb790fce676d893c41cd0af3c'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '57bb6b099b63454165062c999b0b7bd449842c8a12742e476456c6b7dfcb9ea7'
   }
 
   /**
@@ -1528,7 +1737,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2024(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'ae4248447ac98328f94f615fdfa27d5bda054b1b569de90be64b91496dab735b'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '2e541ca3daa8847ce2553778efd1ae5823414c8e25980172e7956c40f3f132bb'
   }
 
   /**
@@ -1571,7 +1780,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2025(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '4196f56daf7309175f355c3735e6b48f813e743529f0fb528cdb5e80e73d676f'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '10b0d1923b4b05ffaaad70d4c320f414cf55d6b890a1f14cc95665be7b44c245'
   }
 
   /**
@@ -1614,7 +1823,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2026(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '69fae078ddc6e83fb5caee192b5cc467561dc2165eefd27ba7fb1437deed0bf6'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'ca0c6291c9f924bb677875cef709b2cefb1b16d7e73b9e09b3f89852a635a588'
   }
 
   /**
@@ -1657,7 +1866,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2028(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'a288ba5835e5859212e95373e56a0617706151bd69d335bd747a140230e3dbb2'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'b6479cd1520691e80016777ce8c938d65f6b1b9ae82e843f0ad2cc1be3a02dda'
   }
 
   /**
@@ -1700,7 +1909,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2029(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'bc61adc641a91d78c969b9b1ac241a823c3603f33171b5ad930fc9a5678f14c4'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '039c492c046683dcf92428aacc7a8db80bdad5e40d816bf40d652e0f7e17fd3c'
   }
 
   /**
@@ -1743,7 +1952,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV2030(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '55c98637c394a0ec28de21bbf16e80e260169a31ef45d71f8282469f43b49862'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '478f8e0a93dd454678d937b86e8b44921c0e7ef97f2242fa3cbc527301f35910'
   }
 
   /**
@@ -1786,7 +1995,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9010(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'a5bca5e035d02c07e4e64d6d4f817c493abef27dec0e0698bd1224bbc476d364'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '82d9d8a1a75f7fa0950949b36b92422bdac04e5c763de6b4dc7ec18a783a9d2c'
   }
 
   /**
@@ -1829,7 +2038,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9030(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'a5341ce82509e36d57f79a670770af967e0cbd1d16b157efa0c84479467f6298'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '2ace1a2bb765813f7b96176baa551dbb5b8ef5127cb84404dfde6438ce96992d'
   }
 
   /**
@@ -1872,7 +2081,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9040(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'eaf79e33ad215005987d7d90c0cc1e112def25bdb3415f6692dca8954828edf6'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'b5526995acdb03e73c2f6bda83b68e8ada334b6152fda4546ca6bdc8599f8224'
   }
 
   /**
@@ -1915,7 +2124,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9050(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'e866454e8a257b911db866eaaf9277f6feeb6da591d259e09f466f4aa7fba7bc'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'e61c041965503f1787a0277a2393baed96e382537def676f4ebf35c8672a1330'
   }
 
   /**
@@ -1958,7 +2167,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9080(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'f93f44f11a5ac822bb77ecb21a673451caa59ba6659b8ca67fc412632a3fa4db'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'ec0fdf3412b6b5eade987dea9d151a1f1e8aaa165efadb373b069c42488eaced'
   }
 
   /**
@@ -2001,7 +2210,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '29b45b98913f0a1e5dfe6d1b86585806a9c1e9ce0355d61eac6c3ae1b79ba940'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '624d6d6da315444e1b9736f3d0aad9dca1653d121abd065205d7bb794dc798d6'
   }
 
   /**
@@ -2044,7 +2253,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9100(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '0571ac3ece42527e35b9e74f1eb22d8f7d9ca513b83be2a2a17e2bb77e0bb8ee'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '730a8df94a86b1c15ec7ecd9903c01b96276cc3bf115e3d30b4ee48559bcd3f6'
   }
 
   /**
@@ -2198,14 +2407,363 @@ export class ProxyProxyCall {
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9130
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   * 
+   * Removes any corresponding announcement(s).
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   * 
+   * # <weight>
+   * Weight is a function of the number of proxies the user has (P).
+   * # </weight>
+   */
+  get isV9160(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '0f4e2d4c375e7b953d6577e6540d882d69a3b24e641d8615bfdc32187a565645'
   }
 
-  get asLatest(): {real: v9130.AccountId32, forceProxyType: (v9130.ProxyType | undefined), call: v9130.Call} {
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   * 
+   * Removes any corresponding announcement(s).
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   * 
+   * # <weight>
+   * Weight is a function of the number of proxies the user has (P).
+   * # </weight>
+   */
+  get asV9160(): {real: v9160.AccountId32, forceProxyType: (v9160.ProxyType | undefined), call: v9160.Call} {
+    assert(this.isV9160)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   * 
+   * Removes any corresponding announcement(s).
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   * 
+   * # <weight>
+   * Weight is a function of the number of proxies the user has (P).
+   * # </weight>
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getCallHash('proxy.proxy') === '96a9b70da287cef908206948f04dec286434bb7414936e31a31b8292b847b0f7'
+  }
+
+  /**
+   * Dispatch the given `call` from an account that the sender is authorised for through
+   * `add_proxy`.
+   * 
+   * Removes any corresponding announcement(s).
+   * 
+   * The dispatch origin for this call must be _Signed_.
+   * 
+   * Parameters:
+   * - `real`: The account that the proxy will make a call on behalf of.
+   * - `force_proxy_type`: Specify the exact proxy type to be used and checked for this call.
+   * - `call`: The call to be made by the `real` account.
+   * 
+   * # <weight>
+   * Weight is a function of the number of proxies the user has (P).
+   * # </weight>
+   */
+  get asV9170(): {real: v9170.AccountId32, forceProxyType: (v9170.ProxyType | undefined), call: v9170.Call} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV9130
+    return this.isV9170
+  }
+
+  get asLatest(): {real: v9170.AccountId32, forceProxyType: (v9170.ProxyType | undefined), call: v9170.Call} {
+    deprecateLatest()
+    return this.asV9170
+  }
+}
+
+export class StakingBondCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.bond')
+  }
+
+  /**
+   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   *  be the account that controls it.
+   * 
+   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Moderate complexity.
+   *  - O(1).
+   *  - Three extra DB entries.
+   * 
+   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned unless
+   *  the `origin` falls below _existential deposit_ and gets removed as dust.
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('staking.bond') === '1a6f50880eececd6082b51d39975596f6a07362e35784272bebbe29cf8f75ddf'
+  }
+
+  /**
+   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   *  be the account that controls it.
+   * 
+   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Moderate complexity.
+   *  - O(1).
+   *  - Three extra DB entries.
+   * 
+   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned unless
+   *  the `origin` falls below _existential deposit_ and gets removed as dust.
+   *  # </weight>
+   */
+  get asV1020(): {controller: never, value: bigint, payee: v1020.RewardDestination} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   *  be the account that controls it.
+   * 
+   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Moderate complexity.
+   *  - O(1).
+   *  - Three extra DB entries.
+   * 
+   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned unless
+   *  the `origin` falls below _existential deposit_ and gets removed as dust.
+   *  # </weight>
+   */
+  get isV1050(): boolean {
+    return this.ctx._chain.getCallHash('staking.bond') === '6d951e9411480de29d778ec5bbed6c37311f8839e48f9768cad8b620849c0395'
+  }
+
+  /**
+   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   *  be the account that controls it.
+   * 
+   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Moderate complexity.
+   *  - O(1).
+   *  - Three extra DB entries.
+   * 
+   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned unless
+   *  the `origin` falls below _existential deposit_ and gets removed as dust.
+   *  # </weight>
+   */
+  get asV1050(): {controller: Uint8Array, value: bigint, payee: v1050.RewardDestination} {
+    assert(this.isV1050)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   *  be the account that controls it.
+   * 
+   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   *  Emits `Bonded`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Moderate complexity.
+   *  - O(1).
+   *  - Three extra DB entries.
+   * 
+   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+   *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
+   *  ------------------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
+   *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
+   *  # </weight>
+   */
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('staking.bond') === '7c413b59881d4acfed64e2eacf6e687a5f9482b1bca7dbdf38bee2ce53c0719f'
+  }
+
+  /**
+   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   *  be the account that controls it.
+   * 
+   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   *  Emits `Bonded`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Moderate complexity.
+   *  - O(1).
+   *  - Three extra DB entries.
+   * 
+   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+   *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
+   *  ------------------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
+   *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
+   *  # </weight>
+   */
+  get asV2028(): {controller: v2028.GenericMultiAddress, value: bigint, payee: v2028.RewardDestination} {
+    assert(this.isV2028)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   * be the account that controls it.
+   * 
+   * `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   * Emits `Bonded`.
+   * # <weight>
+   * - Independent of the arguments. Moderate complexity.
+   * - O(1).
+   * - Three extra DB entries.
+   * 
+   * NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+   * unless the `origin` falls below _existential deposit_ and gets removed as dust.
+   * ------------------
+   * # </weight>
+   */
+  get isV9111(): boolean {
+    return this.ctx._chain.getCallHash('staking.bond') === '7efa515c176d32acad49c7825b18706c277dc03ad24aa7a30c4e90c5bbc59834'
+  }
+
+  /**
+   * Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   * be the account that controls it.
+   * 
+   * `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   * Emits `Bonded`.
+   * # <weight>
+   * - Independent of the arguments. Moderate complexity.
+   * - O(1).
+   * - Three extra DB entries.
+   * 
+   * NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+   * unless the `origin` falls below _existential deposit_ and gets removed as dust.
+   * ------------------
+   * # </weight>
+   */
+  get asV9111(): {controller: v9111.MultiAddress, value: bigint, payee: v9111.RewardDestination} {
+    assert(this.isV9111)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9111
+  }
+
+  get asLatest(): {controller: v9111.MultiAddress, value: bigint, payee: v9111.RewardDestination} {
+    deprecateLatest()
+    return this.asV9111
+  }
+}
+
+export class StakingBondExtraCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.bondExtra' || this.ctx.extrinsic.name === 'staking.bond_extra')
+  }
+
+  /**
+   *  Add some extra amount that have appeared in the stash `free_balance` into the balance up
+   *  for staking.
+   * 
+   *  Use this if there are additional funds in your stash account that you wish to bond.
+   *  Unlike [`bond`] or [`unbond`] this function does not impose any limitation on the amount
+   *  that can be added.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - O(1).
+   *  - One DB entry.
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('staking.bond_extra') === '7f57c7591631a87fd4af6dd6a07b28967d612a83c5f2fb4f6bf6e42a5b942b3d'
+  }
+
+  /**
+   *  Add some extra amount that have appeared in the stash `free_balance` into the balance up
+   *  for staking.
+   * 
+   *  Use this if there are additional funds in your stash account that you wish to bond.
+   *  Unlike [`bond`] or [`unbond`] this function does not impose any limitation on the amount
+   *  that can be added.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - O(1).
+   *  - One DB entry.
+   *  # </weight>
+   */
+  get asV1020(): {maxAdditional: bigint} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1020
+  }
+
+  get asLatest(): {maxAdditional: bigint} {
+    deprecateLatest()
+    return this.asV1020
   }
 }
 
@@ -2268,6 +2826,81 @@ export class StakingPayoutStakersCall {
   }
 }
 
+export class StakingUnbondCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.unbond')
+  }
+
+  /**
+   *  Schedule a portion of the stash to be unlocked ready for transfer out after the bond
+   *  period ends. If this leaves an amount actively bonded less than
+   *  T::Currency::minimum_balance(), then it is increased to the full amount.
+   * 
+   *  Once the unlock period is done, you can call `withdraw_unbonded` to actually move
+   *  the funds out of management ready for transfer.
+   * 
+   *  No more than a limited number of unlocking chunks (see `MAX_UNLOCKING_CHUNKS`)
+   *  can co-exists at the same time. In that case, [`Call::withdraw_unbonded`] need
+   *  to be called first to remove some of the chunks (if possible).
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  See also [`Call::withdraw_unbonded`].
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Limited but potentially exploitable complexity.
+   *  - Contains a limited number of reads.
+   *  - Each call (requires the remainder of the bonded balance to be above `minimum_balance`)
+   *    will cause a new entry to be inserted into a vector (`Ledger.unlocking`) kept in storage.
+   *    The only way to clean the aforementioned storage item is also user-controlled via `withdraw_unbonded`.
+   *  - One DB entry.
+   *  </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('staking.unbond') === '8e358b3e3a3d8b3d9e454498003b99a1ee78524797d408d2f42511839ab00d13'
+  }
+
+  /**
+   *  Schedule a portion of the stash to be unlocked ready for transfer out after the bond
+   *  period ends. If this leaves an amount actively bonded less than
+   *  T::Currency::minimum_balance(), then it is increased to the full amount.
+   * 
+   *  Once the unlock period is done, you can call `withdraw_unbonded` to actually move
+   *  the funds out of management ready for transfer.
+   * 
+   *  No more than a limited number of unlocking chunks (see `MAX_UNLOCKING_CHUNKS`)
+   *  can co-exists at the same time. In that case, [`Call::withdraw_unbonded`] need
+   *  to be called first to remove some of the chunks (if possible).
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  See also [`Call::withdraw_unbonded`].
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Limited but potentially exploitable complexity.
+   *  - Contains a limited number of reads.
+   *  - Each call (requires the remainder of the bonded balance to be above `minimum_balance`)
+   *    will cause a new entry to be inserted into a vector (`Ledger.unlocking`) kept in storage.
+   *    The only way to clean the aforementioned storage item is also user-controlled via `withdraw_unbonded`.
+   *  - One DB entry.
+   *  </weight>
+   */
+  get asV1020(): {value: bigint} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1020
+  }
+
+  get asLatest(): {value: bigint} {
+    deprecateLatest()
+    return this.asV1020
+  }
+}
+
 export class UtilityBatchCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'utility.batch')
@@ -2294,7 +2927,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1032(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '88f814e44093e0c061b09015f36d6755aa1c5c550e13782f3b00c0621b1c2a3e'
+    return this.ctx._chain.getCallHash('utility.batch') === 'a3e9e2817c52d7d4d8a5ed09f44dd16a0d58a30e78550599a09ff7b1de372374'
   }
 
   /**
@@ -2343,7 +2976,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1038(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'bae654ce98a764ca4a084837a134444611398744a9219656ee2cbc2e0b41b271'
+    return this.ctx._chain.getCallHash('utility.batch') === '2e8f8fa57874cdd336425d14936625128064a5dbea36e5c63d5b1f28487425ac'
   }
 
   /**
@@ -2392,7 +3025,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1039(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'c387bb2d9e1be522ac46cb3538105a56718fefe213a9453ca82478f0f60aca66'
+    return this.ctx._chain.getCallHash('utility.batch') === '3cf858c8e4e1beb6ce3f53d5697ea64f8d31dadaeb272f94fb0c89a8770f8092'
   }
 
   /**
@@ -2441,7 +3074,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1040(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'ca5f17ef29d359e451876fdfea2622fc003d64ce220f0bf3a1bbc23a4a514620'
+    return this.ctx._chain.getCallHash('utility.batch') === '02dfcff3f6650d15ddb73064914f12435947f330e483a940f41197542aeaeab5'
   }
 
   /**
@@ -2490,7 +3123,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1042(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '861dfda4c7fc29999d51b2b3b73be6d5d676215ba91ead2ddc4797729f9081f4'
+    return this.ctx._chain.getCallHash('utility.batch') === '03916a8e1ecb4af4db14d77c6e7ee06b6db5c99f89caad46d0e83a88167fcea0'
   }
 
   /**
@@ -2539,7 +3172,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1050(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '40f33674bb296ed2978a07fe08d3bd0d368e6ef5b87ddc56d845c14108ec1484'
+    return this.ctx._chain.getCallHash('utility.batch') === 'ba95135ea910e2fbd15e20d4629289d72034ba5e32b6246346093cf9ef7dd237'
   }
 
   /**
@@ -2588,7 +3221,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1054(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '4aebba3033f08bfb3791c6da1fbd7d00ec0fa6c1730119f9cf49870ae17a2339'
+    return this.ctx._chain.getCallHash('utility.batch') === '0fb1d0e2420dff2dc539182c4e40d6b3dbc0eb54f1b5deefcdc98614f3db7ab4'
   }
 
   /**
@@ -2637,7 +3270,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1055(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '4d0c2804e114cde37c396eedb806e269ba0f34e27703dc0954c2678142613963'
+    return this.ctx._chain.getCallHash('utility.batch') === 'cf5eb385e1f6bf11d1308c5e7d7e6e8ddeea9c698ee330887af5b0c95cf2ad57'
   }
 
   /**
@@ -2686,7 +3319,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1058(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '7e73d82ee02dbedbd5cad8f6a04e0f0d31168d7afc7bcc0536afe7a270c71561'
+    return this.ctx._chain.getCallHash('utility.batch') === 'bb9ccdb2039f850cc26e7c9f07900e95e5a068a68d6e8917d888e790406a6e8e'
   }
 
   /**
@@ -2736,7 +3369,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV1062(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'a05d20f5ef52f74da7542ee4d651ff35aad10f18a051c4712c5bee6d3fa9b97a'
+    return this.ctx._chain.getCallHash('utility.batch') === '7623c453c82190c6e3757b13fbd5af1edbde128c8f4062a607876f9ea43ff77e'
   }
 
   /**
@@ -2788,7 +3421,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2005(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '2bcde12ecde5a78dd86b6d965bd8a01c776bf336661f229cd73f106c56c5c470'
+    return this.ctx._chain.getCallHash('utility.batch') === '5054061a12918f4c55394017fe983a930b98499e960b539bc702f802401cf0b1'
   }
 
   /**
@@ -2841,7 +3474,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2007(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '8a751dc225fab1d7974d240412880326921b7cd72062138161570329b67fc05e'
+    return this.ctx._chain.getCallHash('utility.batch') === '248e68bea54e5f2f69e6b0b541a4da75a2e56e7144fb4514ff23c3a42751b2a6'
   }
 
   /**
@@ -2894,7 +3527,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2011(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '38376d6f335f176751e87537121157606acb29b9b502a4f85dabaa167fdd6df9'
+    return this.ctx._chain.getCallHash('utility.batch') === '66cea3c05d1ccf922df4faaf2c16493d64b107b456fc55557e0a2267e00e1c20'
   }
 
   /**
@@ -2947,7 +3580,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2013(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'c2845ed42dc788fd5d77672fabe58226310484cc1caf87eb2ecd5663c1c1b8d0'
+    return this.ctx._chain.getCallHash('utility.batch') === 'fd410eaadfbbf2d0250401d9fc54649f6911fa6caec05b97f92f7221339bcbba'
   }
 
   /**
@@ -3000,7 +3633,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2015(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '1bb359d68743464f0fad7598d4b1a28bf01db0658b6532f89750af872d1ec94d'
+    return this.ctx._chain.getCallHash('utility.batch') === '9ead73fa92e2b58c45af31d94b3786304d74e0d5167d299b4914b50a4f7491ce'
   }
 
   /**
@@ -3053,7 +3686,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2022(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '679b20b7590dc9727bc3d5266cbe8d1008c093d644aea69d25e24b2b43ea6ad5'
+    return this.ctx._chain.getCallHash('utility.batch') === 'e292165f3a2f72eb4070a952d5efe830f5c62868f5c54fa0bd030936374320c8'
   }
 
   /**
@@ -3106,7 +3739,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2023(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '1467e10b50ed17cf201b45190bb4c14eea7030ca9ad4e8a4c8bbf572a7b2bb05'
+    return this.ctx._chain.getCallHash('utility.batch') === 'eb9dafb12c63fe0b30f1100648a19da7830c6efb2e262163dfd3ba6662becfe4'
   }
 
   /**
@@ -3159,7 +3792,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2024(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '006e4f8a42bc40152a24b4e7e8fdfbea947e7d890e956d6307358f4f2ff685e9'
+    return this.ctx._chain.getCallHash('utility.batch') === '3161098b83be639a8bbd1e87aa5065185c5c96635253d8a52cb69e21fbcab407'
   }
 
   /**
@@ -3212,7 +3845,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2025(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'b00627745bf5ef94256e2e8ae37f4d2a931e840a6ac2b6cb2950271f22ffbf62'
+    return this.ctx._chain.getCallHash('utility.batch') === 'a15a29e3a78ff52e60867f034b1246940d690b987086057c4208cd2c9aebd2c7'
   }
 
   /**
@@ -3263,7 +3896,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2026(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '7d2c4e3ee05fe7d4643a8298248180b1be09501911241bd0f941c31a06fd202d'
+    return this.ctx._chain.getCallHash('utility.batch') === '7039e9d17e543736bb7270904d7f4dac00cdd28acfc2ad744f1567a0e84f4a0a'
   }
 
   /**
@@ -3312,7 +3945,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2028(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '99e4556ecdc31a54936a6b872dc84ef381c9d81d99569a2346839d27447ff6e5'
+    return this.ctx._chain.getCallHash('utility.batch') === 'ff80f772e382d275c77bf0e565374b9e8346f0790a759a76fd9291f5ed1408e0'
   }
 
   /**
@@ -3361,7 +3994,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2029(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '14e6bde245842198f92b4cffd80d9efab52b76e166063d4076b50e7dbad7d8d3'
+    return this.ctx._chain.getCallHash('utility.batch') === '7939a6291e2fb0687d697ac315745a4c18b2477bb3694a462d0d2d0ac464cc38'
   }
 
   /**
@@ -3410,7 +4043,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV2030(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '75a740d44fb05691178c6706ed1ec4203cdf534597a51ef24edac9b7c925ab1d'
+    return this.ctx._chain.getCallHash('utility.batch') === 'b61da226a21538e7eb0bbee8d072a811dcc86535671dd2b0709276617a09691f'
   }
 
   /**
@@ -3459,7 +4092,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9010(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'a09825fbbedf49c006f8abe98732a207ab4ee2b877f806c671db233dbbf2b0a6'
+    return this.ctx._chain.getCallHash('utility.batch') === 'd89bd66c4268595fe91c115ce09c9de82a12729e4752c2b3076322f398f4c73d'
   }
 
   /**
@@ -3508,7 +4141,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9030(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '431d7602b704b1e5fa23a542e8cdd7426c572a9d7ea0c5987b2a9e1f485c506e'
+    return this.ctx._chain.getCallHash('utility.batch') === '9d192cec0c5f462f80830bc4479e90f2890fe6f53cf95288deb6ce09d5d69cad'
   }
 
   /**
@@ -3557,7 +4190,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9040(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'bf3565f0804b61fd40a3be5a6b02f3132e0f4d6bcb8a1bee608927636ce6ac3d'
+    return this.ctx._chain.getCallHash('utility.batch') === 'af3f804ae88ebece46034395a8953b079dd0a73e98266c31358da251d09d4862'
   }
 
   /**
@@ -3606,7 +4239,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9050(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '67eaa7d27e09b54a5f4d674bc7e240dcca966e1562133db98588867361f513bd'
+    return this.ctx._chain.getCallHash('utility.batch') === '28012cdbada63b13af6743f1fe7daa6c787cd113c8af03548ec0746923794395'
   }
 
   /**
@@ -3655,7 +4288,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9080(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'f900726c727cdd29d0f59d6efbaac348e562d80d67eb76d7b0c40b7bab6324b8'
+    return this.ctx._chain.getCallHash('utility.batch') === '9980ec39a0c77fc04444ea58294b8e363e050bd5789983b6f192e4fe50f42d6a'
   }
 
   /**
@@ -3705,7 +4338,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '3896200420112de76c8c77db08fcf5d5ac1b24f276ce0059dea0f4f635b99a89'
+    return this.ctx._chain.getCallHash('utility.batch') === 'd0ae1cfd0ad5c52eeaacf99ff4d0369a486ef758acd49245795828785c447a3e'
   }
 
   /**
@@ -3756,7 +4389,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9100(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '296d333e75d778cc4e77496344978bd10519d93c1dea9f8112e20e860be42abc'
+    return this.ctx._chain.getCallHash('utility.batch') === '79ca716f5c5ed4b66e0aa81e6c3fa28610f0cedcbe4b8d24e389af090aac5037'
   }
 
   /**
@@ -3938,13 +4571,115 @@ export class UtilityBatchCall {
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9130
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get isV9160(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === 'eefbe08f581e1c62d7e9141e906f148313c8f00b12763233e99ab9942edef9ca'
   }
 
-  get asLatest(): {calls: v9130.Call[]} {
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get asV9160(): {calls: v9160.Call[]} {
+    assert(this.isV9160)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get isV9170(): boolean {
+    return this.ctx._chain.getCallHash('utility.batch') === '2b80158278ea80e8ec6eb00e6fdd7f760df1b2e865e1d7aea59222547e7c0241'
+  }
+
+  /**
+   * Send a batch of dispatch calls.
+   * 
+   * May be called from any origin.
+   * 
+   * - `calls`: The calls to be dispatched from the same origin. The number of call must not
+   *   exceed the constant: `batched_calls_limit` (available in constant metadata).
+   * 
+   * If origin is root then call are dispatch without checking origin filter. (This includes
+   * bypassing `frame_system::Config::BaseCallFilter`).
+   * 
+   * # <weight>
+   * - Complexity: O(C) where C is the number of calls to be batched.
+   * # </weight>
+   * 
+   * This will return `Ok` in all circumstances. To determine the success of the batch, an
+   * event is deposited. If a call failed and the batch was interrupted, then the
+   * `BatchInterrupted` event is deposited, along with the number of successful calls made
+   * and the error of the failed call. If all were successful, then the `BatchCompleted`
+   * event is deposited.
+   */
+  get asV9170(): {calls: v9170.Call[]} {
+    assert(this.isV9170)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV9130
+    return this.isV9170
+  }
+
+  get asLatest(): {calls: v9170.Call[]} {
+    deprecateLatest()
+    return this.asV9170
   }
 }

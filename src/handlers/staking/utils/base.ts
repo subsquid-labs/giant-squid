@@ -1,5 +1,5 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, getAccount, getOrCreate, populateMeta } from '../../../common/helpers'
+import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { encodeID, getAccount, getOrCreate, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../common/types/stakingData'
 import config from '../../../config'
 import { Reward, Stake } from '../../../model'
@@ -18,9 +18,13 @@ async function populateStakingItem(
     item.name ??= ctx.event.name
     item.chainName ??= config.chainName
 
-    const id = encodeID(data.account, config.prefix)
+    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     item.account ??= id ? await getAccount(ctx.store, id) : null
     item.amount ??= data.amount
+}
+
+function isReward(ctx: EventHandlerContext) {
+    return ctx.event.method === 'Rewarded' || ctx.event.method === 'Reward'
 }
 
 async function calculateTotalReward(
@@ -32,17 +36,19 @@ async function calculateTotalReward(
 ) {
     const { ctx, data } = options
 
-    const id = encodeID(data.account, config.prefix)
+    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     const account = id ? await getAccount(ctx.store, id) : null
 
     if (!account) return
 
-    account.totalReward =
-        (account.totalReward || 0n) +
-        (ctx.event.method === 'Rewarded' || ctx.event.method === 'Reward' ? data.amount : 0n)
+    account.totalReward = (account.totalReward || 0n) + (isReward(ctx) ? data.amount : 0n)
     reward.total = account.totalReward
 
     await ctx.store.save(account)
+}
+
+function isStakeBond(ctx: EventHandlerContext) {
+    return ctx.event.method !== 'Unbonded' && ctx.extrinsic?.method !== 'unbond'
 }
 
 async function calculateTotalStake(
@@ -54,12 +60,12 @@ async function calculateTotalStake(
 ) {
     const { ctx, data } = options
 
-    const id = encodeID(data.account, config.prefix)
+    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     const account = id ? await getAccount(ctx.store, id) : null
 
     if (!account) return
 
-    account.totalReward = (account.totalReward || 0n) + (ctx.event.method === 'Bonded' ? data.amount : -data.amount)
+    account.totalReward = (account.totalReward || 0n) + (isStakeBond(ctx) ? data.amount : -data.amount)
     stake.total = account.totalReward
 
     await ctx.store.save(account)
@@ -76,13 +82,22 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
     await ctx.store.save(reward)
 }
 
-export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData) {
+export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, success = true) {
+    //NEED TO FIX
+    ctx.event.method = ctx.extrinsic?.method === 'unbond' ? 'Unbonded' : 'Bonded'
+
     const id = ctx.event.id
 
     const stake = await getOrCreate(ctx.store, Stake, id)
 
     await populateStakingItem(stake, { ctx, data })
+    stake.success = success
+
     await calculateTotalStake(stake, { ctx, data })
 
     await ctx.store.save(stake)
+}
+
+export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {
+    await saveStakeEvent(ctx, data, isExtrinsicSuccess(ctx))
 }
