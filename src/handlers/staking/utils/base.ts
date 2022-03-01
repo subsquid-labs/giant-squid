@@ -65,7 +65,9 @@ async function calculateTotalStake(
 
     if (!account) return
 
-    account.totalStake = (account.totalStake || 0n) + BigInt(isStakeBond(ctx) ? data.amount : -data.amount)
+    account.totalStake = isStakeBond(ctx)
+        ? (account.totalStake || 0n) + BigInt(data.amount)
+        : (account.totalStake || 0n) - BigInt(data.amount)
     stake.total = account.totalStake
 
     await ctx.store.save(account)
@@ -102,5 +104,12 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
 }
 
 export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {
+    const isAlreadyHandled = ctx.block.events.find(
+        (event) =>
+            event.extrinsicId === ctx.extrinsic.id &&
+            (event.name === 'staking.Bonded' || event.name === 'staking.Unbonded')
+    )
+    if (isAlreadyHandled) return
+
     await saveStakeEvent(ctx, data, isExtrinsicSuccess(ctx))
 }
