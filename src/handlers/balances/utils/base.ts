@@ -44,12 +44,11 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
     const id = ctx.event.id
 
     const transferTo = await getOrCreate(ctx.store, Transfer, `${id}-to`)
-    const transferFrom = await getOrCreate(ctx.store, Transfer, `${id}-from`)
-
     await populateTransferItem(transferTo, { ctx, data, dir: Direction.TO, success: success })
-    await populateTransferItem(transferTo, { ctx, data, dir: Direction.FROM, success: success })
-
     await ctx.store.save(transferTo)
+
+    const transferFrom = await getOrCreate(ctx.store, Transfer, `${id}-from`)
+    await populateTransferItem(transferFrom, { ctx, data, dir: Direction.FROM, success: success })
     await ctx.store.save(transferFrom)
 }
 
