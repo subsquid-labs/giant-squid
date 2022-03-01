@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { saveTransferCall } from '../base'
+import { saveTransferCall } from '../utils/base'
 import { TransferData } from '../../../common/types/balanceData'
 import { BalancesForceTransferCall } from '../../../types/calls'
 

@@ -281,6 +281,29 @@ export interface Call_XcmPallet {
   value: XcmPalletCall
 }
 
+export type RewardDestination = RewardDestination_Staked | RewardDestination_Stash | RewardDestination_Controller | RewardDestination_Account | RewardDestination_None
+
+export interface RewardDestination_Staked {
+  __kind: 'Staked'
+}
+
+export interface RewardDestination_Stash {
+  __kind: 'Stash'
+}
+
+export interface RewardDestination_Controller {
+  __kind: 'Controller'
+}
+
+export interface RewardDestination_Account {
+  __kind: 'Account'
+  value: AccountId32
+}
+
+export interface RewardDestination_None {
+  __kind: 'None'
+}
+
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
@@ -5840,29 +5863,6 @@ export interface Header {
   stateRoot: H256
   extrinsicsRoot: H256
   digest: Digest
-}
-
-export type RewardDestination = RewardDestination_Staked | RewardDestination_Stash | RewardDestination_Controller | RewardDestination_Account | RewardDestination_None
-
-export interface RewardDestination_Staked {
-  __kind: 'Staked'
-}
-
-export interface RewardDestination_Stash {
-  __kind: 'Stash'
-}
-
-export interface RewardDestination_Controller {
-  __kind: 'Controller'
-}
-
-export interface RewardDestination_Account {
-  __kind: 'Account'
-  value: AccountId32
-}
-
-export interface RewardDestination_None {
-  __kind: 'None'
 }
 
 export interface ValidatorPrefs {

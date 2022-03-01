@@ -5455,7 +5455,7 @@ export type XcmPalletCall = XcmPalletCall_send | XcmPalletCall_teleport_assets |
 export interface XcmPalletCall_send {
   __kind: 'send'
   dest: MultiLocationV0
-  message: XcmV0_362
+  message: XcmV0_391
 }
 
 /**
@@ -5516,7 +5516,7 @@ export interface XcmPalletCall_reserve_transfer_assets {
  */
 export interface XcmPalletCall_execute {
   __kind: 'execute'
-  message: XcmV0_362
+  message: XcmV0_391
   maxWeight: bigint
 }
 
@@ -5897,7 +5897,6 @@ export interface StatementKind_Saft {
 }
 
 export interface IdentityInfo {
-  fallback: IdentityInfoTo198
   additional: [Data, Data][]
   display: Data
   legal: Data
@@ -5909,15 +5908,175 @@ export interface IdentityInfo {
   twitter: Data
 }
 
-export type Data = Data_None | Data_Raw | Data_BlakeTwo256 | Data_Sha256 | Data_Keccak256 | Data_ShaThree256
+export type Data = Data_None | Data_Raw0 | Data_Raw1 | Data_Raw2 | Data_Raw3 | Data_Raw4 | Data_Raw5 | Data_Raw6 | Data_Raw7 | Data_Raw8 | Data_Raw9 | Data_Raw10 | Data_Raw11 | Data_Raw12 | Data_Raw13 | Data_Raw14 | Data_Raw15 | Data_Raw16 | Data_Raw17 | Data_Raw18 | Data_Raw19 | Data_Raw20 | Data_Raw21 | Data_Raw22 | Data_Raw23 | Data_Raw24 | Data_Raw25 | Data_Raw26 | Data_Raw27 | Data_Raw28 | Data_Raw29 | Data_Raw30 | Data_Raw31 | Data_Raw32 | Data_BlakeTwo256 | Data_Sha256 | Data_Keccak256 | Data_ShaThree256
 
 export interface Data_None {
   __kind: 'None'
   value: null
 }
 
-export interface Data_Raw {
-  __kind: 'Raw'
+export interface Data_Raw0 {
+  __kind: 'Raw0'
+  value: Uint8Array
+}
+
+export interface Data_Raw1 {
+  __kind: 'Raw1'
+  value: Uint8Array
+}
+
+export interface Data_Raw2 {
+  __kind: 'Raw2'
+  value: Uint8Array
+}
+
+export interface Data_Raw3 {
+  __kind: 'Raw3'
+  value: Uint8Array
+}
+
+export interface Data_Raw4 {
+  __kind: 'Raw4'
+  value: Uint8Array
+}
+
+export interface Data_Raw5 {
+  __kind: 'Raw5'
+  value: Uint8Array
+}
+
+export interface Data_Raw6 {
+  __kind: 'Raw6'
+  value: Uint8Array
+}
+
+export interface Data_Raw7 {
+  __kind: 'Raw7'
+  value: Uint8Array
+}
+
+export interface Data_Raw8 {
+  __kind: 'Raw8'
+  value: Uint8Array
+}
+
+export interface Data_Raw9 {
+  __kind: 'Raw9'
+  value: Uint8Array
+}
+
+export interface Data_Raw10 {
+  __kind: 'Raw10'
+  value: Uint8Array
+}
+
+export interface Data_Raw11 {
+  __kind: 'Raw11'
+  value: Uint8Array
+}
+
+export interface Data_Raw12 {
+  __kind: 'Raw12'
+  value: Uint8Array
+}
+
+export interface Data_Raw13 {
+  __kind: 'Raw13'
+  value: Uint8Array
+}
+
+export interface Data_Raw14 {
+  __kind: 'Raw14'
+  value: Uint8Array
+}
+
+export interface Data_Raw15 {
+  __kind: 'Raw15'
+  value: Uint8Array
+}
+
+export interface Data_Raw16 {
+  __kind: 'Raw16'
+  value: Uint8Array
+}
+
+export interface Data_Raw17 {
+  __kind: 'Raw17'
+  value: Uint8Array
+}
+
+export interface Data_Raw18 {
+  __kind: 'Raw18'
+  value: Uint8Array
+}
+
+export interface Data_Raw19 {
+  __kind: 'Raw19'
+  value: Uint8Array
+}
+
+export interface Data_Raw20 {
+  __kind: 'Raw20'
+  value: Uint8Array
+}
+
+export interface Data_Raw21 {
+  __kind: 'Raw21'
+  value: Uint8Array
+}
+
+export interface Data_Raw22 {
+  __kind: 'Raw22'
+  value: Uint8Array
+}
+
+export interface Data_Raw23 {
+  __kind: 'Raw23'
+  value: Uint8Array
+}
+
+export interface Data_Raw24 {
+  __kind: 'Raw24'
+  value: Uint8Array
+}
+
+export interface Data_Raw25 {
+  __kind: 'Raw25'
+  value: Uint8Array
+}
+
+export interface Data_Raw26 {
+  __kind: 'Raw26'
+  value: Uint8Array
+}
+
+export interface Data_Raw27 {
+  __kind: 'Raw27'
+  value: Uint8Array
+}
+
+export interface Data_Raw28 {
+  __kind: 'Raw28'
+  value: Uint8Array
+}
+
+export interface Data_Raw29 {
+  __kind: 'Raw29'
+  value: Uint8Array
+}
+
+export interface Data_Raw30 {
+  __kind: 'Raw30'
+  value: Uint8Array
+}
+
+export interface Data_Raw31 {
+  __kind: 'Raw31'
+  value: Uint8Array
+}
+
+export interface Data_Raw32 {
+  __kind: 'Raw32'
   value: Uint8Array
 }
 
@@ -6113,75 +6272,75 @@ export interface MultiLocationV0_X8 {
   value: [JunctionV0, JunctionV0, JunctionV0, JunctionV0, JunctionV0, JunctionV0, JunctionV0, JunctionV0]
 }
 
-export type XcmV0_362 = XcmV0_362_WithdrawAsset | XcmV0_362_ReserveAssetDeposit | XcmV0_362_ReceiveTeleportedAsset | XcmV0_362_QueryResponse | XcmV0_362_TransferAsset | XcmV0_362_TransferReserveAsset | XcmV0_362_Transact | XcmV0_362_HrmpNewChannelOpenRequest | XcmV0_362_HrmpChannelAccepted | XcmV0_362_HrmpChannelClosing | XcmV0_362_RelayedFrom
+export type XcmV0_391 = XcmV0_391_WithdrawAsset | XcmV0_391_ReserveAssetDeposit | XcmV0_391_ReceiveTeleportedAsset | XcmV0_391_QueryResponse | XcmV0_391_TransferAsset | XcmV0_391_TransferReserveAsset | XcmV0_391_Transact | XcmV0_391_HrmpNewChannelOpenRequest | XcmV0_391_HrmpChannelAccepted | XcmV0_391_HrmpChannelClosing | XcmV0_391_RelayedFrom
 
-export interface XcmV0_362_WithdrawAsset {
+export interface XcmV0_391_WithdrawAsset {
   __kind: 'WithdrawAsset'
   assets: MultiAssetV0[]
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_362_ReserveAssetDeposit {
+export interface XcmV0_391_ReserveAssetDeposit {
   __kind: 'ReserveAssetDeposit'
   assets: MultiAssetV0[]
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_362_ReceiveTeleportedAsset {
+export interface XcmV0_391_ReceiveTeleportedAsset {
   __kind: 'ReceiveTeleportedAsset'
   assets: MultiAssetV0[]
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_362_QueryResponse {
+export interface XcmV0_391_QueryResponse {
   __kind: 'QueryResponse'
   queryId: bigint
   response: ResponseV0
 }
 
-export interface XcmV0_362_TransferAsset {
+export interface XcmV0_391_TransferAsset {
   __kind: 'TransferAsset'
   assets: MultiAssetV0[]
   dest: MultiLocationV0
 }
 
-export interface XcmV0_362_TransferReserveAsset {
+export interface XcmV0_391_TransferReserveAsset {
   __kind: 'TransferReserveAsset'
   assets: MultiAssetV0[]
   dest: MultiLocationV0
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_362_Transact {
+export interface XcmV0_391_Transact {
   __kind: 'Transact'
   originType: XcmOriginKind
   requireWeightAtMost: bigint
   call: DoubleEncodedCall
 }
 
-export interface XcmV0_362_HrmpNewChannelOpenRequest {
+export interface XcmV0_391_HrmpNewChannelOpenRequest {
   __kind: 'HrmpNewChannelOpenRequest'
   sender: number
   maxMessageSize: number
   maxCapacity: number
 }
 
-export interface XcmV0_362_HrmpChannelAccepted {
+export interface XcmV0_391_HrmpChannelAccepted {
   __kind: 'HrmpChannelAccepted'
   recipient: number
 }
 
-export interface XcmV0_362_HrmpChannelClosing {
+export interface XcmV0_391_HrmpChannelClosing {
   __kind: 'HrmpChannelClosing'
   initiator: number
   sender: number
   recipient: number
 }
 
-export interface XcmV0_362_RelayedFrom {
+export interface XcmV0_391_RelayedFrom {
   __kind: 'RelayedFrom'
   who: MultiLocationV0
-  message: XcmV0_363
+  message: XcmV0_392
 }
 
 export type MultiAssetV0 = MultiAssetV0_None | MultiAssetV0_All | MultiAssetV0_AllFungible | MultiAssetV0_AllNonFungible | MultiAssetV0_AllAbstractFungible | MultiAssetV0_AllAbstractNonFungible | MultiAssetV0_AllConcreteFungible | MultiAssetV0_AllConcreteNonFungible | MultiAssetV0_AbstractFungible | MultiAssetV0_AbstractNonFungible | MultiAssetV0_ConcreteFungible | MultiAssetV0_ConcreteNonFungible
@@ -6284,17 +6443,6 @@ export interface AccountVoteStandard {
 export interface AccountVoteSplit {
   aye: bigint
   nay: bigint
-}
-
-export interface IdentityInfoTo198 {
-  additional: [Data, Data][]
-  display: Data
-  legal: Data
-  web: Data
-  riot: Data
-  email: Data
-  pgpFingerprint: (Uint8Array | undefined)
-  image: Data
 }
 
 export interface CompactAssignmentsWith24 {
@@ -6470,7 +6618,7 @@ export interface XcmOrderV0_BuyExecution {
   weight: bigint
   debt: bigint
   haltOnError: boolean
-  xcm: XcmV0_363[]
+  xcm: XcmV0_392[]
 }
 
 export type ResponseV0 = ResponseV0_Assets
@@ -6502,75 +6650,75 @@ export interface DoubleEncodedCall {
   encoded: Uint8Array
 }
 
-export type XcmV0_363 = XcmV0_363_WithdrawAsset | XcmV0_363_ReserveAssetDeposit | XcmV0_363_ReceiveTeleportedAsset | XcmV0_363_QueryResponse | XcmV0_363_TransferAsset | XcmV0_363_TransferReserveAsset | XcmV0_363_Transact | XcmV0_363_HrmpNewChannelOpenRequest | XcmV0_363_HrmpChannelAccepted | XcmV0_363_HrmpChannelClosing | XcmV0_363_RelayedFrom
+export type XcmV0_392 = XcmV0_392_WithdrawAsset | XcmV0_392_ReserveAssetDeposit | XcmV0_392_ReceiveTeleportedAsset | XcmV0_392_QueryResponse | XcmV0_392_TransferAsset | XcmV0_392_TransferReserveAsset | XcmV0_392_Transact | XcmV0_392_HrmpNewChannelOpenRequest | XcmV0_392_HrmpChannelAccepted | XcmV0_392_HrmpChannelClosing | XcmV0_392_RelayedFrom
 
-export interface XcmV0_363_WithdrawAsset {
+export interface XcmV0_392_WithdrawAsset {
   __kind: 'WithdrawAsset'
   assets: MultiAssetV0[]
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_363_ReserveAssetDeposit {
+export interface XcmV0_392_ReserveAssetDeposit {
   __kind: 'ReserveAssetDeposit'
   assets: MultiAssetV0[]
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_363_ReceiveTeleportedAsset {
+export interface XcmV0_392_ReceiveTeleportedAsset {
   __kind: 'ReceiveTeleportedAsset'
   assets: MultiAssetV0[]
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_363_QueryResponse {
+export interface XcmV0_392_QueryResponse {
   __kind: 'QueryResponse'
   queryId: bigint
   response: ResponseV0
 }
 
-export interface XcmV0_363_TransferAsset {
+export interface XcmV0_392_TransferAsset {
   __kind: 'TransferAsset'
   assets: MultiAssetV0[]
   dest: MultiLocationV0
 }
 
-export interface XcmV0_363_TransferReserveAsset {
+export interface XcmV0_392_TransferReserveAsset {
   __kind: 'TransferReserveAsset'
   assets: MultiAssetV0[]
   dest: MultiLocationV0
   effects: XcmOrderV0[]
 }
 
-export interface XcmV0_363_Transact {
+export interface XcmV0_392_Transact {
   __kind: 'Transact'
   originType: XcmOriginKind
   requireWeightAtMost: bigint
   call: DoubleEncodedCall
 }
 
-export interface XcmV0_363_HrmpNewChannelOpenRequest {
+export interface XcmV0_392_HrmpNewChannelOpenRequest {
   __kind: 'HrmpNewChannelOpenRequest'
   sender: number
   maxMessageSize: number
   maxCapacity: number
 }
 
-export interface XcmV0_363_HrmpChannelAccepted {
+export interface XcmV0_392_HrmpChannelAccepted {
   __kind: 'HrmpChannelAccepted'
   recipient: number
 }
 
-export interface XcmV0_363_HrmpChannelClosing {
+export interface XcmV0_392_HrmpChannelClosing {
   __kind: 'HrmpChannelClosing'
   initiator: number
   sender: number
   recipient: number
 }
 
-export interface XcmV0_363_RelayedFrom {
+export interface XcmV0_392_RelayedFrom {
   __kind: 'RelayedFrom'
   who: MultiLocationV0
-  message: XcmV0_363
+  message: XcmV0_392
 }
 
 export type AssetInstanceV0 = AssetInstanceV0_Undefined | AssetInstanceV0_Index8 | AssetInstanceV0_Index16 | AssetInstanceV0_Index32 | AssetInstanceV0_Index64 | AssetInstanceV0_Index128 | AssetInstanceV0_Array4 | AssetInstanceV0_Array8 | AssetInstanceV0_Array16 | AssetInstanceV0_Array32 | AssetInstanceV0_Blob

@@ -1,7 +1,7 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { ContributionData } from '../../../common/types/crowdloanData'
 import { CrowdloanContributeCall } from '../../../types/calls'
-import { saveContributeCall } from '../base'
+import { saveContributeCall } from '../utils/base'
 
 function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
     const call = new CrowdloanContributeCall(ctx)

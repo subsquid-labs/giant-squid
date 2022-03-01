@@ -3,7 +3,7 @@ import { TransferData } from '../../../common/types/balanceData'
 import { EventHandlerContext, SubstrateExtrinsic } from '@subsquid/substrate-processor'
 import config from '../../../config'
 import { snakeCase } from 'snake-case'
-import { saveTransferEvent } from '../base'
+import { saveTransferEvent } from '../utils/base'
 
 function getEventData(ctx: EventHandlerContext): TransferData {
     const event = new BalancesTransferEvent(ctx)

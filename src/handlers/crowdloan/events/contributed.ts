@@ -1,7 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { ContributionData } from '../../../common/types/crowdloanData'
 import { CrowdloanContributedEvent } from '../../../types/events'
-import { saveContributedEvent } from '../base'
+import { saveContributedEvent } from '../utils/base'
 
 function getEventData(ctx: EventHandlerContext): ContributionData {
     const event = new CrowdloanContributedEvent(ctx)
