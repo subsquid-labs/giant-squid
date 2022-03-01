@@ -55,5 +55,5 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
 export async function saveTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData) {
     if (isExtrinsicSuccess(ctx)) return
 
-    saveTransferEvent(ctx, data, false)
+    await saveTransferEvent(ctx, data, false)
 }

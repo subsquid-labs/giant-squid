@@ -2,10 +2,10 @@ type Account @entity {
   id: ID!
   totalStake: BigInt
   totalReward: BigInt
-  transfers: [Transfer] @derivedFrom(field: "account")
-  contributions: [Contribution] @derivedFrom(field: "account")
-  rewards: [Reward] @derivedFrom(field: "account")
-  stakes: [Stake] @derivedFrom(field: "account")
+  transfers: [Transfer!] @derivedFrom(field: "account")
+  contributions: [Contribution!] @derivedFrom(field: "account")
+  rewards: [Reward!] @derivedFrom(field: "account")
+  stakes: [Stake!] @derivedFrom(field: "account")
 }
 
 type Parachain @entity {
@@ -54,7 +54,7 @@ type Contribution implements Item @entity {
   extrinsicHash: String @index
   crowdloan: Crowdloan
   success: Boolean
-  account: Account @index
+  account: Account
   amount: BigInt
 }
 
@@ -64,9 +64,9 @@ type Transfer implements Item @entity {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  to: Account @index
-  from: Account @index
-  account: Account @index
+  to: Account
+  from: Account
+  account: Account
   amount: BigInt
   success: Boolean
   name: String
@@ -78,7 +78,7 @@ type Reward implements Item @entity  {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  account: Account @index
+  account: Account
   amount: BigInt
   era: Int
   validator: String
@@ -92,7 +92,7 @@ type Stake implements Item @entity  {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  account: Account @index
+  account: Account
   amount: BigInt
   total: BigInt
   success: Boolean
