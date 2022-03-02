@@ -23,9 +23,9 @@ async function populateStakingItem(
     item.amount ??= data.amount
 }
 
-function isReward(ctx: EventHandlerContext) {
-    return ctx.event.method === 'Rewarded' || ctx.event.method === 'Reward'
-}
+// function isReward(ctx: EventHandlerContext) {
+//     return ctx.event.method === 'Rewarded' || ctx.event.method === 'Reward'
+// }
 
 async function calculateTotalReward(
     reward: Reward,
@@ -41,8 +41,28 @@ async function calculateTotalReward(
 
     if (!account) return
 
-    account.totalReward = (account.totalReward || 0n) + BigInt(isReward(ctx) ? data.amount : 0n)
+    account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
     reward.total = account.totalReward
+
+    await ctx.store.save(account)
+}
+
+async function calculateTotalSlash(
+    reward: Reward,
+    options: {
+        ctx: EventHandlerContext
+        data: RewardData | StakeData
+    }
+) {
+    const { ctx, data } = options
+
+    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    const account = id ? await getAccount(ctx.store, id) : null
+
+    if (!account) return
+
+    account.totalSlash = (account.totalReward || 0n) + BigInt(data.amount)
+    reward.total = account.totalSlash
 
     await ctx.store.save(account)
 }
@@ -80,6 +100,17 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
 
     await populateStakingItem(reward, { ctx, data })
     await calculateTotalReward(reward, { ctx, data })
+
+    await ctx.store.save(reward)
+}
+
+export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
+    const id = ctx.event.id
+
+    const reward = await getOrCreate(ctx.store, Reward, id)
+
+    await populateStakingItem(reward, { ctx, data })
+    await calculateTotalSlash(reward, { ctx, data })
 
     await ctx.store.save(reward)
 }

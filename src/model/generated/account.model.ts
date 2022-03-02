@@ -3,6 +3,7 @@ import * as marshal from "./marshal"
 import {Transfer} from "./transfer.model"
 import {Contribution} from "./contribution.model"
 import {Reward} from "./reward.model"
+import {Slash} from "./slash.model"
 import {Stake} from "./stake.model"
 
 @Entity_()
@@ -20,6 +21,9 @@ export class Account {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   totalReward!: bigint | undefined | null
 
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  totalSlash!: bigint | undefined | null
+
   @OneToMany_(() => Transfer, e => e.account)
   transfers!: Transfer[]
 
@@ -28,6 +32,9 @@ export class Account {
 
   @OneToMany_(() => Reward, e => e.account)
   rewards!: Reward[]
+
+  @OneToMany_(() => Slash, e => e.account)
+  slashes!: Slash[]
 
   @OneToMany_(() => Stake, e => e.account)
   stakes!: Stake[]
