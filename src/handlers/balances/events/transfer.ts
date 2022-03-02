@@ -1,5 +1,5 @@
-import { BalancesTransferEvent } from '../../../types/events'
-import { TransferData } from '../../../common/types/balanceData'
+import { BalancesTransferEvent } from '../../../types/generated/events'
+import { TransferData } from '../../../types/custom/balanceData'
 import { EventHandlerContext, SubstrateExtrinsic } from '@subsquid/substrate-processor'
 import config from '../../../config'
 import { snakeCase } from 'snake-case'

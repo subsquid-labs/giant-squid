@@ -1,5 +1,5 @@
 {
-  "outDir": "../src/types",
+  "outDir": "../src/types/generated",
   "chainVersions": "./versions.json",
   "typesBundle": "kusama",
   "events": [

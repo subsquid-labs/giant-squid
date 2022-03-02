@@ -1,6 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { StakeData } from '../../../common/types/stakingData'
-import { StakingBondedEvent } from '../../../types/events'
+import { StakeData } from '../../../types/custom/stakingData'
+import { StakingBondedEvent } from '../../../types/generated/events'
 import { saveStakeEvent } from '../utils/base'
 
 function getEventData(ctx: EventHandlerContext): StakeData {

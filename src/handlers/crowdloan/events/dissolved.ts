@@ -1,8 +1,8 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { getOrCreateParachain } from '../../../common/parachain'
-import { DissolvedData } from '../../../common/types/crowdloanData'
+import { DissolvedData } from '../../../types/custom/crowdloanData'
 import { CrowdloanStatus } from '../../../model'
-import { CrowdloanDissolvedEvent } from '../../../types/events'
+import { CrowdloanDissolvedEvent } from '../../../types/generated/events'
 
 function getEventData(ctx: EventHandlerContext): DissolvedData {
     const event = new CrowdloanDissolvedEvent(ctx)

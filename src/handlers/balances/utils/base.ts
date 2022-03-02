@@ -1,6 +1,6 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { populateMeta, encodeID, getAccount, getOrCreate, isExtrinsicSuccess } from '../../../common/helpers'
-import { TransferData } from '../../../common/types/balanceData'
+import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { Transfer } from '../../../model'
 

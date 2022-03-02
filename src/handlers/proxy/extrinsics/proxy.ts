@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { CreateData } from '../../../common/types/crowdloanData'
+import { CreateData } from '../../../types/custom/crowdloanData'
 import { saveCreateCall } from '../../crowdloan/extrinsics/create'
 
 const CROWDLOAN_CREATE = '0x4900'

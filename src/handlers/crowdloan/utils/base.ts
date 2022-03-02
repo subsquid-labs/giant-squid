@@ -1,7 +1,7 @@
 import { ExtrinsicHandlerContext, EventHandlerContext, Store } from '@subsquid/substrate-processor'
 import { getOrCreate, populateMeta, isExtrinsicSuccess, encodeID, getAccount } from '../../../common/helpers'
 import { getOrCreateParachain } from '../../../common/parachain'
-import { ContributionData } from '../../../common/types/crowdloanData'
+import { ContributionData } from '../../../types/custom/crowdloanData'
 import config from '../../../config'
 import { Crowdloan, Contribution, Contributor } from '../../../model'
 

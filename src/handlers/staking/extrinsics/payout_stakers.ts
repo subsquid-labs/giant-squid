@@ -1,9 +1,9 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { encodeID, populateMeta } from '../../../common/helpers'
-import { PayoutData } from '../../../common/types/stakingData'
+import { PayoutData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Reward } from '../../../model'
-import { StakingPayoutStakersCall } from '../../../types/calls'
+import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
     const call = new StakingPayoutStakersCall(ctx)

@@ -1,6 +1,6 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { encodeID, getAccount, getOrCreate, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
-import { RewardData, StakeData } from '../../../common/types/stakingData'
+import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Reward, Stake } from '../../../model'
 

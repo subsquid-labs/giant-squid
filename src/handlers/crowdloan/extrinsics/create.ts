@@ -1,10 +1,10 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { getOrCreate } from '../../../common/helpers'
-import { CreateData } from '../../../common/types/crowdloanData'
+import { CreateData } from '../../../types/custom/crowdloanData'
 import { getOrCreateParachain } from '../../../common/parachain'
 import config from '../../../config'
 import { Crowdloan, CrowdloanStatus, Parachain } from '../../../model'
-import * as calls from '../../../types/calls'
+import * as calls from '../../../types/generated/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
     const event = new calls.CrowdloanCreateCall(ctx)
