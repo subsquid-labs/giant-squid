@@ -43,7 +43,9 @@ interface Item {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String
-  chainName: String 
+  chainName: String
+  account: Account
+  amount: BigInt
 }
 
 type Contribution implements Item @entity {
@@ -72,7 +74,11 @@ type Transfer implements Item @entity {
   name: String
 }
 
-type Reward implements Item @entity  {
+interface HasTotal {
+  total: BigInt
+}
+
+type Reward implements Item & HasTotal @entity  {
   id: ID!
   chainName: String @index
   date: DateTime
@@ -86,7 +92,19 @@ type Reward implements Item @entity  {
   name: String
 }
 
-type Stake implements Item @entity  {
+type Slash implements Item & HasTotal @entity  {
+  id: ID!
+  chainName: String @index
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String @index
+  account: Account
+  amount: BigInt
+  total: BigInt
+  name: String
+}
+
+type Stake implements Item & HasTotal @entity  {
   id: ID!
   chainName: String @index
   date: DateTime
