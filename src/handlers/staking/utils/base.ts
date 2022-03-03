@@ -48,7 +48,7 @@ async function calculateTotalReward(
 }
 
 async function calculateTotalSlash(
-    reward: Slash,
+    slash: Slash,
     options: {
         ctx: EventHandlerContext
         data: RewardData | StakeData
@@ -61,8 +61,8 @@ async function calculateTotalSlash(
 
     if (!account) return
 
-    account.totalSlash = (account.totalReward || 0n) + BigInt(data.amount)
-    reward.total = account.totalSlash
+    account.totalSlash = (account.totalSlash || 0n) + BigInt(data.amount)
+    slash.total = account.totalSlash
 
     await ctx.store.save(account)
 }
