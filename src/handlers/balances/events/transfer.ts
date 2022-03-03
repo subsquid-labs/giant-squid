@@ -1,7 +1,6 @@
 import { BalancesTransferEvent } from '../../../types/generated/events'
 import { TransferData } from '../../../types/custom/balanceData'
 import { EventHandlerContext, SubstrateExtrinsic } from '@subsquid/substrate-processor'
-import config from '../../../config'
 import { snakeCase } from 'snake-case'
 import { saveTransferEvent } from '../utils/base'
 
@@ -39,7 +38,7 @@ function getEventData(ctx: EventHandlerContext): TransferData {
 }
 
 function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
-    const methods = Object.keys(config.extrinsicsHandlers?.['balances'] || {})
+    const methods = ['transfer', 'transfer_all', 'force_transfer', 'transfer_keep_alive']
     return extrinsic.section === 'balances' && methods.includes(snakeCase(extrinsic.method))
 }
 
