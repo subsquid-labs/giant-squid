@@ -5,22 +5,20 @@ import { saveTransferCall } from '../utils/base'
 
 function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
     const call = new BalancesTransferKeepAliveCall(ctx)
-    if (call.isV1020) {
-        return undefined
-    } else if (call.isV1050) {
-        const { dest, value } = call.asV1050
+    if (call.isV0) {
+        const { dest, value } = call.asV0
         return {
             to: dest as Uint8Array,
             amount: value,
         }
-    } else if (call.isV2028) {
-        const { dest, value } = call.asV2028
+    } else if (call.isV28) {
+        const { dest, value } = call.asV28
         return {
             to: dest.value as Uint8Array,
             amount: value,
         }
-    } else if (call.isV9111) {
-        const { dest, value } = call.asV9111
+    } else if (call.isV9110) {
+        const { dest, value } = call.asV9110
         return {
             to: dest.value as Uint8Array,
             amount: value,

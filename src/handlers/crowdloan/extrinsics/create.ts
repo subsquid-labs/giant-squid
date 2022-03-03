@@ -8,8 +8,8 @@ import * as calls from '../../../types/generated/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): CreateData {
     const event = new calls.CrowdloanCreateCall(ctx)
-    if (event.isV9010) {
-        return event.asV9010
+    if (event.isV9110) {
+        return event.asV9110
     } else {
         return event.asLatest
     }

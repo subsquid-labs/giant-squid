@@ -6,8 +6,8 @@ import { saveContributedEvent } from '../utils/base'
 function getEventData(ctx: EventHandlerContext): ContributionData {
     const event = new CrowdloanContributedEvent(ctx)
 
-    if (event.isV9010) {
-        const [account, paraId, amount] = event.asV9010
+    if (event.isV9110) {
+        const [account, paraId, amount] = event.asV9110
         return {
             account,
             paraId,

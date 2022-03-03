@@ -7,9 +7,9 @@ import { CrowdloanDissolvedEvent } from '../../../types/generated/events'
 function getEventData(ctx: EventHandlerContext): DissolvedData {
     const event = new CrowdloanDissolvedEvent(ctx)
 
-    if (event.isV9010) {
+    if (event.isV9110) {
         return {
-            index: event.asV9010,
+            index: event.asV9110,
         }
     } else {
         return {

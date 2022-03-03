@@ -6,8 +6,8 @@ import { saveStakeCall } from '../utils/base'
 function getCallData(ctx: ExtrinsicHandlerContext): StakeData {
     const call = new StakingBondExtraCall(ctx)
 
-    if (call.isV1020) {
-        const { maxAdditional } = call.asV1020
+    if (call.isV0) {
+        const { maxAdditional } = call.asV0
         return {
             amount: maxAdditional,
         }

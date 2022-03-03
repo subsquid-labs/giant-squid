@@ -5,8 +5,8 @@ import { saveContributeCall } from '../utils/base'
 
 function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
     const call = new CrowdloanContributeCall(ctx)
-    if (call.isV9010) {
-        const { index, value } = call.asV9010
+    if (call.isV9110) {
+        const { index, value } = call.asV9110
         return {
             paraId: index,
             amount: value,

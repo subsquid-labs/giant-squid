@@ -24,8 +24,8 @@ function getSlashedEvent(ctx: EventHandlerContext): RewardData {
 function getSlashEvent(ctx: EventHandlerContext): RewardData {
     const event = new StakingSlashEvent(ctx)
 
-    if (event.isV1020) {
-        const [account, amount] = event.asV1020
+    if (event.isV0) {
+        const [account, amount] = event.asV0
         return {
             account,
             amount,

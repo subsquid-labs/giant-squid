@@ -1,28 +1,20 @@
 import { BalancesTransferEvent } from '../../../types/generated/events'
 import { TransferData } from '../../../types/custom/balanceData'
 import { EventHandlerContext, SubstrateExtrinsic } from '@subsquid/substrate-processor'
-import config from '../../../config'
 import { snakeCase } from 'snake-case'
 import { saveTransferEvent } from '../utils/base'
 
 function getEventData(ctx: EventHandlerContext): TransferData {
     const event = new BalancesTransferEvent(ctx)
-    if (event.isV1020) {
-        const [from, to, amount] = event.asV1020
+    if (event.isV0) {
+        const [from, to, amount] = event.asV0
         return {
             from,
             to,
             amount,
         }
-    } else if (event.isV1050) {
-        const [from, to, amount] = event.asV1050
-        return {
-            from,
-            to,
-            amount,
-        }
-    } else if (event.isV9130) {
-        const { from, to, amount } = event.asV9130
+    } else if (event.isV9140) {
+        const { from, to, amount } = event.asV9140
         return {
             from,
             to,
@@ -39,7 +31,7 @@ function getEventData(ctx: EventHandlerContext): TransferData {
 }
 
 function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
-    const methods = Object.keys(config.extrinsicsHandlers?.['balances'] || {})
+    const methods = ['transfer', 'transfer_all', 'force_transfer', 'transfer_keep_alive']
     return extrinsic.section === 'balances' && methods.includes(snakeCase(extrinsic.method))
 }
 

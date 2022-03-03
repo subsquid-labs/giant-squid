@@ -8,8 +8,8 @@ import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
     const call = new StakingPayoutStakersCall(ctx)
 
-    if (call.isV1058) {
-        const { validatorStash, era } = call.asV1058
+    if (call.isV0) {
+        const { validatorStash, era } = call.asV0
         return {
             validator: validatorStash,
             era,

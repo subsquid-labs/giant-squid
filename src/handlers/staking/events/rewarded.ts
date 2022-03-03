@@ -24,10 +24,8 @@ function getRewardedEventData(ctx: EventHandlerContext): RewardData {
 function getRewardEventData(ctx: EventHandlerContext): RewardData | undefined {
     const event = new StakingRewardEvent(ctx)
 
-    if (event.isV1020) {
-        return undefined
-    } else if (event.isV1050) {
-        const [account, amount] = event.asV1050
+    if (event.isV0) {
+        const [account, amount] = event.asV0
         return {
             account,
             amount,

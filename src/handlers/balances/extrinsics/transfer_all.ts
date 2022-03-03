@@ -10,8 +10,8 @@ function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
         return {
             to: dest.value as Uint8Array,
         }
-    } else if (call.isV9111) {
-        const { dest } = call.asV9111
+    } else if (call.isV9110) {
+        const { dest } = call.asV9110
         return {
             to: dest.value as Uint8Array,
         }
