@@ -19,8 +19,8 @@ processor.addEventHandler('staking.Rewarded', modules.staking.events.handleRewar
 processor.addEventHandler('staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
 processor.addEventHandler('staking.Slashed', modules.staking.events.handleSlashed)
 processor.addEventHandler('staking.Slash', modules.staking.events.handleSlash) //Old name of Slashed event
-processor.addEventHandler('staking.Bonded', modules.staking.events.handleSlash)
-processor.addEventHandler('staking.Unbonded', modules.staking.events.handleSlash)
+processor.addEventHandler('staking.Bonded', modules.staking.events.handleBonded)
+processor.addEventHandler('staking.Unbonded', modules.staking.events.handleUnbonded)
 
 processor.addEventHandler('crowdloan.Contributed', modules.crowdloan.events.handleContributed)
 processor.addEventHandler('crowdloan.Dissolved', modules.crowdloan.events.handleDissolved)
