@@ -1,7 +1,30 @@
+type Account @entity {
+  id: ID!
+  totalStake: BigInt
+  totalReward: BigInt
+  totalSlash: BigInt
+  transfers: [Transfer!] @derivedFrom(field: "account")
+  contributions: [Contribution!] @derivedFrom(field: "account")
+  rewards: [Reward!] @derivedFrom(field: "account")
+  slashes: [Slash!] @derivedFrom(field: "account")
+  stakes: [Stake!] @derivedFrom(field: "account")
+}
+
 type Parachain @entity {
   id: ID!
   name: String
   crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
+}
+
+enum CrowdloanStatus {
+  Created
+  Won
+  Dissolved
+}
+
+type Contributor {
+  id: ID!
+  amount: BigInt!
 }
 
 type Crowdloan @entity {
@@ -10,55 +33,88 @@ type Crowdloan @entity {
   firstPeriod: BigInt!
   lastPeriod: BigInt!
   end: BigInt!
-  contributors: [String!]
+  contributors: [Contributor!]
   raised: BigInt!
   parachain: Parachain!
   chainName: String! @index
   blockNumber: BigInt
+  status: CrowdloanStatus
 }
 
-interface ItemBase {
-  id: ID!
+interface Item {
   date: DateTime
   blockNumber: BigInt
-  extrinisicHash: String
-  chainName: String 
+  extrinsicHash: String
+  chainName: String
+  account: Account
+  amount: BigInt
 }
 
-type Contribution implements ItemBase @entity {
+type Contribution implements Item @entity {
   id: ID!
-  date: DateTime!
-  blockNumber: BigInt!
-  extrinisicHash: String
   chainName: String! @index
-  crowdloan: Crowdloan!
-  success: Boolean!
-  account: String! @index
-  amount: BigInt!
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String @index
+  crowdloan: Crowdloan
+  success: Boolean
+  account: Account
+  amount: BigInt
 }
 
-type Transfer implements ItemBase @entity {
+type Transfer implements Item @entity {
   id: ID!
+  chainName: String @index
+  date: DateTime
   blockNumber: BigInt
-  extrinisicHash: String
-  to: String @index
-  from: String @index
+  extrinsicHash: String @index
+  to: Account
+  from: Account
+  account: Account
   amount: BigInt
   success: Boolean
   name: String
-  date: DateTime
-  chainName: String @index
 }
 
-type Reward implements ItemBase @entity  {
+interface HasTotal {
+  total: BigInt
+}
+
+type Reward implements Item & HasTotal @entity  {
   id: ID!
+  chainName: String @index
   date: DateTime
   blockNumber: BigInt
-  extrinisicHash: String
-  chainName: String @index
-  account: String @index
+  extrinsicHash: String @index
+  account: Account
   amount: BigInt
-  name: String
   era: Int
   validator: String
+  total: BigInt
+  name: String
+}
+
+type Slash implements Item & HasTotal @entity  {
+  id: ID!
+  chainName: String @index
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String @index
+  account: Account
+  amount: BigInt
+  total: BigInt
+  name: String
+}
+
+type Stake implements Item & HasTotal @entity  {
+  id: ID!
+  chainName: String @index
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String @index
+  account: Account
+  amount: BigInt
+  total: BigInt
+  success: Boolean
+  name: String
 }

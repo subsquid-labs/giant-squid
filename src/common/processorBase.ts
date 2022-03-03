@@ -1,7 +1,7 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
-type ChainName = 'polkadot' | 'kusama'
 
 enum HandlerParams {
     NAME,
@@ -21,7 +21,8 @@ type Handlers<T> = Record<
 >
 
 export interface ProcessorConfig {
-    chainName: ChainName
+    chainName: string
+    prefix: number | string
     dataSource: Parameters<SubstrateProcessor['setDataSource']>[HandlerParams.NAME]
     typesBundle: Parameters<SubstrateProcessor['setTypesBundle']>[HandlerParams.NAME]
     batchSize?: Parameters<SubstrateProcessor['setBatchSize']>[HandlerParams.NAME]
@@ -47,11 +48,7 @@ export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
         const section = config.eventHandlers[sectionName]
         for (const methodName in section) {
             const method = section[methodName]
-            processor.addEventHandler(
-                `${sectionName}.${methodName}`,
-                method.options || {},
-                method.handler
-            )
+            processor.addEventHandler(`${sectionName}.${methodName}`, method.options || {}, method.handler)
         }
     }
 
@@ -59,11 +56,7 @@ export function setupNewProcessor(config: ProcessorConfig): SubstrateProcessor {
         const section = config.extrinsicsHandlers[sectionName]
         for (const methodName in section) {
             const method = section[methodName]
-            processor.addExtrinsicHandler(
-                `${sectionName}.${methodName}`,
-                method.options || {},
-                method.handler
-            )
+            processor.addExtrinsicHandler(`${sectionName}.${methodName}`, method.options || {}, method.handler)
         }
     }
 

@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Crowdloan} from "./crowdloan.model"
+import {Account} from "./account.model"
 
 @Entity_()
 export class Contribution {
@@ -11,30 +12,31 @@ export class Contribution {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("timestamp with time zone", {nullable: false})
-  date!: Date
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  blockNumber!: bigint
-
-  @Column_("text", {nullable: true})
-  extrinisicHash!: string | undefined | null
-
   @Index_()
   @Column_("text", {nullable: false})
   chainName!: string
 
+  @Column_("timestamp with time zone", {nullable: true})
+  date!: Date | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  blockNumber!: bigint | undefined | null
+
   @Index_()
-  @ManyToOne_(() => Crowdloan, {nullable: false})
-  crowdloan!: Crowdloan
-
-  @Column_("bool", {nullable: false})
-  success!: boolean
+  @Column_("text", {nullable: true})
+  extrinsicHash!: string | undefined | null
 
   @Index_()
-  @Column_("text", {nullable: false})
-  account!: string
+  @ManyToOne_(() => Crowdloan, {nullable: true})
+  crowdloan!: Crowdloan | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  amount!: bigint
+  @Column_("bool", {nullable: true})
+  success!: boolean | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => Account, {nullable: true})
+  account!: Account | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  amount!: bigint | undefined | null
 }

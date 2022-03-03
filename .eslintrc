@@ -1,29 +1,30 @@
 {
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "./tsconfig.json",
-      "jsx": false
-    },
-    "rules": {
-      "max-len": [
-        "error",
-        {
-          "code": 130,
-          "ignoreComments": true,
-          "ignoreStrings": true,
-          "ignoreTemplateLiterals": true
-        }
-      ],
-      "no-throw-literal": "off",
-      "@typescript-eslint/no-object-literal-type-assertion": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-use-before-define": "off"
-    },
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "plugin:sonarjs/recommended",
-      "prettier"
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": [
+    "sonarjs"
+  ],
+  "rules": {
+    "max-len": [
+      "error",
+      {
+        "code": 120,
+        "ignoreComments": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
     ]
-  }
+  },
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "plugin:sonarjs/recommended",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "ignorePatterns": [
+    "src/model",
+    "src/types"
+  ]
+}

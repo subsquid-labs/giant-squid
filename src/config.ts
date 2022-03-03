@@ -1,16 +1,17 @@
-import events from './handlers/event'
-import extrins from './handlers/extrinsic'
+/* eslint-disable sonarjs/no-duplicate-string */
+import modules from './handlers'
 import { ProcessorConfig } from './common/processorBase'
 import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
 
 export default {
-    chainName: 'polkadot',
+    chainName: 'kusama',
+    prefix: 'kusama',
     dataSource: {
-        archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
-        chain: 'wss://rpc.polkadot.io',
+        archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
+        chain: 'wss://kusama-rpc.polkadot.io',
     },
-    typesBundle: 'polkadot',
-    batchSize: 100,
+    typesBundle: 'kusama',
+    batchSize: 10,
     eventHandlers: {
         balances: {
             /**
@@ -18,49 +19,69 @@ export default {
              * Also provide balance info for 'balances.transfer_all' call
              */
             Transfer: {
-                handler: events.balances.handleTransfer,
+                handler: modules.balances.events.handleTransfer,
             },
         },
         staking: {
             Rewarded: {
-                handler: events.staking.handleRewarded,
+                handler: modules.staking.events.handleRewarded,
             },
             /**
              * Old name of Rewarded event
              */
             Reward: {
-                handler: events.staking.handleReward,
+                handler: modules.staking.events.handleReward,
             },
             Slashed: {
-                handler: events.staking.handleSlashed,
+                handler: modules.staking.events.handleSlashed,
             },
             /**
              * Old name of Slashed event
              */
             Slash: {
-                handler: events.staking.handleSlash,
+                handler: modules.staking.events.handleSlash,
+            },
+            Bonded: {
+                handler: modules.staking.events.handleBonded,
+            },
+            Unbonded: {
+                handler: modules.staking.events.handleUnbonded,
             },
         },
         crowdloan: {
+            Contributed: {
+                handler: modules.crowdloan.events.handleContributed,
+            },
             /**
              * Used to handle crowdloan dissolve.
-             * Last crowdloan of paraId parachain will be dissolved.
+             * Last crowdloan of paraId parachain will change status to dissolved.
              */
-            // Dissolved: {
-            //     handler: events.crowdloan.handleDissolved,
-            // },
+            Dissolved: {
+                handler: modules.crowdloan.events.handleDissolved,
+            },
         },
     },
     extrinsicsHandlers: {
-        /**
-         * Used to handle crowdloan create
-         */
         crowdloan: {
+            /**
+             * Used to handle new crowdloan and create them
+             */
             create: {
-                handler: extrins.crowdloan.handleCreate,
+                handler: modules.crowdloan.extrinsics.handleCreate,
+                options: {
+                    triggerEvents: ['crowdloan.Created'],
+                },
             },
+            /**
+             * Used only to get result of transaction and fill failed Cuntribute item.
+             * Works in pair with 'crowdloan.Contributed' event.
+             * Can be removed if you don't need it.
+             */
             contribute: {
-                handler: extrins.crowdloan.handleContribute,
+                handler: modules.crowdloan.extrinsics.handleContribute,
+                options: {
+                    triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
+                },
             },
         },
         /**
@@ -70,36 +91,44 @@ export default {
          */
         staking: {
             payout_stakers: {
-                handler: extrins.staking.handlePauoutStakers,
+                handler: modules.staking.extrinsics.handlePauoutStakers,
+            },
+            bond: {
+                handler: modules.staking.extrinsics.handleBond,
+            },
+            bond_extra: {
+                handler: modules.staking.extrinsics.handleBondExtra,
+            },
+            unbund: {
+                handler: modules.staking.extrinsics.handleUnbond,
             },
         },
         /**
-         * Used only to get success of transaction and fill failed Transfers item.
+         * Used only to get result of transaction and fill failed Transfers item.
          * Works in pair with 'balances.Transfer' event.
          * Can be removed if you don't need it.
          */
         balances: {
             transfer: {
-                handler: extrins.balances.handleTransfer,
+                handler: modules.balances.extrinsics.handleTransfer,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             transfer_keep_alive: {
-                handler: extrins.balances.handleTransferKeepAlive,
+                handler: modules.balances.extrinsics.handleTransferKeepAlive,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
-
             force_transfer: {
-                handler: extrins.balances.handleForceTransfer,
+                handler: modules.balances.extrinsics.handleForceTransfer,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
             },
             transfer_all: {
-                handler: extrins.balances.handleTransferAll,
+                handler: modules.balances.extrinsics.handleTransferAll,
                 options: {
                     triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED],
                 },
@@ -110,7 +139,10 @@ export default {
          */
         proxy: {
             proxy: {
-                handler: extrins.proxy.handleProxy,
+                handler: modules.proxy.extrinsics.handleProxy,
+                options: {
+                    triggerEvents: ['crowdloan.Created'],
+                },
             },
         },
         /**
@@ -118,11 +150,14 @@ export default {
          */
         multisig: {
             as_multi: {
-                handler: extrins.multisig.handleAsMulti,
+                handler: modules.multisig.extrinsics.handleAsMulti,
+                options: {
+                    triggerEvents: ['crowdloan.Created'],
+                },
             },
         },
     },
     // blockRange: { from: 7567658 }, //proxy
     // blockRange: { from: 8179623 }, //as_multi
-    // blockRange: { from: 8270311 }
+    // blockRange: { from: 7828000 },
 } as ProcessorConfig
