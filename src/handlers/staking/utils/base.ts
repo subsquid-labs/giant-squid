@@ -2,10 +2,10 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, getAccount, getOrCreate, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward, Stake } from '../../../model'
+import { Reward, Slash, Stake } from '../../../model'
 
 async function populateStakingItem(
-    item: Reward | Stake,
+    item: Reward | Stake | Slash,
     options: {
         ctx: EventHandlerContext
         data: RewardData | StakeData
@@ -48,7 +48,7 @@ async function calculateTotalReward(
 }
 
 async function calculateTotalSlash(
-    reward: Reward,
+    reward: Slash,
     options: {
         ctx: EventHandlerContext
         data: RewardData | StakeData
@@ -107,12 +107,12 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
 export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
     const id = ctx.event.id
 
-    const reward = await getOrCreate(ctx.store, Reward, id)
+    const slash = await getOrCreate(ctx.store, Slash, id)
 
-    await populateStakingItem(reward, { ctx, data })
-    await calculateTotalSlash(reward, { ctx, data })
+    await populateStakingItem(slash, { ctx, data })
+    await calculateTotalSlash(slash, { ctx, data })
 
-    await ctx.store.save(reward)
+    await ctx.store.save(slash)
 }
 
 export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, success = true) {
