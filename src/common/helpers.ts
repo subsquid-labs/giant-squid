@@ -22,6 +22,7 @@ export async function getAccount(store: Store, id: string) {
             id: id,
             totalReward: 0n,
             totalStake: 0n,
+            totalSlash: 0n,
         })
 
         await store.save(account)
