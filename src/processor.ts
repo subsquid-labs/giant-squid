@@ -75,8 +75,16 @@ processor.addExtrinsicHandler(
     modules.balances.extrinsics.handleTransferAll
 )
 
-processor.addExtrinsicHandler('proxy.proxy', modules.proxy.extrinsics.handleProxy)
+processor.addExtrinsicHandler(
+    'proxy.proxy',
+    { triggerEvents: ['crowdloan.Created'] },
+    modules.proxy.extrinsics.handleProxy
+)
 
-processor.addExtrinsicHandler('multisig.as_multi', modules.multisig.extrinsics.handleAsMulti)
+processor.addExtrinsicHandler(
+    'multisig.as_multi',
+    { triggerEvents: ['crowdloan.Created'] },
+    modules.multisig.extrinsics.handleAsMulti
+)
 
 processor.run()
