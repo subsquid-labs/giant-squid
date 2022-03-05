@@ -50,19 +50,27 @@ interface Item {
   amount: BigInt
 }
 
-type Contribution implements Item @entity {
+interface HasTotal {
+  total: BigInt
+}
+
+interface CanFail {
+  success: Boolean
+}
+
+type Contribution implements Item & CanFail @entity {
   id: ID!
   chainName: String! @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
   crowdloan: Crowdloan
-  success: Boolean
+  success: Boolean @index
   account: Account
   amount: BigInt
 }
 
-type Transfer implements Item @entity {
+type Transfer implements Item & CanFail @entity {
   id: ID!
   chainName: String @index
   date: DateTime
@@ -72,12 +80,8 @@ type Transfer implements Item @entity {
   from: Account
   account: Account
   amount: BigInt
-  success: Boolean
+  success: Boolean @index
   name: String
-}
-
-interface HasTotal {
-  total: BigInt
 }
 
 type Reward implements Item & HasTotal @entity  {
@@ -106,7 +110,7 @@ type Slash implements Item & HasTotal @entity  {
   name: String
 }
 
-type Stake implements Item & HasTotal @entity  {
+type Stake implements Item & HasTotal & CanFail @entity  {
   id: ID!
   chainName: String @index
   date: DateTime
@@ -115,6 +119,6 @@ type Stake implements Item & HasTotal @entity  {
   account: Account
   amount: BigInt
   total: BigInt
-  success: Boolean
+  success: Boolean @index
   name: String
 }
