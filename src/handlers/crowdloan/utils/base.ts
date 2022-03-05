@@ -57,5 +57,5 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
 export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {
     if (isExtrinsicSuccess(ctx)) return
 
-    saveContributedEvent(ctx, data, false)
+    await saveContributedEvent(ctx, data, false)
 }
