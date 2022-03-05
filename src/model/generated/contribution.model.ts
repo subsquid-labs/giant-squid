@@ -30,6 +30,7 @@ export class Contribution {
   @ManyToOne_(() => Crowdloan, {nullable: true})
   crowdloan!: Crowdloan | undefined | null
 
+  @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
 

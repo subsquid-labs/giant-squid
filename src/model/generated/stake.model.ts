@@ -35,6 +35,7 @@ export class Stake {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   total!: bigint | undefined | null
 
+  @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
 
