@@ -24,7 +24,7 @@ export async function dissolveCrowdloan(ctx: EventHandlerContext, data: Dissolve
     const lastCrowdloan = parachain.crowdloans[parachain.crowdloans.length - 1]
     if (!lastCrowdloan) return
 
-    lastCrowdloan.status = CrowdloanStatus.Dissolved
+    lastCrowdloan.status = CrowdloanStatus.DISSOLVED
 
     await ctx.store.save(lastCrowdloan)
 }

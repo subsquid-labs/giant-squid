@@ -17,9 +17,9 @@ type Parachain @entity {
 }
 
 enum CrowdloanStatus {
-  Created
-  Won
-  Dissolved
+  CREATED
+  WON
+  DISSOLVED
 }
 
 type Contributor {
