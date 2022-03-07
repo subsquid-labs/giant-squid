@@ -28,7 +28,7 @@ export async function saveCreateCall(ctx: ExtrinsicHandlerContext, data: CreateD
     crowdloan.contributors = []
     crowdloan.raised = 0n
     crowdloan.blockNumber = BigInt(ctx.block.height)
-    crowdloan.status = CrowdloanStatus.Created
+    crowdloan.status = CrowdloanStatus.CREATED
 
     await ctx.store.save(crowdloan)
 }
