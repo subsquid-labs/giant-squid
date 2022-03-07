@@ -2,6 +2,7 @@ import * as ss58 from '@subsquid/ss58'
 import { EventHandlerContext, ExtrinsicHandlerContext, Store } from '@subsquid/substrate-processor'
 import { Account } from '../model'
 import { EXTRINSIC_SUCCESS } from './consts'
+import { findById } from './dbUtils'
 
 export function encodeID(ID: Uint8Array, prefix: string | number) {
     let ret: string | null
@@ -15,7 +16,7 @@ export function encodeID(ID: Uint8Array, prefix: string | number) {
 }
 
 export async function getAccount(store: Store, id: string) {
-    let account = await store.findOne(Account, id, { cache: true })
+    let account = await findById(store, Account, id)
 
     if (!account) {
         account = new Account({
@@ -31,39 +32,39 @@ export async function getAccount(store: Store, id: string) {
     return account
 }
 
-export async function getOrCreate<T extends { id: string }>(
-    store: Store,
-    entityConstructor: EntityConstructor<T>,
-    id: string
-): Promise<T>
-export async function getOrCreate<T extends { id: string }>(
-    store: Store,
-    entityConstructor: EntityConstructor<T>,
-    id: Partial<T>
-): Promise<T>
-export async function getOrCreate<T extends { id: string }>(
-    store: Store,
-    entityConstructor: EntityConstructor<T>,
-    idOrOptions: string | Partial<T>
-): Promise<T> {
-    let e
+// export async function getOrCreate<T extends { id: string }>(
+//     store: Store,
+//     entityConstructor: EntityConstructor<T>,
+//     id: string
+// ): Promise<T>
+// export async function getOrCreate<T extends { id: string }>(
+//     store: Store,
+//     entityConstructor: EntityConstructor<T>,
+//     id: Partial<T>
+// ): Promise<T>
+// export async function getOrCreate<T extends { id: string }>(
+//     store: Store,
+//     entityConstructor: EntityConstructor<T>,
+//     idOrOptions: string | Partial<T>
+// ): Promise<T> {
+//     let e
 
-    if (typeof idOrOptions == 'string') {
-        e = await store.findOne<T>(entityConstructor, idOrOptions)
-    } else {
-        e = await store.findOne<T>(entityConstructor, { where: idOrOptions })
-    }
+//     if (typeof idOrOptions == 'string') {
+//         e = await store.findOne<T>(entityConstructor, idOrOptions)
+//     } else {
+//         e = await store.findOne<T>(entityConstructor, { where: idOrOptions })
+//     }
 
-    if (!e) {
-        if (typeof idOrOptions == 'string') {
-            e = new entityConstructor({ id: idOrOptions })
-        } else {
-            e = new entityConstructor(idOrOptions)
-        }
-    }
+//     if (!e) {
+//         if (typeof idOrOptions == 'string') {
+//             e = new entityConstructor({ id: idOrOptions })
+//         } else {
+//             e = new entityConstructor(idOrOptions)
+//         }
+//     }
 
-    return e
-}
+//     return e
+// }
 
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
     entity.id ??= ctx.event.id
@@ -77,10 +78,6 @@ export interface ItemBase {
     date: Date | null | undefined
     blockNumber: bigint | null | undefined
     extrinsicHash: string | null | undefined
-}
-
-export type EntityConstructor<T> = {
-    new (...args: any[]): T
 }
 
 export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {

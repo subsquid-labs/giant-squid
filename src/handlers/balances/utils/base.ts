@@ -1,5 +1,5 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { populateMeta, encodeID, getAccount, getOrCreate, isExtrinsicSuccess } from '../../../common/helpers'
+import { populateMeta, encodeID, getAccount, isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { Transfer } from '../../../model'
@@ -43,11 +43,11 @@ async function populateTransferItem(
 export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true) {
     const id = ctx.event.id
 
-    const transferTo = await getOrCreate(ctx.store, Transfer, `${id}-to`)
+    const transferTo = new Transfer({ id: `${id}-to` })
     await populateTransferItem(transferTo, { ctx, data, dir: Direction.TO, success: success })
     await ctx.store.save(transferTo)
 
-    const transferFrom = await getOrCreate(ctx.store, Transfer, `${id}-from`)
+    const transferFrom = new Transfer({ id: `${id}-from` })
     await populateTransferItem(transferFrom, { ctx, data, dir: Direction.FROM, success: success })
     await ctx.store.save(transferFrom)
 }
