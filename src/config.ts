@@ -2,13 +2,13 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'polkadot',
+    prefix: 'polkadot',
     dataSource: {
-        archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
+        chain: 'wss://rpc.polkadot.io',
     },
-    typesBundle: 'kusama',
+    typesBundle: 'polkadot',
     batchSize: 100,
 }
 
