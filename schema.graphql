@@ -3,7 +3,7 @@ type Account @entity {
   totalStake: BigInt
   totalReward: BigInt
   totalSlash: BigInt
-  transfers: [Transfer!] @derivedFrom(field: "account")
+  transfers: [AccountTransfer!] @derivedFrom(field: "account")
   contributions: [Contribution!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
@@ -20,6 +20,11 @@ enum CrowdloanStatus {
   CREATED
   WON
   DISSOLVED
+}
+
+enum TransferDicrection {
+  FROM
+  TO
 }
 
 type Contributor {
@@ -46,7 +51,6 @@ interface Item {
   blockNumber: BigInt
   extrinsicHash: String
   chainName: String
-  account: Account
   amount: BigInt
 }
 
@@ -78,10 +82,16 @@ type Transfer implements Item & CanFail @entity {
   extrinsicHash: String @index
   to: Account
   from: Account
-  account: Account
   amount: BigInt
   success: Boolean @index
   name: String
+}
+
+type AccountTransfer @entity {
+  id: ID!
+  transfer: Transfer
+  account: Account
+  direction: TransferDicrection
 }
 
 type Reward implements Item & HasTotal @entity  {
