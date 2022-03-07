@@ -2,7 +2,7 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { populateMeta, encodeID, getAccount, isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
-import { Transfer } from '../../../model'
+import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
 
 export enum Direction {
     FROM,
@@ -14,11 +14,10 @@ async function populateTransferItem(
     options: {
         ctx: EventHandlerContext
         data: TransferData
-        dir: Direction
         success: boolean
     }
 ) {
-    const { ctx, data, dir, success } = options
+    const { ctx, data, success } = options
 
     populateMeta(ctx, transfer)
 
@@ -31,25 +30,35 @@ async function populateTransferItem(
     const idFrom = data.from ? encodeID(data.from, config.prefix) : ctx.extrinsic?.signer
     const idTo = encodeID(data.to, config.prefix)
 
-    if (dir === Direction.FROM) {
-        transfer.from = idFrom ? await getAccount(ctx.store, idFrom) : null
-        transfer.account = idTo ? await getAccount(ctx.store, idTo) : null
-    } else {
-        transfer.to = idTo ? await getAccount(ctx.store, idTo) : null
-        transfer.account = idFrom ? await getAccount(ctx.store, idFrom) : null
-    }
+    transfer.from = idFrom ? await getAccount(ctx.store, idFrom) : null
+    transfer.to = idTo ? await getAccount(ctx.store, idTo) : null
 }
 
 export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true) {
     const id = ctx.event.id
 
-    const transferTo = new Transfer({ id: `${id}-to` })
-    await populateTransferItem(transferTo, { ctx, data, dir: Direction.TO, success: success })
-    await ctx.store.save(transferTo)
+    const transfer = new Transfer({ id: `${id}` })
+    await populateTransferItem(transfer, { ctx, data, success: success })
 
-    const transferFrom = new Transfer({ id: `${id}-from` })
-    await populateTransferItem(transferFrom, { ctx, data, dir: Direction.FROM, success: success })
-    await ctx.store.save(transferFrom)
+    await ctx.store.save(transfer)
+
+    await ctx.store.save(
+        new AccountTransfer({
+            id: `${id}-from`,
+            transfer,
+            account: transfer.from,
+            direction: TransferDicrection.FROM,
+        })
+    )
+
+    await ctx.store.save(
+        new AccountTransfer({
+            id: `${id}-to`,
+            transfer,
+            account: transfer.to,
+            direction: TransferDicrection.TO,
+        })
+    )
 }
 
 export async function saveTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData) {
