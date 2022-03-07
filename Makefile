@@ -42,4 +42,4 @@ down:
 	@docker-compose down
 
 
-.PHONY: process serve start codegen migration migrate up down
+.PHONY: process serve start codegen migration migrate up down typegen
