@@ -1,5 +1,5 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, getAccount, getOrCreate, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
+import { encodeID, getAccount, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Reward, Slash, Stake } from '../../../model'
@@ -97,7 +97,7 @@ async function calculateTotalStake(
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const id = ctx.event.id
 
-    const reward = await getOrCreate(ctx.store, Reward, id)
+    const reward = new Reward({ id })
 
     await populateStakingItem(reward, { ctx, data })
     await calculateTotalReward(reward, { ctx, data })
@@ -108,7 +108,7 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
 export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
     const id = ctx.event.id
 
-    const slash = await getOrCreate(ctx.store, Slash, id)
+    const slash = new Slash({ id })
 
     await populateStakingItem(slash, { ctx, data })
     await calculateTotalSlash(slash, { ctx, data })
@@ -125,7 +125,7 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
 
     const id = ctx.event.id
 
-    const stake = await getOrCreate(ctx.store, Stake, id)
+    const stake = new Stake({ id })
 
     await populateStakingItem(stake, { ctx, data })
     stake.success = success

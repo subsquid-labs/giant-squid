@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext, EventHandlerContext, Store } from '@subsquid/substrate-processor'
-import { getOrCreate, populateMeta, isExtrinsicSuccess, encodeID, getAccount } from '../../../common/helpers'
-import { getOrCreateParachain } from '../../../common/parachain'
+import { populateMeta, isExtrinsicSuccess, encodeID, getAccount } from '../../../common/helpers'
+import { getParachain } from '../../../common/parachain'
 import { ContributionData } from '../../../types/custom/crowdloanData'
 import config from '../../../config'
 import { Crowdloan, Contribution, Contributor } from '../../../model'
@@ -11,7 +11,7 @@ async function updateCrowdloanContributions(
 ) {
     const { crowdloan, contribution } = options
 
-    crowdloan.contributors ??= []
+    crowdloan.contributors = []
 
     let contributor = crowdloan.contributors.find((contributor) => contributor.id === contribution.account?.id)
     if (!contributor) {
@@ -31,23 +31,23 @@ async function updateCrowdloanContributions(
 export async function saveContributedEvent(ctx: EventHandlerContext, data: ContributionData, success = true) {
     const id = ctx.event.id
 
-    const parachain = await getOrCreateParachain(ctx.store, `${data.paraId}`)
+    const parachain = await getParachain(ctx.store, `${data.paraId}`)
     const crowdloanNum = parachain?.crowdloans.length || 0
     const crowdloan = await ctx.store.findOne(Crowdloan, `${data.paraId}-${crowdloanNum}`)
     if (!crowdloan) return
 
-    const contribution = await getOrCreate(ctx.store, Contribution, id)
+    const contribution = new Contribution({ id })
 
     populateMeta(ctx, contribution)
 
-    contribution.chainName ??= config.chainName
-    contribution.success ??= success
+    contribution.chainName = config.chainName
+    contribution.success = success
 
-    contribution.amount ??= data.amount
+    contribution.amount = data.amount
 
     const contributorId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    contribution.account ??= contributorId ? await getAccount(ctx.store, contributorId) : null
-    contribution.crowdloan ??= crowdloan
+    contribution.account = contributorId ? await getAccount(ctx.store, contributorId) : null
+    contribution.crowdloan = crowdloan
 
     await ctx.store.save(contribution)
 
