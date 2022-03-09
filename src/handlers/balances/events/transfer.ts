@@ -37,13 +37,13 @@ function getEventData(ctx: EventHandlerContext): TransferData {
     }
 }
 
-function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
-    const methods = ['transfer', 'transfer_all', 'force_transfer', 'transfer_keep_alive']
-    return extrinsic.section === 'balances' && methods.includes(snakeCase(extrinsic.method))
-}
+// function checkExtrinsic(extrinsic: SubstrateExtrinsic): boolean {
+//     const methods = ['transfer', 'transfer_all', 'force_transfer', 'transfer_keep_alive']
+//     return extrinsic.section === 'balances' && methods.includes(snakeCase(extrinsic.method))
+// }
 
 export async function handleTransfer(ctx: EventHandlerContext) {
-    if (!ctx.extrinsic || !checkExtrinsic(ctx.extrinsic)) return
+    // if (!ctx.extrinsic || !checkExtrinsic(ctx.extrinsic)) return
 
     const data = getEventData(ctx)
 
