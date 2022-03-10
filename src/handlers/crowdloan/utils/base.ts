@@ -32,8 +32,9 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
     const id = ctx.event.id
 
     const parachain = await getParachain(ctx.store, `${data.paraId}`)
-    const crowdloanNum = parachain?.crowdloans.length || 0
-    const crowdloan = await ctx.store.findOne(Crowdloan, `${data.paraId}-${crowdloanNum}`)
+    if (parachain.crowdloans.length === 0) return
+
+    const crowdloan = await ctx.store.findOne(Crowdloan, parachain.crowdloans[parachain.crowdloans.length - 1].id)
     if (!crowdloan) return
 
     const contribution = new Contribution({ id })
