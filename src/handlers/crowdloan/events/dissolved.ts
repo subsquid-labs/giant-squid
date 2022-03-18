@@ -1,8 +1,8 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { getParachain } from '../../../common/parachain'
 import { DissolvedData } from '../../../types/custom/crowdloanData'
 import { CrowdloanStatus } from '../../../model'
 import { CrowdloanDissolvedEvent } from '../../../types/generated/events'
+import { getCrowdloan } from '../../../common/entityUtils'
 
 function getEventData(ctx: EventHandlerContext): DissolvedData {
     const event = new CrowdloanDissolvedEvent(ctx)
@@ -19,14 +19,12 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
 }
 
 export async function dissolveCrowdloan(ctx: EventHandlerContext, data: DissolvedData) {
-    const parachain = await getParachain(ctx.store, `${data.index}`)
+    const crowdloan = await getCrowdloan(ctx, data.index)
+    if (!crowdloan) return
 
-    const lastCrowdloan = parachain.crowdloans[parachain.crowdloans.length - 1]
-    if (!lastCrowdloan) return
+    crowdloan.status = CrowdloanStatus.DISSOLVED
 
-    lastCrowdloan.status = CrowdloanStatus.DISSOLVED
-
-    await ctx.store.save(lastCrowdloan)
+    await ctx.store.save(crowdloan)
 }
 
 export async function handleDissolved(ctx: EventHandlerContext) {

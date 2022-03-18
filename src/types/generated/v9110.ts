@@ -315,6 +315,19 @@ export interface RewardDestination_None {
   __kind: 'None'
 }
 
+export interface FundInfo {
+  depositor: AccountId32
+  verifier: (MultiSigner | undefined)
+  deposit: bigint
+  raised: bigint
+  end: number
+  cap: bigint
+  lastContribution: LastContribution
+  firstPeriod: number
+  lastPeriod: number
+  trieIndex: number
+}
+
 /**
  * Contains one variant per dispatchable that can be called by an extrinsic.
  */
@@ -5001,6 +5014,22 @@ export interface CrowdloanCall_add_memo {
 export interface CrowdloanCall_poke {
   __kind: 'poke'
   index: Id
+}
+
+export type LastContribution = LastContribution_Never | LastContribution_PreEnding | LastContribution_Ending
+
+export interface LastContribution_Never {
+  __kind: 'Never'
+}
+
+export interface LastContribution_PreEnding {
+  __kind: 'PreEnding'
+  value: number
+}
+
+export interface LastContribution_Ending {
+  __kind: 'Ending'
+  value: number
 }
 
 export type Perbill = number

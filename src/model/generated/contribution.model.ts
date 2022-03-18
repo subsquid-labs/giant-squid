@@ -27,16 +27,16 @@ export class Contribution {
   extrinsicHash!: string | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Crowdloan, {nullable: true})
-  crowdloan!: Crowdloan | undefined | null
+  @ManyToOne_(() => Crowdloan, {nullable: false})
+  crowdloan!: Crowdloan
 
   @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  account!: Account | undefined | null
+  @ManyToOne_(() => Account, {nullable: false})
+  account!: Account
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null

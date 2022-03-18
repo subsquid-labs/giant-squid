@@ -1,23 +1,19 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { populateMeta, encodeID, getAccount, isExtrinsicSuccess } from '../../../common/helpers'
+import { populateMeta, encodeID, isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
+import { getAccount } from '../../../common/entityUtils'
 
 export enum Direction {
     FROM,
     TO,
 }
 
-async function populateTransferItem(
-    transfer: Transfer,
-    options: {
-        ctx: EventHandlerContext
-        data: TransferData
-        success: boolean
-    }
-) {
-    const { ctx, data, success } = options
+export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true) {
+    const id = ctx.event.id
+
+    const transfer = new Transfer({ id: `${id}` })
 
     populateMeta(ctx, transfer)
 
@@ -29,16 +25,10 @@ async function populateTransferItem(
 
     const idFrom = data.from ? encodeID(data.from, config.prefix) : ctx.extrinsic?.signer
     const idTo = encodeID(data.to, config.prefix)
+    if (!idFrom || !idTo) return
 
-    transfer.from = idFrom ? await getAccount(ctx.store, idFrom) : null
-    transfer.to = idTo ? await getAccount(ctx.store, idTo) : null
-}
-
-export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true) {
-    const id = ctx.event.id
-
-    const transfer = new Transfer({ id: `${id}` })
-    await populateTransferItem(transfer, { ctx, data, success: success })
+    transfer.from = await getAccount(ctx, idFrom)
+    transfer.to = await getAccount(ctx, idTo)
 
     await ctx.store.save(transfer)
 

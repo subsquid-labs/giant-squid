@@ -26,8 +26,8 @@ export class Slash {
   extrinsicHash!: string | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  account!: Account | undefined | null
+  @ManyToOne_(() => Account, {nullable: false})
+  account!: Account
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null

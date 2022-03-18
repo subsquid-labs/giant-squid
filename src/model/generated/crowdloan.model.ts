@@ -1,6 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
-import {Contributor} from "./_contributor"
+import {Contributor} from "./contributor.model"
 import {Parachain} from "./parachain.model"
 import {CrowdloanStatus} from "./_crowdloanStatus"
 
@@ -25,8 +25,8 @@ export class Crowdloan {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   end!: bigint
 
-  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.map((val: any) => val.toJSON()), from: obj => obj == null ? undefined : marshal.fromList(obj, val => new Contributor(undefined, marshal.nonNull(val)))}, nullable: true})
-  contributors!: (Contributor)[] | undefined | null
+  @OneToMany_(() => Contributor, e => e.crowdloan)
+  contributors!: Contributor[]
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   raised!: bigint
