@@ -1,8 +1,31 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
+import chains from '../chains'
 import config from '../config'
-import { Account, Contributor, Crowdloan, CrowdloanStatus, Parachain } from '../model'
+import { Account, Chain, Contributor, Crowdloan, CrowdloanStatus, Parachain, Token } from '../model'
 import { CrowdloanFundsStorage } from '../types/generated/storage'
 import { FundInfo } from '../types/generated/v9110'
+
+export async function getChain(ctx: EventHandlerContext, id: string, data?: Partial<Chain>): Promise<Chain> {
+    let chain = await ctx.store.findOne(Chain, id, { cache: true })
+
+    if (!chain) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const chainInfo = chains.find((ch) => ch.id === id)!
+
+        chain = new Chain({
+            id,
+            token: new Token({
+                symbol: chainInfo.token,
+                decimals: chainInfo.decimals,
+            }),
+            ...data,
+        })
+
+        await ctx.store.insert(Chain, chain)
+    }
+
+    return chain
+}
 
 export async function getParachain(
     ctx: EventHandlerContext,
@@ -12,7 +35,14 @@ export async function getParachain(
     let parachain = await ctx.store.findOne(Parachain, id, { cache: true })
 
     if (!parachain) {
-        parachain = new Parachain({ id: id.toString(), ...data })
+        const chainInfo = chains.find((ch) => ch.paraId === id)
+
+        parachain = new Parachain({
+            id: id.toString(),
+            name: chainInfo?.id,
+            relayChain: await getChain(ctx, config.chainName),
+            ...data,
+        })
 
         await ctx.store.insert(Parachain, parachain)
     }
@@ -58,9 +88,9 @@ export async function getCrowdloan(
             lastPeriod: BigInt(lastPeriod),
             firstPeriod: BigInt(firstPeriod),
             blockNumber: BigInt(ctx.block.height),
-            parachain: await getParachain(ctx, id),
             status: CrowdloanStatus.CREATED,
-            chainName: config.chainName,
+            parachain: await getParachain(ctx, id),
+            chain: await getChain(ctx, config.chainName),
             ...data,
         })
 
@@ -95,7 +125,7 @@ export async function getAccount(
     id: number | string,
     data?: Partial<Account>
 ): Promise<Account> {
-    let account = await ctx.store.findOne(Account, id)
+    let account = await ctx.store.findOne(Account, id, { cache: true })
 
     if (!account) {
         account = new Account({
@@ -103,6 +133,7 @@ export async function getAccount(
             totalReward: 0n,
             totalStake: 0n,
             totalSlash: 0n,
+            chain: await getChain(ctx, config.chainName),
             ...data,
         })
 

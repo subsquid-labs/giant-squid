@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, O
 import * as marshal from "./marshal"
 import {Contributor} from "./contributor.model"
 import {Parachain} from "./parachain.model"
+import {Chain} from "./chain.model"
 import {CrowdloanStatus} from "./_crowdloanStatus"
 
 @Entity_()
@@ -36,8 +37,8 @@ export class Crowdloan {
   parachain!: Parachain
 
   @Index_()
-  @Column_("text", {nullable: false})
-  chainName!: string
+  @ManyToOne_(() => Chain, {nullable: false})
+  chain!: Chain
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null

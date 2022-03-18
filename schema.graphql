@@ -8,12 +8,24 @@ type Account @entity {
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
   stakes: [Stake!] @derivedFrom(field: "account")
+  chain: Chain!
+}
+
+type Chain @entity {
+  id: ID!
+  token: Token!
+}
+
+type Token {
+  symbol: String
+  decimals: Int
 }
 
 type Parachain @entity {
   id: ID!
-  name: String
+  name: String!
   crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
+  relayChain: Chain
 }
 
 enum CrowdloanStatus {
@@ -43,7 +55,7 @@ type Crowdloan @entity {
   contributors: [Contributor!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
   parachain: Parachain!
-  chainName: String! @index
+  chain: Chain! @index
   blockNumber: BigInt
   status: CrowdloanStatus
 }
@@ -52,7 +64,7 @@ interface Item {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String
-  chainName: String
+  chain: Chain!
   amount: BigInt
 }
 
@@ -66,7 +78,7 @@ interface CanFail {
 
 type Contribution implements Item & CanFail @entity {
   id: ID!
-  chainName: String! @index
+  chain: Chain! @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
@@ -78,7 +90,7 @@ type Contribution implements Item & CanFail @entity {
 
 type Transfer implements Item & CanFail @entity {
   id: ID!
-  chainName: String @index
+  chain: Chain! @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
@@ -98,7 +110,7 @@ type AccountTransfer @entity {
 
 type Reward implements Item & HasTotal @entity  {
   id: ID!
-  chainName: String @index
+  chain: Chain! @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
@@ -112,7 +124,7 @@ type Reward implements Item & HasTotal @entity  {
 
 type Slash implements Item & HasTotal @entity  {
   id: ID!
-  chainName: String @index
+  chain: Chain! @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
@@ -124,7 +136,7 @@ type Slash implements Item & HasTotal @entity  {
 
 type Stake implements Item & HasTotal & CanFail @entity  {
   id: ID!
-  chainName: String @index
+  chain: Chain! @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index

@@ -1,4 +1,6 @@
 export * from "./account.model"
+export * from "./chain.model"
+export * from "./_token"
 export * from "./parachain.model"
 export * from "./contributor.model"
 export * from "./crowdloan.model"

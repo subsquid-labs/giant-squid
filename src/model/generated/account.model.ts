@@ -1,10 +1,11 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
 import {Contribution} from "./contribution.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Stake} from "./stake.model"
+import {Chain} from "./chain.model"
 
 @Entity_()
 export class Account {
@@ -38,4 +39,8 @@ export class Account {
 
   @OneToMany_(() => Stake, e => e.account)
   stakes!: Stake[]
+
+  @Index_()
+  @ManyToOne_(() => Chain, {nullable: false})
+  chain!: Chain
 }

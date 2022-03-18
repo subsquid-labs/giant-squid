@@ -35,9 +35,6 @@ export async function savePauoutStakersCall(ctx: ExtrinsicHandlerContext, data: 
     for (const reward of rewards) {
         populateMeta(ctx, reward)
 
-        reward.name ??= ctx.event.name
-        reward.chainName ??= config.chainName
-
         reward.era ??= data.era
         reward.validator ??= encodeID(data.validator, config.chainName)
     }
