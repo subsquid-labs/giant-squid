@@ -27,11 +27,6 @@ processor.addEventHandler('crowdloan.Dissolved', modules.crowdloan.events.handle
 
 //extrinsics handlers
 processor.addExtrinsicHandler(
-    'crowdloan.create',
-    { triggerEvents: ['crowdloan.Created'] },
-    modules.crowdloan.extrinsics.handleCreate
-)
-processor.addExtrinsicHandler(
     'crowdloan.contribute',
     { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.crowdloan.extrinsics.handleContribute
@@ -73,18 +68,6 @@ processor.addExtrinsicHandler(
     'balances.transfer_all',
     { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferAll
-)
-
-processor.addExtrinsicHandler(
-    'proxy.proxy',
-    { triggerEvents: ['crowdloan.Created'] },
-    modules.proxy.extrinsics.handleProxy
-)
-
-processor.addExtrinsicHandler(
-    'multisig.as_multi',
-    { triggerEvents: ['crowdloan.Created'] },
-    modules.multisig.extrinsics.handleAsMulti
 )
 
 processor.run()

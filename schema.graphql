@@ -27,8 +27,10 @@ enum TransferDicrection {
   TO
 }
 
-type Contributor {
+type Contributor @entity {
   id: ID!
+  crowdloan: Crowdloan!
+  account: Account!
   amount: BigInt!
 }
 
@@ -38,7 +40,7 @@ type Crowdloan @entity {
   firstPeriod: BigInt!
   lastPeriod: BigInt!
   end: BigInt!
-  contributors: [Contributor!]
+  contributors: [Contributor!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
   parachain: Parachain!
   chainName: String! @index
@@ -68,9 +70,9 @@ type Contribution implements Item & CanFail @entity {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  crowdloan: Crowdloan
+  crowdloan: Crowdloan!
   success: Boolean @index
-  account: Account
+  account: Account!
   amount: BigInt
 }
 
@@ -80,8 +82,8 @@ type Transfer implements Item & CanFail @entity {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  to: Account
-  from: Account
+  to: Account!
+  from: Account!
   amount: BigInt
   success: Boolean @index
   name: String
@@ -90,7 +92,7 @@ type Transfer implements Item & CanFail @entity {
 type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
-  account: Account
+  account: Account!
   direction: TransferDicrection
 }
 
@@ -100,7 +102,7 @@ type Reward implements Item & HasTotal @entity  {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  account: Account
+  account: Account!
   amount: BigInt
   era: Int
   validator: String
@@ -114,7 +116,7 @@ type Slash implements Item & HasTotal @entity  {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  account: Account
+  account: Account!
   amount: BigInt
   total: BigInt
   name: String
@@ -126,7 +128,7 @@ type Stake implements Item & HasTotal & CanFail @entity  {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  account: Account
+  account: Account!
   amount: BigInt
   total: BigInt
   success: Boolean @index

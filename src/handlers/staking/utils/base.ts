@@ -1,8 +1,9 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, getAccount, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
+import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Reward, Slash, Stake } from '../../../model'
+import { getAccount } from '../../../common/entityUtils'
 
 async function populateStakingItem(
     item: Reward | Stake | Slash,
@@ -10,17 +11,21 @@ async function populateStakingItem(
         ctx: EventHandlerContext
         data: RewardData | StakeData
     }
-) {
+): Promise<Reward | Stake | Slash | undefined> {
     const { ctx, data } = options
 
     populateMeta(ctx, item)
 
-    item.name ??= ctx.event.name
-    item.chainName ??= config.chainName
+    item.name = ctx.event.name
+    item.chainName = config.chainName
 
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    item.account ??= id ? await getAccount(ctx.store, id) : null
-    item.amount ??= data.amount
+    if (!id) return undefined
+
+    item.account = await getAccount(ctx, id)
+    item.amount = data.amount
+
+    return item
 }
 
 // function isReward(ctx: EventHandlerContext) {
@@ -37,9 +42,9 @@ async function calculateTotalReward(
     const { ctx, data } = options
 
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    const account = id ? await getAccount(ctx.store, id) : null
+    if (!id) return
 
-    if (!account) return
+    const account = await getAccount(ctx, id)
 
     account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
     reward.total = account.totalReward
@@ -57,9 +62,9 @@ async function calculateTotalSlash(
     const { ctx, data } = options
 
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    const account = id ? await getAccount(ctx.store, id) : null
+    if (!id) return
 
-    if (!account) return
+    const account = await getAccount(ctx, id)
 
     account.totalSlash = (account.totalSlash || 0n) + BigInt(data.amount)
     slash.total = account.totalSlash
@@ -81,7 +86,9 @@ async function calculateTotalStake(
     const { ctx, data } = options
 
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    const account = id ? await getAccount(ctx.store, id) : null
+    if (!id) return
+
+    const account = await getAccount(ctx, id)
 
     if (!account) return
 
@@ -99,7 +106,7 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
 
     const reward = new Reward({ id })
 
-    await populateStakingItem(reward, { ctx, data })
+    if (!(await populateStakingItem(reward, { ctx, data }))) return
     await calculateTotalReward(reward, { ctx, data })
 
     await ctx.store.save(reward)
@@ -110,7 +117,7 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
 
     const slash = new Slash({ id })
 
-    await populateStakingItem(slash, { ctx, data })
+    if (!(await populateStakingItem(slash, { ctx, data }))) return
     await calculateTotalSlash(slash, { ctx, data })
 
     await ctx.store.save(slash)
@@ -127,7 +134,7 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
 
     const stake = new Stake({ id })
 
-    await populateStakingItem(stake, { ctx, data })
+    if (!(await populateStakingItem(stake, { ctx, data }))) return
     stake.success = success
 
     await calculateTotalStake(stake, { ctx, data })

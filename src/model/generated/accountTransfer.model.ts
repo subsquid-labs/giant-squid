@@ -17,8 +17,8 @@ export class AccountTransfer {
   transfer!: Transfer | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  account!: Account | undefined | null
+  @ManyToOne_(() => Account, {nullable: false})
+  account!: Account
 
   @Column_("varchar", {length: 4, nullable: true})
   direction!: TransferDicrection | undefined | null

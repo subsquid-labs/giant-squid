@@ -26,12 +26,12 @@ export class Transfer {
   extrinsicHash!: string | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  to!: Account | undefined | null
+  @ManyToOne_(() => Account, {nullable: false})
+  to!: Account
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  from!: Account | undefined | null
+  @ManyToOne_(() => Account, {nullable: false})
+  from!: Account
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
