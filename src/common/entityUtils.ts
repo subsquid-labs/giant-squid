@@ -14,7 +14,7 @@ export async function getParachain(
     if (!parachain) {
         parachain = new Parachain({ id: id.toString(), ...data })
 
-        await ctx.store.save(parachain)
+        await ctx.store.insert(Parachain, parachain)
     }
 
     return parachain
@@ -64,7 +64,7 @@ export async function getCrowdloan(
             ...data,
         })
 
-        await ctx.store.save(crowdloan)
+        await ctx.store.insert(Crowdloan, crowdloan)
     }
 
     return crowdloan
@@ -84,7 +84,7 @@ export async function getContributor(
             ...data,
         })
 
-        await ctx.store.save(contributor)
+        await ctx.store.insert(Contributor, contributor)
     }
 
     return contributor
@@ -106,7 +106,7 @@ export async function getAccount(
             ...data,
         })
 
-        await ctx.store.save(account)
+        await ctx.store.insert(Account, account)
     }
 
     return account
