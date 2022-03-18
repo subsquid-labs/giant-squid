@@ -2,8 +2,8 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward, Slash, Stake } from '../../../model'
-import { getAccount } from '../../../common/entityUtils'
+import { Account, Reward, Slash, Stake } from '../../../model'
+import { getAccount, getChain } from '../../../common/entityUtils'
 
 async function populateStakingItem(
     item: Reward | Stake | Slash,
@@ -17,7 +17,7 @@ async function populateStakingItem(
     populateMeta(ctx, item)
 
     item.name = ctx.event.name
-    item.chainName = config.chainName
+    item.chain = await getChain(ctx, config.chainName)
 
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return undefined
@@ -109,7 +109,7 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
     if (!(await populateStakingItem(reward, { ctx, data }))) return
     await calculateTotalReward(reward, { ctx, data })
 
-    await ctx.store.save(reward)
+    await ctx.store.insert(Reward, reward)
 }
 
 export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
@@ -120,7 +120,7 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
     if (!(await populateStakingItem(slash, { ctx, data }))) return
     await calculateTotalSlash(slash, { ctx, data })
 
-    await ctx.store.save(slash)
+    await ctx.store.insert(Slash, slash)
 }
 
 export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, success = true) {
@@ -139,7 +139,7 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
 
     await calculateTotalStake(stake, { ctx, data })
 
-    await ctx.store.save(stake)
+    await ctx.store.insert(Stake, stake)
 }
 
 export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {

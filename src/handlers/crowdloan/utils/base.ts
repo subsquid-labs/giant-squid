@@ -3,7 +3,7 @@ import { populateMeta, isExtrinsicSuccess, encodeID } from '../../../common/help
 import { ContributionData } from '../../../types/custom/crowdloanData'
 import config from '../../../config'
 import { Crowdloan, Contribution } from '../../../model'
-import { getCrowdloan, getAccount, getContributor } from '../../../common/entityUtils'
+import { getCrowdloan, getAccount, getContributor, getChain } from '../../../common/entityUtils'
 
 async function updateCrowdloanContributions(
     ctx: EventHandlerContext,
@@ -29,13 +29,14 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
 
     populateMeta(ctx, contribution)
 
-    contribution.chainName = config.chainName
+    contribution.chain = await getChain(ctx, config.chainName)
     contribution.success = success
 
     contribution.amount = data.amount
 
     const contributorId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!contributorId) return
+
     contribution.account = await getAccount(ctx, contributorId)
 
     const crowdloan = await getCrowdloan(ctx, data.paraId)
@@ -44,7 +45,7 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
     contribution.crowdloan = crowdloan
     if (success) await updateCrowdloanContributions(ctx, crowdloan, contribution)
 
-    await ctx.store.save(contribution)
+    await ctx.store.insert(Contribution, contribution)
 }
 
 export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {

@@ -3,7 +3,7 @@ import { populateMeta, encodeID, isExtrinsicSuccess } from '../../../common/help
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
-import { getAccount } from '../../../common/entityUtils'
+import { getAccount, getChain } from '../../../common/entityUtils'
 
 export enum Direction {
     FROM,
@@ -17,11 +17,11 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
 
     populateMeta(ctx, transfer)
 
-    transfer.chainName ??= config.chainName
-    transfer.name ??= ctx.extrinsic?.name
-    transfer.success ??= success
+    transfer.chain = await getChain(ctx, config.chainName)
+    transfer.name = ctx.extrinsic?.name
+    transfer.success = success
 
-    transfer.amount ??= data.amount
+    transfer.amount = data.amount
 
     const idFrom = data.from ? encodeID(data.from, config.prefix) : ctx.extrinsic?.signer
     const idTo = encodeID(data.to, config.prefix)
@@ -30,9 +30,10 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
     transfer.from = await getAccount(ctx, idFrom)
     transfer.to = await getAccount(ctx, idTo)
 
-    await ctx.store.save(transfer)
+    await ctx.store.insert(Transfer, transfer)
 
-    await ctx.store.save(
+    await ctx.store.insert(
+        AccountTransfer,
         new AccountTransfer({
             id: `${id}-from`,
             transfer,
@@ -41,7 +42,8 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
         })
     )
 
-    await ctx.store.save(
+    await ctx.store.insert(
+        AccountTransfer,
         new AccountTransfer({
             id: `${id}-to`,
             transfer,

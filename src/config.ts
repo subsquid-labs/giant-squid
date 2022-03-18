@@ -10,9 +10,9 @@ const config: ProcessorConfig = {
     },
     typesBundle: 'polkadot',
     batchSize: 100,
-    // blockRange: {
-    //     from: 7567700,
-    // },
+    blockRange: {
+        from: 7567700,
+    },
 }
 
 export default config
