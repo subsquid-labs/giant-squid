@@ -1,17 +1,11 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import chains from '../chains'
-import config from '../config'
-import { Account, Chain, Contributor, Crowdloan, CrowdloanStatus, Parachain, Token } from '../model'
-import { ChainInfo } from '../types/custom/chainInfo'
-import { ProcessorConfig } from '../types/custom/processorConfig'
-import { CrowdloanFundsStorage } from '../types/generated/storage'
-import { FundInfo } from '../types/generated/v9110'
+import chains from '../../chains'
+import config from '../../config'
+import { Account, Chain, Contributor, Crowdloan, CrowdloanStatus, Parachain, Token } from '..'
+import storage from '../../storage'
+import { ChainInfo, ChainName } from '../../types/custom/chainInfo'
 
-export async function getChain(
-    ctx: EventHandlerContext,
-    id: ProcessorConfig['chainName'],
-    data?: Partial<Chain>
-): Promise<Chain> {
+export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: Partial<Chain>): Promise<Chain> {
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
 
     if (!chain) {
@@ -40,7 +34,7 @@ export async function getParachain(
     let parachain = await ctx.store.findOne(Parachain, id, { cache: true })
 
     if (!parachain) {
-        const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay == config.chainName)
+        const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)
 
         parachain = new Parachain({
             id: id.toString(),
@@ -55,30 +49,13 @@ export async function getParachain(
     return parachain
 }
 
-const crowdloanCache: {
-    lastBlockHash?: string
-    value?: FundInfo
-} = {}
-
 export async function getCrowdloan(
     ctx: EventHandlerContext,
     id: number | string,
     data?: Partial<Crowdloan>
 ): Promise<Crowdloan | undefined> {
-    let fundInfo: FundInfo
-
-    if (crowdloanCache.lastBlockHash !== ctx.block.hash || !crowdloanCache.value) {
-        const storage = new CrowdloanFundsStorage(ctx)
-        if (!storage.isExists) return undefined
-
-        fundInfo = await storage.getAsV9110(Number(id))
-        if (!fundInfo) return undefined
-
-        crowdloanCache.lastBlockHash = ctx.block.hash
-        crowdloanCache.value = fundInfo
-    } else {
-        fundInfo = crowdloanCache.value
-    }
+    const fundInfo = await storage.crowdloan.getFunds(ctx, Number(id))
+    if (!fundInfo) return undefined
 
     const { trieIndex, end, firstPeriod, lastPeriod, cap } = fundInfo
 

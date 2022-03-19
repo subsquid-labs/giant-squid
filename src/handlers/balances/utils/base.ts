@@ -3,7 +3,7 @@ import { populateMeta, encodeID, isExtrinsicSuccess } from '../../../common/help
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
-import { getAccount, getChain } from '../../../common/entityUtils'
+import { getAccount, getChain } from '../../../model/utils/entityUtils'
 
 export enum Direction {
     FROM,
