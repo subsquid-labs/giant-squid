@@ -1,6 +1,6 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { FundInfo } from '../../types/custom/crowdloanData'
-import { CrowdloanFundsStorage } from '../../types/generated/storage'
+import { FundInfo } from '../../../types/custom/crowdloanData'
+import { CrowdloanFundsStorage } from '../../../types/generated/storage'
 
 async function getStorageData(ctx: EventHandlerContext, paraId: number): Promise<FundInfo | undefined> {
     const storage = new CrowdloanFundsStorage(ctx)

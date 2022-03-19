@@ -2,8 +2,7 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Account, Reward, Slash, Stake } from '../../../model'
-import { getAccount, getChain } from '../../../model/utils/entityUtils'
+import { Reward, Slash, Stake, getAccount, getChain } from '../../../model'
 
 async function populateStakingItem(
     item: Reward | Stake | Slash,
@@ -27,10 +26,6 @@ async function populateStakingItem(
 
     return item
 }
-
-// function isReward(ctx: EventHandlerContext) {
-//     return ctx.event.method === 'Rewarded' || ctx.event.method === 'Reward'
-// }
 
 async function calculateTotalReward(
     reward: Reward,

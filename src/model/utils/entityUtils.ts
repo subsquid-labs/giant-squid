@@ -2,7 +2,7 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import chains from '../../chains'
 import config from '../../config'
 import { Account, Chain, Contributor, Crowdloan, CrowdloanStatus, Parachain, Token } from '..'
-import storage from '../../storage'
+import * as modules from '../../mappings'
 import { ChainInfo, ChainName } from '../../types/custom/chainInfo'
 
 export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: Partial<Chain>): Promise<Chain> {
@@ -54,7 +54,7 @@ export async function getCrowdloan(
     id: number | string,
     data?: Partial<Crowdloan>
 ): Promise<Crowdloan | undefined> {
-    const fundInfo = await storage.crowdloan.getFunds(ctx, Number(id))
+    const fundInfo = await modules.crowdloan.storage.getFunds(ctx, Number(id))
     if (!fundInfo) return undefined
 
     const { trieIndex, end, firstPeriod, lastPeriod, cap } = fundInfo
