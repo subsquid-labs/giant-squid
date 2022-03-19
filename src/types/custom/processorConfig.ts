@@ -1,4 +1,5 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
+import chains from '../../chains'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
@@ -21,7 +22,7 @@ enum HandlerParams {
 // >
 
 export interface ProcessorConfig {
-    chainName: string
+    chainName: typeof chains[number]['id']
     prefix: number | string
     dataSource: Parameters<SubstrateProcessor['setDataSource']>[HandlerParams.NAME]
     typesBundle: Parameters<SubstrateProcessor['setTypesBundle']>[HandlerParams.NAME]

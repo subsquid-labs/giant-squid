@@ -1,7 +1,7 @@
 export interface ChainInfo {
-    id: string
-    token: string
-    decimals: number | null
-    paraId?: number
-    relay?: string
+    readonly id: string
+    readonly token: string
+    readonly decimals: number | null
+    readonly paraId?: number
+    readonly relay?: string
 }
