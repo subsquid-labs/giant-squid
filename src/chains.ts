@@ -168,6 +168,11 @@ const chains: ChainInfo[] = [
         relay: 'polkadot',
     },
     {
+        id: 'kusama',
+        token: 'KSM',
+        decimals: 12,
+    },
+    {
         id: 'altair',
         token: 'AIR',
         decimals: 18,
