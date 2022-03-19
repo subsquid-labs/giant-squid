@@ -2,15 +2,20 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import chains from '../chains'
 import config from '../config'
 import { Account, Chain, Contributor, Crowdloan, CrowdloanStatus, Parachain, Token } from '../model'
+import { ChainInfo } from '../types/custom/chainInfo'
+import { ProcessorConfig } from '../types/custom/processorConfig'
 import { CrowdloanFundsStorage } from '../types/generated/storage'
 import { FundInfo } from '../types/generated/v9110'
 
-export async function getChain(ctx: EventHandlerContext, id: string, data?: Partial<Chain>): Promise<Chain> {
+export async function getChain(
+    ctx: EventHandlerContext,
+    id: ProcessorConfig['chainName'],
+    data?: Partial<Chain>
+): Promise<Chain> {
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
 
     if (!chain) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const chainInfo = chains.find((ch) => ch.id === id)!
+        const chainInfo = chains.find((ch) => ch.id === id) as ChainInfo
 
         chain = new Chain({
             id,
@@ -35,7 +40,7 @@ export async function getParachain(
     let parachain = await ctx.store.findOne(Parachain, id, { cache: true })
 
     if (!parachain) {
-        const chainInfo = chains.find((ch) => ch.paraId === id)
+        const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay == config.chainName)
 
         parachain = new Parachain({
             id: id.toString(),

@@ -1,10 +1,10 @@
-import { ChainInfo } from './types/custom/chainInfo'
-
-const chains: ChainInfo[] = [
+const chains = [
     {
         id: 'polkadot',
         token: 'DOT',
         decimals: 10,
+        paraId: null,
+        relay: 'polkadot',
     },
     {
         id: 'acala',
@@ -171,6 +171,8 @@ const chains: ChainInfo[] = [
         id: 'kusama',
         token: 'KSM',
         decimals: 12,
+        paraId: null,
+        relay: 'kusama',
     },
     {
         id: 'altair',
@@ -424,6 +426,6 @@ const chains: ChainInfo[] = [
         paraId: 2101,
         relay: 'kusama',
     },
-]
+] as const
 
 export default chains
