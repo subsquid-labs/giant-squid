@@ -3,7 +3,8 @@ import chains from '../chains'
 import config from '../config'
 import { Account, Chain, Contributor, Crowdloan, CrowdloanStatus, Parachain, Token } from '../model'
 import { CrowdloanFundsStorage } from '../types/generated/storage'
-import { FundInfo } from '../types/generated/v9110'
+import * as v9010 from '../types/generated/v9010'
+import * as v9111 from '../types/generated/v9111'
 
 export async function getChain(ctx: EventHandlerContext, id: string, data?: Partial<Chain>): Promise<Chain> {
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
@@ -50,6 +51,8 @@ export async function getParachain(
     return parachain
 }
 
+type FundInfo = v9010.FundInfo | v9111.FundInfo
+
 const crowdloanCache: {
     lastBlockHash?: string
     value?: FundInfo
@@ -60,13 +63,18 @@ export async function getCrowdloan(
     id: number | string,
     data?: Partial<Crowdloan>
 ): Promise<Crowdloan | undefined> {
-    let fundInfo: FundInfo
+    let fundInfo: FundInfo | undefined
 
     if (crowdloanCache.lastBlockHash !== ctx.block.hash || !crowdloanCache.value) {
         const storage = new CrowdloanFundsStorage(ctx)
         if (!storage.isExists) return undefined
 
-        fundInfo = await storage.getAsV9110(Number(id))
+        if (storage.isV9010) {
+            fundInfo = await storage.getAsV9010(Number(id))
+        } else if (storage.isV9111) {
+            fundInfo = await storage.getAsV9111(Number(id))
+        }
+
         if (!fundInfo) return undefined
 
         crowdloanCache.lastBlockHash = ctx.block.hash

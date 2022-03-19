@@ -2,7 +2,7 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Account, Reward, Slash, Stake } from '../../../model'
+import { Reward, Slash, Stake } from '../../../model'
 import { getAccount, getChain } from '../../../common/entityUtils'
 
 async function populateStakingItem(

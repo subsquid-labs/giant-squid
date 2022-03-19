@@ -33,3 +33,33 @@ export interface MultiSigner_Ecdsa {
   __kind: 'Ecdsa'
   value: Uint8Array
 }
+
+export interface FundInfo {
+  depositor: Uint8Array
+  verifier: (MultiSigner | undefined)
+  deposit: bigint
+  raised: bigint
+  end: number
+  cap: bigint
+  lastContribution: LastContribution
+  firstPeriod: number
+  lastPeriod: number
+  trieIndex: number
+}
+
+export type LastContribution = LastContribution_Never | LastContribution_PreEnding | LastContribution_Ending
+
+export interface LastContribution_Never {
+  __kind: 'Never'
+  value: null
+}
+
+export interface LastContribution_PreEnding {
+  __kind: 'PreEnding'
+  value: number
+}
+
+export interface LastContribution_Ending {
+  __kind: 'Ending'
+  value: number
+}

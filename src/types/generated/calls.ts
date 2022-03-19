@@ -17,14 +17,14 @@ export class BalancesForceTransferCall {
    *  specified.
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('balances.force_transfer') === '3e34094066724d241ba82c10c62985fc7fccaa966237c0fc37a7cc168c443d8f'
+    return this.ctx._chain.getCallHash('balances.force_transfer') === 'df4a214d4dde3e82d3b36a6bb537e569f58b42cd75a9ad78b1b909171e93b042'
   }
 
   /**
    *  Exactly as `transfer`, except the origin must be root and the source account may be
    *  specified.
    */
-  get asV1020(): {source: never, dest: never, value: bigint} {
+  get asV1020(): {source: v1020.Type_25, dest: v1020.Type_25, value: bigint} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -140,7 +140,7 @@ export class BalancesTransferCall {
    *  # </weight>
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer') === 'ce53edb5ccb69e5831f812213e2b267aaf4c4f2e7703e57447ace11e61fdd524'
+    return this.ctx._chain.getCallHash('balances.transfer') === '5a96e49eaf0745110a2342c53e5619233745028a575c67865c4ad4921e77634b'
   }
 
   /**
@@ -170,7 +170,7 @@ export class BalancesTransferCall {
    * 
    *  # </weight>
    */
-  get asV1020(): {dest: never, value: bigint} {
+  get asV1020(): {dest: v1020.Type_25, value: bigint} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -509,7 +509,7 @@ export class BalancesTransferKeepAliveCall {
    *  [`transfer`]: struct.Module.html#method.transfer
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === 'ce53edb5ccb69e5831f812213e2b267aaf4c4f2e7703e57447ace11e61fdd524'
+    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === '5a96e49eaf0745110a2342c53e5619233745028a575c67865c4ad4921e77634b'
   }
 
   /**
@@ -520,7 +520,7 @@ export class BalancesTransferKeepAliveCall {
    * 
    *  [`transfer`]: struct.Module.html#method.transfer
    */
-  get asV1020(): {dest: never, value: bigint} {
+  get asV1020(): {dest: v1020.Type_25, value: bigint} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -724,7 +724,7 @@ export class StakingBondCall {
    *  # </weight>
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getCallHash('staking.bond') === 'e0335849ae1af91d57150ff45ac9e07e0750108c08ed67f2bd89c6c5e4b9ef7b'
+    return this.ctx._chain.getCallHash('staking.bond') === '3cace3eeefbd92edd61c1cab1250874814a606c95414451a83315e0301be4cff'
   }
 
   /**
@@ -744,7 +744,7 @@ export class StakingBondCall {
    *  the `origin` falls below _existential deposit_ and gets removed as dust.
    *  # </weight>
    */
-  get asV1020(): {controller: never, value: bigint, payee: v1020.RewardDestination} {
+  get asV1020(): {controller: v1020.Type_25, value: bigint, payee: v1020.RewardDestination} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
