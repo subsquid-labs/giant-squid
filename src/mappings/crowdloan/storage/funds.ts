@@ -19,7 +19,10 @@ const storageCache: {
 } = {}
 
 export async function getFunds(ctx: EventHandlerContext, paraId: number): Promise<FundInfo | undefined> {
-    if (ctx.block.hash === storageCache.hash) return storageCache.value
+    if (storageCache.hash !== ctx.block.hash) {
+        storageCache.hash = ctx.block.hash
+        storageCache.value = await getStorageData(ctx, paraId)
+    }
 
-    return await getStorageData(ctx, paraId)
+    return storageCache.value
 }
