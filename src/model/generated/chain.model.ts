@@ -13,4 +13,7 @@ export class Chain {
 
   @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new Token(undefined, marshal.nonNull(obj))}, nullable: false})
   token!: Token
+
+  @Column_("integer", {nullable: false})
+  prefix!: number
 }

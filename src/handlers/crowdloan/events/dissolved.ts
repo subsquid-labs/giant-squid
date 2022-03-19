@@ -2,7 +2,7 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { DissolvedData } from '../../../types/custom/crowdloanData'
 import { CrowdloanStatus } from '../../../model'
 import { CrowdloanDissolvedEvent } from '../../../types/generated/events'
-import { getCrowdloan } from '../../../common/entityUtils'
+import { getCrowdloan } from '../../../model/utils/entityUtils'
 
 function getEventData(ctx: EventHandlerContext): DissolvedData {
     const event = new CrowdloanDissolvedEvent(ctx)
