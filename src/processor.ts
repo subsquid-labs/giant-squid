@@ -1,7 +1,7 @@
 import config from './config'
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
 import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
-import modules from './handlers'
+import * as modules from './mappings'
 import { EXTRINSIC_FAILED, EXTRINSIC_SUCCESS } from './common/consts'
 
 const processor = new SubstrateProcessor(`${config.chainName}-processor`)
