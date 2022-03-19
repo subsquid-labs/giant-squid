@@ -1,3 +1,5 @@
+import chains from "../../chains"
+
 export interface ChainInfo {
     readonly id: string
     readonly token: string
@@ -5,3 +7,5 @@ export interface ChainInfo {
     readonly paraId?: number
     readonly relay?: string
 }
+
+export type ChainName = typeof chains[number]['id']

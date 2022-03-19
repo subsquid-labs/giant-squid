@@ -3,7 +3,7 @@ import { populateMeta, isExtrinsicSuccess, encodeID } from '../../../common/help
 import { ContributionData } from '../../../types/custom/crowdloanData'
 import config from '../../../config'
 import { Crowdloan, Contribution } from '../../../model'
-import { getCrowdloan, getAccount, getContributor, getChain } from '../../../common/entityUtils'
+import { getCrowdloan, getAccount, getContributor, getChain } from '../../../model/utils/entityUtils'
 
 async function updateCrowdloanContributions(
     ctx: EventHandlerContext,
