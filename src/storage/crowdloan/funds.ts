@@ -6,8 +6,10 @@ async function getStorageData(ctx: EventHandlerContext, paraId: number): Promise
     const storage = new CrowdloanFundsStorage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV9110) {
-        return await storage.getAsV9110(paraId)
+    if (storage.isV9010) {
+        return await storage.getAsV9010(paraId)
+    } else if (storage.isV9111) {
+        return await storage.getAsV9111(paraId)
     }
 
     return undefined
