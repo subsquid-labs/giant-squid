@@ -14,7 +14,6 @@ type Account @entity {
 type Chain @entity {
   id: ID!
   token: Token!
-  prefix: Int!
 }
 
 type Token {

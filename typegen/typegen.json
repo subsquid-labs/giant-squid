@@ -23,7 +23,8 @@
     "staking.Withdrawn",
     "staking.PayoutStarted",
     "crowdloan.Contributed",
-    "crowdloan.Dissolved"
+    "crowdloan.Dissolved",
+    "crowdloan.Created"
   ],
   "calls": [
     "crowdloan.create",
