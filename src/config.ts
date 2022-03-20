@@ -2,13 +2,13 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'kusama',
-    prefix: 'kusama',
+    chainName: 'statemine',
+    prefix: 2,
     dataSource: {
-        archive: 'https://kusama.indexer.gc.subsquid.io/v4/graphql',
-        chain: 'wss://kusama-rpc.polkadot.io',
+        archive: 'https://statemine.indexer.gc.subsquid.io/v4/graphql',
+        chain: 'wss://statemine.api.onfinality.io/public-ws',
     },
-    typesBundle: 'kusama',
+    typesBundle: './typegen/typesBundle.json',
     batchSize: 100,
     // blockRange: {
     //     from: 7828270,

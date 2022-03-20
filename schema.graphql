@@ -1,13 +1,6 @@
 type Account @entity {
   id: ID!
-  totalStake: BigInt
-  totalReward: BigInt
-  totalSlash: BigInt
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  contributions: [Contribution!] @derivedFrom(field: "account")
-  rewards: [Reward!] @derivedFrom(field: "account")
-  slashes: [Slash!] @derivedFrom(field: "account")
-  stakes: [Stake!] @derivedFrom(field: "account")
   chain: Chain!
 }
 
@@ -21,43 +14,9 @@ type Token {
   decimals: Int
 }
 
-type Parachain @entity {
-  id: ID!
-  name: String!
-  crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
-  relayChain: Chain
-}
-
-enum CrowdloanStatus {
-  CREATED
-  WON
-  DISSOLVED
-}
-
 enum TransferDicrection {
   FROM
   TO
-}
-
-type Contributor @entity {
-  id: ID!
-  crowdloan: Crowdloan!
-  account: Account!
-  amount: BigInt!
-}
-
-type Crowdloan @entity {
-  id: ID!
-  cap: BigInt!
-  firstPeriod: BigInt!
-  lastPeriod: BigInt!
-  end: BigInt!
-  contributors: [Contributor!] @derivedFrom(field: "crowdloan")
-  raised: BigInt!
-  parachain: Parachain!
-  chain: Chain! @index
-  blockNumber: BigInt
-  status: CrowdloanStatus
 }
 
 interface Item {
@@ -68,24 +27,8 @@ interface Item {
   amount: BigInt
 }
 
-interface HasTotal {
-  total: BigInt
-}
-
 interface CanFail {
   success: Boolean
-}
-
-type Contribution implements Item & CanFail @entity {
-  id: ID!
-  chain: Chain! @index
-  date: DateTime
-  blockNumber: BigInt
-  extrinsicHash: String @index
-  crowdloan: Crowdloan!
-  success: Boolean @index
-  account: Account!
-  amount: BigInt
 }
 
 type Transfer implements Item & CanFail @entity {
@@ -106,43 +49,4 @@ type AccountTransfer @entity {
   transfer: Transfer
   account: Account!
   direction: TransferDicrection
-}
-
-type Reward implements Item & HasTotal @entity  {
-  id: ID!
-  chain: Chain! @index
-  date: DateTime
-  blockNumber: BigInt
-  extrinsicHash: String @index
-  account: Account!
-  amount: BigInt
-  era: Int
-  validator: String
-  total: BigInt
-  name: String
-}
-
-type Slash implements Item & HasTotal @entity  {
-  id: ID!
-  chain: Chain! @index
-  date: DateTime
-  blockNumber: BigInt
-  extrinsicHash: String @index
-  account: Account!
-  amount: BigInt
-  total: BigInt
-  name: String
-}
-
-type Stake implements Item & HasTotal & CanFail @entity  {
-  id: ID!
-  chain: Chain! @index
-  date: DateTime
-  blockNumber: BigInt
-  extrinsicHash: String @index
-  account: Account!
-  amount: BigInt
-  total: BigInt
-  success: Boolean @index
-  name: String
 }
