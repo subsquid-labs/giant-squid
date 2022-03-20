@@ -94,6 +94,37 @@ export class CrowdloanContributedEvent {
   }
 }
 
+export class CrowdloanCreatedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'crowdloan.Created')
+  }
+
+  /**
+   *  Create a new crowdloaning campaign. [fund_index]
+   */
+  get isV9010(): boolean {
+    return this.ctx._chain.getEventHash('crowdloan.Created') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+  }
+
+  /**
+   *  Create a new crowdloaning campaign. [fund_index]
+   */
+  get asV9010(): number {
+    assert(this.isV9010)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9010
+  }
+
+  get asLatest(): number {
+    deprecateLatest()
+    return this.asV9010
+  }
+}
+
 export class CrowdloanDissolvedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'crowdloan.Dissolved')

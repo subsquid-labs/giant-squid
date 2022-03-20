@@ -24,6 +24,7 @@ processor.addEventHandler('staking.Unbonded', modules.staking.events.handleUnbon
 
 processor.addEventHandler('crowdloan.Contributed', modules.crowdloan.events.handleContributed)
 processor.addEventHandler('crowdloan.Dissolved', modules.crowdloan.events.handleDissolved)
+processor.addEventHandler('crowdloan.Created', modules.crowdloan.events.handleCreated)
 
 //extrinsics handlers
 processor.addExtrinsicHandler(

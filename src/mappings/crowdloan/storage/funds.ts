@@ -17,12 +17,14 @@ async function getStorageData(ctx: EventHandlerContext, paraId: number): Promise
 
 const storageCache: {
     hash?: string
+    paraId?: number
     value?: FundInfo
 } = {}
 
 export async function getFunds(ctx: EventHandlerContext, paraId: number): Promise<FundInfo | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
+    if (storageCache.hash !== ctx.block.hash || storageCache.paraId !== paraId) {
         storageCache.hash = ctx.block.hash
+        storageCache.paraId = paraId
         storageCache.value = await getStorageData(ctx, paraId)
     }
 
