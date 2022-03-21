@@ -23,7 +23,7 @@ type Token {
 
 type Parachain @entity {
   id: ID!
-  name: String!
+  name: String
   crowdloans: [Crowdloan]! @derivedFrom(field: "parachain")
   relayChain: Chain
 }
