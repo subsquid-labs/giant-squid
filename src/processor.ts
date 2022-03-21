@@ -15,7 +15,29 @@ processor.setBlockRange(config.blockRange || { from: 0 })
 //events handlers
 processor.addEventHandler('balances.Transfer', modules.balances.events.handleTransfer)
 
+processor.addEventHandler('staking.Reward', modules.staking.events.handleReward)
+processor.addEventHandler('staking.Slash', modules.staking.events.handleSlash)
+processor.addEventHandler('staking.Bonded', modules.staking.events.handleBonded)
+processor.addEventHandler('staking.Unbonded', modules.staking.events.handleUnbonded)
+
 //extrinsics handlers
+processor.addExtrinsicHandler('staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
+processor.addExtrinsicHandler(
+    'staking.bond',
+    { triggerEvents: [EXTRINSIC_FAILED] },
+    modules.staking.extrinsics.handleBond
+)
+processor.addExtrinsicHandler(
+    'staking.bond_extra',
+    { triggerEvents: [EXTRINSIC_FAILED] },
+    modules.staking.extrinsics.handleBondExtra
+)
+processor.addExtrinsicHandler(
+    'staking.unbond',
+    { triggerEvents: [EXTRINSIC_FAILED] },
+    modules.staking.extrinsics.handleUnbond
+)
+
 processor.addExtrinsicHandler(
     'balances.transfer',
     { triggerEvents: [EXTRINSIC_FAILED] },
