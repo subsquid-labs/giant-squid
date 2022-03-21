@@ -3,7 +3,6 @@ import * as marshal from "./marshal"
 import {Contributor} from "./contributor.model"
 import {Parachain} from "./parachain.model"
 import {Chain} from "./chain.model"
-import {CrowdloanStatus} from "./_crowdloanStatus"
 
 @Entity_()
 export class Crowdloan {
@@ -42,7 +41,4 @@ export class Crowdloan {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null
-
-  @Column_("varchar", {length: 9, nullable: true})
-  status!: CrowdloanStatus | undefined | null
 }

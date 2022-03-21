@@ -1,7 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import chains from '../../chains'
 import config from '../../config'
-import { Account, Chain, Contributor, Crowdloan, CrowdloanStatus, Parachain, Token } from '..'
+import { Account, Chain, Contributor, Crowdloan, Parachain, Token } from '..'
 import * as modules from '../../mappings'
 import { ChainInfo, ChainName } from '../../types/custom/chainInfo'
 
@@ -70,7 +70,6 @@ export async function getCrowdloan(
             lastPeriod: BigInt(lastPeriod),
             firstPeriod: BigInt(firstPeriod),
             blockNumber: BigInt(ctx.block.height),
-            status: CrowdloanStatus.CREATED,
             parachain: await getParachain(ctx, id),
             chain: await getChain(ctx, config.chainName),
             ...data,
