@@ -3,7 +3,10 @@
   "chainVersions": "./versions.json",
   "typesBundle": "./typesBundle.json",
   "events": [
-    "balances.Transfer"
+    "balances.Transfer",
+    "dappsStaking.Reward",
+    "dappsStaking.BondAndStake",
+    "dappsStaking.UnbondUnstakeAndWithdraw"
   ],
   "calls": [
     "balances.transfer",

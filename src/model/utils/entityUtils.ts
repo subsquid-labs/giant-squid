@@ -35,6 +35,8 @@ export async function getAccount(
     if (!account) {
         account = new Account({
             id: id.toString(),
+            totalReward: 0n,
+            totalStake: 0n,
             chain: await getChain(ctx, config.chainName),
             ...data,
         })

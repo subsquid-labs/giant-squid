@@ -15,6 +15,10 @@ processor.setBlockRange(config.blockRange || { from: 0 })
 //events handlers
 processor.addEventHandler('balances.Transfer', modules.balances.events.handleTransfer)
 
+processor.addEventHandler('dappsStaking.Reward', modules.dappsStaking.events.handleReward)
+processor.addEventHandler('dappsStaking.BondAndStake', modules.dappsStaking.events.handleBonded)
+processor.addEventHandler('staking.UnbondUnstakeAndWithdraw', modules.dappsStaking.events.handleUnbonded)
+
 //extrinsics handlers
 processor.addExtrinsicHandler(
     'balances.transfer',

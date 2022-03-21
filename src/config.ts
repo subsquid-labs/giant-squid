@@ -2,17 +2,14 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'statemine',
-    prefix: 2,
+    chainName: 'astar',
+    prefix: 5,
     dataSource: {
-        archive: 'https://statemine.indexer.gc.subsquid.io/v4/graphql',
-        chain: 'wss://statemine.api.onfinality.io/public-ws',
+        archive: 'https://astar-beta.indexer.gc.subsquid.io/v4/graphql',
+        chain: 'wss://rpc.astar.network',
     },
     typesBundle: './typegen/typesBundle.json',
     batchSize: 100,
-    // blockRange: {
-    //     from: 7828270,
-    // },
 }
 
 export default config
