@@ -15,14 +15,14 @@ export class Account {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  totalStake!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  totalStake!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  totalReward!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  totalReward!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  totalSlash!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  totalSlash!: bigint
 
   @OneToMany_(() => AccountTransfer, e => e.account)
   transfers!: AccountTransfer[]

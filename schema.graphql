@@ -1,8 +1,8 @@
 type Account @entity {
   id: ID!
-  totalStake: BigInt
-  totalReward: BigInt
-  totalSlash: BigInt
+  totalStake: BigInt!
+  totalReward: BigInt!
+  totalSlash: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
