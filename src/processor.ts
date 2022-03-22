@@ -29,45 +29,45 @@ processor.addEventHandler('crowdloan.Created', modules.crowdloan.events.handleCr
 //extrinsics handlers
 processor.addExtrinsicHandler(
     'crowdloan.contribute',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.crowdloan.extrinsics.handleContribute
 )
 
 processor.addExtrinsicHandler('staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
 processor.addExtrinsicHandler(
     'staking.bond',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.staking.extrinsics.handleBond
 )
 processor.addExtrinsicHandler(
     'staking.bond_extra',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.staking.extrinsics.handleBondExtra
 )
 processor.addExtrinsicHandler(
     'staking.unbond',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.staking.extrinsics.handleUnbond
 )
 
 processor.addExtrinsicHandler(
     'balances.transfer',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransfer
 )
 processor.addExtrinsicHandler(
     'balances.transfer_keep_alive',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferKeepAlive
 )
 processor.addExtrinsicHandler(
     'balances.force_transfer',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleForceTransfer
 )
 processor.addExtrinsicHandler(
     'balances.transfer_all',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferAll
 )
 
