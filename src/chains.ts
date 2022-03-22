@@ -4,7 +4,7 @@ const chains = [
         token: 'DOT',
         decimals: 10,
         paraId: null,
-        relay: 'polkadot',
+        relay: null,
     },
     {
         id: 'acala',
@@ -172,7 +172,7 @@ const chains = [
         token: 'KSM',
         decimals: 12,
         paraId: null,
-        relay: 'kusama',
+        relay: null,
     },
     {
         id: 'altair',

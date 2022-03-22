@@ -1,7 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import chains from '../../chains'
 import config from '../../config'
-import { Account, Chain, Contributor, Crowdloan, Parachain, Token } from '..'
+import { Account, Chain, Contributor, Crowdloan, Parachain, Token } from '../generated'
 import * as modules from '../../mappings'
 import { ChainInfo, ChainName } from '../../types/custom/chainInfo'
 
