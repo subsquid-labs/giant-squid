@@ -41,7 +41,7 @@ type Transfer implements Item & CanFail @entity {
   id: ID!
   chain: Chain! @index
   date: DateTime
-  blockNumber: BigInt
+  blockNumber: BigInt @index
   extrinsicHash: String @index
   to: Account!
   from: Account!
@@ -65,7 +65,7 @@ type Reward implements Item & HasTotal @entity  {
   id: ID!
   chain: Chain! @index
   date: DateTime
-  blockNumber: BigInt
+  blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
   amount: BigInt
@@ -79,7 +79,7 @@ type Slash implements Item & HasTotal @entity  {
   id: ID!
   chain: Chain! @index
   date: DateTime
-  blockNumber: BigInt
+  blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
   amount: BigInt
@@ -91,7 +91,7 @@ type Stake implements Item & HasTotal & CanFail @entity  {
   id: ID!
   chain: Chain! @index
   date: DateTime
-  blockNumber: BigInt
+  blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
   amount: BigInt
