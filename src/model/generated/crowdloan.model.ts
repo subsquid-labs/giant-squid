@@ -39,6 +39,7 @@ export class Crowdloan {
   @ManyToOne_(() => Chain, {nullable: false})
   chain!: Chain
 
+  @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null
 }
