@@ -28,8 +28,9 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
     return chain
 }
 
-export async function getParachain(ctx: EventHandlerContext, id: number, data?: Partial<Chain>): Promise<Chain> {
-    const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)!
+export async function getParachain(ctx: EventHandlerContext, id: number, data?: Partial<Chain>): Promise<Chain | undefined> {
+    const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)
+    if (!chainInfo) return undefined
     
     const chain = await getChain(ctx, chainInfo.id)
     
