@@ -1,7 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import chains from '../../chains'
 import config from '../../config'
-import { Account, Chain, Contributor, Crowdloan, Parachain, Token } from '../generated'
+import { Account, Chain, Contributor, Crowdloan, Token } from '../generated'
 import * as modules from '../../mappings'
 import { ChainInfo, ChainName } from '../../types/custom/chainInfo'
 
@@ -9,7 +9,7 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
 
     if (!chain) {
-        const chainInfo = chains.find((ch) => ch.id === id) as ChainInfo
+        const chainInfo = chains.find((ch) => ch.id === id)!
 
         chain = new Chain({
             id,
@@ -17,6 +17,8 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
                 symbol: chainInfo.token,
                 decimals: chainInfo.decimals,
             }),
+            paraId: chainInfo.paraId,
+            relayChain: chainInfo.relay ? await getChain(ctx, chainInfo.relay) : null,
             ...data,
         })
 
@@ -26,27 +28,12 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
     return chain
 }
 
-export async function getParachain(
-    ctx: EventHandlerContext,
-    id: number | string,
-    data?: Partial<Parachain>
-): Promise<Parachain> {
-    let parachain = await ctx.store.findOne(Parachain, id, { cache: true })
-
-    if (!parachain) {
-        const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)
-
-        parachain = new Parachain({
-            id: id.toString(),
-            name: chainInfo?.id,
-            relayChain: await getChain(ctx, config.chainName),
-            ...data,
-        })
-
-        await ctx.store.insert(Parachain, parachain)
-    }
-
-    return parachain
+export async function getParachain(ctx: EventHandlerContext, id: number, data?: Partial<Chain>): Promise<Chain> {
+    const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)!
+    
+    const chain = await getChain(ctx, chainInfo.id)
+    
+    return chain
 }
 
 export async function getCrowdloan(
@@ -70,7 +57,7 @@ export async function getCrowdloan(
             lastPeriod: BigInt(lastPeriod),
             firstPeriod: BigInt(firstPeriod),
             blockNumber: BigInt(ctx.block.height),
-            parachain: await getParachain(ctx, id),
+            parachain: await getParachain(ctx, Number(id)),
             chain: await getChain(ctx, config.chainName),
             ...data,
         })
@@ -112,7 +99,7 @@ export async function getAccount(
         account = new Account({
             id: id.toString(),
             totalReward: 0n,
-            totalStake: 0n,
+            totalBond: 0n,
             totalSlash: 0n,
             chain: await getChain(ctx, config.chainName),
             ...data,
