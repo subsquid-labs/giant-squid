@@ -1,18 +1,21 @@
 type Account @entity {
   id: ID!
-  totalStake: BigInt!
+  totalBond: BigInt!
   totalReward: BigInt!
   totalSlash: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
-  stakes: [Stake!] @derivedFrom(field: "account")
+  bonds: [Bond!] @derivedFrom(field: "account")
   chain: Chain!
 }
 
 type Chain @entity {
-  id: ID!
+  id: ID! #chain name
   token: Token!
+  paraId: Int
+  crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
+  relayChain: Chain
 }
 
 type Token {
@@ -39,7 +42,7 @@ interface CanFail {
 
 type Transfer implements Item & CanFail @entity {
   id: ID!
-  chain: Chain! @index
+  chain: Chain!
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
@@ -63,7 +66,7 @@ interface HasTotal {
 
 type Reward implements Item & HasTotal @entity  {
   id: ID!
-  chain: Chain! @index
+  chain: Chain!
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
@@ -77,7 +80,7 @@ type Reward implements Item & HasTotal @entity  {
 
 type Slash implements Item & HasTotal @entity  {
   id: ID!
-  chain: Chain! @index
+  chain: Chain!
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
@@ -87,9 +90,9 @@ type Slash implements Item & HasTotal @entity  {
   name: String
 }
 
-type Stake implements Item & HasTotal & CanFail @entity  {
+type Bond implements Item & HasTotal & CanFail @entity  {
   id: ID!
-  chain: Chain! @index
+  chain: Chain!
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index

@@ -3,7 +3,7 @@ import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
-import {Stake} from "./stake.model"
+import {Bond} from "./bond.model"
 import {Chain} from "./chain.model"
 
 @Entity_()
@@ -16,7 +16,7 @@ export class Account {
   id!: string
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalStake!: bigint
+  totalBond!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalReward!: bigint
@@ -33,8 +33,8 @@ export class Account {
   @OneToMany_(() => Slash, e => e.account)
   slashes!: Slash[]
 
-  @OneToMany_(() => Stake, e => e.account)
-  stakes!: Stake[]
+  @OneToMany_(() => Bond, e => e.account)
+  bonds!: Bond[]
 
   @Index_()
   @ManyToOne_(() => Chain, {nullable: false})

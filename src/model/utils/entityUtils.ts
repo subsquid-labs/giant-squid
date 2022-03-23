@@ -1,14 +1,15 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import chains from '../../chains'
 import config from '../../config'
-import { Account, Chain, Token } from '..'
+import { Account, Chain, Contributor, Crowdloan, Token } from '../generated'
+import * as modules from '../../mappings'
 import { ChainInfo, ChainName } from '../../types/custom/chainInfo'
 
 export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: Partial<Chain>): Promise<Chain> {
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
 
     if (!chain) {
-        const chainInfo = chains.find((ch) => ch.id === id) as ChainInfo
+        const chainInfo = chains.find((ch) => ch.id === id)!
 
         chain = new Chain({
             id,
@@ -16,6 +17,8 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
                 symbol: chainInfo.token,
                 decimals: chainInfo.decimals,
             }),
+            paraId: chainInfo.paraId,
+            relayChain: chainInfo.relay ? await getChain(ctx, chainInfo.relay) : null,
             ...data,
         })
 
@@ -23,6 +26,66 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
     }
 
     return chain
+}
+
+export async function getParachain(ctx: EventHandlerContext, id: number, data?: Partial<Chain>): Promise<Chain> {
+    const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)!
+    
+    const chain = await getChain(ctx, chainInfo.id)
+    
+    return chain
+}
+
+export async function getCrowdloan(
+    ctx: EventHandlerContext,
+    id: number | string,
+    data?: Partial<Crowdloan>
+): Promise<Crowdloan | undefined> {
+    const fundInfo = await modules.crowdloan.storage.getFunds(ctx, Number(id))
+    if (!fundInfo) return undefined
+
+    const { trieIndex, end, firstPeriod, lastPeriod, cap } = fundInfo
+
+    let crowdloan = await ctx.store.findOne(Crowdloan, `${id}-${trieIndex}`, { cache: true })
+
+    if (!crowdloan) {
+        crowdloan = new Crowdloan({
+            id: `${id}-${trieIndex}`,
+            cap,
+            raised: 0n,
+            end: BigInt(end),
+            lastPeriod: BigInt(lastPeriod),
+            firstPeriod: BigInt(firstPeriod),
+            blockNumber: BigInt(ctx.block.height),
+            parachain: await getParachain(ctx, Number(id)),
+            chain: await getChain(ctx, config.chainName),
+            ...data,
+        })
+
+        await ctx.store.insert(Crowdloan, crowdloan)
+    }
+
+    return crowdloan
+}
+
+export async function getContributor(
+    ctx: EventHandlerContext,
+    id: number | string,
+    data?: Partial<Contributor>
+): Promise<Contributor> {
+    let contributor = await ctx.store.findOne(Contributor, id)
+
+    if (!contributor) {
+        contributor = new Contributor({
+            id: id.toString(),
+            amount: 0n,
+            ...data,
+        })
+
+        await ctx.store.insert(Contributor, contributor)
+    }
+
+    return contributor
 }
 
 export async function getAccount(
@@ -36,8 +99,8 @@ export async function getAccount(
         account = new Account({
             id: id.toString(),
             totalReward: 0n,
+            totalBond: 0n,
             totalSlash: 0n,
-            totalStake: 0n,
             chain: await getChain(ctx, config.chainName),
             ...data,
         })
