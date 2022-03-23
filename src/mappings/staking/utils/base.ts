@@ -2,15 +2,15 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward, Slash, Stake, getAccount, getChain } from '../../../model'
+import { Reward, Slash, getAccount, getChain, Bond } from '../../../model'
 
 async function populateStakingItem(
-    item: Reward | Stake | Slash,
+    item: Reward | Slash,
     options: {
         ctx: EventHandlerContext
         data: RewardData | StakeData
     }
-): Promise<Reward | Stake | Slash | undefined> {
+): Promise<Reward | Slash | undefined> {
     const { ctx, data } = options
 
     populateMeta(ctx, item)
@@ -44,6 +44,8 @@ async function calculateTotalReward(
     account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
     reward.total = account.totalReward
 
+    account.totalBond = (account.totalBond || 0n) + BigInt(data.amount)
+
     await ctx.store.save(account)
 }
 
@@ -64,6 +66,9 @@ async function calculateTotalSlash(
     account.totalSlash = (account.totalSlash || 0n) + BigInt(data.amount)
     slash.total = account.totalSlash
 
+    account.totalBond = (account.totalBond || 0n) - BigInt(data.amount)
+    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
+
     await ctx.store.save(account)
 }
 
@@ -72,7 +77,7 @@ function isStakeBond(ctx: EventHandlerContext) {
 }
 
 async function calculateTotalStake(
-    stake: Stake,
+    stake: Bond,
     options: {
         ctx: EventHandlerContext
         data: RewardData | StakeData
@@ -87,11 +92,11 @@ async function calculateTotalStake(
 
     if (!account) return
 
-    account.totalStake = isStakeBond(ctx)
-        ? (account.totalStake || 0n) + BigInt(data.amount)
-        : (account.totalStake || 0n) - BigInt(data.amount)
-    account.totalStake = account.totalStake > 0n ? account.totalStake : 0n
-    stake.total = account.totalStake
+    account.totalBond = isStakeBond(ctx)
+        ? (account.totalBond || 0n) + BigInt(data.amount)
+        : (account.totalBond || 0n) - BigInt(data.amount)
+    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
+    stake.total = account.totalBond
 
     await ctx.store.save(account)
 }
@@ -127,14 +132,14 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
 
     const id = ctx.event.id
 
-    const stake = new Stake({ id })
+    const stake = new Bond({ id })
 
     if (!(await populateStakingItem(stake, { ctx, data }))) return
     stake.success = success
 
     await calculateTotalStake(stake, { ctx, data })
 
-    await ctx.store.insert(Stake, stake)
+    await ctx.store.insert(Bond, stake)
 }
 
 export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {
