@@ -8,14 +8,11 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
 
     if (!chain) {
-        const chainInfo = chains.find((ch) => ch.id === id) as ChainInfo
+        const chainInfo = chains.find((ch) => ch.name === id)!
 
         chain = new Chain({
             id,
-            token: new Token({
-                symbol: chainInfo.token,
-                decimals: chainInfo.decimals,
-            }),
+            token: new Token(chainInfo.tokens[0]),
             ...data,
         })
 
