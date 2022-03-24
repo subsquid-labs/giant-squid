@@ -4,6 +4,7 @@ import config from '../../config'
 import { Account, Chain, Contributor, Crowdloan, Token } from '../generated'
 import * as modules from '../../mappings'
 import { ChainInfo, ChainName } from '../../types/custom/chainInfo'
+import { MoreThan } from 'typeorm'
 
 export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: Partial<Chain>): Promise<Chain> {
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
@@ -25,26 +26,40 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
     return chain
 }
 
-export async function getParachain(ctx: EventHandlerContext, id: number, data?: Partial<Chain>): Promise<Chain | undefined> {
+export async function getParachain(
+    ctx: EventHandlerContext,
+    id: number,
+    data?: Partial<Chain>
+): Promise<Chain | undefined> {
     const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)
     if (!chainInfo) return undefined
-    
+
     const chain = await getChain(ctx, chainInfo.name)
-    
+
     return chain
 }
 
 export async function getCrowdloan(
     ctx: EventHandlerContext,
-    id: number | string,
+    id: number,
     data?: Partial<Crowdloan>
 ): Promise<Crowdloan | undefined> {
-    const fundInfo = await modules.crowdloan.storage.getFunds(ctx, Number(id))
+    let crowdloan = await ctx.store
+        .createQueryBuilder(Crowdloan, 'crowdloan')
+        .innerJoin(Chain, "parachain", "crowdloan.parachain_id = parachain.id")
+        .where('parachain.para_id = :id', { id })
+        .andWhere('crowdloan.end > :height', { height: ctx.block.height })
+        .cache(true)
+        .getOne()
+
+    if (crowdloan) return crowdloan
+
+    const fundInfo = await modules.crowdloan.storage.getFunds(ctx, id)
     if (!fundInfo) return undefined
 
     const { trieIndex, end, firstPeriod, lastPeriod, cap } = fundInfo
 
-    let crowdloan = await ctx.store.findOne(Crowdloan, `${id}-${trieIndex}`, { cache: true })
+    crowdloan = await ctx.store.findOne(Crowdloan, `${id}-${trieIndex}`, { cache: true })
 
     if (!crowdloan) {
         crowdloan = new Crowdloan({
