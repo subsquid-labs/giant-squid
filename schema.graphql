@@ -50,7 +50,7 @@ type Crowdloan @entity {
   end: BigInt!
   contributors: [Contributor!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
-  parachain: Chain!
+  parachain: Chain
   chain: Chain! #relay
   blockNumber: BigInt @index
 }

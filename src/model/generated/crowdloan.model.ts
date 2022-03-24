@@ -31,8 +31,8 @@ export class Crowdloan {
   raised!: bigint
 
   @Index_()
-  @ManyToOne_(() => Chain, {nullable: false})
-  parachain!: Chain
+  @ManyToOne_(() => Chain, {nullable: true})
+  parachain!: Chain | undefined | null
 
   @Index_()
   @ManyToOne_(() => Chain, {nullable: false})
