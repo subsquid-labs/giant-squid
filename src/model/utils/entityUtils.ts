@@ -9,14 +9,11 @@ export async function getChain(ctx: EventHandlerContext, id: ChainName, data?: P
     let chain = await ctx.store.findOne(Chain, id, { cache: true })
 
     if (!chain) {
-        const chainInfo = chains.find((ch) => ch.id === id)!
+        const chainInfo = chains.find((ch) => ch.name === id)!
 
         chain = new Chain({
             id,
-            token: new Token({
-                symbol: chainInfo.token,
-                decimals: chainInfo.decimals,
-            }),
+            token: new Token(chainInfo.tokens[0]),
             paraId: chainInfo.paraId,
             relayChain: chainInfo.relay ? await getChain(ctx, chainInfo.relay) : null,
             ...data,
@@ -32,7 +29,7 @@ export async function getParachain(ctx: EventHandlerContext, id: number, data?: 
     const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)
     if (!chainInfo) return undefined
     
-    const chain = await getChain(ctx, chainInfo.id)
+    const chain = await getChain(ctx, chainInfo.name)
     
     return chain
 }
