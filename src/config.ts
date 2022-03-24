@@ -1,11 +1,11 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import { ProcessorConfig } from './types/custom/processorConfig'
+import { lookupArchive } from '@subsquid/archive-registry'
 
 const config: ProcessorConfig = {
     chainName: 'statemine',
     prefix: 2,
     dataSource: {
-        archive: 'https://statemine.indexer.gc.subsquid.io/v4/graphql',
+        archive: lookupArchive('statemine')[0].url,
         chain: 'wss://statemine.api.onfinality.io/public-ws',
     },
     typesBundle: './typegen/typesBundle.json',
