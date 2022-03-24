@@ -8,4 +8,4 @@ export interface ChainInfo {
     readonly relay?: string
 }
 
-export type ChainName = typeof chains[number]['id']
+export type ChainName = typeof chains[number]['name']
