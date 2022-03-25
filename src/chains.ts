@@ -779,11 +779,11 @@ const chains = [
     {
         name: 'sakura',
         displayName: 'Sakura',
-        prefix: null,
+        prefix: 42,
         tokens: [
             {
                 symbol: 'SKU',
-                decimals: null,
+                decimals: 18,
             },
         ],
         paraId: 2016,
