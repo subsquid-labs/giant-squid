@@ -5,8 +5,13 @@ import { BalancesTransferAllCall } from '../../../types/generated/calls'
 
 function getCallData(ctx: ExtrinsicHandlerContext): TransferData {
     const call = new BalancesTransferAllCall(ctx)
-    if (call.isV1) {
-        const { dest } = call.asV1
+    if (call.isV2) {
+        const { dest } = call.asV2
+        return {
+            to: dest.value as Uint8Array,
+        }
+    } else if (call.isV32) {
+        const { dest } = call.asV32
         return {
             to: dest.value as Uint8Array,
         }

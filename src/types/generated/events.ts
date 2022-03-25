@@ -1,8 +1,8 @@
 import assert from 'assert'
 import {EventContext, Result, deprecateLatest} from './support'
-import * as v1 from './v1'
-import * as v3 from './v3'
-import * as v4 from './v4'
+import * as v17 from './v17'
+import * as v22 from './v22'
+import * as v36 from './v36'
 
 export class BalancesTransferEvent {
   constructor(private ctx: EventContext) {
@@ -10,16 +10,16 @@ export class BalancesTransferEvent {
   }
 
   /**
-   * Transfer succeeded. \[from, to, value\]
+   *  Transfer succeeded. \[from, to, value\]
    */
   get isV1(): boolean {
     return this.ctx._chain.getEventHash('balances.Transfer') === 'dad2bcdca357505fa3c7832085d0db53ce6f902bd9f5b52823ee8791d351872c'
   }
 
   /**
-   * Transfer succeeded. \[from, to, value\]
+   *  Transfer succeeded. \[from, to, value\]
    */
-  get asV1(): [v1.AccountId32, v1.AccountId32, bigint] {
+  get asV1(): [Uint8Array, Uint8Array, bigint] {
     assert(this.isV1)
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
@@ -27,26 +27,26 @@ export class BalancesTransferEvent {
   /**
    * Transfer succeeded.
    */
-  get isV3(): boolean {
+  get isV36(): boolean {
     return this.ctx._chain.getEventHash('balances.Transfer') === '0ffdf35c495114c2d42a8bf6c241483fd5334ca0198662e14480ad040f1e3a66'
   }
 
   /**
    * Transfer succeeded.
    */
-  get asV3(): {from: v3.AccountId32, to: v3.AccountId32, amount: bigint} {
-    assert(this.isV3)
+  get asV36(): {from: v36.AccountId32, to: v36.AccountId32, amount: bigint} {
+    assert(this.isV36)
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV3
+    return this.isV36
   }
 
-  get asLatest(): {from: v3.AccountId32, to: v3.AccountId32, amount: bigint} {
+  get asLatest(): {from: v36.AccountId32, to: v36.AccountId32, amount: bigint} {
     deprecateLatest()
-    return this.asV3
+    return this.asV36
   }
 }
 
@@ -56,28 +56,28 @@ export class DappsStakingBondAndStakeEvent {
   }
 
   /**
-   * Account has bonded and staked funds on a smart contract.
+   *  Account has bonded and staked funds on a smart contract.
    */
-  get isV4(): boolean {
+  get isV17(): boolean {
     return this.ctx._chain.getEventHash('dappsStaking.BondAndStake') === '042590a56807e3351faf948dab2a22fe138af945cd9e46b379a3f568ede79c4d'
   }
 
   /**
-   * Account has bonded and staked funds on a smart contract.
+   *  Account has bonded and staked funds on a smart contract.
    */
-  get asV4(): [v4.AccountId32, v4.SmartContract, bigint] {
-    assert(this.isV4)
+  get asV17(): [Uint8Array, v17.SmartContract, bigint] {
+    assert(this.isV17)
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV4
+    return this.isV17
   }
 
-  get asLatest(): [v4.AccountId32, v4.SmartContract, bigint] {
+  get asLatest(): [Uint8Array, v17.SmartContract, bigint] {
     deprecateLatest()
-    return this.asV4
+    return this.asV17
   }
 }
 
@@ -87,28 +87,28 @@ export class DappsStakingRewardEvent {
   }
 
   /**
-   * Reward paid to staker or developer.
+   *  Reward paid to staker or developer.
    */
-  get isV4(): boolean {
+  get isV22(): boolean {
     return this.ctx._chain.getEventHash('dappsStaking.Reward') === '8893e04840c35675d9756bedd440cb2cf3490c1aaae0bd1f0204c2fbcab411c8'
   }
 
   /**
-   * Reward paid to staker or developer.
+   *  Reward paid to staker or developer.
    */
-  get asV4(): [v4.AccountId32, v4.SmartContract, number, bigint] {
-    assert(this.isV4)
+  get asV22(): [Uint8Array, v22.SmartContract, number, bigint] {
+    assert(this.isV22)
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV4
+    return this.isV22
   }
 
-  get asLatest(): [v4.AccountId32, v4.SmartContract, number, bigint] {
+  get asLatest(): [Uint8Array, v22.SmartContract, number, bigint] {
     deprecateLatest()
-    return this.asV4
+    return this.asV22
   }
 }
 
@@ -118,27 +118,27 @@ export class DappsStakingUnbondUnstakeAndWithdrawEvent {
   }
 
   /**
-   * Account has unbonded, unstaked and withdrawn funds.
+   *  Account has unbonded, unstaked and withdrawn funds.
    */
-  get isV4(): boolean {
+  get isV17(): boolean {
     return this.ctx._chain.getEventHash('dappsStaking.UnbondUnstakeAndWithdraw') === '042590a56807e3351faf948dab2a22fe138af945cd9e46b379a3f568ede79c4d'
   }
 
   /**
-   * Account has unbonded, unstaked and withdrawn funds.
+   *  Account has unbonded, unstaked and withdrawn funds.
    */
-  get asV4(): [v4.AccountId32, v4.SmartContract, bigint] {
-    assert(this.isV4)
+  get asV17(): [Uint8Array, v17.SmartContract, bigint] {
+    assert(this.isV17)
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
   get isLatest(): boolean {
     deprecateLatest()
-    return this.isV4
+    return this.isV17
   }
 
-  get asLatest(): [v4.AccountId32, v4.SmartContract, bigint] {
+  get asLatest(): [Uint8Array, v17.SmartContract, bigint] {
     deprecateLatest()
-    return this.asV4
+    return this.asV17
   }
 }

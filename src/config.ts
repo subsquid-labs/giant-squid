@@ -5,8 +5,8 @@ const config: ProcessorConfig = {
     chainName: 'astar',
     prefix: 5,
     dataSource: {
-        archive: lookupArchive('astar')[0].url,
-        chain: 'wss://rpc.astar.network',
+        archive: lookupArchive('shiden')[0].url,
+        chain: 'wss://rpc.shiden.astar.network',
     },
     typesBundle: './typegen/typesBundle.json',
     batchSize: 100,

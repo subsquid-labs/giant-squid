@@ -6,8 +6,8 @@ import { saveRewardEvent } from '../utils/base'
 function getEventData(ctx: EventHandlerContext): RewardData {
     const event = new DappsStakingRewardEvent(ctx)
 
-    if (event.isV4) {
-        const [account, smartContract, era, amount] = event.asV4
+    if (event.isV22) {
+        const [account, smartContract, era, amount] = event.asV22
         return {
             account,
             amount,

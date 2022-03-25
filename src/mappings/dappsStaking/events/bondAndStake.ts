@@ -6,8 +6,8 @@ import { saveStakeEvent } from '../utils/base'
 function getEventData(ctx: EventHandlerContext): StakeData {
     const event = new DappsStakingBondAndStakeEvent(ctx)
 
-    if (event.isV4) {
-        const [account, smartConstract, amount] = event.asV4
+    if (event.isV17) {
+        const [account, smartConstract, amount] = event.asV17
         return {
             account,
             smartConstract: smartConstract.value,

@@ -11,6 +11,12 @@ function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
             to: dest.value as Uint8Array,
             amount: value,
         }
+    } else if (call.isV32) {
+        const { dest, value } = call.asV32
+        return {
+            to: dest.value as Uint8Array,
+            amount: value,
+        }
     } else {
         const { dest, value } = call.asLatest
         return {

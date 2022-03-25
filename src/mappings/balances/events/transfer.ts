@@ -12,8 +12,8 @@ function getEventData(ctx: EventHandlerContext): TransferData {
             to,
             amount,
         }
-    } else if (event.isV3) {
-        const { from, to, amount } = event.asV3
+    } else if (event.isV36) {
+        const { from, to, amount } = event.asV36
         return {
             from,
             to,
