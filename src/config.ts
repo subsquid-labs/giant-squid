@@ -2,13 +2,13 @@ import { ProcessorConfig } from './types/custom/processorConfig'
 import { lookupArchive } from '@subsquid/archive-registry'
 
 const config: ProcessorConfig = {
-    chainName: 'statemine',
-    prefix: 2,
+    chainName: 'moonbeam',
+    prefix: 'moonbeam',
     dataSource: {
-        archive: lookupArchive('statemine')[0].url,
-        chain: 'wss://statemine.api.onfinality.io/public-ws',
+        archive: lookupArchive('moonbeam')[0].url,
+        chain: 'wss://wss.api.moonbeam.network',
     },
-    typesBundle: './typegen/typesBundle.json',
+    typesBundle: 'moonbeam',
     batchSize: 100,
     // blockRange: {
     //     from: 7828270,
