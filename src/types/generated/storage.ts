@@ -17,7 +17,7 @@ export class CrowdloanFundsStorage {
   /**
    *  Info on all of the funds.
    */
-  async getAsV9010(key: number): Promise<v9010.FundInfo> {
+  async getAsV9010(key: number): Promise<v9010.FundInfo | undefined> {
     assert(this.isV9010)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
   }
@@ -32,7 +32,7 @@ export class CrowdloanFundsStorage {
   /**
    *  Info on all of the funds.
    */
-  async getAsV9111(key: v9111.Id): Promise<v9111.FundInfo> {
+  async getAsV9111(key: v9111.Id): Promise<v9111.FundInfo | undefined> {
     assert(this.isV9111)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
   }
@@ -58,7 +58,7 @@ export class StakingBondedStorage {
   /**
    *  Map from all locked "stash" accounts to the controller account.
    */
-  async getAsV1020(key: Uint8Array): Promise<Uint8Array> {
+  async getAsV1020(key: Uint8Array): Promise<Uint8Array | undefined> {
     assert(this.isV1020)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Bonded', key)
   }
@@ -105,7 +105,7 @@ export class StakingCurrentEraStorage {
    *  This is the latest planned era, depending on how session module queues the validator
    *  set, it might be active or not.
    */
-  async getAsV1050(): Promise<number> {
+  async getAsV1050(): Promise<number | undefined> {
     assert(this.isV1050)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'CurrentEra')
   }

@@ -24,7 +24,7 @@ export class BalancesForceTransferCall {
    *  Exactly as `transfer`, except the origin must be root and the source account may be
    *  specified.
    */
-  get asV1020(): {source: v1020.Type_25, dest: v1020.Type_25, value: bigint} {
+  get asV1020(): {source: v1020.Type_15, dest: v1020.Type_15, value: bigint} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -170,7 +170,7 @@ export class BalancesTransferCall {
    * 
    *  # </weight>
    */
-  get asV1020(): {dest: v1020.Type_25, value: bigint} {
+  get asV1020(): {dest: v1020.Type_15, value: bigint} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -520,7 +520,7 @@ export class BalancesTransferKeepAliveCall {
    * 
    *  [`transfer`]: struct.Module.html#method.transfer
    */
-  get asV1020(): {dest: v1020.Type_25, value: bigint} {
+  get asV1020(): {dest: v1020.Type_15, value: bigint} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -744,7 +744,7 @@ export class StakingBondCall {
    *  the `origin` falls below _existential deposit_ and gets removed as dust.
    *  # </weight>
    */
-  get asV1020(): {controller: v1020.Type_25, value: bigint, payee: v1020.RewardDestination} {
+  get asV1020(): {controller: v1020.Type_15, value: bigint, payee: v1020.RewardDestination} {
     assert(this.isV1020)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
