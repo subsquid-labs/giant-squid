@@ -11,3 +11,15 @@ export interface PayoutData {
     era: number
     validator: Uint8Array
 }
+
+export const enum PayeeType {
+    ACCOUNT = 'Account',
+    STAKED = 'Staked',
+    STASH = 'Stash',
+    CONTROLLER = 'Controller',
+}
+
+export interface Payee {
+    payee: PayeeType
+    account?: string | null
+}

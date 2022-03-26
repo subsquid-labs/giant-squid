@@ -1,8 +1,8 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { FundInfo } from '../../../types/custom/crowdloanData'
 import { CrowdloanFundsStorage } from '../../../types/generated/storage'
+import { StorageContext } from '../../../types/generated/support'
 
-async function getStorageData(ctx: EventHandlerContext, paraId: number): Promise<FundInfo | undefined> {
+async function getStorageData(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
     const storage = new CrowdloanFundsStorage(ctx)
     if (!storage.isExists) return undefined
 
@@ -20,7 +20,7 @@ const storageCache: {
     values: {},
 }
 
-export async function getFunds(ctx: EventHandlerContext, paraId: number): Promise<FundInfo | undefined> {
+export async function getFunds(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
         storageCache.values = {}

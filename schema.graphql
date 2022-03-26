@@ -9,6 +9,13 @@ type Account @entity {
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
   chain: Chain!
+  stakingInfo: StakingInfo!
+}
+
+type StakingInfo {
+  payee: String
+  payeeAccount: String
+  controller: String
 }
 
 type Chain @entity {

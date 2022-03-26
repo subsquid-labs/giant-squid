@@ -42,6 +42,8 @@
     "staking.unbond"
   ],
   "storage": [
-    "Crowdloan.Funds"
+    "Crowdloan.Funds",
+    "Staking.Bonded",
+    "Staking.Payee"
   ]
 }

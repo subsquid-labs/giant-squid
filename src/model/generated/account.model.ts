@@ -6,6 +6,7 @@ import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
 import {Chain} from "./chain.model"
+import {StakingInfo} from "./_stakingInfo"
 
 @Entity_()
 export class Account {
@@ -43,4 +44,7 @@ export class Account {
   @Index_()
   @ManyToOne_(() => Chain, {nullable: false})
   chain!: Chain
+
+  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new StakingInfo(undefined, marshal.nonNull(obj))}, nullable: false})
+  stakingInfo!: StakingInfo
 }
