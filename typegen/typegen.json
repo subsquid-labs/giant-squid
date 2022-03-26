@@ -18,5 +18,9 @@
     "staking.bond",
     "staking.bond_extra",
     "staking.unbond"
+  ],
+  "storage": [
+    "Staking.Bonded",
+    "Staking.Payee"
   ]
 }

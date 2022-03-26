@@ -24,17 +24,17 @@ processor.addEventHandler('staking.Unbonded', modules.staking.events.handleUnbon
 processor.addExtrinsicHandler('staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
 processor.addExtrinsicHandler(
     'staking.bond',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.staking.extrinsics.handleBond
 )
 processor.addExtrinsicHandler(
     'staking.bond_extra',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.staking.extrinsics.handleBondExtra
 )
 processor.addExtrinsicHandler(
     'staking.unbond',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.staking.extrinsics.handleUnbond
 )
 
