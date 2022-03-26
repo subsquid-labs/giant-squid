@@ -8,7 +8,7 @@ const config: ProcessorConfig = {
         archive: 'https://hydradx.indexer.gc.subsquid.io/v4/graphql',
         chain: ' wss://archive.snakenet.hydradx.io',
     },
-    typesBundle: './typegen/typesBundle.json',
+    typesBundle: 'hydradx',
     batchSize: 100,
     // blockRange: {
     //     from: 7828270,

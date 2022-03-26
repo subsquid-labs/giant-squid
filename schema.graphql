@@ -22,7 +22,6 @@ type Chain @entity {
   id: ID! #chain name
   token: Token!
   paraId: Int
-  crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
   relayChain: Chain
 }
 

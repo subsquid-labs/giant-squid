@@ -1,6 +1,6 @@
 import config from './config'
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
-import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
+import { DEFAULT_BATCH_SIZE, DEFAULT_PORT, EXTRINSIC_SUCCESS } from './common/consts'
 import * as modules from './mappings'
 import { EXTRINSIC_FAILED } from './common/consts'
 

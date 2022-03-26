@@ -1,7 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 import {Token} from "./_token"
-import {Crowdloan} from "./crowdloan.model"
 
 @Entity_()
 export class Chain {
@@ -17,9 +16,6 @@ export class Chain {
 
   @Column_("integer", {nullable: true})
   paraId!: number | undefined | null
-
-  @OneToMany_(() => Crowdloan, e => e.parachain)
-  crowdloans!: Crowdloan[]
 
   @Index_()
   @ManyToOne_(() => Chain, {nullable: true})

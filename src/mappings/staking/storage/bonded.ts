@@ -7,8 +7,8 @@ async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise
     const storage = new StakingBondedStorage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV1020) {
-        return await storage.getAsV1020(account)
+    if (storage.isV13) {
+        return await storage.getAsV13(account)
     }
 
     return undefined
