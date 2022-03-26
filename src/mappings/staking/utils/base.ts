@@ -4,14 +4,15 @@ import { PayeeType, RewardData, StakeData } from '../../../types/custom/stakingD
 import config from '../../../config'
 import { Reward, Slash, Bond } from '../../../model'
 import { accountManager, chainManager } from '../../../managers'
+import { getCurrentEra } from '../storage'
 
 async function populateStakingItem(
-    item: Reward | Slash,
+    item: Reward | Slash | Bond,
     options: {
         ctx: EventHandlerContext
         data: RewardData | StakeData
     }
-): Promise<Reward | Slash | undefined> {
+): Promise<Reward | Slash | Bond | undefined> {
     const { ctx, data } = options
 
     populateMeta(ctx, item)
@@ -124,6 +125,7 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
 
     if (!(await populateStakingItem(slash, { ctx, data }))) return
     await calculateTotalSlash(slash, { ctx, data })
+    slash.era = await getCurrentEra(ctx)
 
     await ctx.store.insert(Slash, slash)
 }
