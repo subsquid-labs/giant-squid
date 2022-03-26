@@ -75,6 +75,10 @@ interface HasTotal {
   total: BigInt
 }
 
+interface HasEra {
+  era: Int
+}
+
 interface CanFail {
   success: Boolean
 }
@@ -111,7 +115,7 @@ type AccountTransfer @entity {
   direction: TransferDicrection
 }
 
-type Reward implements Item & HasTotal @entity  {
+type Reward implements Item & HasTotal & HasEra @entity  {
   id: ID!
   chain: Chain!
   date: DateTime
@@ -125,7 +129,7 @@ type Reward implements Item & HasTotal @entity  {
   name: String
 }
 
-type Slash implements Item & HasTotal @entity  {
+type Slash implements Item & HasTotal & HasEra @entity  {
   id: ID!
   chain: Chain!
   date: DateTime
@@ -133,6 +137,7 @@ type Slash implements Item & HasTotal @entity  {
   extrinsicHash: String @index
   account: Account!
   amount: BigInt
+  era: Int
   total: BigInt
   name: String
 }

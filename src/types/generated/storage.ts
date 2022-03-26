@@ -71,6 +71,53 @@ export class StakingBondedStorage {
   }
 }
 
+export class StakingCurrentEraStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The current era index.
+   */
+  get isV1020() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'CurrentEra') === '81bbbe8e62451cbcc227306706c919527aa2538970bd6d67a9969dd52c257d02'
+  }
+
+  /**
+   *  The current era index.
+   */
+  async getAsV1020(): Promise<number> {
+    assert(this.isV1020)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'CurrentEra')
+  }
+
+  /**
+   *  The current era index.
+   * 
+   *  This is the latest planned era, depending on how session module queues the validator
+   *  set, it might be active or not.
+   */
+  get isV1050() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'CurrentEra') === 'a926ad48d1a07d1162c5fdb99f3f6cef39c7c5a115a92ff9ccf0357bae4bf2ed'
+  }
+
+  /**
+   *  The current era index.
+   * 
+   *  This is the latest planned era, depending on how session module queues the validator
+   *  set, it might be active or not.
+   */
+  async getAsV1050(): Promise<number> {
+    assert(this.isV1050)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'CurrentEra')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'CurrentEra') != null
+  }
+}
+
 export class StakingPayeeStorage {
   constructor(private ctx: StorageContext) {}
 

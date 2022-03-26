@@ -32,6 +32,7 @@
   "storage": [
     "Crowdloan.Funds",
     "Staking.Bonded",
-    "Staking.Payee"
+    "Staking.Payee",
+    "Staking.CurrentEra"
   ]
 }
