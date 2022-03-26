@@ -18,10 +18,13 @@ export class AccountManager extends Manager<Account> {
                 totalSlash: 0n,
                 chain: await chainManager.get(ctx, config.chainName),
                 stakingInfo: new StakingInfo(),
+                lastUpdateBlock: BigInt(ctx.block.height),
                 ...data,
             })
 
             await ctx.store.insert(Account, account)
+        } else {
+            account.lastUpdateBlock = BigInt(ctx.block.height)
         }
 
         return account

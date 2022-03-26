@@ -9,6 +9,7 @@ type Account @entity {
   bonds: [Bond!] @derivedFrom(field: "account")
   chain: Chain!
   stakingInfo: StakingInfo!
+  lastUpdateBlock: BigInt!
 }
 
 type StakingInfo {

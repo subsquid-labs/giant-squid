@@ -43,4 +43,7 @@ export class Account {
 
   @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new StakingInfo(undefined, marshal.nonNull(obj))}, nullable: false})
   stakingInfo!: StakingInfo
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  lastUpdateBlock!: bigint
 }
