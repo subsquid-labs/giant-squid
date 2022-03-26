@@ -2,7 +2,7 @@ import { decodeID, encodeID } from '../../../common/helpers'
 import config from '../../../config'
 import { Payee, PayeeType } from '../../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../../types/generated/storage'
-import * as v9111 from '../../../types/generated/v9111'
+import * as v9110 from '../../../types/generated/v9110'
 import { StorageContext } from '../../../types/generated/support'
 
 async function getStorageData(
@@ -12,17 +12,17 @@ async function getStorageData(
     const storage = new StakingPayeeStorage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV1020) {
-        const { __kind, value } = await storage.getAsV1020(account)
+    if (storage.isV0) {
+        const { __kind, value } = await storage.getAsV0(account)
         return {
             payee: __kind,
             account: value,
         }
-    } else if (storage.isV9111) {
-        const data = await storage.getAsV9111(account)
+    } else if (storage.isV9110) {
+        const data = await storage.getAsV9110(account)
         return {
             payee: data.__kind,
-            account: (data as v9111.RewardDestination_Account).value,
+            account: (data as v9110.RewardDestination_Account).value,
         }
     }
 

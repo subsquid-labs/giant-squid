@@ -699,7 +699,7 @@ export class MultisigAsMultiCall {
    *  # </weight>
    */
   get isV5(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === '46a043f1ec444058539dbc2011789df5c2cc0c5637a1c3e86cc9b63c213935f4'
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '080532e153b3a5675fd25a02c2b30a069b9111693a19a3ee2d937547081f577b'
   }
 
   /**
@@ -755,7 +755,7 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get asV5(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v5.Timepoint | undefined), call: v5.Type_28} {
+  get asV5(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v5.Timepoint | undefined), call: v5.Type_21} {
     assert(this.isV5)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -814,7 +814,7 @@ export class MultisigAsMultiCall {
    *  # </weight>
    */
   get isV6(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === 'bd04664208cd583c624cb259563d8814daee58bf2714bbc62db6f69da050b981'
+    return this.ctx._chain.getCallHash('multisig.as_multi') === 'f017b486609e794e241c31998fd2fc01afb1b28e0a4a6ebf3b2ae5bb4585d02e'
   }
 
   /**
@@ -870,7 +870,7 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get asV6(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v6.Timepoint | undefined), call: v6.Type_28} {
+  get asV6(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v6.Timepoint | undefined), call: v6.Type_21} {
     assert(this.isV6)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -929,7 +929,7 @@ export class MultisigAsMultiCall {
    *  # </weight>
    */
   get isV7(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === '622cc5f286865cd6a3fc90a093f192e479e3562374df2aa0698d0b6de39cda7b'
+    return this.ctx._chain.getCallHash('multisig.as_multi') === '721612c7f0b513fe76924dcc518fa13d8ea5689ec85d440396794fb05d199a44'
   }
 
   /**
@@ -985,7 +985,7 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get asV7(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v7.Timepoint | undefined), call: v7.Type_28} {
+  get asV7(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v7.Timepoint | undefined), call: v7.Type_21} {
     assert(this.isV7)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1043,7 +1043,7 @@ export class MultisigAsMultiCall {
    *  # </weight>
    */
   get isV9(): boolean {
-    return this.ctx._chain.getCallHash('multisig.as_multi') === 'e8838182eb598fe94b4b42c3d17dc4c6df779a4e6e19f1e6023ac4b1f088d14b'
+    return this.ctx._chain.getCallHash('multisig.as_multi') === 'fc21051767b99d7888bb16b0838fef08a6b17be27f45945578424364b2861251'
   }
 
   /**
@@ -1098,7 +1098,7 @@ export class MultisigAsMultiCall {
    *  - Plus Call Weight
    *  # </weight>
    */
-  get asV9(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v9.Timepoint | undefined), call: v9.Type_28} {
+  get asV9(): {threshold: number, otherSignatories: Uint8Array[], maybeTimepoint: (v9.Timepoint | undefined), call: v9.Type_21} {
     assert(this.isV9)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1459,7 +1459,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV5(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '1d2a476bdba02d2629d12ad6b4498f4a1d033c586a9ed1ee8f19b6aaa1d8cdf1'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '3f9486b5e7211ffc775a4fd01fcc6d498636cd57932cb58b6cc7c354019dee34'
   }
 
   /**
@@ -1480,7 +1480,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV5(): {real: Uint8Array, forceProxyType: (v5.ProxyType | undefined), call: v5.Type_28} {
+  get asV5(): {real: Uint8Array, forceProxyType: (v5.ProxyType | undefined), call: v5.Type_21} {
     assert(this.isV5)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1504,7 +1504,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV6(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'e670ee2fe4dd9abdb57acc382b9765b1f42cb1224c137eb8e8d491475e3e9ec9'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'ca4e9ef19d8d68d6702fea07ddb96f0826dccf690872aa663a300b43cb0dd953'
   }
 
   /**
@@ -1525,7 +1525,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV6(): {real: Uint8Array, forceProxyType: (v6.ProxyType | undefined), call: v6.Type_28} {
+  get asV6(): {real: Uint8Array, forceProxyType: (v6.ProxyType | undefined), call: v6.Type_21} {
     assert(this.isV6)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1549,7 +1549,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV7(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '6290fe4241c10748618ff4e27c04c1c27021f2773aa015543546512175968fb4'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'c07be55b5a389ac2469c36fee9e8349c60c9a72554ac56890742825a80bf25c4'
   }
 
   /**
@@ -1570,7 +1570,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV7(): {real: Uint8Array, forceProxyType: (v7.ProxyType | undefined), call: v7.Type_28} {
+  get asV7(): {real: Uint8Array, forceProxyType: (v7.ProxyType | undefined), call: v7.Type_21} {
     assert(this.isV7)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1594,7 +1594,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '30d9950407372f52fd3b5701daed0ce7aec6d915b21bab385cfbd88b52a2de7a'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '5d0f0f772581bc1d51f435920abc689ec41e60314867a6464477882497a71a38'
   }
 
   /**
@@ -1615,7 +1615,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV9(): {real: Uint8Array, forceProxyType: (v9.ProxyType | undefined), call: v9.Type_28} {
+  get asV9(): {real: Uint8Array, forceProxyType: (v9.ProxyType | undefined), call: v9.Type_21} {
     assert(this.isV9)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1639,7 +1639,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV10(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '7cd19ad9cfb5bbff0499d2effff0ed2ed8d882dfd07dc93d79cc242a76b0748a'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '06e8c61d00792ca9e3de25e7575b5e4f4d3130d95342f8445a30486c917afba4'
   }
 
   /**
@@ -1660,7 +1660,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV10(): {real: Uint8Array, forceProxyType: (v10.ProxyType | undefined), call: v10.Type_28} {
+  get asV10(): {real: Uint8Array, forceProxyType: (v10.ProxyType | undefined), call: v10.Type_21} {
     assert(this.isV10)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1684,7 +1684,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV11(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '27b1cd0d8fd81b99d967e35401eeff8092a6c0d8e9526971355e239e1d992312'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '8c8a76c46f20c8608f309767c6ebd9846af9f88198204b46845d10109e5434d3'
   }
 
   /**
@@ -1705,7 +1705,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV11(): {real: Uint8Array, forceProxyType: (v11.ProxyType | undefined), call: v11.Type_28} {
+  get asV11(): {real: Uint8Array, forceProxyType: (v11.ProxyType | undefined), call: v11.Type_21} {
     assert(this.isV11)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1729,7 +1729,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '2bc7c217a7e1509fc25f74923c2e995d4f7f88781922cf8b35314ed3cef0bd12'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'f707cab4df6716e9794351edf540027163eb1e7751cb68709b619e89962a3408'
   }
 
   /**
@@ -1750,7 +1750,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV13(): {real: Uint8Array, forceProxyType: (v13.ProxyType | undefined), call: v13.Type_28} {
+  get asV13(): {real: Uint8Array, forceProxyType: (v13.ProxyType | undefined), call: v13.Type_21} {
     assert(this.isV13)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1774,7 +1774,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV14(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '0f2fc33108fb719255d31655283300ba7c6086a784034add008928b4c0dabe6a'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '6a464e663604e1b2baf4e8b6eecb1bdae4beef60b032c5bd27fa1563c4c3ac16'
   }
 
   /**
@@ -1795,7 +1795,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV14(): {real: Uint8Array, forceProxyType: (v14.ProxyType | undefined), call: v14.Type_28} {
+  get asV14(): {real: Uint8Array, forceProxyType: (v14.ProxyType | undefined), call: v14.Type_21} {
     assert(this.isV14)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1819,7 +1819,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV15(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '23b203f9174a26230102dd46bf43b1ebdca0e044c7afdbf9abff7b2c2538c6e8'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'a546a91ce39a73d8547253b13b3d63da36920817966970fc7f49033b3463aafe'
   }
 
   /**
@@ -1840,7 +1840,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV15(): {real: Uint8Array, forceProxyType: (v15.ProxyType | undefined), call: v15.Type_28} {
+  get asV15(): {real: Uint8Array, forceProxyType: (v15.ProxyType | undefined), call: v15.Type_21} {
     assert(this.isV15)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1864,7 +1864,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV17(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'b06812b120e473fcd12aa8d481ef9f51d30bb560cddf4b9915738e051d16a486'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '4cf1d0c6bb92a80fcf0b43bb145c0fc443697e836b01b3bd4c09ff11d5590cf3'
   }
 
   /**
@@ -1885,7 +1885,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV17(): {real: Uint8Array, forceProxyType: (v17.ProxyType | undefined), call: v17.Type_28} {
+  get asV17(): {real: Uint8Array, forceProxyType: (v17.ProxyType | undefined), call: v17.Type_21} {
     assert(this.isV17)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1909,7 +1909,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV18(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '6b688f50a67560b5ba763873365f6545d41e9746033e7b8f41a9f3b302cdfe37'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '22cd5b2e5d7d5c734f2d618b05663ab5a693f5857a611f8661d6097b99b3d5ca'
   }
 
   /**
@@ -1930,7 +1930,7 @@ export class ProxyProxyCall {
    *  - Plus the weight of the `call`
    *  # </weight>
    */
-  get asV18(): {real: Uint8Array, forceProxyType: (v18.ProxyType | undefined), call: v18.Type_28} {
+  get asV18(): {real: Uint8Array, forceProxyType: (v18.ProxyType | undefined), call: v18.Type_21} {
     assert(this.isV18)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1953,7 +1953,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV23(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'f4a61a3fd0fc94ef2aa0f265fa00576f9b25a4902cfc1f5129414e70ac2becd1'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'dfd00ffd1ed648031d38f657cffad83a602f96fdc6662c52b9e410148598cfe2'
   }
 
   /**
@@ -1973,7 +1973,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV23(): {real: Uint8Array, forceProxyType: (v23.ProxyType | undefined), call: v23.Type_28} {
+  get asV23(): {real: Uint8Array, forceProxyType: (v23.ProxyType | undefined), call: v23.Type_21} {
     assert(this.isV23)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -1996,7 +1996,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV24(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '058d5ff95352baafb7d6319d4977501dde9972ae7abbe150212fd84d356186c8'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '1b3be159bc3cbff6421dab4c8787a2c72bafc3126d7a3e9b9981b47c7c9dcc9c'
   }
 
   /**
@@ -2016,7 +2016,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV24(): {real: Uint8Array, forceProxyType: (v24.ProxyType | undefined), call: v24.Type_28} {
+  get asV24(): {real: Uint8Array, forceProxyType: (v24.ProxyType | undefined), call: v24.Type_21} {
     assert(this.isV24)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2039,7 +2039,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV25(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'ed40359aefe1341348c47410ab9fcb152ca2efcd37b6f090086b62b685137a7f'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '6824b36fab35a7fd8435939be9af3cc974152411fd8247e37e713a734dc705cd'
   }
 
   /**
@@ -2059,7 +2059,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV25(): {real: Uint8Array, forceProxyType: (v25.ProxyType | undefined), call: v25.Type_28} {
+  get asV25(): {real: Uint8Array, forceProxyType: (v25.ProxyType | undefined), call: v25.Type_21} {
     assert(this.isV25)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2082,7 +2082,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV26(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'e95d7239855ae1e0e7e7751c4e619a7674ff3e1e8948806cb649f0e9fb672879'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'ae6da1101c20ab8a2fc84db3b0c059f7d8f0ce94ab3cf7a62272ea07dbbe4424'
   }
 
   /**
@@ -2102,7 +2102,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV26(): {real: Uint8Array, forceProxyType: (v26.ProxyType | undefined), call: v26.Type_28} {
+  get asV26(): {real: Uint8Array, forceProxyType: (v26.ProxyType | undefined), call: v26.Type_21} {
     assert(this.isV26)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2125,7 +2125,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === 'b645b151b9880623d4a2820e7577fd7c76a80a5bbb2911dc7754a3da17895678'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '4a5ce334f9b343c63574acb28a91ba19d5c15d9d7575874c5bacf63f614d6cea'
   }
 
   /**
@@ -2145,7 +2145,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV28(): {real: Uint8Array, forceProxyType: (v28.ProxyType | undefined), call: v28.Type_28} {
+  get asV28(): {real: Uint8Array, forceProxyType: (v28.ProxyType | undefined), call: v28.Type_21} {
     assert(this.isV28)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2168,7 +2168,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV29(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '4369e959f0be59d5d6405540ad46c2df494d056fab096f3f3a5876c21815927f'
+    return this.ctx._chain.getCallHash('proxy.proxy') === 'bef91383cd9ee4f87fbc4eade6bcf71b8a368e39df1d5bb8fdeadf1569ebbec4'
   }
 
   /**
@@ -2188,7 +2188,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV29(): {real: Uint8Array, forceProxyType: (v29.ProxyType | undefined), call: v29.Type_28} {
+  get asV29(): {real: Uint8Array, forceProxyType: (v29.ProxyType | undefined), call: v29.Type_21} {
     assert(this.isV29)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2211,7 +2211,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV30(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '905d8b4539596183a8e03669e7e99b7486ef82ae919e9cb572bc704ed4840ae3'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '5cd80edeb6eb7f47abb1acf3b3ceb39c0b042910218f479ed5398d4a87a46941'
   }
 
   /**
@@ -2231,7 +2231,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV30(): {real: Uint8Array, forceProxyType: (v30.ProxyType | undefined), call: v30.Type_28} {
+  get asV30(): {real: Uint8Array, forceProxyType: (v30.ProxyType | undefined), call: v30.Type_21} {
     assert(this.isV30)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2254,7 +2254,7 @@ export class ProxyProxyCall {
    *  # </weight>
    */
   get isV9050(): boolean {
-    return this.ctx._chain.getCallHash('proxy.proxy') === '41a6c0e39ad6cbb1d962694214644d84a821abc9fbae08c88e16e804bd84c368'
+    return this.ctx._chain.getCallHash('proxy.proxy') === '66801a5b1a5cb50b861a75fb49d931e07bfa3c2e66a3a6dfce790daf6261b7a6'
   }
 
   /**
@@ -2274,7 +2274,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9050(): {real: Uint8Array, forceProxyType: (v9050.ProxyType | undefined), call: v9050.Type_28} {
+  get asV9050(): {real: Uint8Array, forceProxyType: (v9050.ProxyType | undefined), call: v9050.Type_21} {
     assert(this.isV9050)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2317,7 +2317,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9080(): {real: Uint8Array, forceProxyType: (v9080.ProxyType | undefined), call: v9080.Type_28} {
+  get asV9080(): {real: Uint8Array, forceProxyType: (v9080.ProxyType | undefined), call: v9080.Type_21} {
     assert(this.isV9080)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2360,7 +2360,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9090(): {real: Uint8Array, forceProxyType: (v9090.ProxyType | undefined), call: v9090.Type_28} {
+  get asV9090(): {real: Uint8Array, forceProxyType: (v9090.ProxyType | undefined), call: v9090.Type_21} {
     assert(this.isV9090)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2403,7 +2403,7 @@ export class ProxyProxyCall {
    *  Weight is a function of the number of proxies the user has (P).
    *  # </weight>
    */
-  get asV9100(): {real: Uint8Array, forceProxyType: (v9100.ProxyType | undefined), call: v9100.Type_28} {
+  get asV9100(): {real: Uint8Array, forceProxyType: (v9100.ProxyType | undefined), call: v9100.Type_21} {
     assert(this.isV9100)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -2994,7 +2994,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'b601474590df7dad2366e5378a570bed86d35ffe6ffc6261a6b79635275b72dc'
+    return this.ctx._chain.getCallHash('utility.batch') === 'd79f721ba65e4327bbf0751455a66bdb9d4fa03b09d34e7a576894d31889e1c2'
   }
 
   /**
@@ -3019,7 +3019,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV0(): {calls: v0.Type_28[]} {
+  get asV0(): {calls: v0.Type_21[]} {
     assert(this.isV0)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3047,7 +3047,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV5(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '98591379c0a9bf023750da170ab4f332688fceb870532ef16e7859b7f4b72070'
+    return this.ctx._chain.getCallHash('utility.batch') === '686b5f13fd0a2878d6c4cc53591595981170240396cdc839b6e8bedfbdd1c698'
   }
 
   /**
@@ -3072,7 +3072,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV5(): {calls: v5.Type_28[]} {
+  get asV5(): {calls: v5.Type_21[]} {
     assert(this.isV5)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3100,7 +3100,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV6(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '49112c5930905c70a51eb627af013cace748746303ad6c369e6871634d3ec522'
+    return this.ctx._chain.getCallHash('utility.batch') === '576faf2cc065b1a384b9e896211de515ac5999bd77c160f22c21e2f9bc1b69dc'
   }
 
   /**
@@ -3125,7 +3125,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV6(): {calls: v6.Type_28[]} {
+  get asV6(): {calls: v6.Type_21[]} {
     assert(this.isV6)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3153,7 +3153,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV7(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'bd437d585bd328af44724fe72c32e1290988b38ac6bb59e9c061dc9d36b40fc3'
+    return this.ctx._chain.getCallHash('utility.batch') === '9e359a8a5ee4dca730c5dbc682f38f5eb7c8b0bf8b501cdba20e73adebc1184d'
   }
 
   /**
@@ -3178,7 +3178,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV7(): {calls: v7.Type_28[]} {
+  get asV7(): {calls: v7.Type_21[]} {
     assert(this.isV7)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3206,7 +3206,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'f12d77377cc0665b5ef8b2539d08508a77e10d0c7b147b5db8ff0a5e160dc339'
+    return this.ctx._chain.getCallHash('utility.batch') === '039c2841400dff05c923c1165527e1c1075a76d79f3a0e49079a14fc666c4f82'
   }
 
   /**
@@ -3231,7 +3231,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9(): {calls: v9.Type_28[]} {
+  get asV9(): {calls: v9.Type_21[]} {
     assert(this.isV9)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3259,7 +3259,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV10(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '752bd0b51a15b134a3b69d310fef95289caadf53f72e8ebf6e004f80dbfd5162'
+    return this.ctx._chain.getCallHash('utility.batch') === 'baa2c663388c407f788e6ee88ee532cbb52f237dd1d686f1dd477294ce007404'
   }
 
   /**
@@ -3284,7 +3284,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV10(): {calls: v10.Type_28[]} {
+  get asV10(): {calls: v10.Type_21[]} {
     assert(this.isV10)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3312,7 +3312,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV11(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '81a1bbaba8c836457eb3ae67ae0a14379a92ec73d98caecb616027b935d1ec97'
+    return this.ctx._chain.getCallHash('utility.batch') === '7303c3b60fe3f58e561101347e4883ba9ef08a6b0603b8c71921cdab60074d68'
   }
 
   /**
@@ -3337,7 +3337,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV11(): {calls: v11.Type_28[]} {
+  get asV11(): {calls: v11.Type_21[]} {
     assert(this.isV11)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3365,7 +3365,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'e191a6b4469a730ac2c9d99d7d1bf26b8eba8eb372c88ca8ef33b142c07173cb'
+    return this.ctx._chain.getCallHash('utility.batch') === '67f2dbcaf86bf75a58d88b9b4a6c0e71d5a0975a9b3d635000c747f698b76d35'
   }
 
   /**
@@ -3390,7 +3390,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV13(): {calls: v13.Type_28[]} {
+  get asV13(): {calls: v13.Type_21[]} {
     assert(this.isV13)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3418,7 +3418,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV14(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '4b2fe6192e690bb4d52c80f14779df220a864fe502eec9f38a5dde216a6729e8'
+    return this.ctx._chain.getCallHash('utility.batch') === '01dbe4c50ccb6e57de1a2023149930d438fbd91773d801f7759a484a80bbc771'
   }
 
   /**
@@ -3443,7 +3443,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV14(): {calls: v14.Type_28[]} {
+  get asV14(): {calls: v14.Type_21[]} {
     assert(this.isV14)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3471,7 +3471,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV15(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'dc6dafbd04891de07385ef89cf41e58498e1055f8183a8836011473996992a2a'
+    return this.ctx._chain.getCallHash('utility.batch') === '95f994ca724cda87ae37ba6235e66de628a701b62983e8ee81c5eaabcedb2615'
   }
 
   /**
@@ -3496,7 +3496,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV15(): {calls: v15.Type_28[]} {
+  get asV15(): {calls: v15.Type_21[]} {
     assert(this.isV15)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3524,7 +3524,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV17(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === 'cc2545971a0ffdc824f974595d6cef86d24f447886effb7fddc646f5864691b4'
+    return this.ctx._chain.getCallHash('utility.batch') === 'f970cf066e00764a48fd312e70a954644476b50fa53ebc5b261b180640cfca0a'
   }
 
   /**
@@ -3549,7 +3549,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV17(): {calls: v17.Type_28[]} {
+  get asV17(): {calls: v17.Type_21[]} {
     assert(this.isV17)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3577,7 +3577,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV18(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '937a5c0db5fabb0a8535b5fcc5fe2d99860c2b17bc2d974b1d2e319b85eae56f'
+    return this.ctx._chain.getCallHash('utility.batch') === 'd9abb5ae4a3e82bb5ceecbd0e04c397ee9b6e67ed2319fe24957287db3bbb644'
   }
 
   /**
@@ -3602,7 +3602,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV18(): {calls: v18.Type_28[]} {
+  get asV18(): {calls: v18.Type_21[]} {
     assert(this.isV18)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3630,7 +3630,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV23(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '622880e36c0dc8bab8cfd46d229cc4962a9ad0d7ae841d31cd241a3cb712deee'
+    return this.ctx._chain.getCallHash('utility.batch') === '66cbbe9e2ad588fe2f4cd14101d2ac1a81bf134be3ed3b3ff32e03c2a0ab4512'
   }
 
   /**
@@ -3655,7 +3655,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV23(): {calls: v23.Type_28[]} {
+  get asV23(): {calls: v23.Type_21[]} {
     assert(this.isV23)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3683,7 +3683,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV24(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '67e1c933278ecb7cb1849f0611be968e6fbb17a75e77d5bd4bb2b7e82d559a71'
+    return this.ctx._chain.getCallHash('utility.batch') === 'ee38e69091781b6e153f791199bc8efbd67f40ce5b22c3cf8d30554c96f187c6'
   }
 
   /**
@@ -3708,7 +3708,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV24(): {calls: v24.Type_28[]} {
+  get asV24(): {calls: v24.Type_21[]} {
     assert(this.isV24)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3736,7 +3736,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV25(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '8512358f5519ac891551f9701182b1a11c8cf3f8fb6df37c106b05c801ee5187'
+    return this.ctx._chain.getCallHash('utility.batch') === '2cc10626793e55f49969a00a151a2115c8e72408616920f390e69d150906df78'
   }
 
   /**
@@ -3761,7 +3761,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV25(): {calls: v25.Type_28[]} {
+  get asV25(): {calls: v25.Type_21[]} {
     assert(this.isV25)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3787,7 +3787,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV26(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '015c2df82b127326f6844b77eb239395bbea77a617840cbf913ac72ac923ddb2'
+    return this.ctx._chain.getCallHash('utility.batch') === '3377a8f3a789faaecdd0d3a63af676ab6b9492a8f1bc9b7a63dafed6659c2aa5'
   }
 
   /**
@@ -3810,7 +3810,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV26(): {calls: v26.Type_28[]} {
+  get asV26(): {calls: v26.Type_21[]} {
     assert(this.isV26)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3836,7 +3836,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '5e0a2b8fb29282d3dc592f9ac9a0a30444798a6163f408a989b82959ef7789ee'
+    return this.ctx._chain.getCallHash('utility.batch') === '6203e001d169cfe7950b402e73200ff9e93bdf3e1efc1b54d792e60449b7ff28'
   }
 
   /**
@@ -3859,7 +3859,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV28(): {calls: v28.Type_28[]} {
+  get asV28(): {calls: v28.Type_21[]} {
     assert(this.isV28)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3885,7 +3885,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV29(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '075b2eed6a610a1fdb692b9cee790dbfdc987bec08a1700853be792ed961f063'
+    return this.ctx._chain.getCallHash('utility.batch') === 'c15a6841525aae2f4ebc41402f7aa7370d1a6ebcc5bc96c4137e41e93ec5ec0e'
   }
 
   /**
@@ -3908,7 +3908,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV29(): {calls: v29.Type_28[]} {
+  get asV29(): {calls: v29.Type_21[]} {
     assert(this.isV29)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3934,7 +3934,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV30(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '86cc089e0526c2dc4dc6531ac6c14a5db40e9fdd9d706b8d3a3e4915e0db49f2'
+    return this.ctx._chain.getCallHash('utility.batch') === '13908df45ca164b958f690833d99e25b4821e6e60b1deb33a9e384479dfcbd2a'
   }
 
   /**
@@ -3957,7 +3957,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV30(): {calls: v30.Type_28[]} {
+  get asV30(): {calls: v30.Type_21[]} {
     assert(this.isV30)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -3983,7 +3983,7 @@ export class UtilityBatchCall {
    *  event is deposited.
    */
   get isV9050(): boolean {
-    return this.ctx._chain.getCallHash('utility.batch') === '170c3844186448bffe1b61cca66823d2ff6b1268363a97d4de7656aa0461cec1'
+    return this.ctx._chain.getCallHash('utility.batch') === '2efbc50371cd052fc128b83e001447838a1abb79a0f8ec3722e2c21340ece0c9'
   }
 
   /**
@@ -4006,7 +4006,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9050(): {calls: v9050.Type_28[]} {
+  get asV9050(): {calls: v9050.Type_21[]} {
     assert(this.isV9050)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -4055,7 +4055,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9080(): {calls: v9080.Type_28[]} {
+  get asV9080(): {calls: v9080.Type_21[]} {
     assert(this.isV9080)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -4106,7 +4106,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9090(): {calls: v9090.Type_28[]} {
+  get asV9090(): {calls: v9090.Type_21[]} {
     assert(this.isV9090)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
@@ -4157,7 +4157,7 @@ export class UtilityBatchCall {
    *  and the error of the failed call. If all were successful, then the `BatchCompleted`
    *  event is deposited.
    */
-  get asV9100(): {calls: v9100.Type_28[]} {
+  get asV9100(): {calls: v9100.Type_21[]} {
     assert(this.isV9100)
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
