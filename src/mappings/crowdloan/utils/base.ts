@@ -3,14 +3,14 @@ import { populateMeta, isExtrinsicSuccess, encodeID } from '../../../common/help
 import { ContributionData } from '../../../types/custom/crowdloanData'
 import config from '../../../config'
 import { Crowdloan, Contribution } from '../../../model'
-import { getCrowdloan, getAccount, getContributor, getChain } from '../../../model/utils/entityUtils'
+import { accountManager, chainManager, crowdloanManager } from '../../../managers'
 
 async function updateCrowdloanContributions(
     ctx: EventHandlerContext,
     crowdloan: Crowdloan,
     contribution: Contribution
 ) {
-    const contributor = await getContributor(ctx, `${crowdloan.id}-${contribution.account.id}`, {
+    const contributor = await crowdloanManager.getContributor(ctx, `${crowdloan.id}-${contribution.account.id}`, {
         crowdloan,
         account: contribution.account,
     })
@@ -29,7 +29,7 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
 
     populateMeta(ctx, contribution)
 
-    contribution.chain = await getChain(ctx, config.chainName)
+    contribution.chain = await chainManager.get(ctx, config.chainName)
     contribution.success = success
 
     contribution.amount = data.amount
@@ -37,9 +37,9 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
     const contributorId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!contributorId) return
 
-    contribution.account = await getAccount(ctx, contributorId)
+    contribution.account = await accountManager.get(ctx, contributorId)
 
-    const crowdloan = await getCrowdloan(ctx, data.paraId)
+    const crowdloan = await crowdloanManager.get(ctx, data.paraId)
     if (!crowdloan) return
 
     contribution.crowdloan = crowdloan

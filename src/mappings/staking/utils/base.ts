@@ -2,7 +2,8 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward, Slash, getAccount, getChain, Bond } from '../../../model'
+import { Reward, Slash, Bond } from '../../../model'
+import { accountManager, chainManager } from '../../../managers'
 
 async function populateStakingItem(
     item: Reward | Slash,
@@ -16,12 +17,12 @@ async function populateStakingItem(
     populateMeta(ctx, item)
 
     item.name = ctx.event.name
-    item.chain = await getChain(ctx, config.chainName)
+    item.chain = await chainManager.get(ctx, config.chainName)
 
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return undefined
 
-    item.account = await getAccount(ctx, id)
+    item.account = await accountManager.get(ctx, id)
     item.amount = data.amount
 
     return item
@@ -39,7 +40,7 @@ async function calculateTotalReward(
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return
 
-    const account = await getAccount(ctx, id)
+    const account = await accountManager.get(ctx, id)
 
     account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
     reward.total = account.totalReward
@@ -61,7 +62,7 @@ async function calculateTotalSlash(
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return
 
-    const account = await getAccount(ctx, id)
+    const account = await accountManager.get(ctx, id)
 
     account.totalSlash = (account.totalSlash || 0n) + BigInt(data.amount)
     slash.total = account.totalSlash
@@ -88,7 +89,7 @@ async function calculateTotalStake(
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return
 
-    const account = await getAccount(ctx, id)
+    const account = await accountManager.get(ctx, id)
 
     if (!account) return
 
