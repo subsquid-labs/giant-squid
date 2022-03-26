@@ -1,6 +1,6 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
-import { RewardData, StakeData } from '../../../types/custom/stakingData'
+import { PayeeType, RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Reward, Slash, Bond } from '../../../model'
 import { accountManager, chainManager } from '../../../managers'
@@ -40,12 +40,14 @@ async function calculateTotalReward(
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return
 
-    const account = await accountManager.get(ctx, id)
+    const account = reward.account
+    await accountManager.updateStakingInfo(ctx, account)
 
     account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
     reward.total = account.totalReward
 
-    account.totalBond = (account.totalBond || 0n) + BigInt(data.amount)
+    if (account.stakingInfo.payee === PayeeType.STAKED)
+        account.totalBond = (account.totalBond || 0n) + BigInt(data.amount)
 
     await ctx.store.save(account)
 }
@@ -62,7 +64,8 @@ async function calculateTotalSlash(
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return
 
-    const account = await accountManager.get(ctx, id)
+    const account = slash.account
+    await accountManager.updateStakingInfo(ctx, account)
 
     account.totalSlash = (account.totalSlash || 0n) + BigInt(data.amount)
     slash.total = account.totalSlash
@@ -89,7 +92,8 @@ async function calculateTotalStake(
     const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!id) return
 
-    const account = await accountManager.get(ctx, id)
+    const account = stake.account
+    await accountManager.updateStakingInfo(ctx, account)
 
     if (!account) return
 

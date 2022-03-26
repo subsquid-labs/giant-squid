@@ -3,6 +3,8 @@ import config from '../config'
 import { Account } from '../model'
 import { Manager } from './Manager'
 import { chainManager } from './ChainManager'
+import { StakingInfo } from '../model/generated/_stakingInfo'
+import * as modules from '../mappings'
 
 export class AccountManager extends Manager<Account> {
     async get(ctx: EventHandlerContext, id: string, data?: Partial<Account>): Promise<Account> {
@@ -15,6 +17,7 @@ export class AccountManager extends Manager<Account> {
                 totalBond: 0n,
                 totalSlash: 0n,
                 chain: await chainManager.get(ctx, config.chainName),
+                stakingInfo: new StakingInfo(),
                 ...data,
             })
 
@@ -22,6 +25,19 @@ export class AccountManager extends Manager<Account> {
         }
 
         return account
+    }
+
+    async updateStakingInfo(ctx: EventHandlerContext, account: Account): Promise<void> {
+        const controller = await modules.staking.storage.getBonded(ctx, account.id)
+        const payeeData = await modules.staking.storage.getPayee(ctx, account.id)
+
+        account.stakingInfo = new StakingInfo({
+            controller,
+            payee: payeeData?.payee,
+            payeeAccount: payeeData?.account,
+        })
+
+        ctx.store.save(account)
     }
 }
 
