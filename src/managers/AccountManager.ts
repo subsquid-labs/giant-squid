@@ -11,14 +11,21 @@ export class AccountManager extends Manager<Account> {
         let account = await ctx.store.findOne(Account, id, { cache: true })
 
         if (!account) {
+            const controller = await modules.staking.storage.getBonded(ctx, id)
+            const payeeData = await modules.staking.storage.getPayee(ctx, id)
+
             account = new Account({
                 id: id.toString(),
                 totalReward: 0n,
                 totalBond: 0n,
                 totalSlash: 0n,
                 chain: await chainManager.get(ctx, config.chainName),
-                stakingInfo: new StakingInfo(),
                 lastUpdateBlock: BigInt(ctx.block.height),
+                stakingInfo: new StakingInfo({
+                    controller,
+                    payee: payeeData?.payee,
+                    payeeAccount: payeeData?.account,
+                }),
                 ...data,
             })
 
@@ -30,18 +37,18 @@ export class AccountManager extends Manager<Account> {
         return account
     }
 
-    async updateStakingInfo(ctx: EventHandlerContext, account: Account): Promise<void> {
-        const controller = await modules.staking.storage.getBonded(ctx, account.id)
-        const payeeData = await modules.staking.storage.getPayee(ctx, account.id)
+    // async updateStakingInfo(ctx: EventHandlerContext, account: Account): Promise<void> {
+    //     const controller = await modules.staking.storage.getBonded(ctx, account.id)
+    //     const payeeData = await modules.staking.storage.getPayee(ctx, account.id)
 
-        account.stakingInfo = new StakingInfo({
-            controller,
-            payee: payeeData?.payee,
-            payeeAccount: payeeData?.account,
-        })
+    //     account.stakingInfo = new StakingInfo({
+    //         controller,
+    //         payee: payeeData?.payee,
+    //         payeeAccount: payeeData?.account,
+    //     })
 
-        ctx.store.save(account)
-    }
+    //     ctx.store.save(account)
+    // }
 }
 
 export const accountManager = new AccountManager()
