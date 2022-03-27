@@ -1295,6 +1295,128 @@ export class StakingSetPayeeCall {
   }
 }
 
+export class StakingSetControllerCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.setController' || this.ctx.extrinsic.name === 'staking.set_controller')
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  ----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
+   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
+   *  # </weight>
+   */
+  get isV13(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_controller') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  ----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
+   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
+   *  # </weight>
+   */
+  get asV13(): {controller: Uint8Array} {
+    assert(this.isV13)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV13
+  }
+
+  get asLatest(): {controller: Uint8Array} {
+    deprecateLatest()
+    return this.asV13
+  }
+}
+
+export class StakingSetPayeeCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.setPayee' || this.ctx.extrinsic.name === 'staking.set_payee')
+  }
+
+  /**
+   *  (Re-)set the payment target for a controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  ---------
+   *  - Weight: O(1)
+   *  - DB Weight:
+   *      - Read: Ledger
+   *      - Write: Payee
+   *  # </weight>
+   */
+  get isV13(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_payee') === 'e3e8a6a5ee204c56e926f714a3d580d47fe315d3b243872e40cc8959db768aa8'
+  }
+
+  /**
+   *  (Re-)set the payment target for a controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  ---------
+   *  - Weight: O(1)
+   *  - DB Weight:
+   *      - Read: Ledger
+   *      - Write: Payee
+   *  # </weight>
+   */
+  get asV13(): {payee: v13.RewardDestination} {
+    assert(this.isV13)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV13
+  }
+
+  get asLatest(): {payee: v13.RewardDestination} {
+    deprecateLatest()
+    return this.asV13
+  }
+}
+
 export class StakingUnbondCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'staking.unbond')
