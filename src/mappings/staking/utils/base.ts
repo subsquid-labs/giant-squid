@@ -38,11 +38,7 @@ async function calculateTotalReward(
 ) {
     const { ctx, data } = options
 
-    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    if (!id) return
-
     const account = reward.account
-    await accountManager.updateStakingInfo(ctx, account)
 
     account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
     reward.total = account.totalReward
@@ -62,11 +58,7 @@ async function calculateTotalSlash(
 ) {
     const { ctx, data } = options
 
-    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    if (!id) return
-
     const account = slash.account
-    await accountManager.updateStakingInfo(ctx, account)
 
     account.totalSlash = (account.totalSlash || 0n) + BigInt(data.amount)
     slash.total = account.totalSlash
@@ -90,13 +82,7 @@ async function calculateTotalStake(
 ) {
     const { ctx, data } = options
 
-    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    if (!id) return
-
     const account = stake.account
-    await accountManager.updateStakingInfo(ctx, account)
-
-    if (!account) return
 
     account.totalBond = isStakeBond(ctx)
         ? (account.totalBond || 0n) + BigInt(data.amount)

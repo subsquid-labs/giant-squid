@@ -49,6 +49,8 @@ processor.addExtrinsicHandler(
     { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.staking.extrinsics.handleUnbond
 )
+processor.addExtrinsicHandler('staking.set_controller', modules.staking.extrinsics.handleSetController)
+processor.addExtrinsicHandler('staking.set_payee', modules.staking.extrinsics.handleSetPayee)
 
 processor.addExtrinsicHandler(
     'balances.transfer',
@@ -70,5 +72,8 @@ processor.addExtrinsicHandler(
     { triggerEvents: [EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferAll
 )
+
+processor.addExtrinsicHandler('sudo.sudo_as', modules.sudoCalls.handleSudoCall)
+processor.addExtrinsicHandler('proxy.proxy', modules.sudoCalls.handleSudoCall)
 
 processor.run()

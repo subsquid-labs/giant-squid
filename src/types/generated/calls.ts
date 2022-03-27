@@ -1023,6 +1023,278 @@ export class StakingPayoutStakersCall {
   }
 }
 
+export class StakingSetControllerCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.setController' || this.ctx.extrinsic.name === 'staking.set_controller')
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_controller') === 'ea495be34eb0363f94ad384fd20004dfec26ca760dc2776b92541482a1719f1b'
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get asV1020(): {controller: v1020.Type_15} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get isV1050(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_controller') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get asV1050(): {controller: Uint8Array} {
+    assert(this.isV1050)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  ----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
+   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
+   *  # </weight>
+   */
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_controller') === '61b4041aa7366e679d366d2062deb643451b64015c330746395765e6865e5af2'
+  }
+
+  /**
+   *  (Re-)set the controller of a stash.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  ----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
+   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
+   *  # </weight>
+   */
+  get asV2028(): {controller: v2028.GenericMultiAddress} {
+    assert(this.isV2028)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * (Re-)set the controller of a stash.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   * # <weight>
+   * - Independent of the arguments. Insignificant complexity.
+   * - Contains a limited number of reads.
+   * - Writes are limited to the `origin` account key.
+   * ----------
+   * Weight: O(1)
+   * DB Weight:
+   * - Read: Bonded, Ledger New Controller, Ledger Old Controller
+   * - Write: Bonded, Ledger New Controller, Ledger Old Controller
+   * # </weight>
+   */
+  get isV9111(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_controller') === '81dc3a18eb19c7f258654686fb92e5bf48185191f2c59179a5b4626965fc66cd'
+  }
+
+  /**
+   * (Re-)set the controller of a stash.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the stash, not the controller.
+   * 
+   * # <weight>
+   * - Independent of the arguments. Insignificant complexity.
+   * - Contains a limited number of reads.
+   * - Writes are limited to the `origin` account key.
+   * ----------
+   * Weight: O(1)
+   * DB Weight:
+   * - Read: Bonded, Ledger New Controller, Ledger Old Controller
+   * - Write: Bonded, Ledger New Controller, Ledger Old Controller
+   * # </weight>
+   */
+  get asV9111(): {controller: v9111.MultiAddress} {
+    assert(this.isV9111)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9111
+  }
+
+  get asLatest(): {controller: v9111.MultiAddress} {
+    deprecateLatest()
+    return this.asV9111
+  }
+}
+
+export class StakingSetPayeeCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.setPayee' || this.ctx.extrinsic.name === 'staking.set_payee')
+  }
+
+  /**
+   *  (Re-)set the payment target for a controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_payee') === 'e3e8a6a5ee204c56e926f714a3d580d47fe315d3b243872e40cc8959db768aa8'
+  }
+
+  /**
+   *  (Re-)set the payment target for a controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get asV1020(): {payee: v1020.RewardDestination} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * (Re-)set the payment target for a controller.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   * # <weight>
+   * - Independent of the arguments. Insignificant complexity.
+   * - Contains a limited number of reads.
+   * - Writes are limited to the `origin` account key.
+   * ---------
+   * - Weight: O(1)
+   * - DB Weight:
+   *     - Read: Ledger
+   *     - Write: Payee
+   * # </weight>
+   */
+  get isV9111(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
+  }
+
+  /**
+   * (Re-)set the payment target for a controller.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   * # <weight>
+   * - Independent of the arguments. Insignificant complexity.
+   * - Contains a limited number of reads.
+   * - Writes are limited to the `origin` account key.
+   * ---------
+   * - Weight: O(1)
+   * - DB Weight:
+   *     - Read: Ledger
+   *     - Write: Payee
+   * # </weight>
+   */
+  get asV9111(): {payee: v9111.RewardDestination} {
+    assert(this.isV9111)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9111
+  }
+
+  get asLatest(): {payee: v9111.RewardDestination} {
+    deprecateLatest()
+    return this.asV9111
+  }
+}
+
 export class StakingUnbondCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'staking.unbond')
