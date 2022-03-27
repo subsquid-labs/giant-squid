@@ -39,7 +39,9 @@
     "multisig.as_multi",
     "staking.bond",
     "staking.bond_extra",
-    "staking.unbond"
+    "staking.unbond",
+    "staking.set_payee",
+    "staking.set_controller"
   ],
   "storage": [
     "Crowdloan.Funds",
