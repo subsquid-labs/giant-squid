@@ -27,12 +27,12 @@ export interface RewardDestination_None {
   value: null
 }
 
-export interface StakingLedger {
+export interface StakingLedgerTo240 {
   stash: Uint8Array
   total: bigint
   active: bigint
   unlocking: UnlockChunk[]
-  claimedRewards: number[]
+  lastReward: (number | undefined)
 }
 
 export interface UnlockChunk {

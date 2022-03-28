@@ -33,7 +33,6 @@ export interface LedgerData {
     stash: Uint8Array
     total: bigint
     active: bigint
-    claimedRewards: number[]
 }
 
 export interface Ledger {

@@ -7,17 +7,23 @@ import { savePayee } from '../utils/saveStakingInfo'
 function getCallData(ctx: ExtrinsicHandlerContext): PayeeCallData {
     const call = new StakingSetPayeeCall(ctx)
 
-    if (call.isV13) {
-        const { payee } = call.asV13
+    if (call.isV1020) {
+        const { payee } = call.asV1020
         return {
             payee: payee.__kind as PayeeType,
-            account: payee.value,
+            account: (payee as { value: Uint8Array }).value,
+        }
+    } else if (call.isV9111) {
+        const { payee } = call.asV9111
+        return {
+            payee: payee.__kind as PayeeType,
+            account: (payee as { value: Uint8Array }).value,
         }
     } else {
         const { payee } = call.asLatest
         return {
             payee: payee.__kind as PayeeType,
-            account: payee.value,
+            account: (payee as { value: Uint8Array }).value,
         }
     }
 }

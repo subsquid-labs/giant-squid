@@ -1004,3 +1004,15 @@ export interface RewardDestination_None {
   __kind: 'None'
   value: null
 }
+
+export interface StakingLedgerTo223 {
+  stash: Uint8Array
+  total: bigint
+  active: bigint
+  unlocking: UnlockChunk[]
+}
+
+export interface UnlockChunk {
+  value: bigint
+  era: number
+}

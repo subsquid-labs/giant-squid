@@ -1,6 +1,8 @@
 import assert from 'assert'
 import {StorageContext, Result} from './support'
 import * as v1020 from './v1020'
+import * as v1050 from './v1050'
+import * as v1058 from './v1058'
 import * as v9010 from './v9010'
 import * as v9111 from './v9111'
 
@@ -124,15 +126,45 @@ export class StakingLedgerStorage {
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  get isV13() {
+  get isV1020() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'Ledger') === 'c27b3ed6dad75f65e118399ee7274c494565332d8c67cc85aef297dd1092284b'
+  }
+
+  /**
+   *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
+   */
+  async getAsV1020(key: Uint8Array): Promise<v1020.StakingLedgerTo223 | undefined> {
+    assert(this.isV1020)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
+  }
+
+  /**
+   *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
+   */
+  get isV1050() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'Ledger') === 'acb0ae5b3ecc4c620a929a6d33a493f14d936906f24812ba68afe18beaf2314a'
+  }
+
+  /**
+   *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
+   */
+  async getAsV1050(key: Uint8Array): Promise<v1050.StakingLedgerTo240 | undefined> {
+    assert(this.isV1050)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
+  }
+
+  /**
+   *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
+   */
+  get isV1058() {
     return this.ctx._chain.getStorageItemTypeHash('Staking', 'Ledger') === '838ac827cb2532f983c68467cfa97afcccf6147fb96e61e136394060880b64a4'
   }
 
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  async getAsV13(key: Uint8Array): Promise<v13.StakingLedger | undefined> {
-    assert(this.isV13)
+  async getAsV1058(key: Uint8Array): Promise<v1058.StakingLedger | undefined> {
+    assert(this.isV1058)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
   }
 
