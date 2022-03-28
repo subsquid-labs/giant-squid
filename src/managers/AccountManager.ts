@@ -12,11 +12,13 @@ export class AccountManager extends Manager<Account> {
             account = new Account({
                 id: id.toString(),
                 chain: await chainManager.get(ctx, config.chainName),
+                lastUpdateBlock: BigInt(ctx.block.height - 1).valueOf(),
                 ...data,
             })
 
             await ctx.store.insert(Account, account)
         }
+        account.lastUpdateBlock = BigInt(ctx.block.height).valueOf()
 
         return account
     }
