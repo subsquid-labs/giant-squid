@@ -1,19 +1,19 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { accountManager } from '../../../managers'
-import { StakingInfo } from '../../../model'
-import { getBonded, getPayee } from '../storage'
+import { StakingSetControllerCall } from '../../../types/generated/calls'
+import { saveController } from '../utils/saveStakingInfo'
+
+function getCallData(ctx: ExtrinsicHandlerContext): { controller: Uint8Array } {
+    const call = new StakingSetControllerCall(ctx)
+
+    if (call.isV13) {
+        return call.asV13
+    } else {
+        return call.asLatest
+    }
+}
 
 export async function handleSetController(ctx: ExtrinsicHandlerContext) {
-    const account = await accountManager.get(ctx, ctx.extrinsic.signer)
+    const data = getCallData(ctx)
 
-    const controller = await getBonded(ctx, account.id)
-    const payeeData = await getPayee(ctx, account.id)
-
-    account.stakingInfo = new StakingInfo({
-        controller,
-        payee: payeeData?.payee,
-        payeeAccount: payeeData?.account,
-    })
-
-    await ctx.store.save(account)
+    await saveController(ctx, data)
 }
