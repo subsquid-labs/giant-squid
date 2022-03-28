@@ -5,23 +5,17 @@ import { Manager } from './Manager'
 import { chainManager } from './ChainManager'
 import { StakingInfo } from '../model/generated/_stakingInfo'
 import * as modules from '../mappings'
+import { StorageContext } from '../types/generated/support'
 
 export class AccountManager extends Manager<Account> {
     async get(ctx: EventHandlerContext, id: string, data?: Partial<Account>): Promise<Account> {
         let account = await ctx.store.findOne(Account, id, { cache: true })
 
         if (!account) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            const prevHash = (await ctx._chain.client.call('chain_getBlockHash', [
-                Math.min(0, ctx.block.height - 1),
-            ])) as string
-
-            const prevCtx = {
+            const prevCtx: StorageContext = {
                 _chain: ctx._chain,
                 block: {
-                    ...ctx.block,
-                    hash: prevHash,
+                    hash: ctx.block.parentHash,
                 },
             }
 
@@ -52,6 +46,7 @@ export class AccountManager extends Manager<Account> {
 
             await ctx.store.insert(Account, account)
         }
+
         account.lastUpdateBlock = BigInt(ctx.block.height).valueOf()
 
         return account
