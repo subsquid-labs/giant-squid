@@ -24,6 +24,7 @@
   "storage": [
     "Staking.Bonded",
     "Staking.Payee",
-    "Staking.CurrentEra"
+    "Staking.CurrentEra",
+    "Staking.Ledger"
   ]
 }

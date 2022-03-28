@@ -23,3 +23,19 @@ export interface Payee {
     payee: PayeeType
     account?: string | null
 }
+
+export interface PayeeCallData {
+    payee: PayeeType
+    account?: Uint8Array | null
+}
+
+export interface LedgerData {
+    stash: Uint8Array
+    total: bigint
+    active: bigint
+    claimedRewards: number[]
+}
+
+export interface Ledger {
+    active: bigint
+}

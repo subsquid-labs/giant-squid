@@ -2,9 +2,9 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { PayeeType, RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward, Slash, Bond } from '../../../model'
+import { Reward, Slash, Bond, StakingInfo } from '../../../model'
 import { accountManager, chainManager } from '../../../managers'
-import { getCurrentEra } from '../storage'
+import { getBonded, getCurrentEra, getPayee } from '../storage'
 
 async function populateStakingItem(
     item: Reward | Slash | Bond,
@@ -24,6 +24,17 @@ async function populateStakingItem(
     if (!id) return undefined
 
     item.account = await accountManager.get(ctx, id)
+    if (!item.account.stakingInfo) {
+        const controller = await getBonded(ctx, id)
+        const payeeData = await getPayee(ctx, id)
+
+        item.account.stakingInfo = new StakingInfo({
+            controller,
+            payee: payeeData?.payee,
+            payeeAccount: payeeData?.account,
+        })
+    }
+
     item.amount = data.amount
 
     return item
@@ -43,7 +54,7 @@ async function calculateTotalReward(
     account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
     reward.total = account.totalReward
 
-    if (account.stakingInfo.payee === PayeeType.STAKED)
+    if (account.stakingInfo?.payee === PayeeType.STAKED)
         account.totalBond = (account.totalBond || 0n) + BigInt(data.amount)
 
     await ctx.store.save(account)
