@@ -26,7 +26,7 @@ export function decodeID(ID: string, prefix: string | number) {
 
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
     entity.extrinsicHash = ctx.extrinsic?.hash
-    entity.blockNumber = BigInt(ctx.block.height)
+    entity.blockNumber = BigInt(ctx.block.height).valueOf()
     entity.date = new Date(ctx.block.timestamp)
 }
 
