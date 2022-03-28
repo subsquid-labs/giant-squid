@@ -11,8 +11,22 @@ export class AccountManager extends Manager<Account> {
         let account = await ctx.store.findOne(Account, id, { cache: true })
 
         if (!account) {
-            const controller = await modules.staking.storage.getBonded(ctx, id)
-            const payeeData = await modules.staking.storage.getPayee(ctx, id)
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            const prevHash = (await ctx._chain.client.call('chain_getBlockHash', [
+                Math.min(0, ctx.block.height - 1),
+            ])) as string
+
+            const prevCtx = {
+                _chain: ctx._chain,
+                block: {
+                    ...ctx.block,
+                    hash: prevHash,
+                },
+            }
+
+            const controller = await modules.staking.storage.getBonded(prevCtx, id)
+            const payeeData = await modules.staking.storage.getPayee(prevCtx, id)
 
             account = new Account({
                 id: id.toString(),
