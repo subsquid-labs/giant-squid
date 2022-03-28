@@ -2,6 +2,7 @@ type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   chain: Chain!
+  lastUpdateBlock: BigInt!
 }
 
 type Chain @entity {

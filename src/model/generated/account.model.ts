@@ -1,4 +1,5 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
 import {Chain} from "./chain.model"
 
@@ -17,4 +18,7 @@ export class Account {
   @Index_()
   @ManyToOne_(() => Chain, {nullable: false})
   chain!: Chain
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  lastUpdateBlock!: bigint
 }
