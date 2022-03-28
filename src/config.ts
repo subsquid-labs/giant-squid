@@ -9,7 +9,7 @@ const config: ProcessorConfig = {
         chain: ' wss://archive.snakenet.hydradx.io',
     },
     typesBundle: 'hydradx',
-    batchSize: 1,
+    batchSize: 50,
     // blockRange: {
     //     from: 7828270,
     // },
