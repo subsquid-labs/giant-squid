@@ -11,9 +11,6 @@ export class AccountManager extends Manager<Account> {
         if (!account) {
             account = new Account({
                 id: id.toString(),
-                totalReward: 0n,
-                totalBond: 0n,
-                totalSlash: 0n,
                 chain: await chainManager.get(ctx, config.chainName),
                 ...data,
             })
