@@ -51,11 +51,12 @@ async function calculateTotalReward(
 
     const account = reward.account
 
-    account.totalReward = (account.totalReward || 0n) + BigInt(data.amount)
+    account.totalReward = (account.totalReward || 0n) + data.amount
     reward.total = account.totalReward
 
-    if (account.stakingInfo?.payee === PayeeType.STAKED)
-        account.totalBond = (account.totalBond || 0n) + BigInt(data.amount)
+    if (account.stakingInfo?.payee === PayeeType.STAKED) {
+        account.totalBond = (account.totalBond || 0n) + data.amount
+    }
 
     await ctx.store.save(account)
 }
@@ -71,10 +72,10 @@ async function calculateTotalSlash(
 
     const account = slash.account
 
-    account.totalSlash = (account.totalSlash || 0n) + BigInt(data.amount)
+    account.totalSlash = (account.totalSlash || 0n) + data.amount
     slash.total = account.totalSlash
 
-    account.totalBond = (account.totalBond || 0n) - BigInt(data.amount)
+    account.totalBond = (account.totalBond || 0n) - data.amount
     account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
 
     await ctx.store.save(account)
@@ -96,8 +97,8 @@ async function calculateTotalStake(
     const account = stake.account
 
     account.totalBond = isStakeBond(ctx)
-        ? (account.totalBond || 0n) + BigInt(data.amount)
-        : (account.totalBond || 0n) - BigInt(data.amount)
+        ? (account.totalBond || 0n) + data.amount
+        : (account.totalBond || 0n) - data.amount
     account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
     stake.total = account.totalBond
 

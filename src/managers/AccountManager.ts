@@ -42,17 +42,17 @@ export class AccountManager extends Manager<Account> {
             account = new Account({
                 id: id.toString(),
                 totalReward: 0n,
-                totalBond: ledger?.active || 0n,
+                totalBond: BigInt(ledger?.active || 0).valueOf(),
                 totalSlash: 0n,
                 chain: await chainManager.get(ctx, config.chainName),
-                lastUpdateBlock: BigInt(ctx.block.height - 1),
+                lastUpdateBlock: BigInt(ctx.block.height - 1).valueOf(),
                 stakingInfo: stakingInfo,
                 ...data,
             })
 
             await ctx.store.insert(Account, account)
         }
-        account.lastUpdateBlock = BigInt(ctx.block.height)
+        account.lastUpdateBlock = BigInt(ctx.block.height).valueOf()
 
         return account
     }
