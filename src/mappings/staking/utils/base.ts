@@ -97,8 +97,8 @@ async function calculateTotalStake(
     const account = stake.account
 
     account.totalBond = isStakeBond(ctx)
-        ? (account.totalBond || 0n) + data.amount
-        : (account.totalBond || 0n) - data.amount
+        ? BigInt(account.totalBond || 0n) + BigInt(data.amount)
+        : BigInt(account.totalBond || 0n) - BigInt(data.amount)
     account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
     stake.total = account.totalBond
 
