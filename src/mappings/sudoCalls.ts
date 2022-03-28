@@ -1,5 +1,8 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { handleSetController, handleSetPayee } from './staking/extrinsics'
+import { decodeID } from '../common/helpers'
+import config from '../config'
+import { PayeeType } from '../types/custom/stakingData'
+import { saveController, savePayee } from './staking/utils/saveStakingInfo'
 
 const enum CallIndexes {
     SET_PAYEE = '0x0607',
@@ -13,9 +16,26 @@ export async function handleSudoCall(ctx: ExtrinsicHandlerContext): Promise<void
     ctx.extrinsic.signer = ctx.extrinsic.args[0].value as string
 
     switch ((call.value as { callIndex: string }).callIndex as CallIndexes) {
-        case CallIndexes.SET_CONTROLLER:
-            return await handleSetController(ctx)
-        case CallIndexes.SET_PAYEE:
-            return await handleSetPayee(ctx)
+        case CallIndexes.SET_CONTROLLER: {
+            const u8 = decodeID((call.value as { args: { controller: string } }).args.controller, config.prefix)
+            if (!u8) return
+
+            return await saveController(ctx, { controller: u8 })
+        }
+        case CallIndexes.SET_PAYEE: {
+            const payeeName = Object.keys((call.value as { args: Record<string, unknown> }).args)[0]
+
+            let u8 = null
+            if (payeeName === 'account')
+                u8 = decodeID(
+                    (call.value as { args: Record<string, unknown> }).args[payeeName] as string,
+                    config.prefix
+                )
+
+            return await savePayee(ctx, {
+                payee: `${payeeName[0].toUpperCase()}${payeeName.slice(1)}` as PayeeType,
+                account: u8,
+            })
+        }
     }
 }

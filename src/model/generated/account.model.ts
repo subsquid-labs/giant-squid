@@ -45,8 +45,8 @@ export class Account {
   @ManyToOne_(() => Chain, {nullable: false})
   chain!: Chain
 
-  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new StakingInfo(undefined, marshal.nonNull(obj))}, nullable: false})
-  stakingInfo!: StakingInfo
+  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : new StakingInfo(undefined, obj)}, nullable: true})
+  stakingInfo!: StakingInfo | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   lastUpdateBlock!: bigint
