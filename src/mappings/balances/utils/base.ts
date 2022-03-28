@@ -3,7 +3,7 @@ import { populateMeta, encodeID, isExtrinsicSuccess } from '../../../common/help
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
-import { getAccount, getChain } from '../../../model/utils/entityUtils'
+import { accountManager, chainManager } from '../../../managers'
 
 export enum Direction {
     FROM,
@@ -17,7 +17,7 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
 
     populateMeta(ctx, transfer)
 
-    transfer.chain = await getChain(ctx, config.chainName)
+    transfer.chain = await chainManager.get(ctx, config.chainName)
     transfer.name = ctx.extrinsic?.name
     transfer.success = success
 
@@ -27,8 +27,8 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
     const idTo = encodeID(data.to, config.prefix)
     if (!idFrom || !idTo) return
 
-    transfer.from = await getAccount(ctx, idFrom)
-    transfer.to = await getAccount(ctx, idTo)
+    transfer.from = await accountManager.get(ctx, idFrom)
+    transfer.to = await accountManager.get(ctx, idTo)
 
     await ctx.store.insert(Transfer, transfer)
 

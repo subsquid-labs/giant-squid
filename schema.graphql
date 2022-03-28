@@ -7,6 +7,8 @@ type Account @entity {
 type Chain @entity {
   id: ID!
   token: Token!
+  paraId: Int
+  relayChain: Chain
 }
 
 type Token {
