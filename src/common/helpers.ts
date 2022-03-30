@@ -13,6 +13,17 @@ export function encodeID(ID: Uint8Array, prefix: string | number) {
     return ret
 }
 
+export function decodeID(ID: string, prefix: string | number) {
+    let ret: Uint8Array | null
+    try {
+        ret = ss58.codec(prefix).decode(ID)
+    } catch (e) {
+        ret = null
+    }
+
+    return ret
+}
+
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
     entity.extrinsicHash = ctx.extrinsic?.hash
     entity.blockNumber = BigInt(ctx.block.height).valueOf()

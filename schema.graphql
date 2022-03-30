@@ -1,6 +1,10 @@
 type Account @entity {
   id: ID!
+  totalBond: BigInt!
+  totalReward: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
+  bonds: [Bond!] @derivedFrom(field: "account")
+  rewards: [Reward!] @derivedFrom(field: "account")
   chain: Chain!
   lastUpdateBlock: BigInt!
 }
@@ -52,4 +56,36 @@ type AccountTransfer @entity {
   transfer: Transfer
   account: Account!
   direction: TransferDicrection
+}
+
+interface HasTotal {
+  total: BigInt
+}
+
+type Reward implements Item & HasTotal @entity  {
+  id: ID!
+  chain: Chain! @index
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String @index
+  account: Account!
+  amount: BigInt
+  era: Int
+  smartContract: String
+  total: BigInt
+  name: String
+}
+
+type Bond implements Item & HasTotal & CanFail @entity  {
+  id: ID!
+  chain: Chain! @index
+  date: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String @index
+  account: Account!
+  amount: BigInt
+  total: BigInt
+  smartContract: String
+  success: Boolean
+  name: String
 }

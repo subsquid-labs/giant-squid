@@ -1,5 +1,7 @@
 import type {Result} from './support'
 
+export type AccountId32 = Uint8Array
+
 export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
 
 export interface MultiAddress_Id {
@@ -26,5 +28,3 @@ export interface MultiAddress_Address20 {
   __kind: 'Address20'
   value: Uint8Array
 }
-
-export type AccountId32 = Uint8Array

@@ -1,14 +1,22 @@
 {
   "outDir": "../src/types/generated",
   "chainVersions": "./versions.json",
-  "typesBundle": "./typesBundle.json",
+  "typesBundle": "astar",
   "events": [
-    "balances.Transfer"
+    "balances.Transfer",
+    "dappsStaking.Reward",
+    "dappsStaking.BondAndStake",
+    "dappsStaking.UnbondUnstakeAndWithdraw"
   ],
   "calls": [
     "balances.transfer",
     "balances.force_transfer",
     "balances.transfer_keep_alive",
-    "balances.transfer_all"
+    "balances.transfer_all",
+    "dappsStaking.bond_and_stake",
+    "dappsStaking.unbond_unstake_and_withdraw"
+  ],
+  "storage": [
+    "DappsStaking.Ledger"
   ]
 }
