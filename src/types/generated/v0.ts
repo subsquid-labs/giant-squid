@@ -154,6 +154,14 @@ export interface Type_21_Sudo {
   value: SudoCall
 }
 
+export interface StakingLedger {
+  stash: Uint8Array
+  total: bigint
+  active: bigint
+  unlocking: UnlockChunk[]
+  claimedRewards: number[]
+}
+
 export type SystemCall = SystemCall_fill_block | SystemCall_remark | SystemCall_set_heap_pages | SystemCall_set_code | SystemCall_set_code_without_checks | SystemCall_set_changes_trie_config | SystemCall_set_storage | SystemCall_kill_storage | SystemCall_kill_prefix | SystemCall_suicide
 
 /**
@@ -3512,6 +3520,11 @@ export interface SudoCall_sudo_as {
   __kind: 'sudo_as'
   who: Uint8Array
   call: Type_21
+}
+
+export interface UnlockChunk {
+  value: bigint
+  era: number
 }
 
 export interface ChangesTrieConfiguration {

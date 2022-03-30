@@ -8,8 +8,8 @@ async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise
     const storage = new StakingLedgerStorage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV13) {
-        return await storage.getAsV13(account)
+    if (storage.isV0) {
+        return await storage.getAsV0(account)
     }
 
     return undefined

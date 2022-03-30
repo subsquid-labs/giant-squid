@@ -93,15 +93,15 @@ export class StakingLedgerStorage {
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  get isV13() {
+  get isV0() {
     return this.ctx._chain.getStorageItemTypeHash('Staking', 'Ledger') === '838ac827cb2532f983c68467cfa97afcccf6147fb96e61e136394060880b64a4'
   }
 
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  async getAsV13(key: Uint8Array): Promise<v13.StakingLedger | undefined> {
-    assert(this.isV13)
+  async getAsV0(key: Uint8Array): Promise<v0.StakingLedger | undefined> {
+    assert(this.isV0)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
   }
 

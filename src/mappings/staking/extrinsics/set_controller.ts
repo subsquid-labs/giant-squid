@@ -5,10 +5,18 @@ import { saveController } from '../utils/saveStakingInfo'
 function getCallData(ctx: ExtrinsicHandlerContext): { controller: Uint8Array } {
     const call = new StakingSetControllerCall(ctx)
 
-    if (call.isV13) {
-        return call.asV13
+    if (call.isV0) {
+        return call.asV0
+    } else if (call.isV28) {
+        const { controller } = call.asV28
+        return {
+            controller: controller.value as Uint8Array,
+        }
     } else {
-        return call.asLatest
+        const { controller } = call.asLatest
+        return {
+            controller: controller.value as Uint8Array,
+        }
     }
 }
 
