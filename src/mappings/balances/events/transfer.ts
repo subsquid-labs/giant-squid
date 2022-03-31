@@ -12,8 +12,15 @@ function getEventData(ctx: EventHandlerContext): TransferData {
             to,
             amount,
         }
+    } else if (event.isV29) {
+        const { from, to, amount } = event.asV29
+        return {
+            from,
+            to,
+            amount,
+        }
     } else {
-        const [from, to, amount] = event.asLatest
+        const { from, to, amount } = event.asLatest
         return {
             from,
             to,

@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {StorageContext, Result} from './support'
 import * as v13 from './v13'
+import * as v29 from './v29'
 
 export class StakingBondedStorage {
   constructor(private ctx: StorageContext) {}
@@ -101,6 +102,21 @@ export class StakingPayeeStorage {
    */
   async getAsV13(key: Uint8Array): Promise<v13.RewardDestination> {
     assert(this.isV13)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Payee', key)
+  }
+
+  /**
+   *  Where the reward payment should be made. Keyed by stash.
+   */
+  get isV29() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'Payee') === '997acadf80b79903fb4386b933d481dff61dad22612d657f19f39b937ea8d992'
+  }
+
+  /**
+   *  Where the reward payment should be made. Keyed by stash.
+   */
+  async getAsV29(key: v29.AccountId32): Promise<v29.RewardDestination> {
+    assert(this.isV29)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Payee', key)
   }
 

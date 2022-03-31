@@ -11,6 +11,11 @@ function getCallData(ctx: ExtrinsicHandlerContext): StakeData | undefined {
         return {
             amount: value,
         }
+    } else if (call.isV29) {
+        const { value } = call.asV29
+        return {
+            amount: value,
+        }
     } else {
         const { value } = call.asLatest
         return {

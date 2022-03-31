@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
 import * as v13 from './v13'
+import * as v29 from './v29'
 
 export class BalancesForceTransferCall {
   constructor(private ctx: CallContext) {
@@ -304,14 +305,61 @@ export class StakingBondCall {
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
+  /**
+   * Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   * be the account that controls it.
+   * 
+   * `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   * Emits `Bonded`.
+   * # <weight>
+   * - Independent of the arguments. Moderate complexity.
+   * - O(1).
+   * - Three extra DB entries.
+   * 
+   * NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+   * unless the `origin` falls below _existential deposit_ and gets removed as dust.
+   * ------------------
+   * # </weight>
+   */
+  get isV29(): boolean {
+    return this.ctx._chain.getCallHash('staking.bond') === 'bb948688bed1a70b8b0ff155f0a4555536a3bab1f35f7432580a502b100ae8e4'
   }
 
-  get asLatest(): {controller: Uint8Array, value: bigint, payee: v13.RewardDestination} {
+  /**
+   * Take the origin account as a stash and lock up `value` of its balance. `controller` will
+   * be the account that controls it.
+   * 
+   * `value` must be more than the `minimum_balance` specified by `T::Currency`.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the stash account.
+   * 
+   * Emits `Bonded`.
+   * # <weight>
+   * - Independent of the arguments. Moderate complexity.
+   * - O(1).
+   * - Three extra DB entries.
+   * 
+   * NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
+   * unless the `origin` falls below _existential deposit_ and gets removed as dust.
+   * ------------------
+   * # </weight>
+   */
+  get asV29(): {controller: v29.AccountId32, value: bigint, payee: v29.RewardDestination} {
+    assert(this.isV29)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV13
+    return this.isV29
+  }
+
+  get asLatest(): {controller: v29.AccountId32, value: bigint, payee: v29.RewardDestination} {
+    deprecateLatest()
+    return this.asV29
   }
 }
 
@@ -582,14 +630,59 @@ export class StakingSetPayeeCall {
     return this.ctx._chain.decodeCall(this.ctx.extrinsic)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
+  /**
+   * (Re-)set the payment target for a controller.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   * # <weight>
+   * - Independent of the arguments. Insignificant complexity.
+   * - Contains a limited number of reads.
+   * - Writes are limited to the `origin` account key.
+   * ---------
+   * - Weight: O(1)
+   * - DB Weight:
+   *     - Read: Ledger
+   *     - Write: Payee
+   * # </weight>
+   */
+  get isV29(): boolean {
+    return this.ctx._chain.getCallHash('staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
   }
 
-  get asLatest(): {payee: v13.RewardDestination} {
+  /**
+   * (Re-)set the payment target for a controller.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   * # <weight>
+   * - Independent of the arguments. Insignificant complexity.
+   * - Contains a limited number of reads.
+   * - Writes are limited to the `origin` account key.
+   * ---------
+   * - Weight: O(1)
+   * - DB Weight:
+   *     - Read: Ledger
+   *     - Write: Payee
+   * # </weight>
+   */
+  get asV29(): {payee: v29.RewardDestination} {
+    assert(this.isV29)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV13
+    return this.isV29
+  }
+
+  get asLatest(): {payee: v29.RewardDestination} {
+    deprecateLatest()
+    return this.asV29
   }
 }
 

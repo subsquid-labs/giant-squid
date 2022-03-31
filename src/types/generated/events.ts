@@ -1,5 +1,6 @@
 import assert from 'assert'
 import {EventContext, Result, deprecateLatest} from './support'
+import * as v29 from './v29'
 
 export class BalancesTransferEvent {
   constructor(private ctx: EventContext) {
@@ -21,14 +22,29 @@ export class BalancesTransferEvent {
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
+  /**
+   * Transfer succeeded.
+   */
+  get isV29(): boolean {
+    return this.ctx._chain.getEventHash('balances.Transfer') === '0ffdf35c495114c2d42a8bf6c241483fd5334ca0198662e14480ad040f1e3a66'
   }
 
-  get asLatest(): [Uint8Array, Uint8Array, bigint] {
+  /**
+   * Transfer succeeded.
+   */
+  get asV29(): {from: v29.AccountId32, to: v29.AccountId32, amount: bigint} {
+    assert(this.isV29)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV13
+    return this.isV29
+  }
+
+  get asLatest(): {from: v29.AccountId32, to: v29.AccountId32, amount: bigint} {
+    deprecateLatest()
+    return this.asV29
   }
 }
 

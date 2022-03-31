@@ -13,11 +13,19 @@ function getCallData(ctx: ExtrinsicHandlerContext): PayeeCallData {
             payee: payee.__kind as PayeeType,
             account: payee.value,
         }
+    } else if (call.isV29) {
+        const { payee } = call.asV29
+        return {
+            payee: payee.__kind as PayeeType,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            account: (payee as any).value,
+        }
     } else {
         const { payee } = call.asLatest
         return {
             payee: payee.__kind as PayeeType,
-            account: payee.value,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            account: (payee as any).value,
         }
     }
 }

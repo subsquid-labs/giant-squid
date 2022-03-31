@@ -17,6 +17,13 @@ async function getStorageData(
             payee: __kind,
             account: value,
         }
+    } else if (storage.isV29) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const { __kind, value } = (await storage.getAsV29(account)) as any
+        return {
+            payee: __kind,
+            account: value,
+        }
     }
 
     return undefined
