@@ -1,3 +1,4 @@
+import { UnknownVersionError } from '../../../common/errors'
 import { decodeID, encodeID } from '../../../common/helpers'
 import config from '../../../config'
 import { Payee, PayeeType } from '../../../types/custom/stakingData'
@@ -26,7 +27,7 @@ async function getStorageData(
         }
     }
 
-    return undefined
+    throw new UnknownVersionError(storage.constructor.name)
 }
 
 const storageCache: {

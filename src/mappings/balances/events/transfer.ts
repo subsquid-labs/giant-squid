@@ -2,6 +2,7 @@ import { BalancesTransferEvent } from '../../../types/generated/events'
 import { TransferData } from '../../../types/custom/balanceData'
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { saveTransferEvent } from '../utils/base'
+import { UnknownVersionError } from '../../../common/errors'
 
 function getEventData(ctx: EventHandlerContext): TransferData {
     const event = new BalancesTransferEvent(ctx)
@@ -20,12 +21,7 @@ function getEventData(ctx: EventHandlerContext): TransferData {
             amount,
         }
     } else {
-        const { from, to, amount } = event.asLatest
-        return {
-            from,
-            to,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 

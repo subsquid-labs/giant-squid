@@ -1,3 +1,4 @@
+import { UnknownVersionError } from '../../../common/errors'
 import { decodeID, encodeID } from '../../../common/helpers'
 import config from '../../../config'
 import { StakingBondedStorage } from '../../../types/generated/storage'
@@ -11,7 +12,7 @@ async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise
         return await storage.getAsV13(account)
     }
 
-    return undefined
+    throw new UnknownVersionError(storage.constructor.name)
 }
 
 const storageCache: {

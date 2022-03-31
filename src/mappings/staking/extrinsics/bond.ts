@@ -1,4 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { StakeData } from '../../../types/custom/stakingData'
 import { StakingBondCall } from '../../../types/generated/calls'
 import { saveStakeCall } from '../utils/base'
@@ -17,10 +18,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): StakeData | undefined {
             amount: value,
         }
     } else {
-        const { value } = call.asLatest
-        return {
-            amount: value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
