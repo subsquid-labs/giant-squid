@@ -1,12 +1,23 @@
 type Account @entity {
   id: ID!
+  totalBond: BigInt!
+  totalReward: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
+  rewards: [Reward!] @derivedFrom(field: "account")
+  bonds: [Bond!] @derivedFrom(field: "account")
   chain: Chain!
+  stakingInfo: StakingInfo
   lastUpdateBlock: BigInt!
 }
 
+type StakingInfo {
+  payee: String
+  payeeAccount: String
+  controller: String
+}
+
 type Chain @entity {
-  id: ID!
+  id: ID! #chain name
   token: Token!
   paraId: Int
   relayChain: Chain
@@ -14,10 +25,9 @@ type Chain @entity {
 
 type Token {
   symbol: String
-  decimals: Int
 }
 
-enum TransferDicrection {
+enum TransferDirection {
   FROM
   TO
 }
@@ -30,15 +40,23 @@ interface Item {
   amount: BigInt
 }
 
+interface HasTotal {
+  total: BigInt
+}
+
+interface HasRound {
+  round: Int
+}
+
 interface CanFail {
   success: Boolean
 }
 
 type Transfer implements Item & CanFail @entity {
   id: ID!
-  chain: Chain! @index
+  chain: Chain!
   date: DateTime
-  blockNumber: BigInt
+  blockNumber: BigInt @index
   extrinsicHash: String @index
   to: Account!
   from: Account!
@@ -51,5 +69,43 @@ type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
   account: Account!
-  direction: TransferDicrection
+  direction: TransferDirection
+}
+
+type Reward implements Item & HasTotal & HasRound @entity  {
+  id: ID!
+  chain: Chain!
+  date: DateTime
+  blockNumber: BigInt @index
+  extrinsicHash: String @index
+  account: Account!
+  amount: BigInt
+  round: Int
+  validator: String
+  total: BigInt
+  name: String
+}
+
+type Bond implements Item & HasTotal & CanFail @entity  {
+  id: ID!
+  chain: Chain!
+  date: DateTime
+  blockNumber: BigInt @index
+  extrinsicHash: String @index
+  account: Account!
+  amount: BigInt
+  total: BigInt
+  success: Boolean @index
+  name: String
+  inBuildTotal: BigInt
+}
+
+type Round @entity {
+  startingBlock: Int!
+  round: Int!
+  selectedCollatorsNumber: Int!
+  totalBalance: BigInt!
+  date: DateTime
+  blockNumber: BigInt @index
+  extrinsicHash: String @index
 }

@@ -10,16 +10,3 @@ export interface CreateData {
     lastPeriod: number
     end: number
 }
-
-export interface DissolvedData {
-    index: number
-}
-
-export interface FundInfo {
-    raised: bigint
-    end: number
-    cap: bigint
-    firstPeriod: number
-    lastPeriod: number
-    trieIndex: number
-}
