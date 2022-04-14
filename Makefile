@@ -6,7 +6,7 @@ serve:
 	@npx squid-graphql-server
 
 
-migrate:
+migrate: build
 	@npx sqd db:migrate
 
 
@@ -31,7 +31,10 @@ typegen: ./typegen/versions.json
 
 
 explore:
-	@npx squid-substrate-metadata-explorer --chain wss://wss.api.moonbeam.network --archive https://moonbeam-beta.indexer.gc.subsquid.io/v4/graphql --out ./typegen/versions.json
+	@npx squid-substrate-metadata-explorer \
+		  --chain wss://wss.api.moonbeam.network \
+		  --archive https://moonbeam-beta.indexer.gc.subsquid.io/v4/graphql \
+		  --out ./typegen/versions.json
 
 
 up:

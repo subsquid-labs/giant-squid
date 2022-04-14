@@ -1,59 +1,46 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { populateMeta, encodeID, isExtrinsicSuccess } from '../../../common/helpers'
+import { encodeID, isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
-import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
+import { TransferDirection } from '../../../model'
 import { accountManager, chainManager } from '../../../managers'
+import { accountTransferManager } from '../../../managers/AccountTransferManager'
+import { transferManager } from '../../../managers/TransferManager'
+import { AddressNotDecoded } from '../../../common/errors'
 
-export enum Direction {
-    FROM,
-    TO,
-}
-
-export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true) {
-    const id = ctx.event.id
-
-    const transfer = new Transfer({ id: `${id}` })
-
-    populateMeta(ctx, transfer)
-
-    transfer.chain = await chainManager.get(ctx, config.chainName)
-    transfer.name = ctx.extrinsic?.name
-    transfer.success = success
-
-    transfer.amount = data.amount
-
+export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true): Promise<void> {
     const idFrom = data.from ? encodeID(data.from, config.prefix) : ctx.extrinsic?.signer
     const idTo = encodeID(data.to, config.prefix)
-    if (!idFrom || !idTo) return
 
-    transfer.from = await accountManager.get(ctx, idFrom)
-    transfer.to = await accountManager.get(ctx, idTo)
+    if (!idFrom || !idTo) throw new AddressNotDecoded([data.from, data.to])
 
-    await ctx.store.insert(Transfer, transfer)
+    const id = ctx.event.id
 
-    await ctx.store.insert(
-        AccountTransfer,
-        new AccountTransfer({
-            id: `${id}-from`,
-            transfer,
-            account: transfer.from,
-            direction: TransferDicrection.FROM,
-        })
-    )
+    const transfer = await transferManager.create(ctx, {
+        id,
+        chain: await chainManager.get(ctx, config.chainName),
+        name: ctx.extrinsic?.name,
+        success,
+        from: await accountManager.get(ctx, idFrom),
+        to: await accountManager.get(ctx, idTo),
+        amount: data.amount,
+    })
 
-    await ctx.store.insert(
-        AccountTransfer,
-        new AccountTransfer({
-            id: `${id}-to`,
-            transfer,
-            account: transfer.to,
-            direction: TransferDicrection.TO,
-        })
-    )
+    await accountTransferManager.create(ctx, {
+        id: `${id}-from`,
+        transfer,
+        account: transfer.from,
+        direction: TransferDirection.FROM,
+    })
+    await accountTransferManager.create(ctx, {
+        id: `${id}-to`,
+        transfer,
+        account: transfer.to,
+        direction: TransferDirection.TO,
+    })
 }
 
-export async function saveTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData) {
+export async function saveTransferCall(ctx: ExtrinsicHandlerContext, data: TransferData): Promise<void> {
     if (isExtrinsicSuccess(ctx)) return
 
     await saveTransferEvent(ctx, data, false)

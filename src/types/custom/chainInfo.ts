@@ -1,11 +1,3 @@
-import chains from "../../chains"
+import { networkRegistry } from '@subsquid/archive-registry'
 
-export interface ChainInfo {
-    readonly id: string
-    readonly token: string
-    readonly decimals: number | null
-    readonly paraId?: number
-    readonly relay?: string
-}
-
-export type ChainName = typeof chains[number]['name']
+export type ChainName = typeof networkRegistry['networks'][number]['name']
