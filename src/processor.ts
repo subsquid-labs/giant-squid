@@ -1,8 +1,7 @@
 import config from './config'
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
-import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
+import { DEFAULT_BATCH_SIZE, DEFAULT_PORT, EXTRINSIC_FAILED } from './common/consts'
 import * as modules from './mappings'
-import { EXTRINSIC_FAILED } from './common/consts'
 
 const processor = new SubstrateProcessor(`${config.chainName}-processor`)
 
@@ -14,6 +13,11 @@ processor.setBlockRange(config.blockRange || { from: 0 })
 
 //events handlers
 processor.addEventHandler('balances.Transfer', modules.balances.events.handleTransfer)
+
+processor.addEventHandler('parachainStaking.NewRound', modules.staking.events.handleNewRound)
+processor.addEventHandler('parachainStaking.Rewarded', modules.staking.events.handleRewarded)
+processor.addEventHandler('parachainStaking.CandidateBondedMore', modules.staking.events.handleBondedMore)
+processor.addEventHandler('parachainStaking.CandidateBondedLess', modules.staking.events.handleBondedLess)
 
 //extrinsics handlers
 processor.addExtrinsicHandler(

@@ -4,8 +4,8 @@ import {Chain} from "./chain.model"
 import {Account} from "./account.model"
 
 @Entity_()
-export class Transfer {
-  constructor(props?: Partial<Transfer>) {
+export class Bond {
+  constructor(props?: Partial<Bond>) {
     Object.assign(this, props)
   }
 
@@ -29,14 +29,13 @@ export class Transfer {
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
-  to!: Account
-
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
-  from!: Account
+  account!: Account
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  total!: bigint | undefined | null
 
   @Index_()
   @Column_("bool", {nullable: true})
@@ -44,4 +43,7 @@ export class Transfer {
 
   @Column_("text", {nullable: true})
   name!: string | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+  inBuildTotal!: bigint | undefined | null
 }
