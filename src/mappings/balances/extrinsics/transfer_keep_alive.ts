@@ -1,4 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { TransferData } from '../../../types/custom/balanceData'
 import { BalancesTransferKeepAliveCall } from '../../../types/generated/calls'
 import { saveTransferCall } from '../utils/base'
@@ -12,11 +13,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
             amount: value,
         }
     } else {
-        const { dest, value } = call.asLatest
-        return {
-            to: dest as Uint8Array,
-            amount: value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 

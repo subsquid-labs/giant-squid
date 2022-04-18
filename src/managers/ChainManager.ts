@@ -1,22 +1,26 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import config from '../config'
-import chains from '../chains'
 import { Chain, Token } from '../model'
 import { Manager } from './Manager'
+import { networkRegistry } from '@subsquid/archive-registry'
 
 class ChainManager extends Manager<Chain> {
     async get(ctx: EventHandlerContext, id: string, data?: Partial<Chain>): Promise<Chain> {
         let chain = await ctx.store.findOne(Chain, id, { cache: true })
 
         if (!chain) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const chainInfo = chains.find((ch) => ch.name === id)!
+            const chainInfo = networkRegistry.networks.find((ch) => ch.name === id)
+            if (!chainInfo) {
+                throw new Error(`Chain [${id}] not found in registry!`)
+            }
 
             chain = new Chain({
                 id,
-                token: new Token(chainInfo.tokens[0]),
-                paraId: chainInfo.paraId,
-                relayChain: chainInfo.relay ? await this.get(ctx, chainInfo.relay) : null,
+                token: new Token({ symbol: chainInfo.tokens[0] }),
+                paraId: +chainInfo.parachainId,
+                relayChain:
+                    chainInfo.relayChain && chainInfo.relayChain !== id
+                        ? await this.get(ctx, chainInfo.relayChain)
+                        : null,
                 ...data,
             })
 
@@ -24,13 +28,6 @@ class ChainManager extends Manager<Chain> {
         }
 
         return chain
-    }
-
-    async getParachain(ctx: EventHandlerContext, id: number, data?: Partial<Chain>): Promise<Chain | undefined> {
-        const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)
-        if (!chainInfo) return undefined
-
-        return await this.get(ctx, chainInfo.name, data)
     }
 }
 
