@@ -3,7 +3,11 @@
   "chainVersions": "./versions.json",
   "typesBundle": "moonbeam",
   "events": [
-    "balances.Transfer"
+    "balances.Transfer",
+    "parachainStaking.NewRound",
+    "parachainStaking.Rewarded",
+    "parachainStaking.CandidateBondedMore",
+    "parachainStaking.CandidateBondedLess"
   ],
   "calls": [
     "balances.transfer",

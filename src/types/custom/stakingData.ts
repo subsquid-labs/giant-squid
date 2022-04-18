@@ -6,8 +6,12 @@ export interface RewardData {
 export interface StakeData {
     amount: bigint
     account?: Uint8Array
+    newTotal: bigint
 }
-export interface PayoutData {
-    era: number
-    validator: Uint8Array
+
+export interface RoundData {
+    startingBlock: number
+    round: number
+    selectedCollatorsNumber: number
+    totalBalance: bigint
 }
