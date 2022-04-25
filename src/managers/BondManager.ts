@@ -40,6 +40,7 @@ export class BondManager extends ItemManager<Bond> {
             account,
             chain,
             type: data.type,
+            amount: data.amount,
             total: account.totalBond,
         })
 

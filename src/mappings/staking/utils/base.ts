@@ -112,25 +112,13 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
     const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!accountId) return
 
-    const stake = await bondManager.create(ctx, {
+    await bondManager.create(ctx, {
         chain: config.chainName,
         success,
         amount: data.amount,
         account: accountId,
         type: getBondType(ctx),
     })
-
-    if (!success) return
-
-    const account = stake.account
-    account.totalBond =
-        stake.type === BondType.Bond
-            ? BigInt(account.totalBond || 0n) + BigInt(stake.amount || 0n)
-            : BigInt(account.totalBond || 0n) - BigInt(stake.amount || 0n)
-    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
-    stake.total = account.totalBond
-
-    await accountManager.upsert(ctx, account)
 }
 
 export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {
