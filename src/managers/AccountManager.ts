@@ -57,6 +57,11 @@ export class AccountManager extends Manager<Account> {
 
         return account
     }
+
+    async upsert(ctx: EventHandlerContext, item: Account): Promise<Account> {
+        item.lastUpdateBlock = BigInt(ctx.block.height)
+        return await super.upsert(ctx, item)
+    }
 }
 
 export const accountManager = new AccountManager()

@@ -2,8 +2,8 @@ import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrat
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
 import { PayeeType, RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward, Slash, Bond, StakingInfo } from '../../../model'
-import { accountManager, chainManager } from '../../../managers'
+import { Reward, Slash, Bond, StakingInfo, BondType } from '../../../model'
+import { accountManager, bondManager, chainManager } from '../../../managers'
 import { getBonded, getCurrentEra, getPayee } from '../storage'
 
 async function populateStakingItem(
@@ -81,30 +81,6 @@ async function calculateTotalSlash(
     await ctx.store.save(account)
 }
 
-function isStakeBond(ctx: EventHandlerContext) {
-    return ctx.event.method !== 'Unbonded' && ctx.extrinsic?.method !== 'unbond'
-}
-
-async function calculateTotalStake(
-    stake: Bond,
-    options: {
-        ctx: EventHandlerContext
-        data: RewardData | StakeData
-    }
-) {
-    const { ctx, data } = options
-
-    const account = stake.account
-
-    account.totalBond = isStakeBond(ctx)
-        ? BigInt(account.totalBond || 0n) + BigInt(data.amount)
-        : BigInt(account.totalBond || 0n) - BigInt(data.amount)
-    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
-    stake.total = account.totalBond
-
-    await ctx.store.save(account)
-}
-
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const id = ctx.event.id
 
@@ -128,23 +104,33 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
     await ctx.store.insert(Slash, slash)
 }
 
+function getBondType(ctx: EventHandlerContext) {
+    return ctx.extrinsic?.method === 'unbond' || ctx.event.method === 'Unbonded' ? BondType.Unbond : BondType.Bond
+}
+
 export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, success = true) {
-    //NEED TO FIX
-    if (ctx.extrinsic) {
-        ctx.event.method = ctx.extrinsic.method === 'unbond' ? 'Unbonded' : 'Bonded'
-        ctx.event.name = `staking.${ctx.event.method}`
-    }
+    const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    if (!accountId) return
 
-    const id = ctx.event.id
+    const stake = await bondManager.create(ctx, {
+        chain: config.chainName,
+        success,
+        amount: data.amount,
+        account: accountId,
+        type: getBondType(ctx),
+    })
 
-    const stake = new Bond({ id })
+    if (!success) return
 
-    if (!(await populateStakingItem(stake, { ctx, data }))) return
-    stake.success = success
+    const account = stake.account
+    account.totalBond =
+        stake.type === BondType.Bond
+            ? BigInt(account.totalBond || 0n) + BigInt(stake.amount || 0n)
+            : BigInt(account.totalBond || 0n) - BigInt(stake.amount || 0n)
+    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
+    stake.total = account.totalBond
 
-    await calculateTotalStake(stake, { ctx, data })
-
-    await ctx.store.insert(Bond, stake)
+    await accountManager.upsert(ctx, account)
 }
 
 export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {
