@@ -19,7 +19,15 @@ interface RewardData {
 
 export class RewardManager extends ItemManager<Reward> {
     async get(ctx: EventHandlerContext, id: string): Promise<Reward | undefined> {
-        return await ctx.store.findOne(Reward, id, { cache: true })
+        return await ctx.store.findOne(Reward, id)
+    }
+
+    async getByExtrinsic(ctx: EventHandlerContext, extrinsic: string): Promise<Reward[]> {
+        return await ctx.store.find(Reward, {
+            where: {
+                extrinsicHash: extrinsic,
+            },
+        })
     }
 
     private async getStakingInfo(ctx: StorageContext, id: string) {

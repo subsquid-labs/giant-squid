@@ -1,13 +1,10 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { Slash, StakingInfo } from '../model'
+import { Slash } from '../model'
 import { chainManager } from './ChainManager'
 import { ChainName } from '../types/custom/chainInfo'
 import { accountManager } from './AccountManager'
 import { InsertFailedError } from '../common/errors'
 import { ItemManager } from './ItemManager'
-import { PayeeType } from '../types/custom/stakingData'
-import { getBonded, getPayee } from '../mappings/staking/storage'
-import { StorageContext } from '../types/generated/support'
 
 interface SlashData {
     chain: ChainName

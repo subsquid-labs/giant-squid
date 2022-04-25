@@ -33,6 +33,7 @@ export class TransferManager extends ItemManager<Transfer> {
             from,
             to,
             chain,
+            amount: data.amount,
         })
 
         if (!(await ctx.store.insert(Transfer, transfer))) throw new InsertFailedError(Transfer.name, id)

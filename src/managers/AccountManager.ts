@@ -58,9 +58,16 @@ export class AccountManager extends Manager<Account> {
         return account
     }
 
-    async upsert(ctx: EventHandlerContext, item: Account): Promise<Account> {
-        item.lastUpdateBlock = BigInt(ctx.block.height)
-        return await super.upsert(ctx, item)
+    async upsert(ctx: EventHandlerContext, item: Account): Promise<Account>
+    async upsert(ctx: EventHandlerContext, items: Account[]): Promise<Account[]>
+    async upsert(ctx: EventHandlerContext, item: Account | Account[]): Promise<Account | Account[]> {
+        if (Array.isArray(item)) {
+            item.forEach((i) => (i.lastUpdateBlock = BigInt(ctx.block.height)))
+            return await super.upsert(ctx, item)
+        } else {
+            item.lastUpdateBlock = BigInt(ctx.block.height)
+            return await super.upsert(ctx, item)
+        }
     }
 }
 
