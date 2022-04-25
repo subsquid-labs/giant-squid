@@ -1,9 +1,9 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
-import { PayeeType, RewardData, StakeData } from '../../../types/custom/stakingData'
+import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Reward, Slash, Bond, StakingInfo, BondType } from '../../../model'
-import { accountManager, bondManager, chainManager } from '../../../managers'
+import { accountManager, bondManager, chainManager, rewardManager } from '../../../managers'
 import { getBonded, getCurrentEra, getPayee } from '../storage'
 
 async function populateStakingItem(
@@ -40,27 +40,6 @@ async function populateStakingItem(
     return item
 }
 
-async function calculateTotalReward(
-    reward: Reward,
-    options: {
-        ctx: EventHandlerContext
-        data: RewardData | StakeData
-    }
-) {
-    const { ctx, data } = options
-
-    const account = reward.account
-
-    account.totalReward = (account.totalReward || 0n) + data.amount
-    reward.total = account.totalReward
-
-    if (account.stakingInfo?.payee === PayeeType.STAKED) {
-        account.totalBond = (account.totalBond || 0n) + data.amount
-    }
-
-    await ctx.store.save(account)
-}
-
 async function calculateTotalSlash(
     slash: Slash,
     options: {
@@ -82,14 +61,14 @@ async function calculateTotalSlash(
 }
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
-    const id = ctx.event.id
+    const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    if (!accountId) return
 
-    const reward = new Reward({ id })
-
-    if (!(await populateStakingItem(reward, { ctx, data }))) return
-    await calculateTotalReward(reward, { ctx, data })
-
-    await ctx.store.insert(Reward, reward)
+    await rewardManager.create(ctx, {
+        chain: config.chainName,
+        amount: data.amount,
+        account: accountId,
+    })
 }
 
 export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
@@ -122,12 +101,14 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
 }
 
 export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {
-    const isAlreadyHandled = ctx.block.events.find(
+    //in first versions of kusama there aren't event for bonds, so we need to handle them
+    const alreadyHandled = ctx.block.events.find(
         (event) =>
             event.extrinsicId === ctx.extrinsic.id &&
             (event.name === 'staking.Bonded' || event.name === 'staking.Unbonded')
     )
-    if (isAlreadyHandled) return
+    const success = isExtrinsicSuccess(ctx)
+    if (alreadyHandled && success) return
 
-    await saveStakeEvent(ctx, data, isExtrinsicSuccess(ctx))
+    await saveStakeEvent(ctx, data, success)
 }
