@@ -2,6 +2,7 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { crowdloanManager } from '../../../managers'
 import { DissolvedData } from '../../../types/custom/crowdloanData'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
+import { getFunds } from '../storage'
 
 function getEventData(ctx: EventHandlerContext): DissolvedData {
     const event = new CrowdloanCreatedEvent(ctx)
@@ -18,10 +19,13 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
 }
 
 export async function createCrowdloan(ctx: EventHandlerContext, data: DissolvedData) {
-    const crowdloan = await crowdloanManager.get(ctx, data.index)
-    if (!crowdloan) return
+    const fundInfo = await getFunds(ctx, data.index)
+    if (!fundInfo) return
 
-    await ctx.store.save(crowdloan)
+    await crowdloanManager.create(ctx, {
+        paraId: data.index,
+        ...fundInfo,
+    })
 }
 
 export async function handleCreated(ctx: EventHandlerContext) {

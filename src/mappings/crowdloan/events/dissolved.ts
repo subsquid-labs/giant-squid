@@ -18,10 +18,10 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
 }
 
 export async function dissolveCrowdloan(ctx: EventHandlerContext, data: DissolvedData) {
-    const crowdloan = await crowdloanManager.get(ctx, data.index)
+    const crowdloan = await crowdloanManager.getByParaId(ctx, data.index)
     if (!crowdloan) return
 
-    await ctx.store.save(crowdloan)
+    // await ctx.store.save(crowdloan)
 }
 
 export async function handleDissolved(ctx: EventHandlerContext) {

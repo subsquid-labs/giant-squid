@@ -6,7 +6,7 @@ import { crowdloanManager } from './CrowdloanManager'
 import { Manager } from './Manager'
 
 interface ContributorData {
-    paraId: number
+    crowdloan: string
     account: string
 }
 
@@ -17,8 +17,9 @@ export class ContributorManager extends Manager<Contributor> {
 
     async create(ctx: EventHandlerContext, data: ContributorData) {
         const account = await accountManager.get(ctx, data.account)
-        const crowdloan = await crowdloanManager.get(ctx, data.paraId)
-        const id = `${crowdloan.id}-${account.id}`
+        const crowdloan = await crowdloanManager.get(ctx, data.crowdloan)
+
+        const id = `${crowdloan?.id}-${account.id}`
 
         const contributor = new Contributor({
             id,
