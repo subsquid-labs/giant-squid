@@ -1,9 +1,9 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { populateMeta, encodeID, isExtrinsicSuccess } from '../../../common/helpers'
+import { encodeID, isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
-import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
-import { accountManager, chainManager } from '../../../managers'
+import { AccountTransfer, TransferDicrection } from '../../../model'
+import { transferManager } from '../../../managers'
 
 export enum Direction {
     FROM,
@@ -11,31 +11,22 @@ export enum Direction {
 }
 
 export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true) {
-    const id = ctx.event.id
-
-    const transfer = new Transfer({ id: `${id}` })
-
-    populateMeta(ctx, transfer)
-
-    transfer.chain = await chainManager.get(ctx, config.chainName)
-    transfer.name = ctx.extrinsic?.name
-    transfer.success = success
-
-    transfer.amount = data.amount
-
     const idFrom = data.from ? encodeID(data.from, config.prefix) : ctx.extrinsic?.signer
     const idTo = encodeID(data.to, config.prefix)
     if (!idFrom || !idTo) return
 
-    transfer.from = await accountManager.get(ctx, idFrom)
-    transfer.to = await accountManager.get(ctx, idTo)
-
-    await ctx.store.insert(Transfer, transfer)
+    const transfer = await transferManager.create(ctx, {
+        chain: config.chainName,
+        from: idFrom,
+        to: idTo,
+        amount: data.amount || 0n,
+        success,
+    })
 
     await ctx.store.insert(
         AccountTransfer,
         new AccountTransfer({
-            id: `${id}-from`,
+            id: `${transfer.id}-from`,
             transfer,
             account: transfer.from,
             direction: TransferDicrection.FROM,
@@ -45,7 +36,7 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
     await ctx.store.insert(
         AccountTransfer,
         new AccountTransfer({
-            id: `${id}-to`,
+            id: `${transfer.id}-to`,
             transfer,
             account: transfer.to,
             direction: TransferDicrection.TO,
