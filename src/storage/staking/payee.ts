@@ -1,9 +1,9 @@
-import { decodeID, encodeID } from '../../../common/helpers'
-import config from '../../../config'
-import { Payee, PayeeType } from '../../../types/custom/stakingData'
-import { StakingPayeeStorage } from '../../../types/generated/storage'
-import * as v9111 from '../../../types/generated/v9111'
-import { StorageContext } from '../../../types/generated/support'
+import { decodeID, encodeID } from '../../common/helpers'
+import config from '../../config'
+import { Payee, PayeeType } from '../../types/custom/stakingData'
+import { StakingPayeeStorage } from '../../types/generated/storage'
+import * as v9111 from '../../types/generated/v9111'
+import { StorageContext } from '../../types/generated/support'
 
 async function getStorageData(
     ctx: StorageContext,

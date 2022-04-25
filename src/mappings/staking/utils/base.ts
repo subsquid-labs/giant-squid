@@ -4,7 +4,7 @@ import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { BondType } from '../../../model'
 import { bondManager, rewardManager, slashManager } from '../../../managers'
-import { getCurrentEra } from '../storage'
+import storage from '../../../storage'
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
@@ -25,7 +25,7 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
         chain: config.chainName,
         amount: data.amount,
         account: accountId,
-        era: (await getCurrentEra(ctx)) || 0,
+        era: (await storage.staking.getCurrentEra(ctx)) || 0,
     })
 }
 

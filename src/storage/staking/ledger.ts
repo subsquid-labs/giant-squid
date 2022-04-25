@@ -1,8 +1,8 @@
-import { decodeID } from '../../../common/helpers'
-import config from '../../../config'
-import { Ledger, LedgerData } from '../../../types/custom/stakingData'
-import { StakingLedgerStorage } from '../../../types/generated/storage'
-import { StorageContext } from '../../../types/generated/support'
+import { decodeID } from '../../common/helpers'
+import config from '../../config'
+import { Ledger, LedgerData } from '../../types/custom/stakingData'
+import { StakingLedgerStorage } from '../../types/generated/storage'
+import { StorageContext } from '../../types/generated/support'
 
 async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<LedgerData | undefined> {
     const storage = new StakingLedgerStorage(ctx)

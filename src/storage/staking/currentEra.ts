@@ -1,5 +1,5 @@
-import { StakingCurrentEraStorage } from '../../../types/generated/storage'
-import { StorageContext } from '../../../types/generated/support'
+import { StakingCurrentEraStorage } from '../../types/generated/storage'
+import { StorageContext } from '../../types/generated/support'
 
 async function getStorageData(ctx: StorageContext): Promise<number | undefined> {
     const storage = new StakingCurrentEraStorage(ctx)

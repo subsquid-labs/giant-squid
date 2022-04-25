@@ -4,7 +4,7 @@ import { Account } from '../model'
 import { Manager } from './Manager'
 import { chainManager } from './ChainManager'
 import { StakingInfo } from '../model/generated/_stakingInfo'
-import * as modules from '../mappings'
+import storage from '../storage'
 
 export class AccountManager extends Manager<Account> {
     async get(ctx: EventHandlerContext, id: string): Promise<Account> {
@@ -28,12 +28,12 @@ export class AccountManager extends Manager<Account> {
             },
         }
 
-        const ledger = await modules.staking.storage.getLedger(prevCtx, id)
+        const ledger = await storage.staking.getLedger(prevCtx, id)
         let stakingInfo: StakingInfo | null = null
 
         if (ledger) {
-            const controller = await modules.staking.storage.getBonded(prevCtx, id)
-            const payeeData = await modules.staking.storage.getPayee(prevCtx, id)
+            const controller = await storage.staking.getBonded(prevCtx, id)
+            const payeeData = await storage.staking.getPayee(prevCtx, id)
 
             stakingInfo = new StakingInfo({
                 controller,

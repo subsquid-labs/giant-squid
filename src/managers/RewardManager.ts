@@ -6,8 +6,8 @@ import { accountManager } from './AccountManager'
 import { InsertFailedError } from '../common/errors'
 import { ItemManager } from './ItemManager'
 import { PayeeType } from '../types/custom/stakingData'
-import { getBonded, getPayee } from '../mappings/staking/storage'
 import { StorageContext } from '../types/generated/support'
+import storage from '../storage'
 
 interface RewardData {
     chain: ChainName
@@ -31,8 +31,8 @@ export class RewardManager extends ItemManager<Reward> {
     }
 
     private async getStakingInfo(ctx: StorageContext, id: string) {
-        const controller = await getBonded(ctx, id)
-        const payeeData = await getPayee(ctx, id)
+        const controller = await storage.staking.getBonded(ctx, id)
+        const payeeData = await storage.staking.getPayee(ctx, id)
 
         return new StakingInfo({
             controller,

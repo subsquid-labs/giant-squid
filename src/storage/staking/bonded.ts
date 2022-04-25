@@ -1,7 +1,7 @@
-import { decodeID, encodeID } from '../../../common/helpers'
-import config from '../../../config'
-import { StakingBondedStorage } from '../../../types/generated/storage'
-import { StorageContext } from '../../../types/generated/support'
+import { decodeID, encodeID } from '../../common/helpers'
+import config from '../../config'
+import { StakingBondedStorage } from '../../types/generated/storage'
+import { StorageContext } from '../../types/generated/support'
 
 async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<Uint8Array | undefined> {
     const storage = new StakingBondedStorage(ctx)
