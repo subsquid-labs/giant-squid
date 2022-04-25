@@ -13,7 +13,7 @@ interface SlashData {
     chain: ChainName
     amount: bigint
     account: string
-    era?: number
+    era: number
     validator?: string
 }
 
@@ -22,30 +22,14 @@ export class SlashManager extends ItemManager<Slash> {
         return await ctx.store.findOne(Slash, id, { cache: true })
     }
 
-    private async getStakingInfo(ctx: StorageContext, id: string) {
-        const controller = await getBonded(ctx, id)
-        const payeeData = await getPayee(ctx, id)
-
-        return new StakingInfo({
-            controller,
-            payee: payeeData?.payee,
-            payeeAccount: payeeData?.account,
-        })
-    }
-
     async create(ctx: EventHandlerContext, data: SlashData): Promise<Slash> {
         const id = ctx.event.id
 
         const account = await accountManager.get(ctx, data.account)
 
-        if (!account.stakingInfo) {
-            account.stakingInfo = await this.getStakingInfo(ctx, account.id)
-        }
-
-        account.totalSlash = (account.totalSlash || 0n) + data.amount
-        if (account.stakingInfo?.payee === PayeeType.STAKED) {
-            account.totalBond = (account.totalBond || 0n) + data.amount
-        }
+        account.totalSlash = account.totalSlash + data.amount
+        account.totalBond = account.totalBond - data.amount
+        account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
 
         await accountManager.upsert(ctx, account)
 

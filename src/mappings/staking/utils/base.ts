@@ -1,64 +1,10 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, isExtrinsicSuccess, populateMeta } from '../../../common/helpers'
+import { encodeID, isExtrinsicSuccess } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward, Slash, Bond, StakingInfo, BondType } from '../../../model'
-import { accountManager, bondManager, chainManager, rewardManager } from '../../../managers'
-import { getBonded, getCurrentEra, getPayee } from '../storage'
-
-async function populateStakingItem(
-    item: Reward | Slash | Bond,
-    options: {
-        ctx: EventHandlerContext
-        data: RewardData | StakeData
-    }
-): Promise<Reward | Slash | Bond | undefined> {
-    const { ctx, data } = options
-
-    populateMeta(ctx, item)
-
-    item.name = ctx.event.name
-    item.chain = await chainManager.get(ctx, config.chainName)
-
-    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
-    if (!id) return undefined
-
-    item.account = await accountManager.get(ctx, id)
-    if (!item.account.stakingInfo) {
-        const controller = await getBonded(ctx, id)
-        const payeeData = await getPayee(ctx, id)
-
-        item.account.stakingInfo = new StakingInfo({
-            controller,
-            payee: payeeData?.payee,
-            payeeAccount: payeeData?.account,
-        })
-    }
-
-    item.amount = data.amount
-
-    return item
-}
-
-async function calculateTotalSlash(
-    slash: Slash,
-    options: {
-        ctx: EventHandlerContext
-        data: RewardData | StakeData
-    }
-) {
-    const { ctx, data } = options
-
-    const account = slash.account
-
-    account.totalSlash = (account.totalSlash || 0n) + data.amount
-    slash.total = account.totalSlash
-
-    account.totalBond = (account.totalBond || 0n) - data.amount
-    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
-
-    await ctx.store.save(account)
-}
+import { BondType } from '../../../model'
+import { bondManager, rewardManager, slashManager } from '../../../managers'
+import { getCurrentEra } from '../storage'
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
@@ -72,15 +18,15 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
 }
 
 export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
-    const id = ctx.event.id
+    const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    if (!accountId) return
 
-    const slash = new Slash({ id })
-
-    if (!(await populateStakingItem(slash, { ctx, data }))) return
-    await calculateTotalSlash(slash, { ctx, data })
-    slash.era = await getCurrentEra(ctx)
-
-    await ctx.store.insert(Slash, slash)
+    await slashManager.create(ctx, {
+        chain: config.chainName,
+        amount: data.amount,
+        account: accountId,
+        era: (await getCurrentEra(ctx)) || 0,
+    })
 }
 
 function getBondType(ctx: EventHandlerContext) {
