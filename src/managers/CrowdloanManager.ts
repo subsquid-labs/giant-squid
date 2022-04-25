@@ -6,7 +6,7 @@ import { chainManager } from './ChainManager'
 import * as modules from '../mappings'
 
 export class CrowdloanManager extends Manager<Crowdloan> {
-    async get(ctx: EventHandlerContext, id: number, data?: Partial<Crowdloan>): Promise<Crowdloan | undefined> {
+    async get(ctx: EventHandlerContext, id: number, data?: Partial<Crowdloan>): Promise<Crowdloan> {
         let crowdloan = await ctx.store
             .createQueryBuilder(Crowdloan, 'crowdloan')
             .innerJoin(Chain, 'parachain', 'crowdloan.parachain_id = parachain.id')
@@ -18,9 +18,14 @@ export class CrowdloanManager extends Manager<Crowdloan> {
         if (crowdloan) return crowdloan
 
         const fundInfo = await modules.crowdloan.storage.getFunds(ctx, id)
-        if (!fundInfo) return undefined
 
-        const { trieIndex, end, firstPeriod, lastPeriod, cap } = fundInfo
+        const { trieIndex, end, firstPeriod, lastPeriod, cap } = fundInfo || {
+            trieIndex: 0,
+            end: 0,
+            firstPeriod: 0,
+            lastPeriod: 0,
+            cap: 0n,
+        }
 
         crowdloan = await ctx.store.findOne(Crowdloan, `${id}-${trieIndex}`, { cache: true })
 
@@ -42,26 +47,6 @@ export class CrowdloanManager extends Manager<Crowdloan> {
         }
 
         return crowdloan
-    }
-
-    async getContributor(
-        ctx: EventHandlerContext,
-        id: number | string,
-        data?: Partial<Contributor>
-    ): Promise<Contributor> {
-        let contributor = await ctx.store.findOne(Contributor, id)
-
-        if (!contributor) {
-            contributor = new Contributor({
-                id: id.toString(),
-                amount: 0n,
-                ...data,
-            })
-
-            await ctx.store.insert(Contributor, contributor)
-        }
-
-        return contributor
     }
 }
 
