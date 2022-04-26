@@ -16,7 +16,7 @@ export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallDat
     account.stakingInfo.payee = data.payee
     account.stakingInfo.payeeAccount = accountId
 
-    await ctx.store.save(account)
+    await accountManager.upsert(ctx, account)
 }
 
 export async function saveController(ctx: ExtrinsicHandlerContext, data: { controller: Uint8Array }) {
@@ -29,5 +29,5 @@ export async function saveController(ctx: ExtrinsicHandlerContext, data: { contr
 
     account.stakingInfo.controller = controller
 
-    await ctx.store.save(account)
+    await accountManager.upsert(ctx, account)
 }

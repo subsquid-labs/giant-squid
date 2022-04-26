@@ -1,6 +1,6 @@
-import { FundInfo } from '../../../types/custom/crowdloanData'
-import { CrowdloanFundsStorage } from '../../../types/generated/storage'
-import { StorageContext } from '../../../types/generated/support'
+import { FundInfo } from '../../types/custom/crowdloanData'
+import { CrowdloanFundsStorage } from '../../types/generated/storage'
+import { StorageContext } from '../../types/generated/support'
 
 async function getStorageData(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
     const storage = new CrowdloanFundsStorage(ctx)

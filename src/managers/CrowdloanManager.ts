@@ -1,67 +1,54 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import config from '../config'
-import { Chain, Contributor, Crowdloan } from '../model'
+import { Chain, Crowdloan } from '../model'
 import { Manager } from './Manager'
 import { chainManager } from './ChainManager'
-import * as modules from '../mappings'
+import { InsertFailedError } from '../common/errors'
+
+interface CrowdloanData {
+    paraId: number
+    trieIndex: number
+    end: number
+    firstPeriod: number
+    lastPeriod: number
+    cap: bigint
+}
 
 export class CrowdloanManager extends Manager<Crowdloan> {
-    async get(ctx: EventHandlerContext, id: number, data?: Partial<Crowdloan>): Promise<Crowdloan | undefined> {
-        let crowdloan = await ctx.store
+    async get(ctx: EventHandlerContext, id: string): Promise<Crowdloan | undefined> {
+        return ctx.store.findOne(Crowdloan, id, { cache: true })
+    }
+
+    async getByParaId(ctx: EventHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
+        return await ctx.store
             .createQueryBuilder(Crowdloan, 'crowdloan')
             .innerJoin(Chain, 'parachain', 'crowdloan.parachain_id = parachain.id')
-            .where('parachain.para_id = :id', { id })
+            .where('parachain.para_id = :id', { paraId })
             .andWhere('crowdloan.end > :height', { height: ctx.block.height })
             .cache(true)
             .getOne()
-
-        if (crowdloan) return crowdloan
-
-        const fundInfo = await modules.crowdloan.storage.getFunds(ctx, id)
-        if (!fundInfo) return undefined
-
-        const { trieIndex, end, firstPeriod, lastPeriod, cap } = fundInfo
-
-        crowdloan = await ctx.store.findOne(Crowdloan, `${id}-${trieIndex}`, { cache: true })
-
-        if (!crowdloan) {
-            crowdloan = new Crowdloan({
-                id: `${id}-${trieIndex}`,
-                cap,
-                raised: 0n,
-                end: BigInt(end),
-                lastPeriod: BigInt(lastPeriod),
-                firstPeriod: BigInt(firstPeriod),
-                blockNumber: BigInt(ctx.block.height),
-                parachain: await chainManager.getParachain(ctx, Number(id)),
-                chain: await chainManager.get(ctx, config.chainName),
-                ...data,
-            })
-
-            await ctx.store.insert(Crowdloan, crowdloan)
-        }
-
-        return crowdloan
     }
 
-    async getContributor(
-        ctx: EventHandlerContext,
-        id: number | string,
-        data?: Partial<Contributor>
-    ): Promise<Contributor> {
-        let contributor = await ctx.store.findOne(Contributor, id)
+    async create(ctx: EventHandlerContext, data: CrowdloanData) {
+        const { trieIndex, end, firstPeriod, lastPeriod, cap, paraId } = data
 
-        if (!contributor) {
-            contributor = new Contributor({
-                id: id.toString(),
-                amount: 0n,
-                ...data,
-            })
+        const id = `${paraId}-${trieIndex}`
 
-            await ctx.store.insert(Contributor, contributor)
-        }
+        const crowdloan = new Crowdloan({
+            id,
+            cap,
+            raised: 0n,
+            end: BigInt(end),
+            lastPeriod: BigInt(lastPeriod),
+            firstPeriod: BigInt(firstPeriod),
+            blockNumber: BigInt(ctx.block.height),
+            parachain: await chainManager.getParachain(ctx, Number(id)),
+            chain: await chainManager.get(ctx, config.chainName),
+        })
 
-        return contributor
+        if (!(await ctx.store.insert(Crowdloan, crowdloan))) throw new InsertFailedError(Crowdloan.name, id)
+
+        return crowdloan
     }
 }
 

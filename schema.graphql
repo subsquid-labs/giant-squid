@@ -142,6 +142,11 @@ type Slash implements Item & HasTotal & HasEra @entity  {
   name: String
 }
 
+enum BondType {
+  Bond
+  Unbond
+}
+
 type Bond implements Item & HasTotal & CanFail @entity  {
   id: ID!
   chain: Chain!
@@ -152,5 +157,6 @@ type Bond implements Item & HasTotal & CanFail @entity  {
   amount: BigInt
   total: BigInt
   success: Boolean @index
+  type: BondType
   name: String
 }

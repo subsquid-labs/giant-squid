@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {Chain} from "./chain.model"
 import {Account} from "./account.model"
+import {BondType} from "./_bondType"
 
 @Entity_()
 export class Bond {
@@ -40,6 +41,9 @@ export class Bond {
   @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
+
+  @Column_("varchar", {length: 6, nullable: true})
+  type!: BondType | undefined | null
 
   @Column_("text", {nullable: true})
   name!: string | undefined | null
