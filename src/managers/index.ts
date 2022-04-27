@@ -8,6 +8,7 @@ import { slashManager } from './SlashManager'
 import { contributorManager } from './ContributorManager'
 import { contributionManager } from './ContributionManager'
 import { stakingInfoManager } from './StakingInfoManager'
+import { stakingPairManager } from './StakingPairManager'
 
 export {
     crowdloanManager,
@@ -20,4 +21,5 @@ export {
     contributorManager,
     contributionManager,
     stakingInfoManager,
+    stakingPairManager,
 }

@@ -1,7 +1,8 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import {Account} from "./account.model"
 import {PayeeType} from "./_payeeType"
 import {StakingRole} from "./_stakingRole"
+import {StakingPair} from "./stakingPair.model"
 
 @Entity_()
 export class StakingInfo {
@@ -13,29 +14,29 @@ export class StakingInfo {
   id!: string
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  stash!: Account | undefined | null
+  @ManyToOne_(() => Account, {nullable: false})
+  stash!: Account
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  controller!: Account | undefined | null
+  @ManyToOne_(() => Account, {nullable: false})
+  controller!: Account
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: true})
   payee!: Account | undefined | null
 
-  @Column_("varchar", {length: 10, nullable: true})
-  payeeType!: PayeeType | undefined | null
+  @Column_("varchar", {length: 10, nullable: false})
+  payeeType!: PayeeType
 
-  @Column_("varchar", {length: 9, nullable: true})
-  role!: StakingRole | undefined | null
+  @Column_("varchar", {length: 9, nullable: false})
+  role!: StakingRole
 
-  @Column_("text", {array: true, nullable: true})
-  nominators!: (string)[] | undefined | null
+  @Column_("integer", {nullable: true})
+  commission!: number | undefined | null
 
-  @Column_("integer", {nullable: false})
-  commission!: number
+  @OneToMany_(() => StakingPair, e => e.nominator)
+  nominators!: StakingPair[]
 
-  @Column_("text", {array: true, nullable: true})
-  validators!: (string)[] | undefined | null
+  @OneToMany_(() => StakingPair, e => e.validator)
+  validators!: StakingPair[]
 }

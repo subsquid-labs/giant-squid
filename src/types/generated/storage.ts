@@ -5,6 +5,7 @@ import * as v1050 from './v1050'
 import * as v1058 from './v1058'
 import * as v9010 from './v9010'
 import * as v9111 from './v9111'
+import * as v9180 from './v9180'
 
 export class CrowdloanFundsStorage {
   constructor(private ctx: StorageContext) {}
@@ -36,6 +37,21 @@ export class CrowdloanFundsStorage {
    */
   async getAsV9111(key: v9111.Id): Promise<v9111.FundInfo | undefined> {
     assert(this.isV9111)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
+  }
+
+  /**
+   *  Info on all of the funds.
+   */
+  get isV9180() {
+    return this.ctx._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === 'e837aa8c7af80bff126d455e0237189b2b62b5bf6586a1f2e67a22edfaf5a596'
+  }
+
+  /**
+   *  Info on all of the funds.
+   */
+  async getAsV9180(key: v9180.Id): Promise<v9180.FundInfo | undefined> {
+    assert(this.isV9180)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
   }
 

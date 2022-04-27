@@ -1,38 +1,17 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { createPrevStorageContext, encodeID, isExtrinsicSuccess } from '../../../common/helpers'
-import { PayeeCallData, PayeeTypeRaw, RewardData, StakeData } from '../../../types/custom/stakingData'
+import { convertPayee, encodeID, isExtrinsicSuccess } from '../../../common/helpers'
+import { NominateData, PayeeCallData, RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { BondType, PayeeType, StakingRole } from '../../../model'
-import { accountManager, bondManager, rewardManager, slashManager, stakingInfoManager } from '../../../managers'
+import {
+    accountManager,
+    bondManager,
+    rewardManager,
+    slashManager,
+    stakingInfoManager,
+    stakingPairManager,
+} from '../../../managers'
 import storage from '../../../storage'
-
-async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string) {
-    const prevCtx = createPrevStorageContext(ctx)
-
-    const controller = await storage.staking.getBonded(prevCtx, stash)
-    if (!controller) return
-
-    const payeeInfo = await storage.staking.getPayee(prevCtx, stash)
-    if (!payeeInfo) return
-    const { payee: payeeTypeRaw, account: payeeAccount } = payeeInfo
-
-    const { payee, payeeType } = convertPayee(payeeTypeRaw, {
-        stash,
-        controller,
-        payeeAccount,
-    })
-
-    //TODO: find way to get current role of staker
-    const role = StakingRole.Indle
-
-    return await stakingInfoManager.create(ctx, {
-        stash,
-        controller,
-        payee,
-        payeeType,
-        role,
-    })
-}
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
     const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
@@ -47,7 +26,7 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
     const account = reward.account
 
     const stakingInfo = await stakingInfoManager.get(ctx, account.id)
-    if (!stakingInfo) await createMissingStakingInfo(ctx, account.id)
+    if (!stakingInfo) return
 
     account.totalReward = account.totalReward + data.amount
 
@@ -72,7 +51,7 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
     const account = slash.account
 
     const stakingInfo = await stakingInfoManager.get(ctx, account.id)
-    if (!stakingInfo) await createMissingStakingInfo(ctx, account.id)
+    if (!stakingInfo) return
 
     account.totalSlash = account.totalSlash + data.amount
     account.totalBond = account.totalBond - data.amount
@@ -86,7 +65,7 @@ function getBondType(ctx: EventHandlerContext) {
 }
 
 export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData, success = true) {
-    const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    const accountId = data.account || ctx.extrinsic?.signer
     if (!accountId) return
 
     const bondType = getBondType(ctx)
@@ -102,7 +81,7 @@ export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData, s
     const account = bond.account
 
     const stakingInfo = await stakingInfoManager.get(ctx, account.id)
-    if (!stakingInfo) await createMissingStakingInfo(ctx, account.id)
+    if (!stakingInfo) return
 
     if (success) {
         account.totalBond =
@@ -128,44 +107,6 @@ export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeDat
     await saveBondEvent(ctx, data, success)
 }
 
-function convertPayee(
-    payeeTypeRaw: PayeeTypeRaw,
-    accounts: {
-        stash: string
-        controller: string
-        payeeAccount: string | null | undefined
-    }
-) {
-    switch (payeeTypeRaw) {
-        case 'Account':
-            return {
-                payeeType: PayeeType.Account,
-                payee: accounts.payeeAccount || undefined,
-            }
-        case 'Stash':
-            return {
-                payeeType: PayeeType.Stash,
-                payee: accounts.stash,
-            }
-        case 'Staked':
-            return {
-                payeeType: PayeeType.Staked,
-                payee: accounts.stash,
-            }
-        case 'Controller':
-            return {
-                payeeType: PayeeType.Controller,
-                payee: accounts.stash,
-            }
-        case 'None': {
-            return {
-                payeeType: PayeeType.Controller,
-                payee: undefined,
-            }
-        }
-    }
-}
-
 export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallData) {
     const controller = ctx.extrinsic.signer
 
@@ -176,7 +117,6 @@ export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallDat
     if (!payeeAccount) return
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
-    if (!stakingInfo) await createMissingStakingInfo(ctx, stash)
     if (!stakingInfo) return
 
     const { payee, payeeType } = convertPayee(data.payee, {
@@ -195,13 +135,40 @@ export async function saveController(ctx: ExtrinsicHandlerContext, data: { contr
     const stash = ctx.extrinsic.signer
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
-    if (!stakingInfo) await createMissingStakingInfo(ctx, stash)
     if (!stakingInfo) return
 
     const controller = encodeID(data.controller, config.prefix)
     if (!controller) return
 
     stakingInfo.controller = await accountManager.get(ctx, controller)
+
+    await stakingInfoManager.update(ctx, stakingInfo)
+}
+
+export async function saveNominateCall(ctx: ExtrinsicHandlerContext, data: NominateData) {
+    const controller = ctx.extrinsic.signer
+
+    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
+    if (!stash) return
+
+    const stakingInfo = await stakingInfoManager.get(ctx, stash)
+    if (!stakingInfo) return
+
+    if (stakingInfo.role === StakingRole.Nominator) {
+        await stakingPairManager.deleteByNominator(ctx, stash)
+    } else if (stakingInfo.role === StakingRole.Validator) {
+        await stakingPairManager.deleteByValidator(ctx, stash)
+        stakingInfo.commission = null
+    }
+
+    for (const validator of data.targets) {
+        await stakingPairManager.create(ctx, {
+            nominator: stash,
+            validator,
+        })
+    }
+
+    stakingInfo.role = StakingRole.Nominator
 
     await stakingInfoManager.update(ctx, stakingInfo)
 }

@@ -26,16 +26,22 @@ enum PayeeType {
   None
 }
 
-type StakingInfo @entity{
+type StakingPair @entity {
+  id: ID! #validatorId + nominatorId
+  nominator: StakingInfo
+  validator: StakingInfo
+}
+
+type StakingInfo @entity {
   id: ID! #stash Id
-  stash: Account
-  controller: Account
+  stash: Account!
+  controller: Account!
   payee: Account
-  payeeType: PayeeType
-  role: StakingRole
-  nominators: [String!] #stakinginfo Id
-  commission: Int!
-  validators: [String!] #stakinginfo Id
+  payeeType: PayeeType!
+  role: StakingRole!
+  commission: Int
+  nominators: [StakingPair!] @derivedFrom(field: "nominator")
+  validators: [StakingPair!] @derivedFrom(field: "validator")
 }
 
 type Chain @entity {

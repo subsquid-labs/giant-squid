@@ -5,8 +5,13 @@ export interface RewardData {
 
 export interface StakeData {
     amount: bigint
-    account?: Uint8Array
+    account?: string
 }
+
+export interface NominateData {
+    targets: string[]
+}
+
 export interface PayoutData {
     era: number
     validator: Uint8Array
