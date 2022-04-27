@@ -207,3 +207,24 @@ export async function saveKickCall(ctx: ExtrinsicHandlerContext, data: KickData)
 
     await stakingPairManager.deleteByValidator(ctx, stash, data.nominators)
 }
+
+export async function saveChillCall(ctx: ExtrinsicHandlerContext) {
+    const controller = ctx.extrinsic.signer
+
+    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
+    if (!stash) return
+
+    const stakingInfo = await stakingInfoManager.get(ctx, stash)
+    if (!stakingInfo) return
+
+    if (stakingInfo.role === StakingRole.Nominator) {
+        await stakingPairManager.deleteByNominator(ctx, stash)
+    } else if (stakingInfo.role === StakingRole.Validator) {
+        await stakingPairManager.deleteByValidator(ctx, stash)
+        stakingInfo.commission = null
+    }
+
+    stakingInfo.role = StakingRole.Indle
+
+    await stakingInfoManager.update(ctx, stakingInfo)
+}

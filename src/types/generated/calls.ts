@@ -964,6 +964,57 @@ export class StakingBondExtraCall {
   }
 }
 
+export class StakingChillCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.chill')
+  }
+
+  /**
+   *  Declare no desire to either validate or nominate.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains one read.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('staking.chill') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+  }
+
+  /**
+   *  Declare no desire to either validate or nominate.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains one read.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get asV1020(): null {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV1020
+  }
+
+  get asLatest(): null {
+    deprecateLatest()
+    return this.asV1020
+  }
+}
+
 export class StakingKickCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'staking.kick')
