@@ -10,20 +10,25 @@ interface StakingPairData {
 }
 
 export class StakingPairManager extends Manager<StakingPair> {
-    async deleteByValidator(ctx: EventHandlerContext, id: string): Promise<void> {
-        await ctx.store
+    async deleteByValidator(ctx: EventHandlerContext, id: string, nominators?: string[]): Promise<void> {
+        const query = ctx.store
             .createQueryBuilder(StakingPair, 'stakingPair')
-            .where('stakingPair.validator_id = :id', { id })
-            .cache(true)
             .delete()
+            .where('stakingPair.validator_id = :id', { id })
+
+        if (nominators) query.andWhere('stakingPair.nominator_id IN (:nominators)', { nominators })
+
+        await query.execute()
     }
 
-    async deleteByNominator(ctx: EventHandlerContext, id: string): Promise<void> {
-        await ctx.store
+    async deleteByNominator(ctx: EventHandlerContext, id: string, validators?: string[]): Promise<void> {
+        const query = ctx.store
             .createQueryBuilder(StakingPair, 'stakingPair')
             .where('stakingPair.nominator_id = :id', { id })
-            .cache(true)
-            .delete()
+
+        if (validators) query.andWhere('stakingPair.validator_id IN (:validators)', { validators })
+
+        await query.execute()
     }
 
     async create(ctx: EventHandlerContext, data: StakingPairData): Promise<StakingPair> {

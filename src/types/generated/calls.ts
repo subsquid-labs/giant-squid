@@ -964,6 +964,96 @@ export class StakingBondExtraCall {
   }
 }
 
+export class StakingKickCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.kick')
+  }
+
+  /**
+   *  Remove the given nominations from the calling validator.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`. The controller
+   *  account should represent a validator.
+   * 
+   *  - `who`: A list of nominator stash accounts who are nominating this validator which
+   *    should no longer be nominating this validator.
+   * 
+   *  Note: Making this call only makes sense if you first set the validator preferences to
+   *  block any further nominations.
+   */
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('staking.kick') === '760f2d470d3cb5efbef130b8d79a202238d983a6680d5e2d4eee31ad48834e9f'
+  }
+
+  /**
+   *  Remove the given nominations from the calling validator.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`. The controller
+   *  account should represent a validator.
+   * 
+   *  - `who`: A list of nominator stash accounts who are nominating this validator which
+   *    should no longer be nominating this validator.
+   * 
+   *  Note: Making this call only makes sense if you first set the validator preferences to
+   *  block any further nominations.
+   */
+  get asV2028(): {who: v2028.GenericMultiAddress[]} {
+    assert(this.isV2028)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   * Remove the given nominations from the calling validator.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   * - `who`: A list of nominator stash accounts who are nominating this validator which
+   *   should no longer be nominating this validator.
+   * 
+   * Note: Making this call only makes sense if you first set the validator preferences to
+   * block any further nominations.
+   */
+  get isV9111(): boolean {
+    return this.ctx._chain.getCallHash('staking.kick') === 'e538d9391f8376022db5c010fa7390c92954267b2d5ebc13e621f87adebe57b9'
+  }
+
+  /**
+   * Remove the given nominations from the calling validator.
+   * 
+   * Effects will be felt at the beginning of the next era.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   * - `who`: A list of nominator stash accounts who are nominating this validator which
+   *   should no longer be nominating this validator.
+   * 
+   * Note: Making this call only makes sense if you first set the validator preferences to
+   * block any further nominations.
+   */
+  get asV9111(): {who: v9111.MultiAddress[]} {
+    assert(this.isV9111)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9111
+  }
+
+  get asLatest(): {who: v9111.MultiAddress[]} {
+    deprecateLatest()
+    return this.asV9111
+  }
+}
+
 export class StakingNominateCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'staking.nominate')

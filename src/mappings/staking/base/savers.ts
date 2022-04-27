@@ -1,6 +1,13 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { convertPayee, encodeID, isExtrinsicSuccess } from '../../../common/helpers'
-import { NominateData, PayeeCallData, RewardData, StakeData, ValidateData } from '../../../types/custom/stakingData'
+import {
+    KickData,
+    NominateData,
+    PayeeCallData,
+    RewardData,
+    StakeData,
+    ValidateData,
+} from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { BondType, PayeeType, StakingRole } from '../../../model'
 import {
@@ -190,4 +197,13 @@ export async function saveValidateCall(ctx: ExtrinsicHandlerContext, data: Valid
     stakingInfo.role = StakingRole.Validator
 
     await stakingInfoManager.update(ctx, stakingInfo)
+}
+
+export async function saveKickCall(ctx: ExtrinsicHandlerContext, data: KickData) {
+    const controller = ctx.extrinsic.signer
+
+    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
+    if (!stash) return
+
+    await stakingPairManager.deleteByValidator(ctx, stash, data.nominators)
 }

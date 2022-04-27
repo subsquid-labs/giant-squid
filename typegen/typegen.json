@@ -31,7 +31,8 @@
     "staking.set_payee",
     "staking.set_controller",
     "staking.nominate",
-    "staking.validate"
+    "staking.validate",
+    "staking.kick"
   ],
   "storage": [
     "Crowdloan.Funds",

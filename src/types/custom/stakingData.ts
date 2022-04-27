@@ -16,6 +16,10 @@ export interface ValidateData {
     commission: number
 }
 
+export interface KickData {
+    nominators: string[]
+}
+
 export interface PayoutData {
     era: number
     validator: Uint8Array
