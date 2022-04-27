@@ -1005,6 +1005,10 @@ export interface RewardDestination_None {
   value: null
 }
 
+export interface ValidatorPrefsWithCommission {
+  commission: number
+}
+
 export interface StakingLedgerTo223 {
   stash: Uint8Array
   total: bigint

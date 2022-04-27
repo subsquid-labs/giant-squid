@@ -12,6 +12,10 @@ export interface NominateData {
     targets: string[]
 }
 
+export interface ValidateData {
+    commission: number
+}
+
 export interface PayoutData {
     era: number
     validator: Uint8Array

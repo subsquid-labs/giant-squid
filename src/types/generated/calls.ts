@@ -1541,3 +1541,101 @@ export class StakingUnbondCall {
     return this.asV1020
   }
 }
+
+export class StakingValidateCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.validate')
+  }
+
+  /**
+   *  Declare the desire to validate for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getCallHash('staking.validate') === 'a03cfe73ae98f87de904386556fc6e78943abbd5d595884756c4155f8694e080'
+  }
+
+  /**
+   *  Declare the desire to validate for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  # </weight>
+   */
+  get asV1020(): {prefs: v1020.ValidatorPrefsWithCommission} {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  /**
+   *  Declare the desire to validate for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  -----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Era Election Status, Ledger
+   *  - Write: Nominators, Validators
+   *  # </weight>
+   */
+  get isV2028(): boolean {
+    return this.ctx._chain.getCallHash('staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
+  }
+
+  /**
+   *  Declare the desire to validate for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  -----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Era Election Status, Ledger
+   *  - Write: Nominators, Validators
+   *  # </weight>
+   */
+  get asV2028(): {prefs: v2028.ValidatorPrefsWithBlocked} {
+    assert(this.isV2028)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV2028
+  }
+
+  get asLatest(): {prefs: v2028.ValidatorPrefsWithBlocked} {
+    deprecateLatest()
+    return this.asV2028
+  }
+}
