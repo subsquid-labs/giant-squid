@@ -15,23 +15,10 @@ interface BondData {
 }
 
 export class BondManager extends ItemManager<Bond> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Bond | undefined> {
-        return await ctx.store.findOne(Bond, id, { cache: true })
-    }
-
     async create(ctx: EventHandlerContext, data: BondData): Promise<Bond> {
         const id = ctx.event.id
 
         const account = await accountManager.get(ctx, data.account)
-        if (data.success) {
-            account.totalBond =
-                data.type === BondType.Bond
-                    ? BigInt(account.totalBond || 0n) + BigInt(data.amount)
-                    : BigInt(account.totalBond || 0n) - BigInt(data.amount)
-            account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
-            await accountManager.upsert(ctx, account)
-        }
-
         const chain = await chainManager.get(ctx, data.chain)
 
         const bond = new Bond({
@@ -42,12 +29,15 @@ export class BondManager extends ItemManager<Bond> {
             type: data.type,
             amount: data.amount,
             total: account.totalBond,
+            success: data.success,
         })
 
         if (!(await ctx.store.insert(Bond, bond))) throw new InsertFailedError(Bond.name, id)
+
+        await accountManager.update(ctx, account)
 
         return bond
     }
 }
 
-export const bondManager = new BondManager()
+export const bondManager = new BondManager(Bond)

@@ -1,7 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { RewardData } from '../../../types/custom/stakingData'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
-import { saveRewardEvent } from '../utils/base'
+import { saveRewardEvent } from '../base/savers'
 
 function getRewardedEventData(ctx: EventHandlerContext): RewardData {
     const event = new StakingRewardedEvent(ctx)

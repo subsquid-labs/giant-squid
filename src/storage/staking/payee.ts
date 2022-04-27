@@ -1,6 +1,6 @@
 import { decodeID, encodeID } from '../../common/helpers'
 import config from '../../config'
-import { Payee, PayeeType } from '../../types/custom/stakingData'
+import { Payee, PayeeTypeRaw } from '../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
 import { StorageContext } from '../../types/generated/support'
@@ -50,8 +50,8 @@ export async function getPayee(ctx: StorageContext, account: string): Promise<Pa
         if (!data) return undefined
 
         storageCache.values[account] = {
-            payee: data.payee as PayeeType,
-            account: data.account ? encodeID(data.account, config.prefix) : null,
+            payee: data.payee as PayeeTypeRaw,
+            account: data.account ? encodeID(data.account, config.prefix) : undefined,
         }
     }
 

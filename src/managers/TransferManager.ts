@@ -42,4 +42,4 @@ export class TransferManager extends ItemManager<Transfer> {
     }
 }
 
-export const transferManager = new TransferManager()
+export const transferManager = new TransferManager(Transfer)

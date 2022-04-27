@@ -34,4 +34,4 @@ class ChainManager extends Manager<Chain> {
     }
 }
 
-export const chainManager = new ChainManager()
+export const chainManager = new ChainManager(Chain)

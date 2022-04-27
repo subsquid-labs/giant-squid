@@ -11,4 +11,12 @@ export abstract class ItemManager<T extends ItemBase> extends Manager<T> {
             date: new Date(ctx.block.timestamp),
         }
     }
+
+    async getByExtrinsic(ctx: EventHandlerContext, extrinsic: string): Promise<T[]> {
+        return await ctx.store.find(this.entityConstructor, {
+            where: {
+                extrinsicHash: extrinsic,
+            },
+        })
+    }
 }

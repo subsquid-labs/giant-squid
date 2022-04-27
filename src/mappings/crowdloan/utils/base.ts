@@ -31,10 +31,10 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
         }
 
         contributor.amount += BigInt(contribution.amount || 0)
-        await contributorManager.upsert(ctx, contributor)
+        await contributorManager.update(ctx, contributor)
 
         crowdloan.raised += BigInt(contribution.amount || 0)
-        await crowdloanManager.upsert(ctx, crowdloan)
+        await crowdloanManager.update(ctx, crowdloan)
     }
 }
 

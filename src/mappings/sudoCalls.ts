@@ -1,8 +1,8 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { decodeID } from '../common/helpers'
 import config from '../config'
-import { PayeeType } from '../types/custom/stakingData'
-import { saveController, savePayee } from './staking/utils/saveStakingInfo'
+import { PayeeTypeRaw } from '../types/custom/stakingData'
+import { saveController, savePayee } from './staking/base/savers'
 
 const enum CallIndexes {
     SET_PAYEE = '0x0607',
@@ -33,7 +33,7 @@ export async function handleSudoCall(ctx: ExtrinsicHandlerContext): Promise<void
                 )
 
             return await savePayee(ctx, {
-                payee: `${payeeName[0].toUpperCase()}${payeeName.slice(1)}` as PayeeType,
+                payee: `${payeeName[0].toUpperCase()}${payeeName.slice(1)}` as PayeeTypeRaw,
                 account: u8,
             })
         }

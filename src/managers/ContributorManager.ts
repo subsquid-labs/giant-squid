@@ -11,10 +11,6 @@ interface ContributorData {
 }
 
 export class ContributorManager extends Manager<Contributor> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Contributor | undefined> {
-        return await ctx.store.findOne(Contributor, id)
-    }
-
     async create(ctx: EventHandlerContext, data: ContributorData) {
         const account = await accountManager.get(ctx, data.account)
         const crowdloan = await crowdloanManager.get(ctx, data.crowdloan)
@@ -34,4 +30,4 @@ export class ContributorManager extends Manager<Contributor> {
     }
 }
 
-export const contributorManager = new ContributorManager()
+export const contributorManager = new ContributorManager(Contributor)

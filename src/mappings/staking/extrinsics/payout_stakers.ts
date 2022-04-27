@@ -31,7 +31,7 @@ export async function savePauoutStakersCall(ctx: ExtrinsicHandlerContext, data: 
         reward.validator = encodeID(data.validator, config.chainName)
     }
 
-    await rewardManager.upsert(ctx, rewards)
+    await rewardManager.update(ctx, rewards)
 }
 
 export async function handlePauoutStakers(ctx: ExtrinsicHandlerContext) {

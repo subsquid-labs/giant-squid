@@ -15,10 +15,6 @@ interface CrowdloanData {
 }
 
 export class CrowdloanManager extends Manager<Crowdloan> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Crowdloan | undefined> {
-        return ctx.store.findOne(Crowdloan, id, { cache: true })
-    }
-
     async getByParaId(ctx: EventHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
         return await ctx.store
             .createQueryBuilder(Crowdloan, 'crowdloan')
@@ -52,4 +48,4 @@ export class CrowdloanManager extends Manager<Crowdloan> {
     }
 }
 
-export const crowdloanManager = new CrowdloanManager()
+export const crowdloanManager = new CrowdloanManager(Crowdloan)

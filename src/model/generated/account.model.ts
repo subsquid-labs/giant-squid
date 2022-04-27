@@ -6,7 +6,6 @@ import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
 import {Chain} from "./chain.model"
-import {StakingInfo} from "./_stakingInfo"
 
 @Entity_()
 export class Account {
@@ -44,9 +43,6 @@ export class Account {
   @Index_()
   @ManyToOne_(() => Chain, {nullable: false})
   chain!: Chain
-
-  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : new StakingInfo(undefined, obj)}, nullable: true})
-  stakingInfo!: StakingInfo | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   lastUpdateBlock!: bigint
