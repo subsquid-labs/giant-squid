@@ -142,12 +142,13 @@ export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, 
     if (!(await populateStakingItem(stake, { ctx, data }))) return
     stake.success = success
 
-    await calculateTotalStake(stake, { ctx, data })
+    if (success) await calculateTotalStake(stake, { ctx, data })
 
     await ctx.store.insert(Bond, stake)
 }
 
 export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeData) {
+    const success = isExtrinsicSuccess(ctx)
     const isAlreadyHandled = ctx.block.events.find(
         (event) =>
             event.extrinsicId === ctx.extrinsic.id &&
@@ -155,5 +156,5 @@ export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeDat
     )
     if (isAlreadyHandled) return
 
-    await saveStakeEvent(ctx, data, isExtrinsicSuccess(ctx))
+    await saveStakeEvent(ctx, data, success)
 }
