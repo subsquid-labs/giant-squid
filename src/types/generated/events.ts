@@ -116,6 +116,37 @@ export class StakingRewardEvent {
   }
 }
 
+export class StakingRewardedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'staking.Rewarded')
+  }
+
+  /**
+   * The nominator has been rewarded by this amount. \[stash, amount\]
+   */
+  get isV29(): boolean {
+    return this.ctx._chain.getEventHash('staking.Rewarded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+  }
+
+  /**
+   * The nominator has been rewarded by this amount. \[stash, amount\]
+   */
+  get asV29(): [v29.AccountId32, bigint] {
+    assert(this.isV29)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV29
+  }
+
+  get asLatest(): [v29.AccountId32, bigint] {
+    deprecateLatest()
+    return this.asV29
+  }
+}
+
 export class StakingSlashEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'staking.Slash')
@@ -146,6 +177,39 @@ export class StakingSlashEvent {
   get asLatest(): [Uint8Array, bigint] {
     deprecateLatest()
     return this.asV13
+  }
+}
+
+export class StakingSlashedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'staking.Slashed')
+  }
+
+  /**
+   * One validator (and its nominators) has been slashed by the given amount.
+   * \[validator, amount\]
+   */
+  get isV29(): boolean {
+    return this.ctx._chain.getEventHash('staking.Slashed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+  }
+
+  /**
+   * One validator (and its nominators) has been slashed by the given amount.
+   * \[validator, amount\]
+   */
+  get asV29(): [v29.AccountId32, bigint] {
+    assert(this.isV29)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV29
+  }
+
+  get asLatest(): [v29.AccountId32, bigint] {
+    deprecateLatest()
+    return this.asV29
   }
 }
 

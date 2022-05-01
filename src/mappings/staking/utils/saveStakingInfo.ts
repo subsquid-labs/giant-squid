@@ -4,6 +4,7 @@ import config from '../../../config'
 import { accountManager } from '../../../managers'
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { StakingInfo } from '../../../model'
+import { getBonded } from '../storage'
 
 export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallData) {
     const accountId = data.account ? encodeID(data.account, config.prefix) : null
@@ -21,8 +22,12 @@ export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallDat
 
 export async function saveController(ctx: ExtrinsicHandlerContext, data: { controller: Uint8Array }) {
     const controller = encodeID(data.controller, config.prefix)
+    if (!controller) return
 
-    const account = await accountManager.get(ctx, ctx.extrinsic.signer)
+    const stash = await getBonded(ctx, controller)
+    if (!stash) return
+
+    const account = await accountManager.get(ctx, stash)
     if (!account.stakingInfo) {
         account.stakingInfo = new StakingInfo()
     }

@@ -6,6 +6,8 @@
     "balances.Transfer",
     "staking.Reward",
     "staking.Slash",
+    "staking.Rewarded",
+    "staking.Slashed",
     "staking.Bonded",
     "staking.Unbonded"
   ],
