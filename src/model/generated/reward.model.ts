@@ -19,7 +19,6 @@ export class Reward {
   @Column_("timestamp with time zone", {nullable: true})
   date!: Date | undefined | null
 
-  @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null
 

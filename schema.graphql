@@ -119,7 +119,7 @@ type Reward implements Item & HasTotal & HasEra @entity  {
   id: ID!
   chain: Chain!
   date: DateTime
-  blockNumber: BigInt @index
+  blockNumber: BigInt
   extrinsicHash: String @index
   account: Account!
   amount: BigInt
