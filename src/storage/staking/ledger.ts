@@ -1,4 +1,4 @@
-import { decodeID, encodeID } from '../../common/helpers'
+import { decodeId, encodeId } from '../../common/helpers'
 import config from '../../config'
 import { Ledger, LedgerData } from '../../types/custom/stakingData'
 import { StakingLedgerStorage } from '../../types/generated/storage'
@@ -33,13 +33,13 @@ export async function getLedger(ctx: StorageContext, account: string): Promise<L
     }
 
     if (!storageCache.values[account]) {
-        const u8 = decodeID(account, config.prefix)
+        const u8 = decodeId(account, config.prefix)
         if (!u8) return undefined
 
         const data = await getStorageData(ctx, u8)
         if (!data) return undefined
 
-        const stash = encodeID(data.stash, config.prefix)
+        const stash = encodeId(data.stash, config.prefix)
         if (!stash) return undefined
 
         storageCache.values[account] = {

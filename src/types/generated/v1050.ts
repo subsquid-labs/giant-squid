@@ -27,12 +27,28 @@ export interface RewardDestination_None {
   value: null
 }
 
+export interface ActiveEraInfo {
+  index: number
+  start: (bigint | undefined)
+}
+
+export interface Exposure {
+  total: bigint
+  own: bigint
+  others: IndividualExposure[]
+}
+
 export interface StakingLedgerTo240 {
   stash: Uint8Array
   total: bigint
   active: bigint
   unlocking: UnlockChunk[]
   lastReward: (number | undefined)
+}
+
+export interface IndividualExposure {
+  who: Uint8Array
+  value: bigint
 }
 
 export interface UnlockChunk {

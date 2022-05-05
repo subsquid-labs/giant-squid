@@ -1,4 +1,4 @@
-import { decodeID, encodeID } from '../../common/helpers'
+import { decodeId, encodeId } from '../../common/helpers'
 import config from '../../config'
 import { Payee, PayeeTypeRaw } from '../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../types/generated/storage'
@@ -43,7 +43,7 @@ export async function getPayee(ctx: StorageContext, account: string): Promise<Pa
     }
 
     if (!storageCache.values[account]) {
-        const u8 = decodeID(account, config.prefix)
+        const u8 = decodeId(account, config.prefix)
         if (!u8) return undefined
 
         const data = await getStorageData(ctx, u8)
@@ -51,7 +51,7 @@ export async function getPayee(ctx: StorageContext, account: string): Promise<Pa
 
         storageCache.values[account] = {
             payee: data.payee as PayeeTypeRaw,
-            account: data.account ? encodeID(data.account, config.prefix) : undefined,
+            account: data.account ? encodeId(data.account, config.prefix) : undefined,
         }
     }
 

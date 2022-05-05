@@ -14,7 +14,7 @@ interface TransferData {
     to: string
 }
 
-export class TransferManager extends ItemManager<Transfer> {
+class TransferManager extends ItemManager<Transfer> {
     async get(ctx: EventHandlerContext, id: string): Promise<Transfer | undefined> {
         return await ctx.store.findOne(Transfer, id, { cache: true })
     }

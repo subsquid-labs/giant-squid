@@ -1016,7 +1016,18 @@ export interface StakingLedgerTo223 {
   unlocking: UnlockChunk[]
 }
 
+export interface Exposure {
+  total: bigint
+  own: bigint
+  others: IndividualExposure[]
+}
+
 export interface UnlockChunk {
   value: bigint
   era: number
+}
+
+export interface IndividualExposure {
+  who: Uint8Array
+  value: bigint
 }

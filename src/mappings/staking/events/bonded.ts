@@ -1,5 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID } from '../../../common/helpers'
+import { encodeId } from '../../../common/helpers'
 import config from '../../../config'
 import { StakingBondedEvent } from '../../../types/generated/events'
 import { saveBondEvent } from '../base/savers'
@@ -31,7 +31,7 @@ export async function handleBonded(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
     if (!data) return
 
-    const account = data.account ? encodeID(data.account, config.prefix) : null
+    const account = data.account ? encodeId(data.account, config.prefix) : null
     if (!account) return
 
     await saveBondEvent(ctx, {

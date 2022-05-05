@@ -15,7 +15,8 @@
     "staking.PayoutStarted",
     "crowdloan.Contributed",
     "crowdloan.Dissolved",
-    "crowdloan.Created"
+    "crowdloan.Created",
+    "grandpa.NewAuthorities"
   ],
   "calls": [
     "crowdloan.create",
@@ -40,6 +41,10 @@
     "Staking.Bonded",
     "Staking.Payee",
     "Staking.CurrentEra",
-    "Staking.Ledger"
+    "Staking.ActiveEra",
+    "Staking.Ledger",
+    "Staking.ErasStakers",
+    "Staking.Stakers",
+    "Session.Validators"
   ]
 }

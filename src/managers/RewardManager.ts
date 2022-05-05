@@ -14,7 +14,7 @@ interface RewardData {
     validator?: string
 }
 
-export class RewardManager extends ItemManager<Reward> {
+class RewardManager extends ItemManager<Reward> {
     async create(ctx: EventHandlerContext, data: RewardData): Promise<Reward> {
         const id = ctx.event.id
 

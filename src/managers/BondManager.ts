@@ -14,7 +14,7 @@ interface BondData {
     type: BondType
 }
 
-export class BondManager extends ItemManager<Bond> {
+class BondManager extends ItemManager<Bond> {
     async create(ctx: EventHandlerContext, data: BondData): Promise<Bond> {
         const id = ctx.event.id
 
@@ -28,7 +28,7 @@ export class BondManager extends ItemManager<Bond> {
             chain,
             type: data.type,
             amount: data.amount,
-            total: account.totalBond,
+            total: account.activeBond,
             success: data.success,
         })
 

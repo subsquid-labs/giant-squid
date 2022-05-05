@@ -1,8 +1,7 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToOne as OneToOne_, Index as Index_, JoinColumn as JoinColumn_, ManyToOne as ManyToOne_} from "typeorm"
 import {Account} from "./account.model"
 import {PayeeType} from "./_payeeType"
 import {StakingRole} from "./_stakingRole"
-import {StakingPair} from "./stakingPair.model"
 
 @Entity_()
 export class StakingInfo {
@@ -13,8 +12,9 @@ export class StakingInfo {
   @PrimaryColumn_()
   id!: string
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
+  @Index_({unique: true})
+  @OneToOne_(() => Account, {nullable: false})
+  @JoinColumn_()
   stash!: Account
 
   @Index_()
@@ -33,10 +33,4 @@ export class StakingInfo {
 
   @Column_("integer", {nullable: true})
   commission!: number | undefined | null
-
-  @OneToMany_(() => StakingPair, e => e.nominator)
-  nominators!: StakingPair[]
-
-  @OneToMany_(() => StakingPair, e => e.validator)
-  validators!: StakingPair[]
 }

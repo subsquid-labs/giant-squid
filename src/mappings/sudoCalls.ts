@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { decodeID } from '../common/helpers'
+import { decodeId } from '../common/helpers'
 import config from '../config'
 import { PayeeTypeRaw } from '../types/custom/stakingData'
 import { saveController, savePayee } from './staking/base/savers'
@@ -17,7 +17,7 @@ export async function handleSudoCall(ctx: ExtrinsicHandlerContext): Promise<void
 
     switch ((call.value as { callIndex: string }).callIndex as CallIndexes) {
         case CallIndexes.SET_CONTROLLER: {
-            const u8 = decodeID((call.value as { args: { controller: string } }).args.controller, config.prefix)
+            const u8 = decodeId((call.value as { args: { controller: string } }).args.controller, config.prefix)
             if (!u8) return
 
             return await saveController(ctx, { controller: u8 })
@@ -27,7 +27,7 @@ export async function handleSudoCall(ctx: ExtrinsicHandlerContext): Promise<void
 
             let u8 = null
             if (payeeName === 'account')
-                u8 = decodeID(
+                u8 = decodeId(
                     (call.value as { args: Record<string, unknown> }).args[payeeName] as string,
                     config.prefix
                 )

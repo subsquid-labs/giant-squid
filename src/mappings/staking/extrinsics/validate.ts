@@ -25,7 +25,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): CallData | undefined {
     }
 }
 
-export async function handleBond(ctx: ExtrinsicHandlerContext) {
+export async function handleValidate(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 

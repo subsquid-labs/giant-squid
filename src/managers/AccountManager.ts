@@ -6,7 +6,7 @@ import { chainManager } from './ChainManager'
 import storage from '../storage'
 import { createPrevStorageContext } from '../common/helpers'
 
-export class AccountManager extends Manager<Account> {
+class AccountManager extends Manager<Account> {
     async get(ctx: EventHandlerContext, id: string): Promise<Account> {
         let account = await super.get(ctx, id)
 
@@ -29,7 +29,7 @@ export class AccountManager extends Manager<Account> {
         const account = new Account({
             id,
             totalReward: 0n,
-            totalBond: BigInt(ledger?.active || 0).valueOf(),
+            activeBond: BigInt(ledger?.active || 0).valueOf(),
             totalSlash: 0n,
             chain: await chainManager.get(ctx, config.chainName),
             lastUpdateBlock: BigInt(ctx.block.height - 1).valueOf(),

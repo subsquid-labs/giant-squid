@@ -1,27 +1,29 @@
 import * as ss58 from '@subsquid/ss58'
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
 import { PayeeType } from '../model'
 import { PayeeTypeRaw } from '../types/custom/stakingData'
 import { StorageContext } from '../types/generated/support'
 import { EXTRINSIC_SUCCESS } from './consts'
 
-export function encodeID(ID: Uint8Array, prefix: string | number) {
+export function encodeId(id: Uint8Array, prefix: string | number) {
     try {
-        return ss58.codec(prefix).encode(ID)
+        return ss58.codec(prefix).encode(id)
     } catch (e) {
-        return undefined
+        const hex = toHex(id)
+        console.warn(`Warning: Failed to encode ${hex} with prefix ${prefix}`)
+
+        return hex
     }
 }
 
-export function decodeID(ID: string, prefix: string | number) {
-    let ret: Uint8Array | null
+export function decodeId(id: string, prefix: string | number) {
     try {
-        ret = ss58.codec(prefix).decode(ID)
+        return ss58.codec(prefix).decode(id)
     } catch (e) {
-        ret = null
-    }
+        console.warn(`Warning: Failed to decode ${id} with prefix ${prefix}`)
 
-    return ret
+        return undefined
+    }
 }
 
 export interface ItemBase {

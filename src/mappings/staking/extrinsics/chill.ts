@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { saveChillCall } from '../base/savers'
 
-export async function handleBond(ctx: ExtrinsicHandlerContext) {
+export async function handleChill(ctx: ExtrinsicHandlerContext) {
     await saveChillCall(ctx)
 }

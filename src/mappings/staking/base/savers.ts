@@ -1,27 +1,13 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { convertPayee, encodeID, isExtrinsicSuccess } from '../../../common/helpers'
-import {
-    KickData,
-    NominateData,
-    PayeeCallData,
-    RewardData,
-    StakeData,
-    ValidateData,
-} from '../../../types/custom/stakingData'
+import { convertPayee, encodeId, isExtrinsicSuccess } from '../../../common/helpers'
+import { NominateData, PayeeCallData, RewardData, StakeData, ValidateData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { BondType, PayeeType, StakingRole } from '../../../model'
-import {
-    accountManager,
-    bondManager,
-    rewardManager,
-    slashManager,
-    stakingInfoManager,
-    stakingPairManager,
-} from '../../../managers'
+import { accountManager, bondManager, rewardManager, slashManager, stakingInfoManager } from '../../../managers'
 import storage from '../../../storage'
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
-    const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    const accountId = data.account ? encodeId(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!accountId) return
 
     const reward = await rewardManager.create(ctx, {
@@ -38,21 +24,21 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
     account.totalReward = account.totalReward + data.amount
 
     if (stakingInfo?.payeeType === PayeeType.Staked) {
-        account.totalBond = account.totalBond + data.amount
+        account.activeBond = account.activeBond + data.amount
     }
 
     await accountManager.update(ctx, account)
 }
 
 export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
-    const accountId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    const accountId = data.account ? encodeId(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!accountId) return
 
     const slash = await slashManager.create(ctx, {
         chain: config.chainName,
         amount: data.amount,
         account: accountId,
-        era: (await storage.staking.getCurrentEra(ctx)) || 0,
+        era: (await storage.staking.getCurrentEra(ctx))?.index || 0,
     })
 
     const account = slash.account
@@ -61,8 +47,8 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
     if (!stakingInfo) return
 
     account.totalSlash = account.totalSlash + data.amount
-    account.totalBond = account.totalBond - data.amount
-    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
+    account.activeBond = account.activeBond - data.amount
+    account.activeBond = account.activeBond > 0n ? account.activeBond : 0n
 
     await accountManager.update(ctx, account)
 }
@@ -91,11 +77,11 @@ export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData, s
     if (!stakingInfo) return
 
     if (success) {
-        account.totalBond =
+        account.activeBond =
             bondType === BondType.Bond
-                ? BigInt(account.totalBond) + BigInt(data.amount)
-                : BigInt(account.totalBond) - BigInt(data.amount)
-        account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
+                ? BigInt(account.activeBond) + BigInt(data.amount)
+                : BigInt(account.activeBond) - BigInt(data.amount)
+        account.activeBond = account.activeBond > 0n ? account.activeBond : 0n
     }
 }
 
@@ -120,7 +106,7 @@ export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallDat
     const stash = (await storage.staking.getLedger(ctx, controller))?.stash
     if (!stash) return
 
-    const payeeAccount = data.account ? encodeID(data.account, config.prefix) : null
+    const payeeAccount = data.account ? encodeId(data.account, config.prefix) : null
     if (!payeeAccount) return
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
@@ -144,7 +130,7 @@ export async function saveController(ctx: ExtrinsicHandlerContext, data: { contr
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
     if (!stakingInfo) return
 
-    const controller = encodeID(data.controller, config.prefix)
+    const controller = encodeId(data.controller, config.prefix)
     if (!controller) return
 
     stakingInfo.controller = await accountManager.get(ctx, controller)
@@ -161,20 +147,6 @@ export async function saveNominateCall(ctx: ExtrinsicHandlerContext, data: Nomin
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
     if (!stakingInfo) return
 
-    if (stakingInfo.role === StakingRole.Nominator) {
-        await stakingPairManager.deleteByNominator(ctx, stash)
-    } else if (stakingInfo.role === StakingRole.Validator) {
-        await stakingPairManager.deleteByValidator(ctx, stash)
-        stakingInfo.commission = null
-    }
-
-    for (const validator of data.targets) {
-        await stakingPairManager.create(ctx, {
-            nominator: stash,
-            validator,
-        })
-    }
-
     stakingInfo.role = StakingRole.Nominator
 
     await stakingInfoManager.update(ctx, stakingInfo)
@@ -189,23 +161,10 @@ export async function saveValidateCall(ctx: ExtrinsicHandlerContext, data: Valid
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
     if (!stakingInfo) return
 
-    if (stakingInfo.role === StakingRole.Nominator) {
-        await stakingPairManager.deleteByValidator(ctx, stash)
-    }
-
     stakingInfo.commission = data.commission
     stakingInfo.role = StakingRole.Validator
 
     await stakingInfoManager.update(ctx, stakingInfo)
-}
-
-export async function saveKickCall(ctx: ExtrinsicHandlerContext, data: KickData) {
-    const controller = ctx.extrinsic.signer
-
-    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
-    if (!stash) return
-
-    await stakingPairManager.deleteByValidator(ctx, stash, data.nominators)
 }
 
 export async function saveChillCall(ctx: ExtrinsicHandlerContext) {
@@ -216,13 +175,6 @@ export async function saveChillCall(ctx: ExtrinsicHandlerContext) {
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
     if (!stakingInfo) return
-
-    if (stakingInfo.role === StakingRole.Nominator) {
-        await stakingPairManager.deleteByNominator(ctx, stash)
-    } else if (stakingInfo.role === StakingRole.Validator) {
-        await stakingPairManager.deleteByValidator(ctx, stash)
-        stakingInfo.commission = null
-    }
 
     stakingInfo.role = StakingRole.Indle
 

@@ -14,7 +14,7 @@ interface CrowdloanData {
     cap: bigint
 }
 
-export class CrowdloanManager extends Manager<Crowdloan> {
+class CrowdloanManager extends Manager<Crowdloan> {
     async getByParaId(ctx: EventHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
         return await ctx.store
             .createQueryBuilder(Crowdloan, 'crowdloan')

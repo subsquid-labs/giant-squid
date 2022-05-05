@@ -44,7 +44,7 @@ async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string)
     })
 }
 
-export class StakingInfoManager extends Manager<StakingInfo> {
+class StakingInfoManager extends Manager<StakingInfo> {
     async get(ctx: EventHandlerContext, id: string): Promise<StakingInfo | undefined> {
         return (await ctx.store.findOne(StakingInfo, id, { cache: true })) || (await createMissingStakingInfo(ctx, id))
     }

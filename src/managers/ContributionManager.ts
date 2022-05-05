@@ -15,7 +15,7 @@ interface ContributionData {
     paraId: number
 }
 
-export class ContributionManager extends ItemManager<Contribution> {
+class ContributionManager extends ItemManager<Contribution> {
     async create(ctx: EventHandlerContext, data: ContributionData): Promise<Contribution> {
         const id = ctx.event.id
 

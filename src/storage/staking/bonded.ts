@@ -1,4 +1,4 @@
-import { decodeID, encodeID } from '../../common/helpers'
+import { decodeId, encodeId } from '../../common/helpers'
 import config from '../../config'
 import { StakingBondedStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
@@ -28,13 +28,13 @@ export async function getBonded(ctx: StorageContext, account: string): Promise<s
     }
 
     if (!storageCache.values[account]) {
-        const u8 = decodeID(account, config.prefix)
+        const u8 = decodeId(account, config.prefix)
         if (!u8) return undefined
 
         const data = await getStorageData(ctx, u8)
         if (!data) return undefined
 
-        storageCache.values[account] = encodeID(data, config.prefix) || undefined
+        storageCache.values[account] = encodeId(data, config.prefix) || undefined
     }
 
     return storageCache.values[account]

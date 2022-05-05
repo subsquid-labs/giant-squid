@@ -14,7 +14,7 @@ interface SlashData {
     validator?: string
 }
 
-export class SlashManager extends ItemManager<Slash> {
+class SlashManager extends ItemManager<Slash> {
     async get(ctx: EventHandlerContext, id: string): Promise<Slash | undefined> {
         return await ctx.store.findOne(Slash, id, { cache: true })
     }
