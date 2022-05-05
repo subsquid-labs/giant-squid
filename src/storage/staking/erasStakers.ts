@@ -40,9 +40,9 @@ async function getErasStakersData(
 
 const storageCache: {
     hash?: string
-    value: Map<string, CurrentEra>
+    values: Map<string, CurrentEra>
 } = {
-    value: new Map(),
+    values: new Map(),
 }
 
 interface CurrentEra {
@@ -58,19 +58,20 @@ export async function getErasStakers(
 ): Promise<CurrentEra | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
-        storageCache.value.clear()
+        storageCache.values.clear()
     }
 
-    const key = account
+    const key = `${era}-${account}`
+    let value = storageCache.values.get(key)
 
-    if (!storageCache.value.has(key)) {
+    if (!value) {
         const decodedAccount = decodeId(account, config.prefix)
         if (!decodedAccount) return undefined
 
         const data = (await getErasStakersData(ctx, decodedAccount, era)) || (await getStakersData(ctx, decodedAccount))
         if (!data) return undefined
 
-        storageCache.value.set(key, {
+        value = {
             total: data.total,
             own: data.own,
             nominators: data.others.map((nominator) => {
@@ -79,8 +80,10 @@ export async function getErasStakers(
                     vote: nominator.value,
                 }
             }),
-        })
+        }
+
+        storageCache.values.set(key, value)
     }
 
-    return storageCache.value.get(key)
+    return value
 }

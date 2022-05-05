@@ -31,29 +31,34 @@ async function getStorageData(
 
 const storageCache: {
     hash?: string
-    values: Record<string, Payee | undefined>
+    values: Map<string, Payee>
 } = {
-    values: {},
+    values: new Map(),
 }
 
 export async function getPayee(ctx: StorageContext, account: string): Promise<Payee | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
-        storageCache.values = {}
+        storageCache.values.clear()
     }
 
-    if (!storageCache.values[account]) {
+    const key = account
+    let value = storageCache.values.get(key)
+
+    if (!value) {
         const u8 = decodeId(account, config.prefix)
         if (!u8) return undefined
 
         const data = await getStorageData(ctx, u8)
         if (!data) return undefined
 
-        storageCache.values[account] = {
+        value = {
             payee: data.payee as PayeeTypeRaw,
             account: data.account ? encodeId(data.account, config.prefix) : undefined,
         }
+
+        storageCache.values.set(key, value)
     }
 
-    return storageCache.values[account]
+    return value
 }

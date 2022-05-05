@@ -17,20 +17,27 @@ async function getStorageData(ctx: StorageContext, paraId: number): Promise<Fund
 
 const storageCache: {
     hash?: string
-    values: Record<number, FundInfo | undefined>
+    values: Map<string, FundInfo>
 } = {
-    values: {},
+    values: new Map(),
 }
 
 export async function getFunds(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
-        storageCache.values = {}
+        storageCache.values.clear()
     }
 
-    if (!storageCache.values[paraId]) {
-        storageCache.values[paraId] = await getStorageData(ctx, paraId)
+    const key = paraId.toString()
+    let value = storageCache.values.get(key)
+
+    if (!value) {
+        const data = await getStorageData(ctx, paraId)
+        if (!data) return undefined
+
+        value = data
+        storageCache.values.set(key, value)
     }
 
-    return storageCache.values[paraId]
+    return value
 }
