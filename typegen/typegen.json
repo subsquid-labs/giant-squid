@@ -15,7 +15,8 @@
     "staking.PayoutStarted",
     "crowdloan.Contributed",
     "crowdloan.Dissolved",
-    "crowdloan.Created"
+    "crowdloan.Created",
+    "grandpa.NewAuthorities"
   ],
   "calls": [
     "crowdloan.create",
@@ -29,13 +30,21 @@
     "staking.bond_extra",
     "staking.unbond",
     "staking.set_payee",
-    "staking.set_controller"
+    "staking.set_controller",
+    "staking.nominate",
+    "staking.validate",
+    "staking.kick",
+    "staking.chill"
   ],
   "storage": [
     "Crowdloan.Funds",
     "Staking.Bonded",
     "Staking.Payee",
     "Staking.CurrentEra",
-    "Staking.Ledger"
+    "Staking.ActiveEra",
+    "Staking.Ledger",
+    "Staking.ErasStakers",
+    "Staking.Stakers",
+    "Session.Validators"
   ]
 }

@@ -1,21 +1,14 @@
-import { crowdloanManager } from './CrowdloanManager'
-import { chainManager } from './ChainManager'
-import { accountManager } from './AccountManager'
-import { transferManager } from './TransferManager'
-import { bondManager } from './BondManager'
-import { rewardManager } from './RewardManager'
-import { slashManager } from './SlashManager'
-import { contributorManager } from './ContributorManager'
-import { contributionManager } from './ContributionManager'
-
-export {
-    crowdloanManager,
-    chainManager,
-    accountManager,
-    transferManager,
-    bondManager,
-    rewardManager,
-    slashManager,
-    contributorManager,
-    contributionManager,
-}
+export * from './CrowdloanManager'
+export * from './ChainManager'
+export * from './AccountManager'
+export * from './TransferManager'
+export * from './BondManager'
+export * from './RewardManager'
+export * from './SlashManager'
+export * from './ContributorManager'
+export * from './ContributionManager'
+export * from './StakingInfoManager'
+export * from './EraManager'
+export * from './EraValidatorManager'
+export * from './EraNominatorManager'
+export * from './EraStakingPairManager'

@@ -5,6 +5,7 @@ import * as v1050 from './v1050'
 import * as v1058 from './v1058'
 import * as v9010 from './v9010'
 import * as v9111 from './v9111'
+import * as v9180 from './v9180'
 
 export class CrowdloanFundsStorage {
   constructor(private ctx: StorageContext) {}
@@ -40,10 +41,83 @@ export class CrowdloanFundsStorage {
   }
 
   /**
+   *  Info on all of the funds.
+   */
+  get isV9180() {
+    return this.ctx._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === 'e837aa8c7af80bff126d455e0237189b2b62b5bf6586a1f2e67a22edfaf5a596'
+  }
+
+  /**
+   *  Info on all of the funds.
+   */
+  async getAsV9180(key: v9180.Id): Promise<v9180.FundInfo | undefined> {
+    assert(this.isV9180)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
+  }
+
+  /**
    * Checks whether the storage item is defined for the current chain version.
    */
   get isExists(): boolean {
     return this.ctx._chain.getStorageItemTypeHash('Crowdloan', 'Funds') != null
+  }
+}
+
+export class SessionValidatorsStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The current set of validators.
+   */
+  get isV1020() {
+    return this.ctx._chain.getStorageItemTypeHash('Session', 'Validators') === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
+  }
+
+  /**
+   *  The current set of validators.
+   */
+  async getAsV1020(): Promise<Uint8Array[]> {
+    assert(this.isV1020)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Session', 'Validators')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Session', 'Validators') != null
+  }
+}
+
+export class StakingActiveEraStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The active era information, it holds index and start.
+   * 
+   *  The active era is the era currently rewarded.
+   *  Validator set of this era must be equal to `SessionInterface::validators`.
+   */
+  get isV1050() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ActiveEra') === '2bb946dd9c19de9f4332897005d1255528c610172f7418fae165b5dafd3cfbfe'
+  }
+
+  /**
+   *  The active era information, it holds index and start.
+   * 
+   *  The active era is the era currently rewarded.
+   *  Validator set of this era must be equal to `SessionInterface::validators`.
+   */
+  async getAsV1050(): Promise<v1050.ActiveEraInfo | undefined> {
+    assert(this.isV1050)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ActiveEra')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ActiveEra') != null
   }
 }
 
@@ -117,6 +191,67 @@ export class StakingCurrentEraStorage {
    */
   get isExists(): boolean {
     return this.ctx._chain.getStorageItemTypeHash('Staking', 'CurrentEra') != null
+  }
+}
+
+export class StakingErasStakersStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Exposure of validator at era.
+   * 
+   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+   * 
+   *  Is it removed after `HISTORY_DEPTH` eras.
+   *  If stakers hasn't been set or has been removed then empty exposure is returned.
+   */
+  get isV1050() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ErasStakers') === 'f3f726cc814cef290657008054cd10667b250a01d2842ff3bbbcca24c98abf5b'
+  }
+
+  /**
+   *  Exposure of validator at era.
+   * 
+   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+   * 
+   *  Is it removed after `HISTORY_DEPTH` eras.
+   *  If stakers hasn't been set or has been removed then empty exposure is returned.
+   */
+  async getAsV1050(key1: number, key2: Uint8Array): Promise<v1050.Exposure> {
+    assert(this.isV1050)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', key1, key2)
+  }
+
+  /**
+   *  Exposure of validator at era.
+   * 
+   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+   * 
+   *  Is it removed after `HISTORY_DEPTH` eras.
+   *  If stakers hasn't been set or has been removed then empty exposure is returned.
+   */
+  get isV9111() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ErasStakers') === '6a56c0d23e6db6bc75caeca3124d602126bc3fc762b694b170e3cbde344b1cde'
+  }
+
+  /**
+   *  Exposure of validator at era.
+   * 
+   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+   * 
+   *  Is it removed after `HISTORY_DEPTH` eras.
+   *  If stakers hasn't been set or has been removed then empty exposure is returned.
+   */
+  async getAsV9111(key: [number, v9111.AccountId32]): Promise<v9111.Exposure> {
+    assert(this.isV9111)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ErasStakers') != null
   }
 }
 
@@ -214,5 +349,37 @@ export class StakingPayeeStorage {
    */
   get isExists(): boolean {
     return this.ctx._chain.getStorageItemTypeHash('Staking', 'Payee') != null
+  }
+}
+
+export class StakingStakersStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Nominators for a particular account that is in action right now. You can't iterate
+   *  through validators here, but you can find them in the Session module.
+   * 
+   *  This is keyed by the stash account.
+   */
+  get isV1020() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'Stakers') === 'd3eee9271023eb9c766a48fd0a709136d59d1bde5407acf940037ad950c8900d'
+  }
+
+  /**
+   *  Nominators for a particular account that is in action right now. You can't iterate
+   *  through validators here, but you can find them in the Session module.
+   * 
+   *  This is keyed by the stash account.
+   */
+  async getAsV1020(key: Uint8Array): Promise<v1020.Exposure> {
+    assert(this.isV1020)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Stakers', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'Stakers') != null
   }
 }

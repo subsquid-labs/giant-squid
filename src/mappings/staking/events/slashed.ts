@@ -1,7 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { RewardData } from '../../../types/custom/stakingData'
 import { StakingSlashedEvent, StakingSlashEvent } from '../../../types/generated/events'
-import { saveSlashEvent } from '../utils/base'
+import { saveSlashEvent } from '../base/savers'
 
 function getSlashedEvent(ctx: EventHandlerContext): RewardData {
     const event = new StakingSlashedEvent(ctx)

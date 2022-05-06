@@ -1,22 +1,80 @@
 type Account @entity {
   id: ID!
-  totalBond: BigInt!
+  activeBond: BigInt!
   totalReward: BigInt!
   totalSlash: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   contributions: [Contribution!] @derivedFrom(field: "account")
+  crowdloans: [Contributor!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
+  validatorHistory: [EraValidator!] @derivedFrom(field: "stash")
+  nominatorHistory: [EraNominator!] @derivedFrom(field: "stash")
+  stakingInfo: StakingInfo @derivedFrom(field: "stash")
   chain: Chain!
-  stakingInfo: StakingInfo
   lastUpdateBlock: BigInt!
 }
 
-type StakingInfo {
-  payee: String
-  payeeAccount: String
-  controller: String
+enum StakingRole {
+  Validator
+  Nominator
+  Indle
+}
+
+enum PayeeType {
+  Staked
+  Stash
+  Controller
+  Account
+  None
+}
+
+type StakingInfo @entity {
+  id: ID! #stash Id
+  stash: Account! @unique
+  controller: Account!
+  payee: Account
+  payeeType: PayeeType!
+  role: StakingRole!
+  commission: Int
+}
+
+type Era @entity {
+  id: ID!
+  index: Int!
+  timestamp: DateTime!
+  startedAt: Int!
+  endedAt: Int
+  total: BigInt!
+  validators: [EraValidator] @derivedFrom(field: "era")
+  nominators: [EraNominator] @derivedFrom(field: "era")
+}
+
+type EraStakingPair @entity {
+  id: ID! #era + validatorId + nominatorId
+  era: Era!
+  nominator: EraNominator
+  validator: EraValidator
+  vote: BigInt!
+}
+
+type EraValidator @entity {
+  id: ID! #era + stashId
+  stash: Account!
+  era: Era!
+  selfBonded: BigInt!
+  totalBonded: BigInt!
+  commission: Int
+  nominators: [EraStakingPair] @derivedFrom(field: "validator")
+}
+
+type EraNominator @entity {
+  id: ID! #era + stashId
+  stash: Account!
+  era: Era!
+  bonded: BigInt!
+  validators: [EraStakingPair] @derivedFrom(field: "nominator")
 }
 
 type Chain @entity {
@@ -89,7 +147,7 @@ type Contribution implements Item & CanFail @entity {
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
-  crowdloan: Crowdloan!
+  crowdloan: Crowdloan
   success: Boolean @index
   account: Account!
   amount: BigInt

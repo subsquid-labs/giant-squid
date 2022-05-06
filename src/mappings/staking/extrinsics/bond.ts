@@ -1,7 +1,7 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { StakeData } from '../../../types/custom/stakingData'
 import { StakingBondCall } from '../../../types/generated/calls'
-import { saveStakeCall } from '../utils/base'
+import { saveStakeCall } from '../base/savers'
 
 function getCallData(ctx: ExtrinsicHandlerContext): StakeData | undefined {
     const call = new StakingBondCall(ctx)

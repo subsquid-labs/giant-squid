@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { StakingSetControllerCall } from '../../../types/generated/calls'
-import { saveController } from '../utils/saveStakingInfo'
+import { saveController } from '../base/savers'
 
 function getCallData(ctx: ExtrinsicHandlerContext): { controller: Uint8Array } | undefined {
     const call = new StakingSetControllerCall(ctx)

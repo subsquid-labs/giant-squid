@@ -5,27 +5,35 @@ export interface RewardData {
 
 export interface StakeData {
     amount: bigint
-    account?: Uint8Array
+    account?: string
 }
+
+export interface NominateData {
+    targets: string[]
+}
+
+export interface ValidateData {
+    commission: number
+}
+
+export interface KickData {
+    nominators: string[]
+}
+
 export interface PayoutData {
     era: number
     validator: Uint8Array
 }
 
-export const enum PayeeType {
-    ACCOUNT = 'Account',
-    STAKED = 'Staked',
-    STASH = 'Stash',
-    CONTROLLER = 'Controller',
-}
+export type PayeeTypeRaw = 'Account' | 'Staked' | 'Stash' | 'Controller' | 'None'
 
 export interface Payee {
-    payee: PayeeType
-    account?: string | null
+    payee: PayeeTypeRaw
+    account?: string
 }
 
 export interface PayeeCallData {
-    payee: PayeeType
+    payee: PayeeTypeRaw
     account?: Uint8Array | null
 }
 
@@ -36,5 +44,6 @@ export interface LedgerData {
 }
 
 export interface Ledger {
+    stash: string
     active: bigint
 }

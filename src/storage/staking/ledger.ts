@@ -1,4 +1,4 @@
-import { decodeID } from '../../common/helpers'
+import { decodeId, encodeId } from '../../common/helpers'
 import config from '../../config'
 import { Ledger, LedgerData } from '../../types/custom/stakingData'
 import { StakingLedgerStorage } from '../../types/generated/storage'
@@ -21,25 +21,37 @@ async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise
 
 const storageCache: {
     hash?: string
-    values: Record<string, Ledger | undefined>
+    values: Map<string, Ledger>
 } = {
-    values: {},
+    values: new Map(),
 }
 
 export async function getLedger(ctx: StorageContext, account: string): Promise<Ledger | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
-        storageCache.values = {}
+        storageCache.values.clear()
     }
 
-    if (!storageCache.values[account]) {
-        const u8 = decodeID(account, config.prefix)
+    const key = account
+    let value = storageCache.values.get(account)
+
+    if (!value) {
+        const u8 = decodeId(account, config.prefix)
         if (!u8) return undefined
 
         const data = await getStorageData(ctx, u8)
+        if (!data) return undefined
 
-        storageCache.values[account] = data
+        const stash = encodeId(data.stash, config.prefix)
+        if (!stash) return undefined
+
+        value = {
+            stash,
+            active: data.active,
+        }
+
+        storageCache.values.set(key, value)
     }
 
-    return storageCache.values[account]
+    return value
 }

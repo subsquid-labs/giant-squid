@@ -53,3 +53,8 @@ export interface RewardDestination_None {
   __kind: 'None'
   value: null
 }
+
+export interface ValidatorPrefsWithBlocked {
+  commission: number
+  blocked: boolean
+}

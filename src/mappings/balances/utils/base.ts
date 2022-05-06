@@ -1,5 +1,5 @@
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, isExtrinsicSuccess } from '../../../common/helpers'
+import { encodeId, isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { AccountTransfer, TransferDicrection } from '../../../model'
@@ -11,8 +11,8 @@ export enum Direction {
 }
 
 export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true) {
-    const idFrom = data.from ? encodeID(data.from, config.prefix) : ctx.extrinsic?.signer
-    const idTo = encodeID(data.to, config.prefix)
+    const idFrom = data.from ? encodeId(data.from, config.prefix) : ctx.extrinsic?.signer
+    const idTo = encodeId(data.to, config.prefix)
     if (!idFrom || !idTo) return
 
     const transfer = await transferManager.create(ctx, {

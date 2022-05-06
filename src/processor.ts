@@ -26,6 +26,8 @@ processor.addEventHandler('crowdloan.Contributed', modules.crowdloan.events.hand
 // processor.addEventHandler('crowdloan.Dissolved', modules.crowdloan.events.handleDissolved)
 processor.addEventHandler('crowdloan.Created', modules.crowdloan.events.handleCreated)
 
+processor.addEventHandler('grandpa.NewAuthorities', modules.grandpa.events.handleNewAuthorities)
+
 //extrinsics handlers
 processor.addExtrinsicHandler(
     'crowdloan.contribute',
@@ -51,6 +53,9 @@ processor.addExtrinsicHandler(
 )
 processor.addExtrinsicHandler('staking.set_controller', modules.staking.extrinsics.handleSetController)
 processor.addExtrinsicHandler('staking.set_payee', modules.staking.extrinsics.handleSetPayee)
+processor.addExtrinsicHandler('staking.nominate', modules.staking.extrinsics.handleNominate)
+processor.addExtrinsicHandler('staking.validate', modules.staking.extrinsics.handleValidate)
+processor.addExtrinsicHandler('staking.chill', modules.staking.extrinsics.handleChill)
 
 processor.addExtrinsicHandler(
     'balances.transfer',

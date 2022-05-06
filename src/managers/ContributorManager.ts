@@ -1,25 +1,26 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { InsertFailedError } from '../common/errors'
-import { Contributor } from '../model'
+import { Account, Contributor, Crowdloan } from '../model'
 import { accountManager } from './AccountManager'
 import { crowdloanManager } from './CrowdloanManager'
 import { Manager } from './Manager'
 
 interface ContributorData {
-    crowdloan: string
-    account: string
+    crowdloan: string | Crowdloan
+    account: string | Account
 }
 
-export class ContributorManager extends Manager<Contributor> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Contributor | undefined> {
-        return await ctx.store.findOne(Contributor, id)
+class ContributorManager extends Manager<Contributor> {
+    createId(crowdloan: string, account: string) {
+        return `${crowdloan}-${account}`
     }
 
     async create(ctx: EventHandlerContext, data: ContributorData) {
-        const account = await accountManager.get(ctx, data.account)
-        const crowdloan = await crowdloanManager.get(ctx, data.crowdloan)
+        const account = typeof data.account === 'string' ? await accountManager.get(ctx, data.account) : data.account
+        const crowdloan =
+            typeof data.crowdloan === 'string' ? await crowdloanManager.get(ctx, data.crowdloan) : data.crowdloan
 
-        const id = `${crowdloan?.id}-${account.id}`
+        const id = this.createId(crowdloan?.id || 'unknown', account.id)
 
         const contributor = new Contributor({
             id,
@@ -34,4 +35,4 @@ export class ContributorManager extends Manager<Contributor> {
     }
 }
 
-export const contributorManager = new ContributorManager()
+export const contributorManager = new ContributorManager(Contributor)

@@ -15,7 +15,7 @@ export class Chain {
   @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new Token(undefined, marshal.nonNull(obj))}, nullable: false})
   token!: Token
 
-  @Column_("integer", {nullable: true})
+  @Column_("int4", {nullable: true})
   paraId!: number | undefined | null
 
   @OneToMany_(() => Crowdloan, e => e.parachain)

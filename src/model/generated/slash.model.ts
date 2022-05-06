@@ -34,7 +34,7 @@ export class Slash {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
 
-  @Column_("integer", {nullable: true})
+  @Column_("int4", {nullable: true})
   era!: number | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})

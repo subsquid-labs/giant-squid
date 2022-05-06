@@ -15,11 +15,7 @@ interface ContributionData {
     paraId: number
 }
 
-export class ContributionManager extends ItemManager<Contribution> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Contribution | undefined> {
-        return await ctx.store.findOne(Contribution, id, { cache: true })
-    }
-
+class ContributionManager extends ItemManager<Contribution> {
     async create(ctx: EventHandlerContext, data: ContributionData): Promise<Contribution> {
         const id = ctx.event.id
 
@@ -45,4 +41,4 @@ export class ContributionManager extends ItemManager<Contribution> {
     }
 }
 
-export const contributionManager = new ContributionManager()
+export const contributionManager = new ContributionManager(Contribution)

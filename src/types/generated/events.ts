@@ -156,6 +156,52 @@ export class CrowdloanDissolvedEvent {
   }
 }
 
+export class GrandpaNewAuthoritiesEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'grandpa.NewAuthorities')
+  }
+
+  /**
+   *  New authority set has been applied.
+   */
+  get isV1020(): boolean {
+    return this.ctx._chain.getEventHash('grandpa.NewAuthorities') === 'a1a8c88e19b8fedde4aab1bef41aa9e1bdfc3748b1e39f7ad5bb09d0347d9505'
+  }
+
+  /**
+   *  New authority set has been applied.
+   */
+  get asV1020(): [Uint8Array, bigint][] {
+    assert(this.isV1020)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  /**
+   * New authority set has been applied.
+   */
+  get isV9130(): boolean {
+    return this.ctx._chain.getEventHash('grandpa.NewAuthorities') === 'e25505d283e6b21359efad4ea3b01da035cbbe2b268fd3cbfb12ca0b5577a9de'
+  }
+
+  /**
+   * New authority set has been applied.
+   */
+  get asV9130(): {authoritySet: [Uint8Array, bigint][]} {
+    assert(this.isV9130)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV9130
+  }
+
+  get asLatest(): {authoritySet: [Uint8Array, bigint][]} {
+    deprecateLatest()
+    return this.asV9130
+  }
+}
+
 export class StakingBondedEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'staking.Bonded')

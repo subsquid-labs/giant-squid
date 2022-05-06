@@ -1,6 +1,6 @@
-import { decodeID, encodeID } from '../../common/helpers'
+import { decodeId, encodeId } from '../../common/helpers'
 import config from '../../config'
-import { Payee, PayeeType } from '../../types/custom/stakingData'
+import { Payee, PayeeTypeRaw } from '../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
 import { StorageContext } from '../../types/generated/support'
@@ -31,29 +31,34 @@ async function getStorageData(
 
 const storageCache: {
     hash?: string
-    values: Record<string, Payee | undefined>
+    values: Map<string, Payee>
 } = {
-    values: {},
+    values: new Map(),
 }
 
 export async function getPayee(ctx: StorageContext, account: string): Promise<Payee | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
-        storageCache.values = {}
+        storageCache.values.clear()
     }
 
-    if (!storageCache.values[account]) {
-        const u8 = decodeID(account, config.prefix)
+    const key = account
+    let value = storageCache.values.get(key)
+
+    if (!value) {
+        const u8 = decodeId(account, config.prefix)
         if (!u8) return undefined
 
         const data = await getStorageData(ctx, u8)
         if (!data) return undefined
 
-        storageCache.values[account] = {
-            payee: data.payee as PayeeType,
-            account: data.account ? encodeID(data.account, config.prefix) : null,
+        value = {
+            payee: data.payee as PayeeTypeRaw,
+            account: data.account ? encodeId(data.account, config.prefix) : undefined,
         }
+
+        storageCache.values.set(key, value)
     }
 
-    return storageCache.values[account]
+    return value
 }

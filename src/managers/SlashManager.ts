@@ -14,7 +14,7 @@ interface SlashData {
     validator?: string
 }
 
-export class SlashManager extends ItemManager<Slash> {
+class SlashManager extends ItemManager<Slash> {
     async get(ctx: EventHandlerContext, id: string): Promise<Slash | undefined> {
         return await ctx.store.findOne(Slash, id, { cache: true })
     }
@@ -23,13 +23,6 @@ export class SlashManager extends ItemManager<Slash> {
         const id = ctx.event.id
 
         const account = await accountManager.get(ctx, data.account)
-
-        account.totalSlash = account.totalSlash + data.amount
-        account.totalBond = account.totalBond - data.amount
-        account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
-
-        await accountManager.upsert(ctx, account)
-
         const chain = await chainManager.get(ctx, data.chain)
 
         const slash = new Slash({
@@ -47,4 +40,4 @@ export class SlashManager extends ItemManager<Slash> {
     }
 }
 
-export const slashManager = new SlashManager()
+export const slashManager = new SlashManager(Slash)

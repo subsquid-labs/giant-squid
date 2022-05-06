@@ -14,16 +14,12 @@ interface CrowdloanData {
     cap: bigint
 }
 
-export class CrowdloanManager extends Manager<Crowdloan> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Crowdloan | undefined> {
-        return ctx.store.findOne(Crowdloan, id, { cache: true })
-    }
-
+class CrowdloanManager extends Manager<Crowdloan> {
     async getByParaId(ctx: EventHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
         return await ctx.store
             .createQueryBuilder(Crowdloan, 'crowdloan')
             .innerJoin(Chain, 'parachain', 'crowdloan.parachain_id = parachain.id')
-            .where('parachain.para_id = :id', { paraId })
+            .where('parachain.para_id = :paraId', { paraId })
             .andWhere('crowdloan.end > :height', { height: ctx.block.height })
             .cache(true)
             .getOne()
@@ -52,4 +48,4 @@ export class CrowdloanManager extends Manager<Crowdloan> {
     }
 }
 
-export const crowdloanManager = new CrowdloanManager()
+export const crowdloanManager = new CrowdloanManager(Crowdloan)

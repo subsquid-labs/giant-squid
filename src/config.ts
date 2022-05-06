@@ -10,9 +10,9 @@ const config: ProcessorConfig = {
     },
     typesBundle: 'kusama',
     batchSize: 100,
-    // blockRange: {
-    //     from: 7828270,
-    // },
+    blockRange: {
+        from: 0,
+    },
 }
 
 export default config

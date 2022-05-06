@@ -11,7 +11,7 @@ migrate:
 
 
 migration:
-	@npx sqd db:create-migration Data
+	@npx sqd db:create-migration
 
 
 build:
@@ -22,13 +22,9 @@ codegen:
 	@npx sqd codegen
 
 
-typegen: ./typegen/versions.json
-	@npx squid-substrate-typegen ./typegen/typegen.json
-
-
-./typegen/versions.json:
+typegen:
 	@make explore
-
+	@npx squid-substrate-typegen ./typegen/typegen.json
 
 explore:
 	@npx squid-substrate-metadata-explorer --chain wss://kusama-rpc.polkadot.io --archive https://kusama.indexer.gc.subsquid.io/v4/graphql --out ./typegen/versions.json
