@@ -55,7 +55,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         })
     }
 
-    era.total = validators.reduce((total, validator) => (total += validator.totalBonded), 0n)
+    era.total = validators.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n)
 
     await eraManager.update(ctx, era)
 }
