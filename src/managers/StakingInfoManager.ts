@@ -57,6 +57,7 @@ class StakingInfoManager extends Manager<StakingInfo> {
         const payee = data.payee === data.stash ? stash : await accountManager.get(ctx, data.stash)
 
         const stakingInfo = new StakingInfo({
+            id,
             controller,
             payee,
             stash,
