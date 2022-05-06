@@ -27,7 +27,7 @@ export class EraValidator {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalBonded!: bigint
 
-  @Column_("integer", {nullable: true})
+  @Column_("int4", {nullable: true})
   commission!: number | undefined | null
 
   @OneToMany_(() => EraStakingPair, e => e.validator)

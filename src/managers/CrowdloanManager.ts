@@ -19,7 +19,7 @@ class CrowdloanManager extends Manager<Crowdloan> {
         return await ctx.store
             .createQueryBuilder(Crowdloan, 'crowdloan')
             .innerJoin(Chain, 'parachain', 'crowdloan.parachain_id = parachain.id')
-            .where('parachain.para_id = :id', { paraId })
+            .where('parachain.para_id = :paraId', { paraId })
             .andWhere('crowdloan.end > :height', { height: ctx.block.height })
             .cache(true)
             .getOne()

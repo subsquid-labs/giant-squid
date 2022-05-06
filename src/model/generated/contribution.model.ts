@@ -29,8 +29,8 @@ export class Contribution {
   extrinsicHash!: string | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Crowdloan, {nullable: false})
-  crowdloan!: Crowdloan
+  @ManyToOne_(() => Crowdloan, {nullable: true})
+  crowdloan!: Crowdloan | undefined | null
 
   @Index_()
   @Column_("bool", {nullable: true})

@@ -31,6 +31,6 @@ export class StakingInfo {
   @Column_("varchar", {length: 9, nullable: false})
   role!: StakingRole
 
-  @Column_("integer", {nullable: true})
+  @Column_("int4", {nullable: true})
   commission!: number | undefined | null
 }

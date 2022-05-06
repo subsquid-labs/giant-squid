@@ -147,7 +147,7 @@ type Contribution implements Item & CanFail @entity {
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
-  crowdloan: Crowdloan!
+  crowdloan: Crowdloan
   success: Boolean @index
   account: Account!
   amount: BigInt

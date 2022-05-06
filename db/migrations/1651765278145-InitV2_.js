@@ -91,9 +91,15 @@ module.exports = class InitV2_1651765278145 {
     await db.query(`ALTER TABLE "staking_info" ADD CONSTRAINT "FK_ab14e5b4a3950fe3ef4efe8e9a4" FOREIGN KEY ("controller_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "staking_info" ADD CONSTRAINT "FK_865eaa33992017a630e00234afe" FOREIGN KEY ("payee_id") REFERENCES "account"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
     await db.query(`ALTER TABLE "account" ADD CONSTRAINT "FK_6b15368424e1f5cf587c2f3c5ac" FOREIGN KEY ("chain_id") REFERENCES "chain"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await db.query(`ALTER TABLE "contribution" DROP CONSTRAINT "FK_34a9b7747fbe547737724da5a3b"`)
+    await db.query(`ALTER TABLE "contribution" ALTER COLUMN "crowdloan_id" DROP NOT NULL`)
+    await db.query(`ALTER TABLE "contribution" ADD CONSTRAINT "FK_34a9b7747fbe547737724da5a3b" FOREIGN KEY ("crowdloan_id") REFERENCES "crowdloan"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
   }
 
   async down(db) {
+    await db.query(`ALTER TABLE "contribution" ADD CONSTRAINT "FK_34a9b7747fbe547737724da5a3b" FOREIGN KEY ("crowdloan_id") REFERENCES "crowdloan"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`)
+    await db.query(`ALTER TABLE "contribution" ALTER COLUMN "crowdloan_id" SET NOT NULL`)
+    await db.query(`ALTER TABLE "contribution" DROP CONSTRAINT "FK_34a9b7747fbe547737724da5a3b"`)
     await db.query(`DROP TABLE "contributor"`)
     await db.query(`DROP INDEX "public"."IDX_d618ae1f4c3bf8e87d148be829"`)
     await db.query(`DROP INDEX "public"."IDX_49a80f5ab8144c75a66632becf"`)
