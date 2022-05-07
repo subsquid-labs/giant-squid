@@ -2,7 +2,6 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Bond, BondType } from '../model'
 
 import { accountManager } from './AccountManager'
-import { InsertFailedError } from '../common/errors'
 import { ItemManager } from './ItemManager'
 
 interface BondData {
@@ -28,9 +27,7 @@ class BondManager extends ItemManager<Bond> {
             success: data.success,
         })
 
-        if (!(await ctx.store.insert(Bond, bond))) throw new InsertFailedError(Bond.name, id)
-
-        await accountManager.update(ctx, account)
+        await ctx.store.insert(Bond, bond)
 
         return bond
     }

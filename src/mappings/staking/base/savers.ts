@@ -79,6 +79,8 @@ export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData, s
                 ? BigInt(account.activeBond) + BigInt(data.amount)
                 : BigInt(account.activeBond) - BigInt(data.amount)
         account.activeBond = account.activeBond > 0n ? account.activeBond : 0n
+
+        await accountManager.update(account)
     }
 }
 
