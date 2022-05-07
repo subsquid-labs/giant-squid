@@ -37,4 +37,7 @@ export class Crowdloan {
   @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   blockNumber!: bigint | undefined | null
+
+  @Column_("timestamp with time zone", {nullable: true})
+  createdAt!: Date | undefined | null
 }

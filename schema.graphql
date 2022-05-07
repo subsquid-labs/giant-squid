@@ -117,10 +117,11 @@ type Crowdloan @entity {
   raised: BigInt!
   parachain: Parachain
   blockNumber: BigInt @index
+  createdAt: DateTime
 }
 
 interface Item {
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String
   amount: BigInt
@@ -140,7 +141,7 @@ interface CanFail {
 
 type Contribution implements Item & CanFail @entity {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   crowdloan: Crowdloan
@@ -151,7 +152,7 @@ type Contribution implements Item & CanFail @entity {
 
 type Transfer implements Item & CanFail @entity {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   to: Account!
@@ -170,7 +171,7 @@ type AccountTransfer @entity {
 
 type Reward implements Item & HasTotal & HasEra @entity  {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
@@ -183,7 +184,7 @@ type Reward implements Item & HasTotal & HasEra @entity  {
 
 type Slash implements Item & HasTotal & HasEra @entity  {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
@@ -200,7 +201,7 @@ enum BondType {
 
 type Bond implements Item & HasTotal & CanFail @entity  {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!

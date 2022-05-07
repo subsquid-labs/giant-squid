@@ -8,7 +8,7 @@ export abstract class ItemManager<T extends ItemBase> extends Manager<T> {
             extrinsicHash: ctx.extrinsic?.hash,
             name: ctx.extrinsic?.name,
             blockNumber: BigInt(ctx.block.height).valueOf(),
-            date: new Date(ctx.block.timestamp),
+            timestamp: new Date(ctx.block.timestamp),
         }
     }
 

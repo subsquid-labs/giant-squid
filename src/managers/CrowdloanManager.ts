@@ -38,6 +38,7 @@ class CrowdloanManager extends Manager<Crowdloan> {
             firstPeriod: BigInt(firstPeriod),
             blockNumber: BigInt(ctx.block.height),
             parachain: await chainManager.get(ctx, paraId.toString()),
+            createdAt: new Date(ctx.block.timestamp),
         })
 
         if (!(await ctx.store.insert(Crowdloan, crowdloan))) throw new InsertFailedError(Crowdloan.name, id)
