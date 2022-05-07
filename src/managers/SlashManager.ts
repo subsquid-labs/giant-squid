@@ -1,13 +1,10 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Slash } from '../model'
-import { chainManager } from './ChainManager'
-import { ChainName } from '../types/custom/chainInfo'
 import { accountManager } from './AccountManager'
 import { InsertFailedError } from '../common/errors'
 import { ItemManager } from './ItemManager'
 
 interface SlashData {
-    chain: ChainName
     amount: bigint
     account: string
     era: number
@@ -23,14 +20,12 @@ class SlashManager extends ItemManager<Slash> {
         const id = ctx.event.id
 
         const account = await accountManager.get(ctx, data.account)
-        const chain = await chainManager.get(ctx, data.chain)
 
         const slash = new Slash({
             id,
             ...this.getMeta(ctx),
             account,
             amount: data.amount,
-            chain,
             total: account.totalSlash,
         })
 

@@ -1,6 +1,5 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
-import {Chain} from "./chain.model"
 import {Crowdloan} from "./crowdloan.model"
 import {Account} from "./account.model"
 
@@ -12,10 +11,6 @@ export class Contribution {
 
   @PrimaryColumn_()
   id!: string
-
-  @Index_()
-  @ManyToOne_(() => Chain, {nullable: false})
-  chain!: Chain
 
   @Column_("timestamp with time zone", {nullable: true})
   date!: Date | undefined | null

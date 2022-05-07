@@ -1,37 +1,28 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import config from '../config'
 import chains from '../chains'
-import { Chain, Token } from '../model'
+import { Parachain } from '../model'
 import { Manager } from './Manager'
 
-class ChainManager extends Manager<Chain> {
-    async get(ctx: EventHandlerContext, id: string, data?: Partial<Chain>): Promise<Chain> {
-        let chain = await ctx.store.findOne(Chain, id, { cache: true })
+class ParachainManager extends Manager<Parachain> {
+    async get(ctx: EventHandlerContext, id: string): Promise<Parachain> {
+        let chain = await ctx.store.findOne(Parachain, id, { cache: true })
 
         if (!chain) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const chainInfo = chains.find((ch) => ch.name === id)!
+            const chainInfo = chains.find((ch) => ch.paraId === Number(id))!
 
-            chain = new Chain({
+            chain = new Parachain({
                 id,
-                token: new Token(chainInfo.tokens[0]),
+                name: chainInfo.name,
                 paraId: chainInfo.paraId,
-                relayChain: chainInfo.relay ? await this.get(ctx, chainInfo.relay) : null,
-                ...data,
+                relayChain: chainInfo.relay,
             })
 
-            await ctx.store.insert(Chain, chain)
+            await ctx.store.insert(Parachain, chain)
         }
 
         return chain
     }
-
-    async getParachain(ctx: EventHandlerContext, id: number, data?: Partial<Chain>): Promise<Chain | undefined> {
-        const chainInfo = chains.find((ch) => ch.paraId === id && ch.relay === config.chainName)
-        if (!chainInfo) return undefined
-
-        return await this.get(ctx, chainInfo.name, data)
-    }
 }
 
-export const chainManager = new ChainManager(Chain)
+export const chainManager = new ParachainManager(Parachain)

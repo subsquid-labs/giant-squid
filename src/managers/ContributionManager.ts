@@ -1,14 +1,11 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Contribution } from '../model'
-import { chainManager } from './ChainManager'
-import { ChainName } from '../types/custom/chainInfo'
 import { accountManager } from './AccountManager'
 import { InsertFailedError } from '../common/errors'
 import { ItemManager } from './ItemManager'
 import { crowdloanManager } from './CrowdloanManager'
 
 interface ContributionData {
-    chain: ChainName
     success: boolean
     amount: bigint
     account: string
@@ -21,15 +18,12 @@ class ContributionManager extends ItemManager<Contribution> {
 
         const account = await accountManager.get(ctx, data.account)
 
-        const chain = await chainManager.get(ctx, data.chain)
-
         const crowdloan = await crowdloanManager.getByParaId(ctx, data.paraId)
 
         const contribution = new Contribution({
             id,
             ...this.getMeta(ctx),
             account,
-            chain,
             amount: data.amount,
             success: data.success,
             crowdloan,

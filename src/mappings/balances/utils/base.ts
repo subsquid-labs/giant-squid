@@ -16,7 +16,6 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
     if (!idFrom || !idTo) return
 
     const transfer = await transferManager.create(ctx, {
-        chain: config.chainName,
         from: idFrom,
         to: idTo,
         amount: data.amount || 0n,

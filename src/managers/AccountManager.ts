@@ -1,8 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import config from '../config'
 import { Account } from '../model'
 import { Manager } from './Manager'
-import { chainManager } from './ChainManager'
+
 import storage from '../storage'
 import { createPrevStorageContext } from '../common/helpers'
 
@@ -31,7 +30,6 @@ class AccountManager extends Manager<Account> {
             totalReward: 0n,
             activeBond: BigInt(ledger?.active || 0).valueOf(),
             totalSlash: 0n,
-            chain: await chainManager.get(ctx, config.chainName),
             lastUpdateBlock: BigInt(ctx.block.height - 1).valueOf(),
         })
 

@@ -1,6 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import config from '../config'
-import { Chain, Crowdloan } from '../model'
+import { Parachain, Crowdloan } from '../model'
 import { Manager } from './Manager'
 import { chainManager } from './ChainManager'
 import { InsertFailedError } from '../common/errors'
@@ -18,8 +17,8 @@ class CrowdloanManager extends Manager<Crowdloan> {
     async getByParaId(ctx: EventHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
         return await ctx.store
             .createQueryBuilder(Crowdloan, 'crowdloan')
-            .innerJoin(Chain, 'parachain', 'crowdloan.parachain_id = parachain.id')
-            .where('parachain.para_id = :paraId', { paraId })
+            .innerJoin(Parachain, 'parachain', 'crowdloan.parachain_id = parachain.id')
+            .where('parachain.id = :id', { id: paraId.toString() })
             .andWhere('crowdloan.end > :height', { height: ctx.block.height })
             .cache(true)
             .getOne()
@@ -38,8 +37,7 @@ class CrowdloanManager extends Manager<Crowdloan> {
             lastPeriod: BigInt(lastPeriod),
             firstPeriod: BigInt(firstPeriod),
             blockNumber: BigInt(ctx.block.height),
-            parachain: await chainManager.getParachain(ctx, Number(id)),
-            chain: await chainManager.get(ctx, config.chainName),
+            parachain: await chainManager.get(ctx, paraId.toString()),
         })
 
         if (!(await ctx.store.insert(Crowdloan, crowdloan))) throw new InsertFailedError(Crowdloan.name, id)

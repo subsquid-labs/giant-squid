@@ -1,7 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 import {Contributor} from "./contributor.model"
-import {Chain} from "./chain.model"
+import {Parachain} from "./parachain.model"
 
 @Entity_()
 export class Crowdloan {
@@ -31,12 +31,8 @@ export class Crowdloan {
   raised!: bigint
 
   @Index_()
-  @ManyToOne_(() => Chain, {nullable: true})
-  parachain!: Chain | undefined | null
-
-  @Index_()
-  @ManyToOne_(() => Chain, {nullable: false})
-  chain!: Chain
+  @ManyToOne_(() => Parachain, {nullable: true})
+  parachain!: Parachain | undefined | null
 
   @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
