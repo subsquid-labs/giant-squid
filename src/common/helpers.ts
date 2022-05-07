@@ -28,7 +28,7 @@ export function decodeId(id: string, prefix: string | number) {
 
 export interface ItemBase {
     id: string
-    date: Date | null | undefined
+    timestamp: Date | null | undefined
     blockNumber: bigint | null | undefined
     extrinsicHash: string | null | undefined
 }

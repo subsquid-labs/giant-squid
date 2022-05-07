@@ -11,7 +11,6 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
     if (!accountId) return
 
     const reward = await rewardManager.create(ctx, {
-        chain: config.chainName,
         amount: data.amount,
         account: accountId,
     })
@@ -35,7 +34,6 @@ export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData)
     if (!accountId) return
 
     const slash = await slashManager.create(ctx, {
-        chain: config.chainName,
         amount: data.amount,
         account: accountId,
         era: (await storage.staking.getCurrentEra(ctx))?.index || 0,
@@ -64,7 +62,6 @@ export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData, s
     const bondType = getBondType(ctx)
 
     const bond = await bondManager.create(ctx, {
-        chain: config.chainName,
         success,
         amount: data.amount,
         account: accountId,

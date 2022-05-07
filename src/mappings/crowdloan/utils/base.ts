@@ -9,7 +9,6 @@ export async function saveContributedEvent(ctx: EventHandlerContext, data: Contr
     if (!contributorId) return
 
     const contribution = await contributionManager.create(ctx, {
-        chain: config.chainName,
         account: contributorId,
         success,
         amount: data.amount,

@@ -12,7 +12,6 @@ type Account @entity {
   validatorHistory: [EraValidator!] @derivedFrom(field: "stash")
   nominatorHistory: [EraNominator!] @derivedFrom(field: "stash")
   stakingInfo: StakingInfo @derivedFrom(field: "stash")
-  chain: Chain!
   lastUpdateBlock: BigInt!
 }
 
@@ -77,12 +76,12 @@ type EraNominator @entity {
   validators: [EraStakingPair] @derivedFrom(field: "nominator")
 }
 
-type Chain @entity {
-  id: ID! #chain name
-  token: Token!
+type Parachain @entity {
+  id: ID! #paraId
+  name: String
   paraId: Int
   crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
-  relayChain: Chain
+  relayChain: String
 }
 
 type Token {
@@ -116,16 +115,15 @@ type Crowdloan @entity {
   end: BigInt!
   contributors: [Contributor!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
-  parachain: Chain
-  chain: Chain! #relay
+  parachain: Parachain
   blockNumber: BigInt @index
+  createdAt: DateTime
 }
 
 interface Item {
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String
-  chain: Chain!
   amount: BigInt
 }
 
@@ -143,8 +141,7 @@ interface CanFail {
 
 type Contribution implements Item & CanFail @entity {
   id: ID!
-  chain: Chain!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   crowdloan: Crowdloan
@@ -155,8 +152,7 @@ type Contribution implements Item & CanFail @entity {
 
 type Transfer implements Item & CanFail @entity {
   id: ID!
-  chain: Chain!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   to: Account!
@@ -175,8 +171,7 @@ type AccountTransfer @entity {
 
 type Reward implements Item & HasTotal & HasEra @entity  {
   id: ID!
-  chain: Chain!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
@@ -189,8 +184,7 @@ type Reward implements Item & HasTotal & HasEra @entity  {
 
 type Slash implements Item & HasTotal & HasEra @entity  {
   id: ID!
-  chain: Chain!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
@@ -207,8 +201,7 @@ enum BondType {
 
 type Bond implements Item & HasTotal & CanFail @entity  {
   id: ID!
-  chain: Chain!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
   account: Account!
