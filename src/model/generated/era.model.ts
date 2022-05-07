@@ -27,6 +27,12 @@ export class Era {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   total!: bigint
 
+  @Column_("int4", {nullable: false})
+  validatorsCount!: number
+
+  @Column_("int4", {nullable: false})
+  nominatorsCount!: number
+
   @OneToMany_(() => EraValidator, e => e.era)
   validators!: EraValidator[]
 

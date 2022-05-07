@@ -46,6 +46,8 @@ type Era @entity {
   startedAt: Int!
   endedAt: Int
   total: BigInt!
+  validatorsCount: Int!
+  nominatorsCount: Int!
   validators: [EraValidator] @derivedFrom(field: "era")
   nominators: [EraNominator] @derivedFrom(field: "era")
 }

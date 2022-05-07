@@ -7,7 +7,6 @@ import {
     eraNominatorManager,
     eraStakingPairManager,
 } from '../../../managers'
-import { Era } from '../../../model'
 import storage from '../../../storage'
 
 export async function handleNewAuthorities(ctx: EventHandlerContext) {
@@ -26,18 +25,29 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         return
     }
 
+    const stakingData = await getStakingData(ctx, storageEraData.index)
+    if (!stakingData) return
+    const { validatorsData, nominatorsData, links } = stakingData
+
     const era = await eraManager.create(ctx, {
         index: storageEraData.index,
         timestamp: activeEraData?.timestamp,
+        validatorsCount: validatorsData.length,
+        nominatorsCount: nominatorsData.length,
+        total: validatorsData.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n),
     })
 
-    const stakingData = await getStakingData(ctx, era)
-    if (!stakingData) return
+    const validators = await eraValidatorManager.create(
+        ctx,
+        validatorsData.map((data) => ({ era, ...data }))
+    )
 
-    const validators = await eraValidatorManager.create(ctx, stakingData.validatorsData)
-    const nominators = await eraNominatorManager.create(ctx, stakingData.nominatorsData)
+    const nominators = await eraNominatorManager.create(
+        ctx,
+        nominatorsData.map((data) => ({ era, ...data }))
+    )
 
-    for (const link of stakingData.links) {
+    for (const link of links) {
         const validator = validators.find((v) => v.stash.id === link.validatorId)
         const nominator = nominators.find((v) => v.stash.id === link.nominatorId)
         if (!nominator || !validator) {
@@ -55,33 +65,31 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         })
     }
 
-    era.total = validators.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n)
-
     await eraManager.update(ctx, era)
 }
 
-async function getStakingData(ctx: EventHandlerContext, era: Era) {
-    const validatorsData: EraValidatorData[] = []
-    const nominatorsData: EraNominatorData[] = []
+async function getStakingData(ctx: EventHandlerContext, era: number) {
+    const validatorsData: Omit<EraValidatorData, 'era'>[] = []
+    const nominatorsData: Omit<EraNominatorData, 'era'>[] = []
     const links: { nominatorId: string; validatorId: string; vote: bigint }[] = []
 
     const validatorIds = await storage.session.getValidators(ctx)
     if (!validatorIds) {
-        console.warn(`Warning: Validators for era ${era.index} not found at block ${ctx.block.height}`)
+        console.warn(`Warning: Validators for era ${era} not found at block ${ctx.block.height}`)
         return
     }
 
     for (const validatorId of validatorIds) {
-        const validatorInfo = await storage.staking.getErasStakers(ctx, validatorId, era.index)
+        const validatorInfo = await storage.staking.getErasStakers(ctx, validatorId, era)
         if (!validatorInfo) {
-            console.warn(`Warning: Missing info for validator in era ${era.index} at block ${ctx.block.height}`)
+            console.warn(`Warning: Missing info for validator in era ${era} at block ${ctx.block.height}`)
             continue
         }
 
         validatorsData.push({
-            era,
             stash: validatorId,
             totalBonded: validatorInfo.total,
+            selfBonded: validatorInfo.own,
         })
 
         for (const nominatorInfo of validatorInfo.nominators) {
@@ -93,7 +101,6 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
 
                 nominatorsData.push({
                     stash: nominatorId,
-                    era,
                 })
             }
 
@@ -112,16 +119,16 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
     }
 }
 
-async function getNominatorData(ctx: EventHandlerContext, nominatorId: string, era: Era) {
+async function getNominatorData(ctx: EventHandlerContext, nominatorId: string, era: number) {
     const nomanatorController = await storage.staking.getBonded(ctx, nominatorId)
     if (!nomanatorController) {
-        console.warn(`Warning: Missing controller for nomanator in era ${era.index} at block ${ctx.block.height}`)
+        console.warn(`Warning: Missing controller for nomanator in era ${era} at block ${ctx.block.height}`)
         return
     }
 
     const nominatorLedger = await storage.staking.getLedger(ctx, nomanatorController)
     if (!nominatorLedger) {
-        console.warn(`Warning: Missing ledger for nomanator in era ${era.index} at block ${ctx.block.height}`)
+        console.warn(`Warning: Missing ledger for nomanator in era ${era} at block ${ctx.block.height}`)
         return
     }
 

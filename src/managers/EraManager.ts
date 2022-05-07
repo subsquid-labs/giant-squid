@@ -6,6 +6,9 @@ interface EraData {
     index: number
     timestamp?: number
     startedAt?: number
+    total: bigint
+    validatorsCount: number
+    nominatorsCount: number
 }
 
 class EraManager extends Manager<Era> {
@@ -22,6 +25,8 @@ class EraManager extends Manager<Era> {
             timestamp: new Date(data.timestamp || ctx.block.timestamp),
             startedAt: data.startedAt || ctx.block.height,
             total: 0n,
+            validatorsCount: data.validatorsCount,
+            nominatorsCount: data.nominatorsCount,
         })
 
         await ctx.store.insert(Era, era)
