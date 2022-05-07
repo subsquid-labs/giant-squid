@@ -24,7 +24,7 @@ class EraManager extends Manager<Era> {
             index: data.index,
             timestamp: new Date(data.timestamp || ctx.block.timestamp),
             startedAt: data.startedAt || ctx.block.height,
-            total: 0n,
+            total: data.total,
             validatorsCount: data.validatorsCount,
             nominatorsCount: data.nominatorsCount,
         })
