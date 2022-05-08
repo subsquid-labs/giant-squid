@@ -223,31 +223,6 @@ export class StakingErasStakersStorage {
   }
 
   /**
-   *  Exposure of validator at era.
-   * 
-   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
-   * 
-   *  Is it removed after `HISTORY_DEPTH` eras.
-   *  If stakers hasn't been set or has been removed then empty exposure is returned.
-   */
-  get isV9111() {
-    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ErasStakers') === '6a56c0d23e6db6bc75caeca3124d602126bc3fc762b694b170e3cbde344b1cde'
-  }
-
-  /**
-   *  Exposure of validator at era.
-   * 
-   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
-   * 
-   *  Is it removed after `HISTORY_DEPTH` eras.
-   *  If stakers hasn't been set or has been removed then empty exposure is returned.
-   */
-  async getAsV9111(key: [number, v9111.AccountId32]): Promise<v9111.Exposure> {
-    assert(this.isV9111)
-    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', key)
-  }
-
-  /**
    * Checks whether the storage item is defined for the current chain version.
    */
   get isExists(): boolean {

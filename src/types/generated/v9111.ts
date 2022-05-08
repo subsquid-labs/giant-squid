@@ -67,12 +67,6 @@ export interface FundInfo {
 
 export type AccountId32 = Uint8Array
 
-export interface Exposure {
-  total: bigint
-  own: bigint
-  others: IndividualExposure[]
-}
-
 export type MultiSigner = MultiSigner_Ed25519 | MultiSigner_Sr25519 | MultiSigner_Ecdsa
 
 export interface MultiSigner_Ed25519 {
@@ -104,9 +98,4 @@ export interface LastContribution_PreEnding {
 export interface LastContribution_Ending {
   __kind: 'Ending'
   value: number
-}
-
-export interface IndividualExposure {
-  who: AccountId32
-  value: bigint
 }

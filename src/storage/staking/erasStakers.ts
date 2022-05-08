@@ -31,8 +31,6 @@ async function getErasStakersData(
 
     if (storage.isV1050) {
         return await storage.getAsV1050(era, account)
-    } else if (storage.isV9111) {
-        return await storage.getAsV9111([era, account])
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
