@@ -5,6 +5,7 @@ import config from '../../../config'
 import { Bond, Reward } from '../../../model'
 import { accountManager, chainManager, roundManager } from '../../../managers'
 import { AddressNotDecoded } from '../../../common/errors'
+import { getAddress } from '@ethersproject/address'
 
 async function populateStakingItem(
     item: Reward | Bond,
@@ -20,7 +21,7 @@ async function populateStakingItem(
     item.name = ctx.event.name
     item.chain = await chainManager.get(ctx, config.chainName)
 
-    const id = data.account ? toHex(data.account) : ctx.extrinsic?.signer
+    const id = data.account ? getAddress(toHex(data.account)) : ctx.extrinsic?.signer
     if (!id) throw new AddressNotDecoded([data.account])
 
     item.account = await accountManager.get(ctx, id)
