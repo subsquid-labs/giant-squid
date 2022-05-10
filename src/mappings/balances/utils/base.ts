@@ -7,10 +7,11 @@ import { accountManager, chainManager } from '../../../managers'
 import { accountTransferManager } from '../../../managers/AccountTransferManager'
 import { transferManager } from '../../../managers/TransferManager'
 import { AddressNotDecoded } from '../../../common/errors'
+import { getAddress } from '@ethersproject/address'
 
 export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true): Promise<void> {
-    const idFrom = data.from ? toHex(data.from) : ctx.extrinsic?.signer
-    const idTo = toHex(data.to)
+    const idFrom = data.from ? getAddress(toHex(data.from)) : ctx.extrinsic?.signer
+    const idTo = getAddress(toHex(data.to))
 
     if (!idFrom || !idTo) throw new AddressNotDecoded([data.from, data.to])
 

@@ -6,7 +6,7 @@ serve:
 	@npx squid-graphql-server
 
 
-migrate: build
+migrate:
 	@npx sqd db:migrate
 
 
