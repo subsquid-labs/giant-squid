@@ -1,5 +1,5 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, populateMeta } from '../../../common/helpers'
+import { EventHandlerContext, toHex } from '@subsquid/substrate-processor'
+import { populateMeta } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Bond, Reward } from '../../../model'
@@ -20,7 +20,7 @@ async function populateStakingItem(
     item.name = ctx.event.name
     item.chain = await chainManager.get(ctx, config.chainName)
 
-    const id = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    const id = data.account ? toHex(data.account) : ctx.extrinsic?.signer
     if (!id) throw new AddressNotDecoded([data.account])
 
     item.account = await accountManager.get(ctx, id)

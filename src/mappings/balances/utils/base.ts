@@ -1,5 +1,5 @@
-import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, isExtrinsicSuccess } from '../../../common/helpers'
+import { EventHandlerContext, ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
+import { isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { TransferDirection } from '../../../model'
@@ -9,8 +9,8 @@ import { transferManager } from '../../../managers/TransferManager'
 import { AddressNotDecoded } from '../../../common/errors'
 
 export async function saveTransferEvent(ctx: EventHandlerContext, data: TransferData, success = true): Promise<void> {
-    const idFrom = data.from ? encodeID(data.from, config.prefix) : ctx.extrinsic?.signer
-    const idTo = encodeID(data.to, config.prefix)
+    const idFrom = data.from ? toHex(data.from) : ctx.extrinsic?.signer
+    const idTo = toHex(data.to)
 
     if (!idFrom || !idTo) throw new AddressNotDecoded([data.from, data.to])
 
