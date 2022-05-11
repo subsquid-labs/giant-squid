@@ -1,10 +1,15 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { StakeData } from '../../../types/custom/stakingData'
 import { ParachainStakingCandidateBondedMoreEvent } from '../../../types/generated/events'
-import { saveStakeEvent } from '../utils/base'
+import { saveBondEvent } from '../utils/base'
 
-function getEventData(ctx: EventHandlerContext): StakeData {
+interface EventData {
+    account: Uint8Array
+    amount: bigint
+    newTotal: bigint
+}
+
+function getEventData(ctx: EventHandlerContext): EventData {
     const event = new ParachainStakingCandidateBondedMoreEvent(ctx)
 
     if (event.isV1001) {
@@ -25,9 +30,8 @@ function getEventData(ctx: EventHandlerContext): StakeData {
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export async function handleBondedMore(ctx: EventHandlerContext) {
+export const handleBondedMore: EventHandler = async (ctx) => {
     const data = getEventData(ctx)
-    if (!data) return
 
-    await saveStakeEvent(ctx, data)
+    await saveBondEvent(ctx, data)
 }

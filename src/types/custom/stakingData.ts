@@ -4,9 +4,9 @@ export interface RewardData {
 }
 
 export interface StakeData {
+    account: Uint8Array
     amount: bigint
-    account?: Uint8Array
-    newTotal: bigint
+    newTotal?: bigint
 }
 
 export interface RoundData {

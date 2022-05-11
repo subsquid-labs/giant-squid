@@ -1,5 +1,5 @@
 import { EventHandlerContext, toHex } from '@subsquid/substrate-processor'
-import { populateMeta } from '../../../common/helpers'
+import { populateMeta, saturatingSumBigInt } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Bond, Reward } from '../../../model'
@@ -47,25 +47,6 @@ async function calculateTotalReward(
     await ctx.store.save(account)
 }
 
-async function calculateTotalStake(
-    stake: Bond,
-    options: {
-        ctx: EventHandlerContext
-        data: StakeData
-    }
-) {
-    const { ctx, data } = options
-
-    const { account } = stake
-
-    account.totalBond = BigInt(account.totalBond || 0n) + BigInt(data.amount)
-    account.totalBond = account.totalBond > 0n ? account.totalBond : 0n
-    stake.total = account.totalBond
-    stake.inBuildTotal = data.newTotal
-
-    await ctx.store.save(account)
-}
-
 export async function saveRewardedEvent(ctx: EventHandlerContext, data: RewardData): Promise<void> {
     const { id } = ctx.event
 
@@ -79,15 +60,11 @@ export async function saveRewardedEvent(ctx: EventHandlerContext, data: RewardDa
     await ctx.store.insert(Reward, reward)
 }
 
-export async function saveStakeEvent(ctx: EventHandlerContext, data: StakeData, success = true): Promise<void> {
-    const { id } = ctx.event
+export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData): Promise<void> {
+    const accountId = getAddress(toHex(data.account))
+    const account = await accountManager.get(ctx, accountId)
 
-    const stake = new Bond({ id })
+    account.totalBond = data.newTotal ? data.newTotal : saturatingSumBigInt(account.totalBond, data.amount)
 
-    if (!(await populateStakingItem(stake, { ctx, data }))) return
-    stake.success = success
-
-    await calculateTotalStake(stake, { ctx, data })
-
-    await ctx.store.insert(Bond, stake)
+    await ctx.store.save(account)
 }

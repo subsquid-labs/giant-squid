@@ -1,36 +1,33 @@
 import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { ParachainStakingCandidateBondedLessEvent } from '../../../types/generated/events'
+import { ParachainStakingDelegationEvent } from '../../../types/generated/events'
 import { saveBondEvent } from '../utils/base'
 
 interface EventData {
     account: Uint8Array
     amount: bigint
-    newTotal: bigint
 }
 
 function getEventData(ctx: EventHandlerContext): EventData {
-    const event = new ParachainStakingCandidateBondedLessEvent(ctx)
+    const event = new ParachainStakingDelegationEvent(ctx)
 
     if (event.isV1001) {
-        const [account, amount, newTotal] = event.asV1001
+        const [account, amount] = event.asV1001
         return {
             account,
-            amount: -amount,
-            newTotal,
+            amount,
         }
     } else if (event.isV1300) {
-        const { candidate: account, amount, newBond: newTotal } = event.asV1300
+        const { delegator: account, lockedAmount: amount } = event.asV1300
         return {
             account,
-            amount: -amount,
-            newTotal,
+            amount,
         }
     }
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export const handleBondedLess: EventHandler = async (ctx) => {
+export const handleDelegation: EventHandler = async (ctx) => {
     const data = getEventData(ctx)
 
     await saveBondEvent(ctx, data)

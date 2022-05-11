@@ -7,7 +7,15 @@
     "parachainStaking.NewRound",
     "parachainStaking.Rewarded",
     "parachainStaking.CandidateBondedMore",
-    "parachainStaking.CandidateBondedLess"
+    "parachainStaking.CandidateBondedLess",
+    "parachainStaking.DelegationIncreased",
+    "parachainStaking.DelegationDecreased",
+    "parachainStaking.Delegation",
+    "parachainStaking.JoinedCollatorCandidates",
+    "parachainStaking.DelegatorLeftCandidate",
+    "parachainStaking.DelegatorLeft",
+    "parachainStaking.CandidateLeft",
+    "parachainStaking.DelegationRevoked"
   ],
   "calls": [
     "balances.transfer",

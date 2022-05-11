@@ -22,7 +22,8 @@ codegen:
 	@npx sqd codegen
 
 
-typegen: ./typegen/versions.json
+typegen: 
+	@make explore
 	@npx squid-substrate-typegen ./typegen/typegen.json
 
 
