@@ -22,5 +22,12 @@
     "balances.force_transfer",
     "balances.transfer_keep_alive",
     "balances.transfer_all"
+  ],
+  "storage": [
+    "ParachainStaking.CandidateState",
+    "ParachainStaking.CandidateInfo",
+    "ParachainStaking.DelegatorState",
+    "ParachainStaking.TopDelegations",
+    "ParachainStaking.BottomDelegations"
   ]
 }
