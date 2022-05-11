@@ -15,7 +15,16 @@
     "parachainStaking.DelegatorLeftCandidate",
     "parachainStaking.DelegatorLeft",
     "parachainStaking.CandidateLeft",
-    "parachainStaking.DelegationRevoked"
+    "parachainStaking.DelegationRevoked",
+
+    "parachainStaking.CollatorBondedMore",
+    "parachainStaking.CollatorBondedLess",
+    "parachainStaking.NominationIncreased",
+    "parachainStaking.NominationDecreased",
+    "parachainStaking.Nomination",
+    "parachainStaking.NominatorLeftCollator",
+    "parachainStaking.NominatorLeft",
+    "parachainStaking.CollatorLeft"
   ],
   "calls": [
     "balances.transfer",
@@ -28,6 +37,9 @@
     "ParachainStaking.CandidateInfo",
     "ParachainStaking.DelegatorState",
     "ParachainStaking.TopDelegations",
-    "ParachainStaking.BottomDelegations"
+    "ParachainStaking.BottomDelegations",
+    "ParachainStaking.CollatorState2",
+    "ParachainStaking.NominatorState2"
+
   ]
 }
