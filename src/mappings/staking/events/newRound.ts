@@ -1,4 +1,4 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { RoundData } from '../../../types/custom/stakingData'
 import { ParachainStakingNewRoundEvent } from '../../../types/generated/events'
@@ -16,7 +16,7 @@ function getEventData(ctx: EventHandlerContext): RoundData {
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export async function handleNewRound(ctx: EventHandlerContext) {
+export const handleNewRound: EventHandler = async (ctx) => {
     const data = getEventData(ctx)
     if (!data) return
 

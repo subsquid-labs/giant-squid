@@ -1,7 +1,5 @@
-import * as ss58 from '@subsquid/ss58'
 import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { EXTRINSIC_SUCCESS } from './consts'
-import { AssertionError } from 'assert'
 
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
     entity.extrinsicHash = ctx.extrinsic?.hash
@@ -18,4 +16,8 @@ export interface ItemBase {
 
 export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext): boolean {
     return ctx.event.name === EXTRINSIC_SUCCESS
+}
+export function saturatingSumBigInt(a: bigint, b: bigint, { max, min } = { max: null, min: 0n }): bigint {
+    const sum = BigInt(a) + BigInt(b)
+    return sum < min ? min : max && sum > max ? max : sum
 }

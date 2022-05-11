@@ -1,4 +1,4 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { RewardData } from '../../../types/custom/stakingData'
 import { saveRewardedEvent } from '../utils/base'
@@ -24,7 +24,7 @@ function getEventData(ctx: EventHandlerContext): RewardData | undefined {
     }
 }
 
-export async function handleRewarded(ctx: EventHandlerContext) {
+export const handleRewarded: EventHandler = async (ctx) => {
     const data = getEventData(ctx)
     if (!data) return
 
