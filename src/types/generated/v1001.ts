@@ -33,6 +33,15 @@ export interface Delegator {
   status: DelegatorStatus
 }
 
+export interface Nominator2 {
+  delegations: Bond[]
+  revocations: AccountId20[]
+  total: bigint
+  scheduledRevocationsCount: number
+  scheduledRevocationsTotal: bigint
+  status: DelegatorStatus
+}
+
 export interface Bond {
   owner: AccountId20
   amount: bigint

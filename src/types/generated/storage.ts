@@ -2,6 +2,7 @@ import assert from 'assert'
 import {StorageContext, Result} from './support'
 import * as v1001 from './v1001'
 import * as v1201 from './v1201'
+import * as v900 from './v900'
 
 export class ParachainStakingBottomDelegationsStorage {
   constructor(private ctx: StorageContext) {}
@@ -81,6 +82,32 @@ export class ParachainStakingCandidateStateStorage {
   }
 }
 
+export class ParachainStakingCollatorState2Storage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Get collator state associated with an account if account is collating else None
+   */
+  get isV900() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'CollatorState2') === 'a4d9c3541b410bd0ebf9e6919cad26ad7aa3481dd09c1495650af46ea30787a9'
+  }
+
+  /**
+   *  Get collator state associated with an account if account is collating else None
+   */
+  async getAsV900(key: v900.H160): Promise<v900.Collator2 | undefined> {
+    assert(this.isV900)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'CollatorState2') != null
+  }
+}
+
 export class ParachainStakingDelegatorStateStorage {
   constructor(private ctx: StorageContext) {}
 
@@ -104,6 +131,49 @@ export class ParachainStakingDelegatorStateStorage {
    */
   get isExists(): boolean {
     return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'DelegatorState') != null
+  }
+}
+
+export class ParachainStakingNominatorState2Storage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  get isV900() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'NominatorState2') === 'adc9b2765bcd5aa9c2ac9f93cd108b87d508a8d5494c318bf18ee6f4b599b8ed'
+  }
+
+  /**
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  async getAsV900(key: v900.H160): Promise<v900.Nominator2 | undefined> {
+    assert(this.isV900)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', key)
+  }
+
+  /**
+   *  DEPRECATED in favor of DelegatorState
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  get isV1001() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'NominatorState2') === 'c33bf4fdf125c8070ffd27253f9a811a9a2b244a0af652bf531999872325e904'
+  }
+
+  /**
+   *  DEPRECATED in favor of DelegatorState
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  async getAsV1001(key: v1001.AccountId20): Promise<v1001.Nominator2 | undefined> {
+    assert(this.isV1001)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'NominatorState2') != null
   }
 }
 

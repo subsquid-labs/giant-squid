@@ -188,6 +188,99 @@ export class ParachainStakingCandidateLeftEvent {
   }
 }
 
+export class ParachainStakingCollatorBondedLessEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.CollatorBondedLess')
+  }
+
+  /**
+   * Collator Account, Old Bond, New Bond
+   */
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.CollatorBondedLess') === '7d53ab304de2c1ff2ac70be085ea6ab305e3a4df52dde9c25829171c7376cebc'
+  }
+
+  /**
+   * Collator Account, Old Bond, New Bond
+   */
+  get asV900(): [v900.H160, bigint, bigint] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, bigint, bigint] {
+    deprecateLatest()
+    return this.asV900
+  }
+}
+
+export class ParachainStakingCollatorBondedMoreEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.CollatorBondedMore')
+  }
+
+  /**
+   * Collator Account, Old Bond, New Bond
+   */
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.CollatorBondedMore') === '7d53ab304de2c1ff2ac70be085ea6ab305e3a4df52dde9c25829171c7376cebc'
+  }
+
+  /**
+   * Collator Account, Old Bond, New Bond
+   */
+  get asV900(): [v900.H160, bigint, bigint] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, bigint, bigint] {
+    deprecateLatest()
+    return this.asV900
+  }
+}
+
+export class ParachainStakingCollatorLeftEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.CollatorLeft')
+  }
+
+  /**
+   * Account, Amount Unlocked, New Total Amt Locked
+   */
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.CollatorLeft') === '7d53ab304de2c1ff2ac70be085ea6ab305e3a4df52dde9c25829171c7376cebc'
+  }
+
+  /**
+   * Account, Amount Unlocked, New Total Amt Locked
+   */
+  get asV900(): [v900.H160, bigint, bigint] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, bigint, bigint] {
+    deprecateLatest()
+    return this.asV900
+  }
+}
+
 export class ParachainStakingDelegationEvent {
   constructor(private ctx: EventContext) {
     assert(this.ctx.event.name === 'parachainStaking.Delegation')
@@ -529,6 +622,149 @@ export class ParachainStakingNewRoundEvent {
   get asLatest(): {startingBlock: number, round: number, selectedCollatorsNumber: number, totalBalance: bigint} {
     deprecateLatest()
     return this.asV1300
+  }
+}
+
+export class ParachainStakingNominationEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.Nomination')
+  }
+
+  /**
+   * Nominator, Amount Locked, Collator, Nominator Position with New Total Counted if in Top
+   */
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.Nomination') === '9e88e3dd4dec21ca4744b0264c96a88bfef8fa4f3a42c495ba697dcf51165507'
+  }
+
+  /**
+   * Nominator, Amount Locked, Collator, Nominator Position with New Total Counted if in Top
+   */
+  get asV900(): [v900.H160, bigint, v900.H160, v900.NominatorAdded] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, bigint, v900.H160, v900.NominatorAdded] {
+    deprecateLatest()
+    return this.asV900
+  }
+}
+
+export class ParachainStakingNominationDecreasedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.NominationDecreased')
+  }
+
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.NominationDecreased') === 'cb87cf94019b8ebc544a6a9a05c01f439fe3dea8cbed08c97f1a1e60dd6ad4f3'
+  }
+
+  get asV900(): [v900.H160, v900.H160, bigint, boolean] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, v900.H160, bigint, boolean] {
+    deprecateLatest()
+    return this.asV900
+  }
+}
+
+export class ParachainStakingNominationIncreasedEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.NominationIncreased')
+  }
+
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.NominationIncreased') === 'cb87cf94019b8ebc544a6a9a05c01f439fe3dea8cbed08c97f1a1e60dd6ad4f3'
+  }
+
+  get asV900(): [v900.H160, v900.H160, bigint, boolean] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, v900.H160, bigint, boolean] {
+    deprecateLatest()
+    return this.asV900
+  }
+}
+
+export class ParachainStakingNominatorLeftEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.NominatorLeft')
+  }
+
+  /**
+   * Nominator, Amount Unstaked
+   */
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.NominatorLeft') === 'e4f02aa7cee015102b6cbc171f5d7e84370e60deba2166a27195187adde0407f'
+  }
+
+  /**
+   * Nominator, Amount Unstaked
+   */
+  get asV900(): [v900.H160, bigint] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, bigint] {
+    deprecateLatest()
+    return this.asV900
+  }
+}
+
+export class ParachainStakingNominatorLeftCollatorEvent {
+  constructor(private ctx: EventContext) {
+    assert(this.ctx.event.name === 'parachainStaking.NominatorLeftCollator')
+  }
+
+  /**
+   * Nominator, Collator, Amount Unstaked, New Total Amt Staked for Collator
+   */
+  get isV900(): boolean {
+    return this.ctx._chain.getEventHash('parachainStaking.NominatorLeftCollator') === 'c5569fad693da6ab49df69c2cc3a1767b0c18bfc1f206847e0946659f6cd24ef'
+  }
+
+  /**
+   * Nominator, Collator, Amount Unstaked, New Total Amt Staked for Collator
+   */
+  get asV900(): [v900.H160, v900.H160, bigint, bigint] {
+    assert(this.isV900)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV900
+  }
+
+  get asLatest(): [v900.H160, v900.H160, bigint, bigint] {
+    deprecateLatest()
+    return this.asV900
   }
 }
 
