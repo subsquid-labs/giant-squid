@@ -6,6 +6,7 @@ import { saveBondEvent } from '../utils/base'
 interface EventData {
     account: Uint8Array
     amount: bigint
+    newTotal: bigint
 }
 
 function getEventData(ctx: EventHandlerContext): EventData {
@@ -16,12 +17,14 @@ function getEventData(ctx: EventHandlerContext): EventData {
         return {
             account,
             amount: -amount,
+            newTotal: 0n,
         }
     } else if (event.isV1300) {
         const { delegator: account, unstakedAmount: amount } = event.asV1300
         return {
             account,
             amount: -amount,
+            newTotal: 0n,
         }
     }
     throw new UnknownVersionError(event.constructor.name)
