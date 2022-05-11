@@ -1,5 +1,6 @@
 import { getAddress } from '@ethersproject/address'
 import { EventHandlerContext, ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
+import { StorageContext } from '../types/generated/support'
 import { EXTRINSIC_SUCCESS } from './consts'
 
 export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
@@ -29,4 +30,14 @@ export function decodeId(id: string): Uint8Array {
 
 export function encodeId(id: Uint8Array): string {
     return getAddress(toHex(id))
+}
+
+export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string } }): StorageContext {
+    return {
+        _chain: ctx._chain,
+        block: {
+            ...ctx.block,
+            hash: ctx.block.parentHash,
+        },
+    }
 }
