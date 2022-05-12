@@ -1,0 +1,36 @@
+import type {Result} from './support'
+
+export interface Collator {
+  id: Uint8Array
+  bond: bigint
+  nominators: Bond[]
+  total: bigint
+  state: CollatorStatus
+}
+
+export interface Nominator {
+  nominations: Bond[]
+  total: bigint
+}
+
+export interface Bond {
+  owner: Uint8Array
+  amount: bigint
+}
+
+export type CollatorStatus = CollatorStatus_Active | CollatorStatus_Idle | CollatorStatus_Leaving
+
+export interface CollatorStatus_Active {
+  __kind: 'Active'
+  value: null
+}
+
+export interface CollatorStatus_Idle {
+  __kind: 'Idle'
+  value: null
+}
+
+export interface CollatorStatus_Leaving {
+  __kind: 'Leaving'
+  value: number
+}

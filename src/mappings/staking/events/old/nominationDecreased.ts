@@ -11,14 +11,27 @@ interface EventData {
 function getEventData(ctx: EventHandlerContext): EventData {
     const event = new ParachainStakingNominationDecreasedEvent(ctx)
 
-    if (event.isV900) {
-        const [account, , amount] = event.asV900
+    if (event.isV49) {
+        const [account, , amount] = event.asV49
         return {
             account,
             amount: -amount,
         }
+    } else if (event.isV53) {
+        const [account, , amount] = event.asV53
+        return {
+            account,
+            amount: -amount,
+        }
+    } else if (event.isV501) {
+        const [account, , amount] = event.asV501
+        return {
+            account,
+            amount: -amount,
+        }
+    } else {
+        throw new UnknownVersionError(event.constructor.name)
     }
-    throw new UnknownVersionError(event.constructor.name)
 }
 
 export const handleNominationDecreased: EventHandler = async (ctx) => {

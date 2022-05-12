@@ -1,6 +1,9 @@
 import { UnknownVersionError } from '../../../common/errors'
 import { decodeId, encodeId } from '../../../common/helpers'
-import { ParachainStakingNominatorState2Storage } from '../../../types/generated/storage'
+import {
+    ParachainStakingNominatorState2Storage,
+    ParachainStakingNominatorStateStorage,
+} from '../../../types/generated/storage'
 import { StorageContext } from '../../../types/generated/support'
 
 interface StorageData {
@@ -11,12 +14,33 @@ interface StorageData {
     total: bigint
 }
 
+async function getOldStorageData(ctx: StorageContext, account: Uint8Array): Promise<StorageData | undefined> {
+    const storage = new ParachainStakingNominatorStateStorage(ctx)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV49) {
+        return await storage.getAsV49(account)
+    } else {
+        throw new UnknownVersionError(storage.constructor.name)
+    }
+}
+
 async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<StorageData | undefined> {
     const storage = new ParachainStakingNominatorState2Storage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV900) {
         return await storage.getAsV900(account)
+    } else if (storage.isV200) {
+        return await storage.getAsV200(account)
+    } else if (storage.isV1001) {
+        const data = await storage.getAsV1001(account)
+        if (!data) return
+
+        return {
+            ...data,
+            nominations: data.delegations,
+        }
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -50,7 +74,7 @@ export async function getNominatorState(ctx: StorageContext, account: string): P
     if (!value) {
         const u8 = decodeId(account)
 
-        const data = await getStorageData(ctx, u8)
+        const data = (await getStorageData(ctx, u8)) || (await getOldStorageData(ctx, u8))
         if (!data) return undefined
 
         value = {

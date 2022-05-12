@@ -12,8 +12,8 @@ interface EventData {
 function getEventData(ctx: EventHandlerContext): EventData {
     const event = new ParachainStakingCollatorBondedLessEvent(ctx)
 
-    if (event.isV900) {
-        const [account, amount, newTotal] = event.asV900
+    if (event.isV49) {
+        const [account, amount, newTotal] = event.asV49
         return {
             account,
             amount: -amount,

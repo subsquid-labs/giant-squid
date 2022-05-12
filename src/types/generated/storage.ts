@@ -2,6 +2,9 @@ import assert from 'assert'
 import {StorageContext, Result} from './support'
 import * as v1001 from './v1001'
 import * as v1201 from './v1201'
+import * as v200 from './v200'
+import * as v49 from './v49'
+import * as v53 from './v53'
 import * as v900 from './v900'
 
 export class ParachainStakingBottomDelegationsStorage {
@@ -82,8 +85,49 @@ export class ParachainStakingCandidateStateStorage {
   }
 }
 
+export class ParachainStakingCollatorStateStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Get collator state associated with an account if account is collating else None
+   */
+  get isV49() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'CollatorState') === 'e7b59aa9ab7ff20383ef8bfa090a4ee2c1b4711afc5864f2e1436f464a9afbda'
+  }
+
+  /**
+   *  Get collator state associated with an account if account is collating else None
+   */
+  async getAsV49(key: Uint8Array): Promise<v49.Collator | undefined> {
+    assert(this.isV49)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'CollatorState') != null
+  }
+}
+
 export class ParachainStakingCollatorState2Storage {
   constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Get collator state associated with an account if account is collating else None
+   */
+  get isV53() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'CollatorState2') === '35bbbbd172839e81ffba1536e2bcedff108ee346e7f2727b8fa7c95c71864d51'
+  }
+
+  /**
+   *  Get collator state associated with an account if account is collating else None
+   */
+  async getAsV53(key: Uint8Array): Promise<v53.Collator2 | undefined> {
+    assert(this.isV53)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', key)
+  }
 
   /**
    *  Get collator state associated with an account if account is collating else None
@@ -134,8 +178,49 @@ export class ParachainStakingDelegatorStateStorage {
   }
 }
 
+export class ParachainStakingNominatorStateStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  get isV49() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'NominatorState') === 'f801fe87581f7dbb6db044ddd5a7adbe0d0ea1596ad42a8ccd22aa28f6be3e8f'
+  }
+
+  /**
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  async getAsV49(key: Uint8Array): Promise<v49.Nominator | undefined> {
+    assert(this.isV49)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState', key)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'NominatorState') != null
+  }
+}
+
 export class ParachainStakingNominatorState2Storage {
   constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  get isV200() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'NominatorState2') === 'c622846ff3c58d07c013016826af2e3a08f507c10948c596380f1b9642b808d0'
+  }
+
+  /**
+   *  Get nominator state associated with an account if account is nominating else None
+   */
+  async getAsV200(key: Uint8Array): Promise<v200.Nominator2 | undefined> {
+    assert(this.isV200)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', key)
+  }
 
   /**
    *  Get nominator state associated with an account if account is nominating else None
