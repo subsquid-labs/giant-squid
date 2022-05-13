@@ -37,7 +37,10 @@ processor.addEventHandler('parachainStaking.Nomination', modules.staking.events.
 processor.addEventHandler('parachainStaking.NominationDecreased', modules.staking.events.old.handleNominationDecreased)
 processor.addEventHandler('parachainStaking.NominationIncreased', modules.staking.events.old.handleNominationIncreased)
 processor.addEventHandler('parachainStaking.NominatorLeft', modules.staking.events.old.handleNominatorLeft)
-processor.addEventHandler('parachainStaking.NominatorLeftCollator', modules.staking.events.old.handleNominatorLeft)
+processor.addEventHandler(
+    'parachainStaking.NominatorLeftCollator',
+    modules.staking.events.old.handleNominatorLeftCandidate
+)
 processor.addEventHandler('parachainStaking.CollatorLeft', modules.staking.events.old.handleCollatorLeft)
 
 //extrinsics handlers
