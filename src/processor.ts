@@ -18,6 +18,7 @@ processor.addEventHandler('parachainStaking.NewRound', modules.staking.events.ha
 processor.addEventHandler('parachainStaking.Rewarded', modules.staking.events.handleRewarded)
 processor.addEventHandler('parachainStaking.CandidateBondedMore', modules.staking.events.handleBondedMore)
 processor.addEventHandler('parachainStaking.CandidateBondedLess', modules.staking.events.handleBondedLess)
+processor.addEventHandler('parachainStaking.Delegation', modules.staking.events.handleDelegation)
 processor.addEventHandler('parachainStaking.DelegationDecreased', modules.staking.events.handleDelegationDecreased)
 processor.addEventHandler('parachainStaking.DelegationIncreased', modules.staking.events.handleDelegationIncreased)
 processor.addEventHandler('parachainStaking.DelegationRevoked', modules.staking.events.handleDelegationRevoked)
@@ -32,6 +33,7 @@ processor.addEventHandler(
 //old events
 processor.addEventHandler('parachainStaking.CollatorBondedMore', modules.staking.events.old.handleCollatorBondedMore)
 processor.addEventHandler('parachainStaking.CollatorBondedLess', modules.staking.events.old.handleCollatorBondedLess)
+processor.addEventHandler('parachainStaking.Nomination', modules.staking.events.old.handleNomination)
 processor.addEventHandler('parachainStaking.NominationDecreased', modules.staking.events.old.handleNominationDecreased)
 processor.addEventHandler('parachainStaking.NominationIncreased', modules.staking.events.old.handleNominationIncreased)
 processor.addEventHandler('parachainStaking.NominatorLeft', modules.staking.events.old.handleNominatorLeft)

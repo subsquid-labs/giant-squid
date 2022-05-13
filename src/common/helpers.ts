@@ -19,9 +19,19 @@ export interface ItemBase {
 export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext): boolean {
     return ctx.event.name === EXTRINSIC_SUCCESS
 }
-export function saturatingSumBigInt(a: bigint, b: bigint, { max, min } = { max: null, min: 0n }): bigint {
+export function saturatingSumBigInt(
+    a: bigint,
+    b: bigint,
+    { max, min }: { max: null | bigint; min: bigint } = { max: null, min: 0n }
+): bigint {
     const sum = BigInt(a) + BigInt(b)
-    return sum < min ? min : max && sum > max ? max : sum
+    if (sum < min) {
+        return min
+    } else if (max && sum > max) {
+        return max
+    } else {
+        return sum
+    }
 }
 
 export function decodeId(id: string): Uint8Array {
