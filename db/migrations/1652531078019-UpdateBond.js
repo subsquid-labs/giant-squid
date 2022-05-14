@@ -1,5 +1,5 @@
-module.exports = class RemoveChain1652529425709 {
-  name = 'RemoveChain1652529425709'
+module.exports = class UpdateBond1652531078019 {
+  name = 'UpdateBond1652531078019'
 
   async up(db) {
     await db.query(`ALTER TABLE "transfer" DROP CONSTRAINT "FK_f1f1143749d9fd473890b77054b"`)
