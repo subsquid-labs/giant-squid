@@ -3,7 +3,7 @@ import { isExtrinsicSuccess } from '../../../common/helpers'
 import { TransferData } from '../../../types/custom/balanceData'
 import config from '../../../config'
 import { TransferDirection } from '../../../model'
-import { accountManager, chainManager } from '../../../managers'
+import { accountManager } from '../../../managers'
 import { accountTransferManager } from '../../../managers/AccountTransferManager'
 import { transferManager } from '../../../managers/TransferManager'
 import { AddressNotDecoded } from '../../../common/errors'
@@ -19,7 +19,6 @@ export async function saveTransferEvent(ctx: EventHandlerContext, data: Transfer
 
     const transfer = await transferManager.create(ctx, {
         id,
-        chain: await chainManager.get(ctx, config.chainName),
         name: ctx.extrinsic?.name,
         success,
         from: await accountManager.get(ctx, idFrom),

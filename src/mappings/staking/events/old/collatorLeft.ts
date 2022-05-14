@@ -71,7 +71,6 @@ export const handleCollatorLeft: EventHandler = async (ctx) => {
             amount: delegations[i].amount,
             total: delegators[i].totalBond,
             type: BondType.Unbond,
-            chain: candidate.chain,
             extrinsicHash: ctx.extrinsic?.hash,
             blockNumber: BigInt(ctx.block.height),
             date: new Date(ctx.block.timestamp),
