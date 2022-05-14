@@ -18,7 +18,6 @@ async function populateStakingItem(
 
     populateMeta(ctx, item)
 
-    item.name = ctx.event.name
     item.chain = await chainManager.get(ctx, config.chainName)
 
     const id = data.account ? getAddress(toHex(data.account)) : ctx.extrinsic?.signer
@@ -64,7 +63,23 @@ export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData): 
     const accountId = getAddress(toHex(data.account))
     const account = await accountManager.get(ctx, accountId)
 
+    const candidate = data.candidate ? await accountManager.get(ctx, getAddress(toHex(data.candidate))) : null
+
     account.totalBond = data.newTotal ? data.newTotal : saturatingSumBigInt(account.totalBond, data.amount)
 
-    await ctx.store.save(account)
+    const bond = new Bond({
+        id: ctx.event.id,
+        account,
+        candidate,
+        amount: data.amount,
+        total: account.totalBond,
+        type: data.type,
+        chain: account.chain,
+        extrinsicHash: ctx.extrinsic?.hash,
+        blockNumber: BigInt(ctx.block.height),
+        date: new Date(ctx.block.timestamp),
+        success: true,
+    })
+
+    await ctx.store.save([bond, account])
 }

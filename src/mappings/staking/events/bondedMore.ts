@@ -1,5 +1,6 @@
 import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
+import { BondType } from '../../../model'
 import { ParachainStakingCandidateBondedMoreEvent } from '../../../types/generated/events'
 import { saveBondEvent } from '../utils/base'
 
@@ -33,5 +34,8 @@ function getEventData(ctx: EventHandlerContext): EventData {
 export const handleBondedMore: EventHandler = async (ctx) => {
     const data = getEventData(ctx)
 
-    await saveBondEvent(ctx, data)
+    await saveBondEvent(ctx, {
+        ...data,
+        type: BondType.Bond,
+    })
 }
