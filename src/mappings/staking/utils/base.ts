@@ -3,7 +3,7 @@ import { populateMeta, saturatingSumBigInt } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { Bond, Reward } from '../../../model'
-import { accountManager, chainManager, roundManager } from '../../../managers'
+import { accountManager, roundManager } from '../../../managers'
 import { AddressNotDecoded } from '../../../common/errors'
 import { getAddress } from '@ethersproject/address'
 
@@ -17,8 +17,6 @@ async function populateStakingItem(
     const { ctx, data } = options
 
     populateMeta(ctx, item)
-
-    item.chain = await chainManager.get(ctx, config.chainName)
 
     const id = data.account ? getAddress(toHex(data.account)) : ctx.extrinsic?.signer
     if (!id) throw new AddressNotDecoded([data.account])
@@ -74,7 +72,6 @@ export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData): 
         amount: data.amount,
         total: account.totalBond,
         type: data.type,
-        chain: account.chain,
         extrinsicHash: ctx.extrinsic?.hash,
         blockNumber: BigInt(ctx.block.height),
         date: new Date(ctx.block.timestamp),

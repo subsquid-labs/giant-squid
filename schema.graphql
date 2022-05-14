@@ -5,7 +5,6 @@ type Account @entity {
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
-  chain: Chain!
   stakingInfo: StakingInfo
   lastUpdateBlock: BigInt!
 }
@@ -14,13 +13,6 @@ type StakingInfo {
   payee: String
   payeeAccount: String
   controller: String
-}
-
-type Chain @entity {
-  id: ID! #chain name
-  token: Token!
-  paraId: Int
-  relayChain: Chain
 }
 
 type Token {
@@ -36,7 +28,6 @@ interface Item {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String
-  chain: Chain!
   amount: BigInt
 }
 
@@ -54,7 +45,6 @@ interface CanFail {
 
 type Transfer implements Item & CanFail @entity {
   id: ID!
-  chain: Chain!
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
@@ -74,7 +64,6 @@ type AccountTransfer @entity {
 
 type Reward implements Item & HasTotal & HasRound @entity  {
   id: ID!
-  chain: Chain!
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
@@ -93,7 +82,6 @@ enum BondType {
 
 type Bond implements Item & HasTotal & CanFail @entity  {
   id: ID!
-  chain: Chain!
   date: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
