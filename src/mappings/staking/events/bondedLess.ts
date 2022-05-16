@@ -17,14 +17,14 @@ function getEventData(ctx: EventHandlerContext): EventData {
         const [account, amount, newTotal] = event.asV1001
         return {
             account,
-            amount: -amount,
+            amount,
             newTotal,
         }
     } else if (event.isV1300) {
         const { candidate: account, amount, newBond: newTotal } = event.asV1300
         return {
             account,
-            amount: -amount,
+            amount,
             newTotal,
         }
     }

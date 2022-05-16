@@ -17,7 +17,7 @@ function getEventData(ctx: EventHandlerContext): EventData {
         const [account, amount] = event.asV900
         return {
             account,
-            amount: -amount,
+            amount,
             newTotal: 0n,
         }
     }
