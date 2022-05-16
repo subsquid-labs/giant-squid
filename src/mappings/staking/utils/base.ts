@@ -2,7 +2,7 @@ import { EventHandlerContext, toHex } from '@subsquid/substrate-processor'
 import { populateMeta, saturatingSumBigInt } from '../../../common/helpers'
 import { RewardData, StakeData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Bond, Reward } from '../../../model'
+import { Bond, BondType, Reward } from '../../../model'
 import { accountManager, roundManager } from '../../../managers'
 import { AddressNotDecoded } from '../../../common/errors'
 import { getAddress } from '@ethersproject/address'
@@ -63,7 +63,9 @@ export async function saveBondEvent(ctx: EventHandlerContext, data: StakeData): 
 
     const candidate = data.candidate ? await accountManager.get(ctx, getAddress(toHex(data.candidate))) : null
 
-    account.totalBond = data.newTotal ? data.newTotal : saturatingSumBigInt(account.totalBond, data.amount)
+    account.totalBond = data.newTotal
+        ? data.newTotal
+        : saturatingSumBigInt(account.totalBond, data.amount * (data.type === BondType.Bond ? 1n : -1n))
 
     const bond = new Bond({
         id: ctx.event.id,

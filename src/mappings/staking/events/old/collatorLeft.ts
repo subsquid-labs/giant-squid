@@ -20,7 +20,7 @@ function getEventData(ctx: EventHandlerContext): EventData {
         const [account, amount] = event.asV49
         return {
             account,
-            amount: -amount,
+            amount,
             newTotal: 0n,
         }
     }
@@ -63,7 +63,7 @@ export const handleCollatorLeft: EventHandler = async (ctx) => {
     const bonds: Bond[] = new Array(delegations.length)
     for (let i = 0; i < delegators.length; i++) {
         delegators[i] = await accountManager.get(ctx, delegations[i].id)
-        delegators[i].totalBond = saturatingSumBigInt(delegators[i].totalBond, -delegations[i].amount)
+        delegators[i].totalBond = saturatingSumBigInt(delegators[i].totalBond, delegations[i].amount * -1n)
         bonds[i] = new Bond({
             id: `ctx.event.id-${i.toString().padStart(4, '0')}`,
             account: delegators[i],

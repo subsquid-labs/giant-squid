@@ -23,7 +23,10 @@ processor.addEventHandler('parachainStaking.DelegationDecreased', modules.stakin
 processor.addEventHandler('parachainStaking.DelegationIncreased', modules.staking.events.handleDelegationIncreased)
 processor.addEventHandler('parachainStaking.DelegationRevoked', modules.staking.events.handleDelegationRevoked)
 processor.addEventHandler('parachainStaking.DelegatorLeft', modules.staking.events.handleDelegatorLeft)
-processor.addEventHandler('parachainStaking.DelegatorLeftCandidate', modules.staking.events.handleDelegatorLeft)
+processor.addEventHandler(
+    'parachainStaking.DelegatorLeftCandidate',
+    modules.staking.events.handleDelegatorLeftCandidate
+)
 processor.addEventHandler('parachainStaking.CandidateLeft', modules.staking.events.handleCandidateLeft)
 processor.addEventHandler(
     'parachainStaking.JoinedCollatorCandidates',

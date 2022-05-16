@@ -17,14 +17,14 @@ function getEventData(ctx: EventHandlerContext): EventData {
         const [account, candidate, amount] = event.asV1001
         return {
             account,
-            amount: -amount,
+            amount,
             candidate,
         }
     } else if (event.isV1300) {
         const { delegator: account, amount: amount, candidate } = event.asV1300
         return {
             account,
-            amount: -amount,
+            amount,
             candidate,
         }
     }
@@ -36,6 +36,6 @@ export const handleDelegationDecreased: EventHandler = async (ctx) => {
 
     await saveBondEvent(ctx, {
         ...data,
-        type: BondType.Bond,
+        type: BondType.Unbond,
     })
 }
