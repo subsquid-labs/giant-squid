@@ -25,6 +25,11 @@ export class CrowdloanFundsStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
   }
 
+  async getManyAsV9010(keys: number[]): Promise<(v9010.FundInfo | undefined)[]> {
+    assert(this.isV9010)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', keys.map(k => [k]))
+  }
+
   /**
    *  Info on all of the funds.
    */
@@ -40,6 +45,11 @@ export class CrowdloanFundsStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
   }
 
+  async getManyAsV9111(keys: v9111.Id[]): Promise<(v9111.FundInfo | undefined)[]> {
+    assert(this.isV9111)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', keys.map(k => [k]))
+  }
+
   /**
    *  Info on all of the funds.
    */
@@ -53,6 +63,11 @@ export class CrowdloanFundsStorage {
   async getAsV9180(key: v9180.Id): Promise<v9180.FundInfo | undefined> {
     assert(this.isV9180)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
+  }
+
+  async getManyAsV9180(keys: v9180.Id[]): Promise<(v9180.FundInfo | undefined)[]> {
+    assert(this.isV9180)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', keys.map(k => [k]))
   }
 
   /**
@@ -139,6 +154,11 @@ export class StakingBondedStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Bonded', key)
   }
 
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(Uint8Array | undefined)[]> {
+    assert(this.isV1020)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Bonded', keys.map(k => [k]))
+  }
+
   /**
    * Checks whether the storage item is defined for the current chain version.
    */
@@ -222,6 +242,11 @@ export class StakingErasStakersStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', key1, key2)
   }
 
+  async getManyAsV1050(keys: [key1: number, key2: Uint8Array][]): Promise<(v1050.Exposure)[]> {
+    assert(this.isV1050)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', keys)
+  }
+
   /**
    * Checks whether the storage item is defined for the current chain version.
    */
@@ -248,6 +273,11 @@ export class StakingLedgerStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
   }
 
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.StakingLedgerTo223 | undefined)[]> {
+    assert(this.isV1020)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Ledger', keys.map(k => [k]))
+  }
+
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
@@ -263,6 +293,11 @@ export class StakingLedgerStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
   }
 
+  async getManyAsV1050(keys: Uint8Array[]): Promise<(v1050.StakingLedgerTo240 | undefined)[]> {
+    assert(this.isV1050)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Ledger', keys.map(k => [k]))
+  }
+
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
@@ -276,6 +311,11 @@ export class StakingLedgerStorage {
   async getAsV1058(key: Uint8Array): Promise<v1058.StakingLedger | undefined> {
     assert(this.isV1058)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
+  }
+
+  async getManyAsV1058(keys: Uint8Array[]): Promise<(v1058.StakingLedger | undefined)[]> {
+    assert(this.isV1058)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Ledger', keys.map(k => [k]))
   }
 
   /**
@@ -304,6 +344,11 @@ export class StakingPayeeStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Payee', key)
   }
 
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.RewardDestination)[]> {
+    assert(this.isV1020)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Payee', keys.map(k => [k]))
+  }
+
   /**
    *  Where the reward payment should be made. Keyed by stash.
    */
@@ -317,6 +362,11 @@ export class StakingPayeeStorage {
   async getAsV9111(key: v9111.AccountId32): Promise<v9111.RewardDestination> {
     assert(this.isV9111)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Payee', key)
+  }
+
+  async getManyAsV9111(keys: v9111.AccountId32[]): Promise<(v9111.RewardDestination)[]> {
+    assert(this.isV9111)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Payee', keys.map(k => [k]))
   }
 
   /**
@@ -349,6 +399,11 @@ export class StakingStakersStorage {
   async getAsV1020(key: Uint8Array): Promise<v1020.Exposure> {
     assert(this.isV1020)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Stakers', key)
+  }
+
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.Exposure)[]> {
+    assert(this.isV1020)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Stakers', keys.map(k => [k]))
   }
 
   /**
