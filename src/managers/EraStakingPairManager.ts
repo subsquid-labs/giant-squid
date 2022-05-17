@@ -13,7 +13,7 @@ export interface EraStakingPairData {
 }
 
 class EraStakingPairManager extends Manager<EraStakingPair> {
-    async create(ctx: EventHandlerContext, data: EraStakingPairData): Promise<EraStakingPair> {
+    private async createOne(ctx: EventHandlerContext, data: EraStakingPairData) {
         const validator =
             typeof data.validator === 'string' ? await eraValidatorManager.get(ctx, data.validator) : data.validator
         const nominator =
@@ -23,17 +23,38 @@ class EraStakingPairManager extends Manager<EraStakingPair> {
 
         const id = `${era?.index}-${validator?.stash.id}-${nominator?.stash.id}`
 
-        const stakingPair = new EraStakingPair({
+        return new EraStakingPair({
             id,
             validator,
             nominator,
             era,
             vote: data.vote,
         })
+    }
 
-        await ctx.store.insert(EraStakingPair, stakingPair)
+    async create(ctx: EventHandlerContext, data: EraStakingPairData): Promise<EraStakingPair>
+    async create(ctx: EventHandlerContext, data: EraStakingPairData[]): Promise<EraStakingPair[]>
+    async create(
+        ctx: EventHandlerContext,
+        data: EraStakingPairData | EraStakingPairData[]
+    ): Promise<EraStakingPair | EraStakingPair[]> {
+        if (Array.isArray(data)) {
+            const validators: EraStakingPair[] = new Array(data.length)
 
-        return stakingPair
+            for (let i = 0; i < data.length; i++) {
+                validators[i] = await this.createOne(ctx, data[i])
+            }
+
+            await ctx.store.insert(EraStakingPair, validators)
+
+            return validators
+        } else {
+            const validator = await this.createOne(ctx, data)
+
+            await ctx.store.insert(EraStakingPair, validator)
+
+            return validator
+        }
     }
 }
 

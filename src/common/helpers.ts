@@ -17,13 +17,7 @@ export function encodeId(id: Uint8Array, prefix: string | number) {
 }
 
 export function decodeId(id: string, prefix: string | number) {
-    try {
-        return ss58.codec(prefix).decode(id)
-    } catch (e) {
-        console.warn(`Warning: Failed to decode ${id} with prefix ${prefix}`)
-
-        return undefined
-    }
+    return ss58.codec(prefix).decode(id)
 }
 
 export interface ItemBase {
