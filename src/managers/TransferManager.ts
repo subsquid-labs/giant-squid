@@ -12,10 +12,6 @@ interface TransferData {
 }
 
 class TransferManager extends ItemManager<Transfer> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Transfer | undefined> {
-        return await ctx.store.findOne(Transfer, id, { cache: true })
-    }
-
     async create(ctx: EventHandlerContext, data: TransferData): Promise<Transfer> {
         const id = ctx.event.id
 

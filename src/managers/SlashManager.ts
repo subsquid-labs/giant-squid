@@ -12,10 +12,6 @@ interface SlashData {
 }
 
 class SlashManager extends ItemManager<Slash> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Slash | undefined> {
-        return await ctx.store.findOne(Slash, id, { cache: true })
-    }
-
     async create(ctx: EventHandlerContext, data: SlashData): Promise<Slash> {
         const id = ctx.event.id
 

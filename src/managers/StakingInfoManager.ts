@@ -18,7 +18,7 @@ interface StakingInfoData {
 async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string) {
     const prevCtx = createPrevStorageContext(ctx)
 
-    const controller = await storage.staking.getBonded(prevCtx, stash)
+    const controller = await storage.staking.bonded.get(prevCtx, stash)
     if (!controller) return
 
     const payeeInfo = await storage.staking.getPayee(prevCtx, stash)
@@ -45,8 +45,14 @@ async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string)
 }
 
 class StakingInfoManager extends Manager<StakingInfo> {
-    async get(ctx: EventHandlerContext, id: string): Promise<StakingInfo | undefined> {
-        return (await ctx.store.findOne(StakingInfo, id, { cache: true })) || (await createMissingStakingInfo(ctx, id))
+    async get(ctx: EventHandlerContext, id: string): Promise<StakingInfo | undefined>
+    async get(ctx: EventHandlerContext, ids: string[]): Promise<StakingInfo[]>
+    async get(ctx: EventHandlerContext, idOrIds: string | string[]) {
+        if (Array.isArray(idOrIds)) {
+            return await super.get(ctx, idOrIds)
+        } else {
+            return (await super.get(ctx, idOrIds)) || (await createMissingStakingInfo(ctx, idOrIds))
+        }
     }
 
     async create(ctx: EventHandlerContext, data: StakingInfoData): Promise<StakingInfo> {

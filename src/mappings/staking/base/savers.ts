@@ -102,7 +102,7 @@ export async function saveStakeCall(ctx: ExtrinsicHandlerContext, data: StakeDat
 export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallData) {
     const controller = ctx.extrinsic.signer
 
-    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
+    const stash = (await storage.staking.ledger.get(ctx, controller))?.stash
     if (!stash) return
 
     const payeeAccount = data.account ? encodeId(data.account, config.prefix) : null
@@ -140,7 +140,7 @@ export async function saveController(ctx: ExtrinsicHandlerContext, data: { contr
 export async function saveNominateCall(ctx: ExtrinsicHandlerContext, data: NominateData) {
     const controller = ctx.extrinsic.signer
 
-    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
+    const stash = (await storage.staking.ledger.get(ctx, controller))?.stash
     if (!stash) return
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
@@ -154,7 +154,7 @@ export async function saveNominateCall(ctx: ExtrinsicHandlerContext, data: Nomin
 export async function saveValidateCall(ctx: ExtrinsicHandlerContext, data: ValidateData) {
     const controller = ctx.extrinsic.signer
 
-    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
+    const stash = (await storage.staking.ledger.get(ctx, controller))?.stash
     if (!stash) return
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
@@ -169,7 +169,7 @@ export async function saveValidateCall(ctx: ExtrinsicHandlerContext, data: Valid
 export async function saveChillCall(ctx: ExtrinsicHandlerContext) {
     const controller = ctx.extrinsic.signer
 
-    const stash = (await storage.staking.getLedger(ctx, controller))?.stash
+    const stash = (await storage.staking.ledger.get(ctx, controller))?.stash
     if (!stash) return
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)

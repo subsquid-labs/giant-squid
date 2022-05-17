@@ -12,10 +12,6 @@ export interface EraValidatorData {
 }
 
 class EraValidatorManager extends Manager<EraValidator> {
-    async get(ctx: EventHandlerContext, id: string): Promise<EraValidator | undefined> {
-        return await ctx.store.findOne(EraValidator, id, { cache: true })
-    }
-
     private async createOne(ctx: EventHandlerContext, data: EraValidatorData) {
         const stash = typeof data.stash === 'string' ? await accountManager.get(ctx, data.stash) : data.stash
         const era = typeof data.era === 'number' ? await eraManager.getByIndex(ctx, data.era) : data.era

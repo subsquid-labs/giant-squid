@@ -19,7 +19,7 @@ class EraStakingPairManager extends Manager<EraStakingPair> {
         const nominator =
             typeof data.nominator === 'string' ? await eraNominatorManager.get(ctx, data.nominator) : data.nominator
 
-        const era = typeof data.era === 'number' ? await eraManager.get(ctx, data.era) : data.era
+        const era = typeof data.era === 'number' ? await eraManager.getByIndex(ctx, data.era) : data.era
 
         const id = `${era?.index}-${validator?.stash.id}-${nominator?.stash.id}`
 

@@ -11,10 +11,6 @@ export interface EraNominatorData {
 }
 
 class EraNominatorManager extends Manager<EraNominator> {
-    async get(ctx: EventHandlerContext, id: string): Promise<EraNominator | undefined> {
-        return await ctx.store.findOne(EraNominator, id, { cache: true })
-    }
-
     private async createOne(ctx: EventHandlerContext, data: EraNominatorData) {
         const stash = typeof data.stash === 'string' ? await accountManager.get(ctx, data.stash) : data.stash
         const era = typeof data.era === 'number' ? await eraManager.getByIndex(ctx, data.era) : data.era

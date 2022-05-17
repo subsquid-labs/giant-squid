@@ -6,36 +6,50 @@ import storage from '../storage'
 import { createPrevStorageContext } from '../common/helpers'
 
 class AccountManager extends Manager<Account> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Account> {
-        let account = await super.get(ctx, id)
+    async get(ctx: EventHandlerContext, id: string): Promise<Account>
+    async get(ctx: EventHandlerContext, ids: string[]): Promise<Account[]>
+    async get(ctx: EventHandlerContext, idOrIds: string | string[]) {
+        const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds]
 
-        if (!account) {
-            account = await this.create(ctx, id)
-        }
+        const accounts = await super.get(ctx, ids)
 
-        account.lastUpdateBlock = BigInt(ctx.block.height).valueOf()
+        const idsWithoutAccount = ids.filter((id) => accounts.findIndex((a) => a.id === id) >= 0)
+        accounts.push(...(await this.create(ctx, idsWithoutAccount)))
 
-        return account
+        return Array.isArray(idOrIds) ? accounts : accounts[0]
     }
 
-    async create(ctx: EventHandlerContext, id: string): Promise<Account> {
+    async create(ctx: EventHandlerContext, id: string): Promise<Account>
+    async create(ctx: EventHandlerContext, ids: string[]): Promise<Account[]>
+    async create(ctx: EventHandlerContext, idOrIds: string | string[]) {
+        const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds]
         const prevCtx = createPrevStorageContext(ctx)
 
-        //query ledger to check if the account has already bonded balance
-        const controller = await storage.staking.getBonded(prevCtx, id)
-        const ledger = controller ? await storage.staking.getLedger(prevCtx, controller) : null
+        // query ledger to check if the account has already bonded balance
 
-        const account = new Account({
-            id,
-            totalReward: 0n,
-            activeBond: BigInt(ledger?.active || 0).valueOf(),
-            totalSlash: 0n,
-            lastUpdateBlock: BigInt(ctx.block.height - 1).valueOf(),
-        })
+        // first we need to know controller id for account
+        const controllers = await storage.staking.bonded.getMany(prevCtx, ids)
+        const notNullControllers = controllers?.filter((c): c is string => c != null) || []
 
-        if (!(await ctx.store.insert(Account, account))) throw new Error(`Failed to insert account ${id}`)
+        // query ledgers and then convert them to map from stash ids
+        // that are equaled our initial ids and ledgers values
+        const ledgers = await storage.staking.ledger.getMany(prevCtx, notNullControllers)
+        const ledgersMap = new Map(ledgers?.map((l) => [l?.stash, l]))
 
-        return account
+        const accounts = ids.map(
+            (id) =>
+                new Account({
+                    id,
+                    totalReward: 0n,
+                    activeBond: BigInt(ledgersMap.get(id)?.active || 0),
+                    totalSlash: 0n,
+                    lastUpdateBlock: BigInt(ctx.block.height - 1),
+                })
+        )
+
+        await ctx.store.insert(Account, accounts)
+
+        return Array.isArray(idOrIds) ? accounts : accounts[0]
     }
 
     async update(ctx: EventHandlerContext, item: Account): Promise<Account>
