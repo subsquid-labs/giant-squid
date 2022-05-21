@@ -40,7 +40,7 @@ type AccountTransfer @entity {
   direction: TransferDicrection
 }
 
-type XcmTransfer @entity {
+type XcmTransfer implements CanFail @entity {
   id: ID!
   date: DateTime
   blockNumber: BigInt @index
@@ -48,6 +48,7 @@ type XcmTransfer @entity {
   from: Account!
   to: XcmDestinationAccount!
   asset: XcmAsset!
+  success: Boolean @index
 }
 
 union XcmDestination = XcmDestinationAccount

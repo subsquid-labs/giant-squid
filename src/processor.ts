@@ -34,4 +34,10 @@ processor.addExtrinsicHandler(
     modules.balances.extrinsics.handleTransferAll
 )
 
+processor.addExtrinsicHandler(
+    'xTokens.transfer',
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    modules.xTokens.extrinsics.handleTransfer
+)
+
 processor.run()
