@@ -1,33 +1,6 @@
 import type {Result} from './support'
 
-export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
-
-export interface MultiAddress_Id {
-  __kind: 'Id'
-  value: AccountId32
-}
-
-export interface MultiAddress_Index {
-  __kind: 'Index'
-  value: number
-}
-
-export interface MultiAddress_Raw {
-  __kind: 'Raw'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address32 {
-  __kind: 'Address32'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address20 {
-  __kind: 'Address20'
-  value: Uint8Array
-}
-
-export type CurrencyId = CurrencyId_Token | CurrencyId_DexShare | CurrencyId_Erc20 | CurrencyId_StableAssetPoolToken
+export type CurrencyId = CurrencyId_Token | CurrencyId_DexShare | CurrencyId_Erc20 | CurrencyId_StableAssetPoolToken | CurrencyId_LiquidCrowdloan | CurrencyId_ForeignAsset
 
 export interface CurrencyId_Token {
   __kind: 'Token'
@@ -49,6 +22,16 @@ export interface CurrencyId_StableAssetPoolToken {
   value: number
 }
 
+export interface CurrencyId_LiquidCrowdloan {
+  __kind: 'LiquidCrowdloan'
+  value: number
+}
+
+export interface CurrencyId_ForeignAsset {
+  __kind: 'ForeignAsset'
+  value: number
+}
+
 export type VersionedMultiLocation = VersionedMultiLocation_V0 | VersionedMultiLocation_V1
 
 export interface VersionedMultiLocation_V0 {
@@ -61,21 +44,7 @@ export interface VersionedMultiLocation_V1 {
   value: V1MultiLocation
 }
 
-export type VersionedMultiAsset = VersionedMultiAsset_V0 | VersionedMultiAsset_V1
-
-export interface VersionedMultiAsset_V0 {
-  __kind: 'V0'
-  value: V0MultiAsset
-}
-
-export interface VersionedMultiAsset_V1 {
-  __kind: 'V1'
-  value: V1MultiAsset
-}
-
-export type AccountId32 = Uint8Array
-
-export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_BNC | TokenSymbol_VSKSM
+export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_TAI | TokenSymbol_BNC | TokenSymbol_VSKSM | TokenSymbol_PHA | TokenSymbol_KINT | TokenSymbol_KBTC
 
 export interface TokenSymbol_ACA {
   __kind: 'ACA'
@@ -117,6 +86,10 @@ export interface TokenSymbol_LKSM {
   __kind: 'LKSM'
 }
 
+export interface TokenSymbol_TAI {
+  __kind: 'TAI'
+}
+
 export interface TokenSymbol_BNC {
   __kind: 'BNC'
 }
@@ -125,7 +98,19 @@ export interface TokenSymbol_VSKSM {
   __kind: 'VSKSM'
 }
 
-export type DexShare = DexShare_Token | DexShare_Erc20
+export interface TokenSymbol_PHA {
+  __kind: 'PHA'
+}
+
+export interface TokenSymbol_KINT {
+  __kind: 'KINT'
+}
+
+export interface TokenSymbol_KBTC {
+  __kind: 'KBTC'
+}
+
+export type DexShare = DexShare_Token | DexShare_Erc20 | DexShare_LiquidCrowdloan | DexShare_ForeignAsset | DexShare_StableAssetPoolToken
 
 export interface DexShare_Token {
   __kind: 'Token'
@@ -135,6 +120,21 @@ export interface DexShare_Token {
 export interface DexShare_Erc20 {
   __kind: 'Erc20'
   value: H160
+}
+
+export interface DexShare_LiquidCrowdloan {
+  __kind: 'LiquidCrowdloan'
+  value: number
+}
+
+export interface DexShare_ForeignAsset {
+  __kind: 'ForeignAsset'
+  value: number
+}
+
+export interface DexShare_StableAssetPoolToken {
+  __kind: 'StableAssetPoolToken'
+  value: number
 }
 
 export type H160 = Uint8Array
@@ -188,73 +188,6 @@ export interface V0MultiLocation_X8 {
 export interface V1MultiLocation {
   parents: number
   interior: V1Junctions
-}
-
-export type V0MultiAsset = V0MultiAsset_None | V0MultiAsset_All | V0MultiAsset_AllFungible | V0MultiAsset_AllNonFungible | V0MultiAsset_AllAbstractFungible | V0MultiAsset_AllAbstractNonFungible | V0MultiAsset_AllConcreteFungible | V0MultiAsset_AllConcreteNonFungible | V0MultiAsset_AbstractFungible | V0MultiAsset_AbstractNonFungible | V0MultiAsset_ConcreteFungible | V0MultiAsset_ConcreteNonFungible
-
-export interface V0MultiAsset_None {
-  __kind: 'None'
-}
-
-export interface V0MultiAsset_All {
-  __kind: 'All'
-}
-
-export interface V0MultiAsset_AllFungible {
-  __kind: 'AllFungible'
-}
-
-export interface V0MultiAsset_AllNonFungible {
-  __kind: 'AllNonFungible'
-}
-
-export interface V0MultiAsset_AllAbstractFungible {
-  __kind: 'AllAbstractFungible'
-  id: Uint8Array
-}
-
-export interface V0MultiAsset_AllAbstractNonFungible {
-  __kind: 'AllAbstractNonFungible'
-  class: Uint8Array
-}
-
-export interface V0MultiAsset_AllConcreteFungible {
-  __kind: 'AllConcreteFungible'
-  id: V0MultiLocation
-}
-
-export interface V0MultiAsset_AllConcreteNonFungible {
-  __kind: 'AllConcreteNonFungible'
-  class: V0MultiLocation
-}
-
-export interface V0MultiAsset_AbstractFungible {
-  __kind: 'AbstractFungible'
-  id: Uint8Array
-  amount: bigint
-}
-
-export interface V0MultiAsset_AbstractNonFungible {
-  __kind: 'AbstractNonFungible'
-  class: Uint8Array
-  instance: V1AssetInstance
-}
-
-export interface V0MultiAsset_ConcreteFungible {
-  __kind: 'ConcreteFungible'
-  id: V0MultiLocation
-  amount: bigint
-}
-
-export interface V0MultiAsset_ConcreteNonFungible {
-  __kind: 'ConcreteNonFungible'
-  class: V0MultiLocation
-  instance: V1AssetInstance
-}
-
-export interface V1MultiAsset {
-  id: V1AssetId
-  fun: V1Fungibility
 }
 
 export type V0Junction = V0Junction_Parent | V0Junction_Parachain | V0Junction_AccountId32 | V0Junction_AccountIndex64 | V0Junction_AccountKey20 | V0Junction_PalletInstance | V0Junction_GeneralIndex | V0Junction_GeneralKey | V0Junction_OnlyChild | V0Junction_Plurality
@@ -355,66 +288,6 @@ export interface V1Junctions_X7 {
 export interface V1Junctions_X8 {
   __kind: 'X8'
   value: [V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction, V1Junction]
-}
-
-export type V1AssetInstance = V1AssetInstance_Undefined | V1AssetInstance_Index | V1AssetInstance_Array4 | V1AssetInstance_Array8 | V1AssetInstance_Array16 | V1AssetInstance_Array32 | V1AssetInstance_Blob
-
-export interface V1AssetInstance_Undefined {
-  __kind: 'Undefined'
-}
-
-export interface V1AssetInstance_Index {
-  __kind: 'Index'
-  value: bigint
-}
-
-export interface V1AssetInstance_Array4 {
-  __kind: 'Array4'
-  value: Uint8Array
-}
-
-export interface V1AssetInstance_Array8 {
-  __kind: 'Array8'
-  value: Uint8Array
-}
-
-export interface V1AssetInstance_Array16 {
-  __kind: 'Array16'
-  value: Uint8Array
-}
-
-export interface V1AssetInstance_Array32 {
-  __kind: 'Array32'
-  value: Uint8Array
-}
-
-export interface V1AssetInstance_Blob {
-  __kind: 'Blob'
-  value: Uint8Array
-}
-
-export type V1AssetId = V1AssetId_Concrete | V1AssetId_Abstract
-
-export interface V1AssetId_Concrete {
-  __kind: 'Concrete'
-  value: V1MultiLocation
-}
-
-export interface V1AssetId_Abstract {
-  __kind: 'Abstract'
-  value: Uint8Array
-}
-
-export type V1Fungibility = V1Fungibility_Fungible | V1Fungibility_NonFungible
-
-export interface V1Fungibility_Fungible {
-  __kind: 'Fungible'
-  value: bigint
-}
-
-export interface V1Fungibility_NonFungible {
-  __kind: 'NonFungible'
-  value: V1AssetInstance
 }
 
 export type V0NetworkId = V0NetworkId_Any | V0NetworkId_Named | V0NetworkId_Polkadot | V0NetworkId_Kusama

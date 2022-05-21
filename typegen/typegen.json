@@ -6,6 +6,13 @@
     "balances.transfer",
     "balances.force_transfer",
     "balances.transfer_keep_alive",
-    "balances.transfer_all"
+    "balances.transfer_all",
+
+    "xTokens.transfer",
+    "xTokens.transfer_with_fee",
+    "xTokens.transfer_multiasset",
+    "xTokens.transfer_multiasset_with_fee",
+    "xTokens.transfer_multicurrencies",
+    "xTokens.transfer_multiassets"
   ]
 }

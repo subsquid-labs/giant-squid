@@ -1,33 +1,6 @@
 import type {Result} from './support'
 
-export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
-
-export interface MultiAddress_Id {
-  __kind: 'Id'
-  value: AccountId32
-}
-
-export interface MultiAddress_Index {
-  __kind: 'Index'
-  value: number
-}
-
-export interface MultiAddress_Raw {
-  __kind: 'Raw'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address32 {
-  __kind: 'Address32'
-  value: Uint8Array
-}
-
-export interface MultiAddress_Address20 {
-  __kind: 'Address20'
-  value: Uint8Array
-}
-
-export type CurrencyId = CurrencyId_Token | CurrencyId_DexShare | CurrencyId_Erc20 | CurrencyId_StableAssetPoolToken
+export type CurrencyId = CurrencyId_Token | CurrencyId_DexShare | CurrencyId_Erc20 | CurrencyId_StableAssetPoolToken | CurrencyId_LiquidCroadloan | CurrencyId_ForeignAsset
 
 export interface CurrencyId_Token {
   __kind: 'Token'
@@ -46,6 +19,16 @@ export interface CurrencyId_Erc20 {
 
 export interface CurrencyId_StableAssetPoolToken {
   __kind: 'StableAssetPoolToken'
+  value: number
+}
+
+export interface CurrencyId_LiquidCroadloan {
+  __kind: 'LiquidCroadloan'
+  value: number
+}
+
+export interface CurrencyId_ForeignAsset {
+  __kind: 'ForeignAsset'
   value: number
 }
 
@@ -73,9 +56,7 @@ export interface VersionedMultiAsset_V1 {
   value: V1MultiAsset
 }
 
-export type AccountId32 = Uint8Array
-
-export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_BNC | TokenSymbol_VSKSM
+export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_TAI | TokenSymbol_BNC | TokenSymbol_VSKSM | TokenSymbol_PHA | TokenSymbol_KINT | TokenSymbol_KBTC
 
 export interface TokenSymbol_ACA {
   __kind: 'ACA'
@@ -117,6 +98,10 @@ export interface TokenSymbol_LKSM {
   __kind: 'LKSM'
 }
 
+export interface TokenSymbol_TAI {
+  __kind: 'TAI'
+}
+
 export interface TokenSymbol_BNC {
   __kind: 'BNC'
 }
@@ -125,7 +110,19 @@ export interface TokenSymbol_VSKSM {
   __kind: 'VSKSM'
 }
 
-export type DexShare = DexShare_Token | DexShare_Erc20
+export interface TokenSymbol_PHA {
+  __kind: 'PHA'
+}
+
+export interface TokenSymbol_KINT {
+  __kind: 'KINT'
+}
+
+export interface TokenSymbol_KBTC {
+  __kind: 'KBTC'
+}
+
+export type DexShare = DexShare_Token | DexShare_Erc20 | DexShare_LiquidCroadloan | DexShare_ForeignAsset
 
 export interface DexShare_Token {
   __kind: 'Token'
@@ -135,6 +132,16 @@ export interface DexShare_Token {
 export interface DexShare_Erc20 {
   __kind: 'Erc20'
   value: H160
+}
+
+export interface DexShare_LiquidCroadloan {
+  __kind: 'LiquidCroadloan'
+  value: number
+}
+
+export interface DexShare_ForeignAsset {
+  __kind: 'ForeignAsset'
+  value: number
 }
 
 export type H160 = Uint8Array
