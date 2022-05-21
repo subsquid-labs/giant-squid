@@ -56,6 +56,13 @@ export interface VersionedMultiAsset_V1 {
   value: V1MultiAsset
 }
 
+export interface AssetMetadata {
+  name: Uint8Array
+  symbol: Uint8Array
+  decimals: number
+  minimalBalance: bigint
+}
+
 export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_TAI | TokenSymbol_BNC | TokenSymbol_VSKSM | TokenSymbol_PHA | TokenSymbol_KINT | TokenSymbol_KBTC
 
 export interface TokenSymbol_ACA {

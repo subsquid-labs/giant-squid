@@ -44,6 +44,35 @@ export interface VersionedMultiLocation_V1 {
   value: V1MultiLocation
 }
 
+export type AssetIds = AssetIds_Erc20 | AssetIds_StableAssetId | AssetIds_ForeignAssetId | AssetIds_NativeAssetId
+
+export interface AssetIds_Erc20 {
+  __kind: 'Erc20'
+  value: H160
+}
+
+export interface AssetIds_StableAssetId {
+  __kind: 'StableAssetId'
+  value: number
+}
+
+export interface AssetIds_ForeignAssetId {
+  __kind: 'ForeignAssetId'
+  value: number
+}
+
+export interface AssetIds_NativeAssetId {
+  __kind: 'NativeAssetId'
+  value: CurrencyId
+}
+
+export interface AssetMetadata {
+  name: Uint8Array
+  symbol: Uint8Array
+  decimals: number
+  minimalBalance: bigint
+}
+
 export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_TAI | TokenSymbol_BNC | TokenSymbol_VSKSM | TokenSymbol_PHA | TokenSymbol_KINT | TokenSymbol_KBTC
 
 export interface TokenSymbol_ACA {

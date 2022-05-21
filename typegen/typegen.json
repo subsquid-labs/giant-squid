@@ -14,5 +14,8 @@
     "xTokens.transfer_multiasset_with_fee",
     "xTokens.transfer_multicurrencies",
     "xTokens.transfer_multiassets"
+  ],
+  "storage": [
+    "AssetRegistry.AssetMetadatas"
   ]
 }
