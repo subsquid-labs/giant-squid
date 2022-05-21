@@ -1,6 +1,7 @@
 type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
+  xcmTransfers: [XcmTransfer!] @derivedFrom(field: "from")
   lastUpdateBlock: BigInt!
 }
 
@@ -37,4 +38,26 @@ type AccountTransfer @entity {
   transfer: Transfer
   account: Account!
   direction: TransferDicrection
+}
+
+type XcmTransfer @entity {
+  id: ID!
+  date: DateTime
+  blockNumber: BigInt @index
+  extrinsicHash: String @index
+  from: Account!
+  to: XcmDestinationAccount!
+  asset: XcmAsset!
+}
+
+union XcmDestination = XcmDestinationAccount
+
+type XcmDestinationAccount {
+  id: String
+  paraId: Int
+}
+
+type XcmAsset {
+  amount: BigInt
+  token: String
 }
