@@ -2,9 +2,6 @@
   "outDir": "../src/types/generated",
   "chainVersions": "./versions.json",
   "typesBundle": "acala",
-  "events": [
-    "balances.Transfer"
-  ],
   "calls": [
     "balances.transfer",
     "balances.force_transfer",

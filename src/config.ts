@@ -2,13 +2,13 @@ import { ProcessorConfig } from './types/custom/processorConfig'
 import { lookupArchive } from '@subsquid/archive-registry'
 
 const config: ProcessorConfig = {
-    chainName: 'statemine',
-    prefix: 2,
+    chainName: 'acala',
+    prefix: 'acala',
     dataSource: {
-        archive: lookupArchive('statemine')[0].url,
-        chain: 'wss://statemine.api.onfinality.io/public-ws',
+        archive: lookupArchive('acala')[0].url,
+        chain: 'wss://acala.polkawallet.io',
     },
-    typesBundle: './typegen/typesBundle.json',
+    typesBundle: 'acala',
     batchSize: 100,
     // blockRange: {
     //     from: 7828270,

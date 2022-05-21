@@ -1,37 +1,35 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { saveTransferCall } from '../utils/base'
-import { TransferData } from '../../../types/custom/balanceData'
+import { saveTransfer } from '../utils/save'
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
+import { UnknownVersionError } from '../../../common/errors'
+import { encodeId } from '../../../common/helpers'
 
-function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
+interface EventData {
+    from: Uint8Array
+    to: Uint8Array
+    amount: bigint
+}
+
+function getCallData(ctx: ExtrinsicHandlerContext): EventData {
     const call = new BalancesForceTransferCall(ctx)
-    if (call.isV3) {
-        const { source, dest, value } = call.asV3
-        return {
-            from: source.value as Uint8Array,
-            to: dest.value as Uint8Array,
-            amount: value,
-        }
-    } else if (call.isV504) {
-        const { source, dest, value } = call.asV504
+    if (call.isV2000) {
+        const { source, dest, value } = call.asV2000
         return {
             from: source.value as Uint8Array,
             to: dest.value as Uint8Array,
             amount: value,
         }
     } else {
-        const { source, dest, value } = call.asLatest
-        return {
-            from: source.value as Uint8Array,
-            to: dest.value as Uint8Array,
-            amount: value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
 export async function handleForceTransfer(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
-    if (!data) return
 
-    await saveTransferCall(ctx, data)
+    await saveTransfer(ctx, {
+        from: encodeId(data.from),
+        to: encodeId(data.to),
+        amount: data.amount,
+    })
 }

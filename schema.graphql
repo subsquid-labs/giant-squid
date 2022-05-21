@@ -1,20 +1,7 @@
 type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  chain: Chain!
   lastUpdateBlock: BigInt!
-}
-
-type Chain @entity {
-  id: ID!
-  token: Token!
-  paraId: Int
-  relayChain: Chain
-}
-
-type Token {
-  symbol: String
-  decimals: Int
 }
 
 enum TransferDicrection {
@@ -26,7 +13,6 @@ interface Item {
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String
-  chain: Chain!
   amount: BigInt
 }
 
@@ -36,7 +22,6 @@ interface CanFail {
 
 type Transfer implements Item & CanFail @entity {
   id: ID!
-  chain: Chain! @index
   date: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
