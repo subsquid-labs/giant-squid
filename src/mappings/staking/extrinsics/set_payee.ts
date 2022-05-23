@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 
 import { PayeeCallData, PayeeTypeRaw } from '../../../types/custom/stakingData'
 import { StakingSetPayeeCall } from '../../../types/generated/calls'
-import { savePayee } from '../base/savers'
+import { savePayee } from '../utils/savers'
 
 function getCallData(ctx: ExtrinsicHandlerContext): PayeeCallData {
     const call = new StakingSetPayeeCall(ctx)

@@ -2,7 +2,7 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { encodeId } from '../../../common/helpers'
 import config from '../../../config'
 import { StakingUnbondedEvent } from '../../../types/generated/events'
-import { saveBondEvent } from '../base/savers'
+import { saveBondEvent } from '../utils/savers'
 
 interface StakeEventData {
     amount: bigint

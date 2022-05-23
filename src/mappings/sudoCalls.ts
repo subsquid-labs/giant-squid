@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { decodeId } from '../common/helpers'
 import config from '../config'
 import { PayeeTypeRaw } from '../types/custom/stakingData'
-import { saveController, savePayee } from './staking/base/savers'
+import { saveController, savePayee } from './staking/utils/savers'
 
 const enum CallIndexes {
     SET_PAYEE = '0x0607',

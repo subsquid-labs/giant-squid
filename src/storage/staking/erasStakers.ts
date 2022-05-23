@@ -69,24 +69,16 @@ export const erasStakers = {
         const eraStakers: [number, Uint8Array][] = keys.map((k) => [k[1] || 0, decodeId(k[0], config.prefix)])
         const stakers: Uint8Array[] = keys.map((k) => decodeId(k[0], config.prefix))
 
-        try {
-            const data = (await getErasStakersData(ctx, eraStakers)) || (await getStakersData(ctx, stakers))
-            if (!data) return undefined
+        const data = (await getErasStakersData(ctx, eraStakers)) || (await getStakersData(ctx, stakers))
+        if (!data) return undefined
 
-            return data.map((v) => ({
-                total: v.total,
-                own: v.own,
-                nominators: v.others.map((n) => ({
-                    id: encodeId(n.who, config.prefix),
-                    vote: n.value,
-                })),
-            }))
-        } catch (e: any) {
-            console.log(e.message, e.name)
-            if (e instanceof Error && e.name === 'Unexpected EOF') {
-                return undefined
-            }
-            throw e
-        }
+        return data.map((v) => ({
+            total: v.total,
+            own: v.own,
+            nominators: v.others.map((n) => ({
+                id: encodeId(n.who, config.prefix),
+                vote: n.value,
+            })),
+        }))
     },
 }

@@ -3,7 +3,7 @@ import { UnknownVersionError } from '../../../common/errors'
 import { encodeId } from '../../../common/helpers'
 import config from '../../../config'
 import { StakingNominateCall } from '../../../types/generated/calls'
-import { saveNominateCall } from '../base/savers'
+import { saveNominateCall } from '../utils/savers'
 
 interface CallData {
     targets: Uint8Array[]

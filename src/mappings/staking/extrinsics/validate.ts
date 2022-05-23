@@ -1,7 +1,7 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { StakingValidateCall } from '../../../types/generated/calls'
-import { saveValidateCall } from '../base/savers'
+import { saveValidateCall } from '../utils/savers'
 
 interface CallData {
     commission: number
