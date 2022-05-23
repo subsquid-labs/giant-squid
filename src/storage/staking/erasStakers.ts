@@ -1,6 +1,5 @@
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/helpers'
-import config from '../../config'
 import { StakingErasStakersStorage, StakingStakersStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
@@ -47,7 +46,7 @@ export const erasStakers = {
     get: async (ctx: StorageContext, ...args: ErasStakersArgs): Promise<EraStaker | undefined> => {
         const [account, era] = args
 
-        const decodedAccount = decodeId(account, config.prefix)
+        const decodedAccount = decodeId(account)
         if (!decodedAccount) return undefined
 
         const data = ((await getErasStakersData(ctx, [[era || 0, decodedAccount]])) ||
@@ -59,15 +58,17 @@ export const erasStakers = {
             own: data.own,
             nominators: data.others.map((nominator) => {
                 return {
-                    id: encodeId(nominator.who, config.prefix),
+                    id: encodeId(nominator.who),
                     vote: nominator.value,
                 }
             }),
         }
     },
     getMany: async (ctx: StorageContext, keys: ErasStakersArgs[]) => {
-        const eraStakers: [number, Uint8Array][] = keys.map((k) => [k[1] || 0, decodeId(k[0], config.prefix)])
-        const stakers: Uint8Array[] = keys.map((k) => decodeId(k[0], config.prefix))
+        if (keys.length === 0) return []
+
+        const eraStakers: [number, Uint8Array][] = keys.map((k) => [k[1] || 0, decodeId(k[0])])
+        const stakers: Uint8Array[] = keys.map((k) => decodeId(k[0]))
 
         const data = (await getErasStakersData(ctx, eraStakers)) || (await getStakersData(ctx, stakers))
         if (!data) return undefined
@@ -76,7 +77,7 @@ export const erasStakers = {
             total: v.total,
             own: v.own,
             nominators: v.others.map((n) => ({
-                id: encodeId(n.who, config.prefix),
+                id: encodeId(n.who),
                 vote: n.value,
             })),
         }))

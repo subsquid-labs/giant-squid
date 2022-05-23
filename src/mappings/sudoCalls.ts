@@ -17,7 +17,7 @@ export async function handleSudoCall(ctx: ExtrinsicHandlerContext): Promise<void
 
     switch ((call.value as { callIndex: string }).callIndex as CallIndexes) {
         case CallIndexes.SET_CONTROLLER: {
-            const u8 = decodeId((call.value as { args: { controller: string } }).args.controller, config.prefix)
+            const u8 = decodeId((call.value as { args: { controller: string } }).args.controller)
             if (!u8) return
 
             return await saveController(ctx, { controller: u8 })
@@ -27,10 +27,7 @@ export async function handleSudoCall(ctx: ExtrinsicHandlerContext): Promise<void
 
             let u8 = null
             if (payeeName === 'account')
-                u8 = decodeId(
-                    (call.value as { args: Record<string, unknown> }).args[payeeName] as string,
-                    config.prefix
-                )
+                u8 = decodeId((call.value as { args: Record<string, unknown> }).args[payeeName] as string)
 
             return await savePayee(ctx, {
                 payee: `${payeeName[0].toUpperCase()}${payeeName.slice(1)}` as PayeeTypeRaw,

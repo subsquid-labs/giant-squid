@@ -1,5 +1,4 @@
 import { decodeId, encodeId } from '../../common/helpers'
-import config from '../../config'
 import { Payee, PayeeTypeRaw } from '../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
@@ -47,7 +46,7 @@ export async function getPayee(ctx: StorageContext, account: string): Promise<Pa
     let value = storageCache.values.get(key)
 
     if (!value) {
-        const u8 = decodeId(account, config.prefix)
+        const u8 = decodeId(account)
         if (!u8) return undefined
 
         const data = await getStorageData(ctx, u8)
@@ -55,7 +54,7 @@ export async function getPayee(ctx: StorageContext, account: string): Promise<Pa
 
         value = {
             payee: data.payee as PayeeTypeRaw,
-            account: data.account ? encodeId(data.account, config.prefix) : undefined,
+            account: data.account ? encodeId(data.account) : undefined,
         }
 
         storageCache.values.set(key, value)

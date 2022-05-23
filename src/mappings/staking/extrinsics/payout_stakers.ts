@@ -1,7 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { encodeId } from '../../../common/helpers'
 import { PayoutData } from '../../../types/custom/stakingData'
-import config from '../../../config'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { rewardManager } from '../../../managers'
 import { UnknownVersionError } from '../../../common/errors'
@@ -25,7 +24,7 @@ export async function savePauoutStakersCall(ctx: ExtrinsicHandlerContext, data: 
 
     for (const reward of rewards) {
         reward.era = data.era
-        reward.validator = encodeId(data.validator, config.chainName)
+        reward.validator = encodeId(data.validator)
     }
 
     await rewardManager.update(ctx, rewards)

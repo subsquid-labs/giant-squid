@@ -1,6 +1,5 @@
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/helpers'
-import config from '../../config'
 import { StakingBondedStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
@@ -20,19 +19,21 @@ async function getStorageData(
 
 export const bonded = {
     get: async (ctx: StorageContext, account: string) => {
-        const u8 = decodeId(account, config.prefix)
+        const u8 = decodeId(account)
 
         const data = await getStorageData(ctx, [u8])
         if (!data || !data[0]) return undefined
 
-        return encodeId(data[0], config.prefix)
+        return encodeId(data[0])
     },
     getMany: async (ctx: StorageContext, accounts: string[]) => {
-        const u8s = accounts.map((a) => decodeId(a, config.prefix))
+        if (accounts.length === 0) return []
+
+        const u8s = accounts.map((a) => decodeId(a))
 
         const data = await getStorageData(ctx, u8s)
         if (!data) return undefined
 
-        return data.map((d) => (d ? encodeId(d, config.prefix) : undefined))
+        return data.map((d) => (d ? encodeId(d) : undefined))
     },
 }

@@ -1,7 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId } from '../../../common/helpers'
-import config from '../../../config'
 import { StakingNominateCall } from '../../../types/generated/calls'
 import { saveNominateCall } from '../utils/savers'
 
@@ -35,13 +34,7 @@ export async function handleNominate(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
-    const targets: string[] = []
-    for (const t of data.targets) {
-        const target = encodeId(t, config.prefix)
-        if (!target) return
-
-        targets.push(target)
-    }
+    const targets = data.targets.map((t) => encodeId(t))
 
     await saveNominateCall(ctx, { targets })
 }

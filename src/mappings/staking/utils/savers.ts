@@ -7,7 +7,7 @@ import { accountManager, bondManager, rewardManager, slashManager, stakingInfoMa
 import storage from '../../../storage'
 
 export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData) {
-    const accountId = data.account ? encodeId(data.account, config.prefix) : ctx.extrinsic?.signer
+    const accountId = data.account ? encodeId(data.account) : ctx.extrinsic?.signer
     if (!accountId) return
 
     const reward = await rewardManager.create(ctx, {
@@ -30,7 +30,7 @@ export async function saveRewardEvent(ctx: EventHandlerContext, data: RewardData
 }
 
 export async function saveSlashEvent(ctx: EventHandlerContext, data: RewardData) {
-    const accountId = data.account ? encodeId(data.account, config.prefix) : ctx.extrinsic?.signer
+    const accountId = data.account ? encodeId(data.account) : ctx.extrinsic?.signer
     if (!accountId) return
 
     const slash = await slashManager.create(ctx, {
@@ -105,7 +105,7 @@ export async function savePayee(ctx: ExtrinsicHandlerContext, data: PayeeCallDat
     const stash = (await storage.staking.ledger.get(ctx, controller))?.stash
     if (!stash) return
 
-    const payeeAccount = data.account ? encodeId(data.account, config.prefix) : null
+    const payeeAccount = data.account ? encodeId(data.account) : null
     if (!payeeAccount) return
 
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
@@ -129,7 +129,7 @@ export async function saveController(ctx: ExtrinsicHandlerContext, data: { contr
     const stakingInfo = await stakingInfoManager.get(ctx, stash)
     if (!stakingInfo) return
 
-    const controller = encodeId(data.controller, config.prefix)
+    const controller = encodeId(data.controller)
     if (!controller) return
 
     stakingInfo.controller = await accountManager.get(ctx, controller)

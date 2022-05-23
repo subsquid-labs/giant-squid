@@ -28,7 +28,7 @@ export async function handleUnbonded(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
     if (!data) return
 
-    const account = data.account ? encodeId(data.account, config.prefix) : null
+    const account = data.account ? encodeId(data.account) : null
     if (!account) return
 
     await saveBondEvent(ctx, {

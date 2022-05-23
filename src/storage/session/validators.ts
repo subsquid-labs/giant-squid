@@ -34,7 +34,7 @@ export async function getValidators(ctx: StorageContext): Promise<Validators | u
         const data = await getStorageData(ctx)
         if (!data) return undefined
 
-        storageCache.value = data.map((id) => encodeId(id, config.prefix))
+        storageCache.value = data.map((id) => encodeId(id))
     }
 
     return storageCache.value

@@ -1,7 +1,6 @@
 export * from './CrowdloanManager'
 export * from './ChainManager'
 export * from './AccountManager'
-export * from './TransferManager'
 export * from './BondManager'
 export * from './RewardManager'
 export * from './SlashManager'

@@ -13,7 +13,7 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
             index: event.asV9010,
         }
     } else {
-        throw new UnknownVersionError(call.constructor.name)
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
