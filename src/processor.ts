@@ -39,5 +39,10 @@ processor.addExtrinsicHandler(
     { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.xTokens.extrinsics.handleTransfer
 )
+processor.addExtrinsicHandler(
+    'xTokens.transfer_multicurrencies',
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+    modules.xTokens.extrinsics.handleTransferMulticurrencies
+)
 
 processor.run()

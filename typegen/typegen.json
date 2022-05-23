@@ -12,10 +12,12 @@
     "xTokens.transfer_with_fee",
     "xTokens.transfer_multiasset",
     "xTokens.transfer_multiasset_with_fee",
-    "xTokens.transfer_multicurrencies",
-    "xTokens.transfer_multiassets"
+    "xTokens.transfer_multicurrencies"
   ],
   "storage": [
     "AssetRegistry.AssetMetadatas"
+  ],
+  "events": [
+    "xTokens.TransferredMultiAssets"
   ]
 }

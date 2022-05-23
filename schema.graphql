@@ -48,14 +48,12 @@ type XcmTransfer implements CanFail @entity {
   extrinsicHash: String @index
   fromId: ID!
   from: Account!
-  to: XcmDestinationAccount!
-  asset: XcmAsset!
+  to: XcmDestination!
+  assets: [XcmAsset]!
   success: Boolean @index
 }
 
-union XcmDestination = XcmDestinationAccount
-
-type XcmDestinationAccount {
+type XcmDestination {
   id: String
   paraId: Int
 }

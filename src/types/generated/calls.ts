@@ -534,65 +534,6 @@ export class XTokensTransferMultiassetWithFeeCall {
   }
 }
 
-export class XTokensTransferMultiassetsCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'xTokens.transferMultiassets' || this.ctx.extrinsic.name === 'xTokens.transfer_multiassets')
-  }
-
-  /**
-   * Transfer several `MultiAsset` specifying the item to be used as fee
-   * 
-   * `dest_weight` is the weight for XCM execution on the dest chain, and
-   * it would be charged from the transferred assets. If set below
-   * requirements, the execution may fail and assets wouldn't be
-   * received.
-   * 
-   * `fee_item` is index of the MultiAssets that we want to use for
-   * payment
-   * 
-   * It's a no-op if any error on local XCM execution or message sending.
-   * Note sending assets out per se doesn't guarantee they would be
-   * received. Receiving depends on if the XCM message could be delivered
-   * by the network, and if the receiving chain would handle
-   * messages correctly.
-   */
-  get isV2032(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_multiassets') === '2c9276a8e5652bef69d8e7f6f9bf7caccd48bb5ef0b25b42010d09b4b28b18c5'
-  }
-
-  /**
-   * Transfer several `MultiAsset` specifying the item to be used as fee
-   * 
-   * `dest_weight` is the weight for XCM execution on the dest chain, and
-   * it would be charged from the transferred assets. If set below
-   * requirements, the execution may fail and assets wouldn't be
-   * received.
-   * 
-   * `fee_item` is index of the MultiAssets that we want to use for
-   * payment
-   * 
-   * It's a no-op if any error on local XCM execution or message sending.
-   * Note sending assets out per se doesn't guarantee they would be
-   * received. Receiving depends on if the XCM message could be delivered
-   * by the network, and if the receiving chain would handle
-   * messages correctly.
-   */
-  get asV2032(): {assets: v2032.VersionedMultiAssets, feeItem: number, dest: v2032.VersionedMultiLocation, destWeight: bigint} {
-    assert(this.isV2032)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2032
-  }
-
-  get asLatest(): {assets: v2032.VersionedMultiAssets, feeItem: number, dest: v2032.VersionedMultiLocation, destWeight: bigint} {
-    deprecateLatest()
-    return this.asV2032
-  }
-}
-
 export class XTokensTransferMulticurrenciesCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'xTokens.transferMulticurrencies' || this.ctx.extrinsic.name === 'xTokens.transfer_multicurrencies')

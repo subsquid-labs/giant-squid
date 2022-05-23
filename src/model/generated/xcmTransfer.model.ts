@@ -1,7 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
-import {XcmDestinationAccount} from "./_xcmDestinationAccount"
+import {XcmDestination} from "./_xcmDestination"
 import {XcmAsset} from "./_xcmAsset"
 
 @Entity_()
@@ -28,9 +28,13 @@ export class XcmTransfer {
   @ManyToOne_(() => Account, {nullable: false})
   from!: Account
 
-  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new XcmDestinationAccount(undefined, marshal.nonNull(obj))}, nullable: false})
-  to!: XcmDestinationAccount
+  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new XcmDestination(undefined, marshal.nonNull(obj))}, nullable: false})
+  to!: XcmDestination
 
-  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => new XcmAsset(undefined, marshal.nonNull(obj))}, nullable: false})
-  asset!: XcmAsset
+  @Column_("jsonb", {transformer: {to: obj => obj.map((val: any) => val == null ? undefined : val.toJSON()), from: obj => marshal.fromList(obj, val => val == null ? undefined : new XcmAsset(undefined, val))}, nullable: false})
+  assets!: (XcmAsset | undefined | null)[]
+
+  @Index_()
+  @Column_("bool", {nullable: true})
+  success!: boolean | undefined | null
 }
