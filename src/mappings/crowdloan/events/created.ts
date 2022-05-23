@@ -2,10 +2,13 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { crowdloanManager } from '../../../managers'
 import storage from '../../../storage'
-import { DissolvedData } from '../../../types/custom/crowdloanData'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
 
-function getEventData(ctx: EventHandlerContext): DissolvedData {
+interface EventData {
+    index: number
+}
+
+function getEventData(ctx: EventHandlerContext): EventData {
     const event = new CrowdloanCreatedEvent(ctx)
 
     if (event.isV9010) {
@@ -17,7 +20,9 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
     }
 }
 
-export async function createCrowdloan(ctx: EventHandlerContext, data: DissolvedData) {
+export async function handleCreated(ctx: EventHandlerContext) {
+    const data = getEventData(ctx)
+
     const fundInfo = await storage.crowdloan.getFunds(ctx, data.index)
     if (!fundInfo) return
 
@@ -25,10 +30,4 @@ export async function createCrowdloan(ctx: EventHandlerContext, data: DissolvedD
         paraId: data.index,
         ...fundInfo,
     })
-}
-
-export async function handleCreated(ctx: EventHandlerContext) {
-    const data = getEventData(ctx)
-
-    await createCrowdloan(ctx, data)
 }

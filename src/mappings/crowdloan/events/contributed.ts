@@ -1,10 +1,16 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { ContributionData } from '../../../types/custom/crowdloanData'
+import { encodeId } from '../../../common/helpers'
 import { CrowdloanContributedEvent } from '../../../types/generated/events'
-import { saveContributedEvent } from '../utils/base'
+import { saveContribution } from '../utils/saver'
 
-function getEventData(ctx: EventHandlerContext): ContributionData {
+interface EventData {
+    paraId: number
+    amount: bigint
+    account: Uint8Array
+}
+
+function getEventData(ctx: EventHandlerContext): EventData {
     const event = new CrowdloanContributedEvent(ctx)
 
     if (event.isV9010) {
@@ -22,5 +28,10 @@ function getEventData(ctx: EventHandlerContext): ContributionData {
 export async function handleContributed(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
-    await saveContributedEvent(ctx, data)
+    await saveContribution(ctx, {
+        account: encodeId(data.account),
+        amount: data.amount,
+        paraId: data.paraId,
+        success: true,
+    })
 }

@@ -1,5 +1,4 @@
 import { UnknownVersionError } from '../../common/errors'
-import { FundInfo } from '../../types/custom/crowdloanData'
 import { CrowdloanFundsStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
@@ -21,6 +20,15 @@ const storageCache: {
     values: Map<string, FundInfo>
 } = {
     values: new Map(),
+}
+
+export interface FundInfo {
+    raised: bigint
+    end: number
+    cap: bigint
+    firstPeriod: number
+    lastPeriod: number
+    trieIndex: number
 }
 
 export async function getFunds(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
