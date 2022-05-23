@@ -1,0 +1,49 @@
+import { UnknownVersionError } from '../../common/errors'
+import { FundInfo } from '../../types/custom/crowdloanData'
+import { CrowdloanFundsStorage } from '../../types/generated/storage'
+import { StorageContext } from '../../types/generated/support'
+
+async function getStorageData(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
+    const storage = new CrowdloanFundsStorage(ctx)
+    if (!storage.isExists) return undefined
+
+    if (storage.isV9110) {
+        return await storage.getAsV9110(paraId)
+    } else if (storage.isV9180) {
+        const data = await storage.getAsV9180(paraId)
+        if (!data) return undefined
+        return {
+            ...data,
+            trieIndex: data.fundIndex,
+        }
+    } else {
+        throw new UnknownVersionError(storage.constructor.name)
+    }
+}
+
+const storageCache: {
+    hash?: string
+    values: Map<string, FundInfo>
+} = {
+    values: new Map(),
+}
+
+export async function getFunds(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
+    if (storageCache.hash !== ctx.block.hash) {
+        storageCache.hash = ctx.block.hash
+        storageCache.values.clear()
+    }
+
+    const key = paraId.toString()
+    let value = storageCache.values.get(key)
+
+    if (!value) {
+        const data = await getStorageData(ctx, paraId)
+        if (!data) return undefined
+
+        value = data
+        storageCache.values.set(key, value)
+    }
+
+    return value
+}

@@ -1,51 +1,40 @@
 import { ExtrinsicHandlerContext, EventHandlerContext } from '@subsquid/substrate-processor'
-import { populateMeta, isExtrinsicSuccess, encodeID } from '../../../common/helpers'
+import { isExtrinsicSuccess, encodeId } from '../../../common/helpers'
 import { ContributionData } from '../../../types/custom/crowdloanData'
 import config from '../../../config'
-import { Crowdloan, Contribution } from '../../../model'
-import { accountManager, chainManager, crowdloanManager } from '../../../managers'
-
-async function updateCrowdloanContributions(
-    ctx: EventHandlerContext,
-    crowdloan: Crowdloan,
-    contribution: Contribution
-) {
-    const contributor = await crowdloanManager.getContributor(ctx, `${crowdloan.id}-${contribution.account.id}`, {
-        crowdloan,
-        account: contribution.account,
-    })
-
-    contributor.amount += BigInt(contribution.amount || 0)
-    await ctx.store.save(contributor)
-
-    crowdloan.raised += BigInt(contribution.amount || 0)
-    await ctx.store.save(crowdloan)
-}
+import { contributionManager, contributorManager, crowdloanManager } from '../../../managers'
 
 export async function saveContributedEvent(ctx: EventHandlerContext, data: ContributionData, success = true) {
-    const id = ctx.event.id
-
-    const contribution = new Contribution({ id })
-
-    populateMeta(ctx, contribution)
-
-    contribution.chain = await chainManager.get(ctx, config.chainName)
-    contribution.success = success
-
-    contribution.amount = data.amount
-
-    const contributorId = data.account ? encodeID(data.account, config.prefix) : ctx.extrinsic?.signer
+    const contributorId = data.account ? encodeId(data.account, config.prefix) : ctx.extrinsic?.signer
     if (!contributorId) return
 
-    contribution.account = await accountManager.get(ctx, contributorId)
+    const contribution = await contributionManager.create(ctx, {
+        account: contributorId,
+        success,
+        amount: data.amount,
+        paraId: data.paraId,
+    })
 
-    const crowdloan = await crowdloanManager.get(ctx, data.paraId)
-    if (!crowdloan) return
+    if (success) {
+        const account = contribution.account
 
-    contribution.crowdloan = crowdloan
-    if (success) await updateCrowdloanContributions(ctx, crowdloan, contribution)
+        const crowdloan = contribution.crowdloan
+        if (!crowdloan) return
 
-    await ctx.store.insert(Contribution, contribution)
+        let contributor = await contributorManager.get(ctx, `${crowdloan.id}-${account.id}`)
+        if (!contributor) {
+            contributor = await contributorManager.create(ctx, {
+                account: contribution.account.id,
+                crowdloan: crowdloan.id,
+            })
+        }
+
+        contributor.amount += BigInt(contribution.amount || 0)
+        await contributorManager.update(ctx, contributor)
+
+        crowdloan.raised += BigInt(contribution.amount || 0)
+        await crowdloanManager.update(ctx, crowdloan)
+    }
 }
 
 export async function saveContributeCall(ctx: ExtrinsicHandlerContext, data: ContributionData) {

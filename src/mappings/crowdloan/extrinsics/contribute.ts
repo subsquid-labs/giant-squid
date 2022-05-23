@@ -1,4 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { ContributionData } from '../../../types/custom/crowdloanData'
 import { CrowdloanContributeCall } from '../../../types/generated/calls'
 import { saveContributeCall } from '../utils/base'
@@ -12,11 +13,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): ContributionData {
             amount: value,
         }
     } else {
-        const { index, value } = call.asLatest
-        return {
-            paraId: index,
-            amount: value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 

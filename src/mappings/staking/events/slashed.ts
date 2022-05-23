@@ -1,7 +1,8 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { RewardData } from '../../../types/custom/stakingData'
 import { StakingSlashedEvent, StakingSlashEvent } from '../../../types/generated/events'
-import { saveSlashEvent } from '../utils/base'
+import { saveSlashEvent } from '../utils/savers'
 
 function getSlashedEvent(ctx: EventHandlerContext): RewardData {
     const event = new StakingSlashedEvent(ctx)
@@ -13,11 +14,7 @@ function getSlashedEvent(ctx: EventHandlerContext): RewardData {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
@@ -31,11 +28,7 @@ function getSlashEvent(ctx: EventHandlerContext): RewardData {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 

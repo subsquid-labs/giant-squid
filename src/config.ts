@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-duplicate-string */
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
@@ -8,7 +7,7 @@ const config: ProcessorConfig = {
         archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
         chain: 'wss://rpc.polkadot.io',
     },
-    typesBundle: 'polkadot',
+    typesBundle: 'kusama',
     batchSize: 100,
     // blockRange: {
     //     from: 7567700,

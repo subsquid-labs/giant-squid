@@ -1,4 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { ContributionData } from '../../../types/custom/crowdloanData'
 import { CrowdloanContributedEvent } from '../../../types/generated/events'
 import { saveContributedEvent } from '../utils/base'
@@ -14,12 +15,7 @@ function getEventData(ctx: EventHandlerContext): ContributionData {
             amount,
         }
     } else {
-        const [account, paraId, amount] = event.asLatest
-        return {
-            account,
-            paraId,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 

@@ -1,9 +1,10 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeID, populateMeta } from '../../../common/helpers'
+import { encodeId } from '../../../common/helpers'
 import { PayoutData } from '../../../types/custom/stakingData'
 import config from '../../../config'
-import { Reward } from '../../../model'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
+import { rewardManager } from '../../../managers'
+import { UnknownVersionError } from '../../../common/errors'
 
 function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
     const call = new StakingPayoutStakersCall(ctx)
@@ -15,31 +16,19 @@ function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
             era,
         }
     } else {
-        const { validatorStash, era } = call.asLatest
-        return {
-            validator: validatorStash,
-            era,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
 export async function savePauoutStakersCall(ctx: ExtrinsicHandlerContext, data: PayoutData) {
-    const rewards = await ctx.store.find(Reward, {
-        where: [
-            {
-                extrinsicHash: ctx.extrinsic.hash,
-            },
-        ],
-    })
+    const rewards = await rewardManager.getByExtrinsic(ctx, ctx.extrinsic.hash || '')
 
     for (const reward of rewards) {
-        populateMeta(ctx, reward)
-
-        reward.era ??= data.era
-        reward.validator ??= encodeID(data.validator, config.chainName)
+        reward.era = data.era
+        reward.validator = encodeId(data.validator, config.chainName)
     }
 
-    await ctx.store.save(rewards)
+    await rewardManager.update(ctx, rewards)
 }
 
 export async function handlePauoutStakers(ctx: ExtrinsicHandlerContext) {

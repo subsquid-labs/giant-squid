@@ -1,4 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { crowdloanManager } from '../../../managers'
 import { DissolvedData } from '../../../types/custom/crowdloanData'
 import { CrowdloanDissolvedEvent } from '../../../types/generated/events'
@@ -11,17 +12,15 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
             index: event.asV9110,
         }
     } else {
-        return {
-            index: event.asLatest,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
 export async function dissolveCrowdloan(ctx: EventHandlerContext, data: DissolvedData) {
-    const crowdloan = await crowdloanManager.get(ctx, data.index)
+    const crowdloan = await crowdloanManager.getByParaId(ctx, data.index)
     if (!crowdloan) return
 
-    await ctx.store.save(crowdloan)
+    // await ctx.store.save(crowdloan)
 }
 
 export async function handleDissolved(ctx: EventHandlerContext) {

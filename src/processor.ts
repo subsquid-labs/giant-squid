@@ -13,8 +13,6 @@ processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
 //events handlers
-processor.addEventHandler('balances.Transfer', modules.balances.events.handleTransfer)
-
 processor.addEventHandler('staking.Rewarded', modules.staking.events.handleRewarded)
 processor.addEventHandler('staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
 processor.addEventHandler('staking.Slashed', modules.staking.events.handleSlashed)
@@ -25,6 +23,8 @@ processor.addEventHandler('staking.Unbonded', modules.staking.events.handleUnbon
 processor.addEventHandler('crowdloan.Contributed', modules.crowdloan.events.handleContributed)
 // processor.addEventHandler('crowdloan.Dissolved', modules.crowdloan.events.handleDissolved)
 processor.addEventHandler('crowdloan.Created', modules.crowdloan.events.handleCreated)
+
+processor.addEventHandler('grandpa.NewAuthorities', modules.grandpa.events.handleNewAuthorities)
 
 //extrinsics handlers
 processor.addExtrinsicHandler(
@@ -51,6 +51,9 @@ processor.addExtrinsicHandler(
 )
 processor.addExtrinsicHandler('staking.set_controller', modules.staking.extrinsics.handleSetController)
 processor.addExtrinsicHandler('staking.set_payee', modules.staking.extrinsics.handleSetPayee)
+processor.addExtrinsicHandler('staking.nominate', modules.staking.extrinsics.handleNominate)
+processor.addExtrinsicHandler('staking.validate', modules.staking.extrinsics.handleValidate)
+processor.addExtrinsicHandler('staking.chill', modules.staking.extrinsics.handleChill)
 
 processor.addExtrinsicHandler(
     'balances.transfer',
