@@ -161,7 +161,6 @@ type Transfer implements Item & CanFail @entity {
   from: Account!
   amount: BigInt
   success: Boolean @index
-  name: String
 }
 
 type AccountTransfer @entity {
@@ -181,7 +180,6 @@ type Reward implements Item & HasTotal & HasEra @entity  {
   era: Int
   validator: String
   total: BigInt
-  name: String
 }
 
 type Slash implements Item & HasTotal & HasEra @entity  {
@@ -193,7 +191,6 @@ type Slash implements Item & HasTotal & HasEra @entity  {
   amount: BigInt
   era: Int
   total: BigInt
-  name: String
 }
 
 enum BondType {
@@ -211,5 +208,4 @@ type Bond implements Item & HasTotal & CanFail @entity  {
   total: BigInt
   success: Boolean @index
   type: BondType
-  name: String
 }

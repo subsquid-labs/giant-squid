@@ -39,7 +39,4 @@ export class Bond {
 
   @Column_("varchar", {length: 6, nullable: true})
   type!: BondType | undefined | null
-
-  @Column_("text", {nullable: true})
-  name!: string | undefined | null
 }
