@@ -57,22 +57,22 @@ processor.addExtrinsicHandler('staking.chill', modules.staking.extrinsics.handle
 
 processor.addExtrinsicHandler(
     'balances.transfer',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransfer
 )
 processor.addExtrinsicHandler(
     'balances.transfer_keep_alive',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferKeepAlive
 )
 processor.addExtrinsicHandler(
     'balances.force_transfer',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleForceTransfer
 )
 processor.addExtrinsicHandler(
     'balances.transfer_all',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferAll
 )
 
