@@ -4,6 +4,7 @@ import { PayoutData } from '../../../types/custom/stakingData'
 import config from '../../../config'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { rewardManager } from '../../../managers'
+import { UnknownVersionError } from '../../../common/errors'
 
 function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
     const call = new StakingPayoutStakersCall(ctx)
@@ -15,11 +16,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): PayoutData {
             era,
         }
     } else {
-        const { validatorStash, era } = call.asLatest
-        return {
-            validator: validatorStash,
-            era,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 

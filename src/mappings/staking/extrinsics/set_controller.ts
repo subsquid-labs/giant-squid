@@ -1,4 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { StakingSetControllerCall } from '../../../types/generated/calls'
 import { saveController } from '../utils/savers'
 
@@ -16,8 +17,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): { controller: Uint8Array } |
         const { controller } = call.asV9111
         return { controller: controller.value as Uint8Array }
     } else {
-        const { controller } = call.asLatest
-        return { controller: controller.value as Uint8Array }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 

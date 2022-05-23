@@ -1,4 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { encodeId } from '../../../common/helpers'
 import config from '../../../config'
 import { StakingUnbondedEvent } from '../../../types/generated/events'
@@ -19,11 +20,7 @@ function getEventData(ctx: EventHandlerContext): StakeEventData {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 

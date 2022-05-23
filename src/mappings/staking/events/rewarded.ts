@@ -1,4 +1,5 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { RewardData } from '../../../types/custom/stakingData'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
 import { saveRewardEvent } from '../utils/savers'
@@ -13,11 +14,7 @@ function getRewardedEventData(ctx: EventHandlerContext): RewardData {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 

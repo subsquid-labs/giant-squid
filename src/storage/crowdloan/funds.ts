@@ -1,3 +1,4 @@
+import { UnknownVersionError } from '../../common/errors'
 import { FundInfo } from '../../types/custom/crowdloanData'
 import { CrowdloanFundsStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
@@ -10,9 +11,9 @@ async function getStorageData(ctx: StorageContext, paraId: number): Promise<Fund
         return await storage.getAsV9010(paraId)
     } else if (storage.isV9111) {
         return await storage.getAsV9111(paraId)
+    } else {
+        throw new UnknownVersionError(storage.constructor.name)
     }
-
-    return undefined
 }
 
 const storageCache: {

@@ -1,3 +1,4 @@
+import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/helpers'
 import config from '../../config'
 import { StakingBondedStorage } from '../../types/generated/storage'
@@ -12,9 +13,9 @@ async function getStorageData(
 
     if (storage.isV1020) {
         return await storage.getManyAsV1020(accounts)
+    } else {
+        throw new UnknownVersionError(storage.constructor.name)
     }
-
-    return undefined
 }
 
 export const bonded = {

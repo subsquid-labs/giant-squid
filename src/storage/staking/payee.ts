@@ -4,6 +4,7 @@ import { Payee, PayeeTypeRaw } from '../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
 import { StorageContext } from '../../types/generated/support'
+import { UnknownVersionError } from '../../common/errors'
 
 async function getStorageData(
     ctx: StorageContext,
@@ -24,9 +25,9 @@ async function getStorageData(
             payee: data.__kind,
             account: (data as v9111.RewardDestination_Account).value,
         }
+    } else {
+        throw new UnknownVersionError(storage.constructor.name)
     }
-
-    return undefined
 }
 
 const storageCache: {

@@ -1,3 +1,4 @@
+import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/helpers'
 import config from '../../config'
 import { LedgerData } from '../../types/custom/stakingData'
@@ -17,9 +18,9 @@ async function getStorageData(
         return await storage.getManyAsV1050(account)
     } else if (storage.isV1058) {
         return await storage.getManyAsV1058(account)
+    } else {
+        throw new UnknownVersionError(storage.constructor.name)
     }
-
-    return undefined
 }
 
 export const ledger = {

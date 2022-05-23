@@ -1,4 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 
 import { PayeeCallData, PayeeTypeRaw } from '../../../types/custom/stakingData'
 import { StakingSetPayeeCall } from '../../../types/generated/calls'
@@ -20,11 +21,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): PayeeCallData {
             account: (payee as { value: Uint8Array }).value,
         }
     } else {
-        const { payee } = call.asLatest
-        return {
-            payee: payee.__kind as PayeeTypeRaw,
-            account: (payee as { value: Uint8Array }).value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
