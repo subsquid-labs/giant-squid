@@ -13,8 +13,6 @@ processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
 //events handlers
-processor.addEventHandler('balances.Transfer', modules.balances.events.handleTransfer)
-
 processor.addEventHandler('staking.Rewarded', modules.staking.events.handleRewarded)
 processor.addEventHandler('staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
 processor.addEventHandler('staking.Slashed', modules.staking.events.handleSlashed)
