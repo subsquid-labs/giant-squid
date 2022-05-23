@@ -1,6 +1,5 @@
 import { UnknownVersionError } from '../../common/errors'
 import { encodeId } from '../../common/helpers'
-import config from '../../config'
 import { SessionValidatorsStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 

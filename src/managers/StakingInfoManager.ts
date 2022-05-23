@@ -2,7 +2,6 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Manager } from './Manager'
 import { PayeeType, StakingInfo, StakingRole } from '../model'
 import { accountManager } from './AccountManager'
-import { InsertFailedError } from '../common/errors'
 import { convertPayee, createPrevStorageContext } from '../common/helpers'
 import storage from '../storage'
 
@@ -71,7 +70,7 @@ class StakingInfoManager extends Manager<StakingInfo> {
             role: data.role,
         })
 
-        if (!(await ctx.store.insert(StakingInfo, stakingInfo))) throw new InsertFailedError(StakingInfo.name, id)
+        await ctx.store.insert(StakingInfo, stakingInfo)
 
         return stakingInfo
     }

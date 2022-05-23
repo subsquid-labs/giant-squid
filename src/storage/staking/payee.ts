@@ -1,5 +1,5 @@
 import { decodeId, encodeId } from '../../common/helpers'
-import { Payee, PayeeTypeRaw } from '../../types/custom/stakingData'
+import { PayeeTypeRaw } from '../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
 import { StorageContext } from '../../types/generated/support'
@@ -8,7 +8,7 @@ import { UnknownVersionError } from '../../common/errors'
 async function getStorageData(
     ctx: StorageContext,
     account: Uint8Array
-): Promise<{ payee: string; account: Uint8Array | null } | undefined> {
+): Promise<{ payee: string; account?: Uint8Array } | undefined> {
     const storage = new StakingPayeeStorage(ctx)
     if (!storage.isExists) return undefined
 
@@ -16,7 +16,8 @@ async function getStorageData(
         const { __kind, value } = await storage.getAsV1020(account)
         return {
             payee: __kind,
-            account: value,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            account: value!,
         }
     } else if (storage.isV9111) {
         const data = await storage.getAsV9111(account)
@@ -34,6 +35,11 @@ const storageCache: {
     values: Map<string, Payee>
 } = {
     values: new Map(),
+}
+
+export interface Payee {
+    payee: PayeeTypeRaw
+    account?: string
 }
 
 export async function getPayee(ctx: StorageContext, account: string): Promise<Payee | undefined> {

@@ -1,11 +1,17 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-
-import { PayeeCallData, PayeeTypeRaw } from '../../../types/custom/stakingData'
+import { convertPayee, encodeId, isExtrinsicSuccess } from '../../../common/helpers'
+import { accountManager, stakingInfoManager } from '../../../managers'
+import storage from '../../../storage'
+import { PayeeTypeRaw } from '../../../types/custom/stakingData'
 import { StakingSetPayeeCall } from '../../../types/generated/calls'
-import { savePayee } from '../utils/savers'
 
-function getCallData(ctx: ExtrinsicHandlerContext): PayeeCallData {
+export interface CallData {
+    payee: PayeeTypeRaw
+    account?: Uint8Array
+}
+
+function getCallData(ctx: ExtrinsicHandlerContext): CallData {
     const call = new StakingSetPayeeCall(ctx)
 
     if (call.isV1020) {
@@ -26,7 +32,29 @@ function getCallData(ctx: ExtrinsicHandlerContext): PayeeCallData {
 }
 
 export async function handleSetPayee(ctx: ExtrinsicHandlerContext) {
+    if (!isExtrinsicSuccess(ctx)) return
+
     const data = getCallData(ctx)
 
-    await savePayee(ctx, data)
+    const controller = ctx.extrinsic.signer
+
+    const stash = (await storage.staking.ledger.get(ctx, controller))?.stash
+    if (!stash) return
+
+    const payeeAccount = data.account ? encodeId(data.account) : null
+    if (!payeeAccount) return
+
+    const stakingInfo = await stakingInfoManager.get(ctx, stash)
+    if (!stakingInfo) return
+
+    const { payee, payeeType } = convertPayee(data.payee, {
+        stash,
+        controller,
+        payeeAccount,
+    })
+
+    stakingInfo.payee = payee ? await accountManager.get(ctx, payee) : null
+    stakingInfo.payeeType = payeeType
+
+    await stakingInfoManager.update(ctx, stakingInfo)
 }

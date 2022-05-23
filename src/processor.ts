@@ -76,7 +76,7 @@ processor.addExtrinsicHandler(
     modules.balances.extrinsics.handleTransferAll
 )
 
-processor.addExtrinsicHandler('sudo.sudo_as', modules.sudoCalls.handleSudoCall)
-processor.addExtrinsicHandler('proxy.proxy', modules.sudoCalls.handleSudoCall)
+processor.addExtrinsicHandler('sudo.sudo_as', modules.proxyCalls.handleProxyCall)
+processor.addExtrinsicHandler('proxy.proxy', modules.proxyCalls.handleProxyCall)
 
 processor.run()
