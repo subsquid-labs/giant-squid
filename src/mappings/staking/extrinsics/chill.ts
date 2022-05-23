@@ -5,8 +5,6 @@ import { StakingRole } from '../../../model'
 import storage from '../../../storage'
 
 export async function handleChill(ctx: ExtrinsicHandlerContext) {
-    if (!isExtrinsicSuccess(ctx)) return
-
     const controller = ctx.extrinsic.signer
 
     const ledger = await storage.staking.ledger.get(ctx, controller)

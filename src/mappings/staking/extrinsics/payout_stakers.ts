@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeId, isExtrinsicSuccess } from '../../../common/helpers'
+import { encodeId } from '../../../common/helpers'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { UnknownVersionError } from '../../../common/errors'
 import { Reward } from '../../../model'
@@ -24,8 +24,6 @@ function getCallData(ctx: ExtrinsicHandlerContext): CallData {
 }
 
 export async function handlePauoutStakers(ctx: ExtrinsicHandlerContext) {
-    if (!isExtrinsicSuccess(ctx)) return
-
     const data = getCallData(ctx)
 
     const rewards = await ctx.store.find(Reward, { extrinsicHash: ctx.extrinsic.hash })

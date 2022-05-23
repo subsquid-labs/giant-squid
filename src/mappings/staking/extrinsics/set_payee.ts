@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { convertPayee, encodeId, isExtrinsicSuccess } from '../../../common/helpers'
+import { convertPayee, encodeId } from '../../../common/helpers'
 import { accountManager, stakingInfoManager } from '../../../managers'
 import storage from '../../../storage'
 import { PayeeTypeRaw } from '../../../types/custom/stakingData'
@@ -32,8 +32,6 @@ function getCallData(ctx: ExtrinsicHandlerContext): CallData {
 }
 
 export async function handleSetPayee(ctx: ExtrinsicHandlerContext) {
-    if (!isExtrinsicSuccess(ctx)) return
-
     const data = getCallData(ctx)
 
     const controller = ctx.extrinsic.signer

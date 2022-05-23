@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, isExtrinsicSuccess } from '../../../common/helpers'
+import { encodeId } from '../../../common/helpers'
 import { accountManager, stakingInfoManager } from '../../../managers'
 import { StakingSetControllerCall } from '../../../types/generated/calls'
 
@@ -23,8 +23,6 @@ function getCallData(ctx: ExtrinsicHandlerContext): { controller: Uint8Array } |
 }
 
 export async function handleSetController(ctx: ExtrinsicHandlerContext) {
-    if (!isExtrinsicSuccess(ctx)) return
-
     const data = getCallData(ctx)
     if (!data) return
 

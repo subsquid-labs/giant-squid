@@ -1,6 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { isExtrinsicSuccess } from '../../../common/helpers'
 import { stakingInfoManager } from '../../../managers'
 import { StakingRole } from '../../../model'
 import storage from '../../../storage'
@@ -33,8 +32,6 @@ function getCallData(ctx: ExtrinsicHandlerContext): CallData | undefined {
 }
 
 export async function handleNominate(ctx: ExtrinsicHandlerContext) {
-    if (!isExtrinsicSuccess(ctx)) return
-
     const data = getCallData(ctx)
     if (!data) return
 
