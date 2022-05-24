@@ -23,12 +23,12 @@ async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string)
     const payeeInfo = await storage.staking.getPayee(prevCtx, stash)
     if (!payeeInfo) return
 
-    const { payee: payeeTypeRaw, account: payeeAccount } = payeeInfo
+    const { payee: payeeTypeRaw, account: payeeId } = payeeInfo
 
     const { payee, payeeType } = convertPayee(payeeTypeRaw, {
         stash,
         controller,
-        payeeAccount,
+        payee: payeeId,
     })
 
     //TODO: find way to get current role of staker

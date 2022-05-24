@@ -47,14 +47,14 @@ export function convertPayee(
     accounts: {
         stash: string
         controller: string
-        payeeAccount: string | null | undefined
+        payee?: string
     }
 ) {
     switch (payeeTypeRaw) {
         case 'Account':
             return {
                 payeeType: PayeeType.Account,
-                payee: accounts.payeeAccount || undefined,
+                payee: accounts.payee,
             }
         case 'Stash':
             return {
@@ -73,7 +73,7 @@ export function convertPayee(
             }
         case 'None': {
             return {
-                payeeType: PayeeType.Controller,
+                payeeType: PayeeType.None,
                 payee: undefined,
             }
         }

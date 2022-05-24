@@ -1,7 +1,8 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { convertPayee, encodeId } from '../../../common/helpers'
+import { encodeId } from '../../../common/helpers'
 import { accountManager, stakingInfoManager } from '../../../managers'
+import { PayeeType } from '../../../model'
 import storage from '../../../storage'
 import { PayeeTypeRaw } from '../../../types/custom/stakingData'
 import { StakingSetPayeeCall } from '../../../types/generated/calls'
@@ -34,25 +35,40 @@ function getCallData(ctx: ExtrinsicHandlerContext): CallData {
 export async function handleSetPayee(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
 
-    const controller = ctx.extrinsic.signer
+    const controllerId = ctx.extrinsic.signer
 
-    const stash = (await storage.staking.ledger.get(ctx, controller))?.stash
-    if (!stash) return
+    const stashId = (await storage.staking.ledger.get(ctx, controllerId))?.stash
+    if (!stashId) return
 
-    const payeeAccount = data.account ? encodeId(data.account) : null
-    if (!payeeAccount) return
-
-    const stakingInfo = await stakingInfoManager.get(ctx, stash)
+    const stakingInfo = await stakingInfoManager.get(ctx, stashId)
     if (!stakingInfo) return
 
-    const { payee, payeeType } = convertPayee(data.payee, {
-        stash,
-        controller,
-        payeeAccount,
-    })
+    const payee = data.account ? encodeId(data.account) : null
 
-    stakingInfo.payee = payee ? await accountManager.get(ctx, payee) : null
-    stakingInfo.payeeType = payeeType
+    switch (data.payee) {
+        case 'Account':
+            stakingInfo.payeeType = PayeeType.Account
+            stakingInfo.payee = payee ? await accountManager.get(ctx, payee) : null
+            break
+        case 'Stash':
+            stakingInfo.payeeType = PayeeType.Stash
+            stakingInfo.payee = stakingInfo.stash
+            break
+        case 'Staked':
+            stakingInfo.payeeType = PayeeType.Staked
+            stakingInfo.payee = stakingInfo.stash
+        case 'Controller':
+            stakingInfo.payeeType = PayeeType.Controller
+            stakingInfo.payee = stakingInfo.controller
+            break
+        case 'None': {
+            stakingInfo.payeeType = PayeeType.None
+            stakingInfo.payee = undefined
+            break
+        }
+        default:
+            throw new Error(`Unknown payee type ${data.payee}`)
+    }
 
     await stakingInfoManager.update(ctx, stakingInfo)
 }
