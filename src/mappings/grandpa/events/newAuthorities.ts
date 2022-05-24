@@ -1,14 +1,23 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import {
-    eraManager,
-    eraValidatorManager,
-    EraNominatorData,
-    EraValidatorData,
-    eraNominatorManager,
-    eraStakingPairManager,
-    EraStakingPairData,
-} from '../../../managers'
+import { accountManager, eraManager } from '../../../managers'
+import { Era, EraNominator, EraStakingPair, EraValidator } from '../../../model'
 import storage from '../../../storage'
+
+interface ValidatorData {
+    stash: string
+    totalBonded: bigint
+    selfBonded: bigint
+}
+
+interface NominatorData {
+    stash: string
+}
+
+interface PairData {
+    validator: string
+    nominator: string
+    vote: bigint
+}
 
 export async function handleNewAuthorities(ctx: EventHandlerContext) {
     const activeEraData = await storage.staking.getActiveEra(ctx)
@@ -17,13 +26,13 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
     const storageEraData = activeEraData || currentEraData
 
     if (!storageEraData || storageEraData?.index == null) {
-        console.warn(`Warning: Unknown era at block ${ctx.block.height}`)
-        return
+        return console.warn(`Warning: Unknown era at block ${ctx.block.height}`)
     }
 
     if (await eraManager.getByIndex(ctx, storageEraData.index)) {
-        console.warn(`Warning: Era ${storageEraData.index} has been already proceed at block ${ctx.block.height}`)
-        return
+        return console.warn(
+            `Warning: Era ${storageEraData.index} has been already proceed at block ${ctx.block.height}`
+        )
     }
 
     const stakingData = await getStakingData(ctx, storageEraData.index)
@@ -32,63 +41,85 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
 
     const era = await eraManager.create(ctx, {
         index: storageEraData.index,
+        startedAt: ctx.block.height,
         timestamp: activeEraData?.timestamp,
         validatorsCount: validatorsData.length,
         nominatorsCount: nominatorsData.length,
         total: validatorsData.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n),
     })
 
-    const validators = await eraValidatorManager.create(
-        ctx,
-        validatorsData.map((data) => ({ era, ...data }))
-    )
-    const validatorsMap = new Map(validators.map((v) => [v.id, v]))
+    const validators = await createValidators(ctx, era, validatorsData)
+    const nominators = await createNominators(ctx, era, nominatorsData)
 
-    const nominators = await eraNominatorManager.create(
-        ctx,
-        nominatorsData.map((data) => ({ era, ...data }))
-    )
-    const nominatorsMap = new Map(nominators.map((n) => [n.id, n]))
-
-    const pairsDataWithEntities: Set<EraStakingPairData> = new Set()
-    for (const pair of pairsData) {
-        const validator = validatorsMap.get(pair.validatorId)
-        const nominator = nominatorsMap.get(pair.nominatorId)
-        if (!nominator || !validator) {
-            console.warn(
-                `Warning: Can't create staking pair for validator: ${pair.validatorId} and nominator: ${pair.nominatorId} in era ${era.index} at block ${ctx.block.height}`
-            )
-            continue
-        }
-
-        pairsDataWithEntities.add({
-            nominator,
-            validator,
-            era,
-            vote: pair.vote,
+    const pairs = await Promise.all(
+        pairsData.map(async (p) => {
+            return new EraStakingPair({
+                id: `${era.index}-${p.validator}-${p.nominator}`,
+                validator: validators.get(p.validator),
+                nominator: nominators.get(p.nominator),
+                vote: p.vote,
+                era,
+            })
         })
-    }
+    )
 
-    await eraStakingPairManager.create(ctx, [...pairsDataWithEntities])
+    await ctx.store.insert(EraStakingPair, pairs)
+}
+
+async function createValidators(ctx: EventHandlerContext, era: Era, data: ValidatorData[]) {
+    const tuples: [string, EraValidator][] = await Promise.all(
+        data.map(async (v) => [
+            v.stash,
+            new EraValidator({
+                id: `${era.index}-${v.stash}`,
+                stash: await accountManager.get(ctx, v.stash),
+                totalBonded: v.totalBonded,
+                selfBonded: v.selfBonded,
+                era,
+            }),
+        ])
+    )
+    const map = new Map(tuples)
+    await ctx.store.insert(EraValidator, [...map.values()])
+    return map
+}
+
+async function createNominators(ctx: EventHandlerContext, era: Era, data: NominatorData[]) {
+    const tuples: [string, EraNominator][] = await Promise.all(
+        data.map(async (n) => {
+            const stash = await accountManager.get(ctx, n.stash)
+            return [
+                n.stash,
+                new EraNominator({
+                    id: `${era.index}-${n.stash}`,
+                    stash,
+                    bonded: stash.activeBond,
+                    era,
+                }),
+            ]
+        })
+    )
+    const map = new Map(tuples)
+    await ctx.store.insert(EraNominator, [...map.values()])
+    return map
 }
 
 async function getStakingData(ctx: EventHandlerContext, era: number) {
-    const validatorsData: Map<string, Omit<EraValidatorData, 'era'>> = new Map()
-    const nominatorsData: Map<string, Omit<EraNominatorData, 'era'>> = new Map()
-    const pairsData: Set<{ nominatorId: string; validatorId: string; vote: bigint }> = new Set()
+    const validatorsData: Map<string, ValidatorData> = new Map()
+    const nominatorsData: Map<string, NominatorData> = new Map()
+    const pairsData: Set<PairData> = new Set()
 
     const validatorIds = await storage.session.getValidators(ctx)
     if (!validatorIds) {
-        console.warn(`Warning: Validators for era ${era} not found at block ${ctx.block.height}`)
-        return
+        return console.warn(`Warning: Validators for era ${era} not found at block ${ctx.block.height}`)
     }
+
     const validatorInfos = await storage.staking.erasStakers.getMany(
         ctx,
         validatorIds.map((id) => [id, era])
     )
     if (!validatorInfos) {
-        console.warn(`Warning: Missing info for validators in era ${era} at block ${ctx.block.height}`)
-        return
+        return console.warn(`Warning: Missing info for validators in era ${era} at block ${ctx.block.height}`)
     }
 
     for (let i = 0; i < validatorIds.length; i++) {
@@ -100,6 +131,8 @@ async function getStakingData(ctx: EventHandlerContext, era: number) {
             )
             continue
         }
+
+        if (validatorsData.has(validatorId)) continue
 
         validatorsData.set(validatorId, {
             stash: validatorId,
@@ -117,8 +150,8 @@ async function getStakingData(ctx: EventHandlerContext, era: number) {
             }
 
             pairsData.add({
-                validatorId,
-                nominatorId,
+                validator: validatorId,
+                nominator: nominatorId,
                 vote,
             })
         }

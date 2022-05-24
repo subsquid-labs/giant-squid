@@ -32,7 +32,7 @@ async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string)
     })
 
     //TODO: find way to get current role of staker
-    const role = StakingRole.Indle
+    const role = StakingRole.Idle
 
     return await stakingInfoManager.create(ctx, {
         stash,

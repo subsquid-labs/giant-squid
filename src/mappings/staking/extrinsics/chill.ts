@@ -1,5 +1,4 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { isExtrinsicSuccess } from '../../../common/helpers'
 import { stakingInfoManager } from '../../../managers'
 import { StakingRole } from '../../../model'
 import storage from '../../../storage'
@@ -13,7 +12,7 @@ export async function handleChill(ctx: ExtrinsicHandlerContext) {
     const stakingInfo = await stakingInfoManager.get(ctx, ledger.stash)
     if (!stakingInfo) return
 
-    stakingInfo.role = StakingRole.Indle
+    stakingInfo.role = StakingRole.Idle
 
     await stakingInfoManager.update(ctx, stakingInfo)
 }

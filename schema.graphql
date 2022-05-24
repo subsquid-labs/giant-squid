@@ -18,7 +18,7 @@ type Account @entity {
 enum StakingRole {
   Validator
   Nominator
-  Indle
+  Idle
 }
 
 enum PayeeType {

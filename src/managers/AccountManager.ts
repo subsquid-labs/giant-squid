@@ -13,7 +13,7 @@ class AccountManager extends Manager<Account> {
 
         const accounts = await super.get(ctx, ids)
 
-        const idsWithoutAccount = ids.filter((id) => accounts.findIndex((a) => a.id === id) >= 0)
+        const idsWithoutAccount = ids.filter((id) => accounts.findIndex((a) => a.id === id) < 0)
         accounts.push(...(await this.create(ctx, idsWithoutAccount)))
 
         return Array.isArray(idOrIds) ? accounts : accounts[0]
