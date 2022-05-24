@@ -36,7 +36,4 @@ export class Transfer {
   @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
-
-  @Column_("text", {nullable: true})
-  name!: string | undefined | null
 }

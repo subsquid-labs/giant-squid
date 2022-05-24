@@ -1,47 +1,39 @@
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/helpers'
-import config from '../../config'
 import { StakingBondedStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
-async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<Uint8Array | undefined> {
+async function getStorageData(
+    ctx: StorageContext,
+    accounts: Uint8Array[]
+): Promise<(Uint8Array | undefined)[] | undefined> {
     const storage = new StakingBondedStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV0) {
-        return await storage.getAsV0(account)
+        return await storage.getManyAsV0(accounts)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
 }
 
-const storageCache: {
-    hash?: string
-    values: Map<string, string>
-} = {
-    values: new Map(),
-}
+export const bonded = {
+    get: async (ctx: StorageContext, account: string) => {
+        const u8 = decodeId(account)
 
-export async function getBonded(ctx: StorageContext, account: string): Promise<string | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
-        storageCache.hash = ctx.block.hash
-        storageCache.values.clear()
-    }
+        const data = await getStorageData(ctx, [u8])
+        if (!data || !data[0]) return undefined
 
-    const key = account
-    let value = storageCache.values.get(key)
+        return encodeId(data[0])
+    },
+    getMany: async (ctx: StorageContext, accounts: string[]) => {
+        if (accounts.length === 0) return []
 
-    if (!value) {
-        const u8 = decodeId(account, config.prefix)
-        if (!u8) return undefined
+        const u8s = accounts.map((a) => decodeId(a))
 
-        const data = await getStorageData(ctx, u8)
+        const data = await getStorageData(ctx, u8s)
         if (!data) return undefined
 
-        value = encodeId(data, config.prefix)
-
-        storageCache.values.set(key, value)
-    }
-
-    return value
+        return data.map((d) => (d ? encodeId(d) : undefined))
+    },
 }

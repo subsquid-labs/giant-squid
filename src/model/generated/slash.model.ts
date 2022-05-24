@@ -34,7 +34,4 @@ export class Slash {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   total!: bigint | undefined | null
-
-  @Column_("text", {nullable: true})
-  name!: string | undefined | null
 }

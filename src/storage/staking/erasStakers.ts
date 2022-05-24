@@ -1,6 +1,5 @@
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/helpers'
-import config from '../../config'
 import { StakingErasStakersStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
@@ -12,65 +11,62 @@ interface StorageData {
 
 async function getErasStakersData(
     ctx: StorageContext,
-    account: Uint8Array,
-    era: number
-): Promise<StorageData | undefined> {
+    keys: [era: number, account: Uint8Array][]
+): Promise<StorageData[] | undefined> {
     const storage = new StakingErasStakersStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV0) {
-        return await storage.getAsV0(era, account)
+        return await storage.getManyAsV0(keys)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
 }
 
-const storageCache: {
-    hash?: string
-    values: Map<string, CurrentEra>
-} = {
-    values: new Map(),
-}
-
-interface CurrentEra {
+interface EraStaker {
     total: bigint
     own: bigint
     nominators: { id: string; vote: bigint }[]
 }
 
-export async function getErasStakers(
-    ctx: StorageContext,
-    account: string,
-    era: number
-): Promise<CurrentEra | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
-        storageCache.hash = ctx.block.hash
-        storageCache.values.clear()
-    }
+type ErasStakersArgs = [account: string, era?: number]
 
-    const key = `${era}-${account}`
-    let value = storageCache.values.get(key)
+export const erasStakers = {
+    get: async (ctx: StorageContext, ...args: ErasStakersArgs): Promise<EraStaker | undefined> => {
+        const [account, era] = args
 
-    if (!value) {
-        const decodedAccount = decodeId(account, config.prefix)
+        const decodedAccount = decodeId(account)
         if (!decodedAccount) return undefined
 
-        const data = await getErasStakersData(ctx, decodedAccount, era)
+        const data = (await getErasStakersData(ctx, [[era || 0, decodedAccount]]))?.[0]
         if (!data) return undefined
 
-        value = {
+        return {
             total: data.total,
             own: data.own,
             nominators: data.others.map((nominator) => {
                 return {
-                    id: encodeId(nominator.who, config.prefix),
+                    id: encodeId(nominator.who),
                     vote: nominator.value,
                 }
             }),
         }
+    },
+    getMany: async (ctx: StorageContext, keys: ErasStakersArgs[]) => {
+        if (keys.length === 0) return []
 
-        storageCache.values.set(key, value)
-    }
+        const eraStakers: [number, Uint8Array][] = keys.map((k) => [k[1] || 0, decodeId(k[0])])
 
-    return value
+        const data = await getErasStakersData(ctx, eraStakers)
+        if (!data) return undefined
+
+        return data.map((v) => ({
+            total: v.total,
+            own: v.own,
+            nominators: v.others.map((n) => ({
+                id: encodeId(n.who),
+                vote: n.value,
+            })),
+        }))
+    },
 }
