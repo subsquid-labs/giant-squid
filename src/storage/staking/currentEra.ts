@@ -1,3 +1,4 @@
+import { UnknownVersionError } from '../../common/errors'
 import { StakingCurrentEraStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
@@ -13,9 +14,9 @@ async function getStorageData(ctx: StorageContext): Promise<StorageData | undefi
         return { index: await storage.getAsV1020() }
     } else if (storage.isV1050) {
         return { index: await storage.getAsV1050() }
+    } else {
+        throw new UnknownVersionError(storage.constructor.name)
     }
-
-    return undefined
 }
 
 const storageCache: {

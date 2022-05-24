@@ -1,6 +1,5 @@
 import { UnknownVersionError } from '../../common/errors'
 import { encodeId } from '../../common/helpers'
-import config from '../../config'
 import { SessionValidatorsStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
@@ -34,7 +33,7 @@ export async function getValidators(ctx: StorageContext): Promise<Validators | u
         const data = await getStorageData(ctx)
         if (!data) return undefined
 
-        storageCache.value = data.map((id) => encodeId(id, config.prefix))
+        storageCache.value = data.map((id) => encodeId(id))
     }
 
     return storageCache.value

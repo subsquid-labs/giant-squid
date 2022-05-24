@@ -1,6 +1,8 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
+import { encodeId } from '../../../common/helpers'
+import { accountManager, stakingInfoManager } from '../../../managers'
 import { StakingSetControllerCall } from '../../../types/generated/calls'
-import { saveController } from '../base/savers'
 
 function getCallData(ctx: ExtrinsicHandlerContext): { controller: Uint8Array } | undefined {
     const call = new StakingSetControllerCall(ctx)
@@ -16,8 +18,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): { controller: Uint8Array } |
         const { controller } = call.asV9111
         return { controller: controller.value as Uint8Array }
     } else {
-        const { controller } = call.asLatest
-        return { controller: controller.value as Uint8Array }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
@@ -25,5 +26,15 @@ export async function handleSetController(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
-    await saveController(ctx, data)
+    const stash = ctx.extrinsic.signer
+
+    const stakingInfo = await stakingInfoManager.get(ctx, stash)
+    if (!stakingInfo) return
+
+    const controller = encodeId(data.controller)
+    if (!controller) return
+
+    stakingInfo.controller = await accountManager.get(ctx, controller)
+
+    await stakingInfoManager.update(ctx, stakingInfo)
 }

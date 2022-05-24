@@ -1,9 +1,15 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { RewardData } from '../../../types/custom/stakingData'
+import { UnknownVersionError } from '../../../common/errors'
+import { encodeId } from '../../../common/helpers'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
-import { saveRewardEvent } from '../base/savers'
+import { saveReward } from '../utils/savers'
 
-function getRewardedEventData(ctx: EventHandlerContext): RewardData {
+interface EventData {
+    amount: bigint
+    account: Uint8Array
+}
+
+function getRewardedEventData(ctx: EventHandlerContext): EventData {
     const event = new StakingRewardedEvent(ctx)
 
     if (event.isV9090) {
@@ -13,15 +19,11 @@ function getRewardedEventData(ctx: EventHandlerContext): RewardData {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
-function getRewardEventData(ctx: EventHandlerContext): RewardData | undefined {
+function getRewardEventData(ctx: EventHandlerContext): EventData | undefined {
     const event = new StakingRewardEvent(ctx)
 
     if (event.isV1020) {
@@ -33,11 +35,7 @@ function getRewardEventData(ctx: EventHandlerContext): RewardData | undefined {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
@@ -45,7 +43,10 @@ export async function handleRewarded(ctx: EventHandlerContext, old = false) {
     const data = old ? getRewardEventData(ctx) : getRewardedEventData(ctx)
     if (!data) return
 
-    await saveRewardEvent(ctx, data)
+    await saveReward(ctx, {
+        account: encodeId(data.account),
+        amount: data.amount,
+    })
 }
 
 export const handleReward = (ctx: EventHandlerContext) => {

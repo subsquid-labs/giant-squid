@@ -1,9 +1,9 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/helpers'
-import config from '../../../config'
+import { stakingInfoManager } from '../../../managers'
+import { StakingRole } from '../../../model'
+import storage from '../../../storage'
 import { StakingNominateCall } from '../../../types/generated/calls'
-import { saveNominateCall } from '../base/savers'
 
 interface CallData {
     targets: Uint8Array[]
@@ -35,13 +35,17 @@ export async function handleNominate(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
-    const targets: string[] = []
-    for (const t of data.targets) {
-        const target = encodeId(t, config.prefix)
-        if (!target) return
+    // const targets = data.targets.map((t) => encodeId(t))
 
-        targets.push(target)
-    }
+    const controller = ctx.extrinsic.signer
 
-    await saveNominateCall(ctx, { targets })
+    const ledger = await storage.staking.ledger.get(ctx, controller)
+    if (!ledger) return
+
+    const stakingInfo = await stakingInfoManager.get(ctx, ledger.stash)
+    if (!stakingInfo) return
+
+    stakingInfo.role = StakingRole.Nominator
+
+    await stakingInfoManager.update(ctx, stakingInfo)
 }

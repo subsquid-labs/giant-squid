@@ -8,8 +8,14 @@ type EntityConstructor<T> = {
 export abstract class Manager<T> {
     constructor(protected entityConstructor: EntityConstructor<T>) {}
 
-    get(ctx: EventHandlerContext, id: string | number): Promise<T | undefined> {
-        return ctx.store.findOne(this.entityConstructor, id)
+    get(ctx: EventHandlerContext, id: string): Promise<T | undefined>
+    get(ctx: EventHandlerContext, ids: string[]): Promise<T[]>
+    get(ctx: EventHandlerContext, ids: string | string[]) {
+        if (Array.isArray(ids)) {
+            return ctx.store.findByIds(this.entityConstructor, ids)
+        } else {
+            return ctx.store.findOne(this.entityConstructor, ids)
+        }
     }
 
     async update(ctx: EventHandlerContext, item: T): Promise<T>

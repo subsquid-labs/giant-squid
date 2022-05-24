@@ -1,9 +1,16 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { StakeData } from '../../../types/custom/stakingData'
+import { UnknownVersionError } from '../../../common/errors'
+import { isExtrinsicSuccess } from '../../../common/helpers'
+import { BondType } from '../../../model'
 import { StakingBondExtraCall } from '../../../types/generated/calls'
-import { saveStakeCall } from '../base/savers'
+import { saveBond } from '../utils/savers'
+import { isAlreadyHandled } from '../utils/tools'
 
-function getCallData(ctx: ExtrinsicHandlerContext): StakeData {
+interface CallData {
+    amount: bigint
+}
+
+function getCallData(ctx: ExtrinsicHandlerContext): CallData {
     const call = new StakingBondExtraCall(ctx)
 
     if (call.isV1020) {
@@ -12,15 +19,24 @@ function getCallData(ctx: ExtrinsicHandlerContext): StakeData {
             amount: maxAdditional,
         }
     } else {
-        const { maxAdditional } = call.asLatest
-        return {
-            amount: maxAdditional,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
 export async function handleBondExtra(ctx: ExtrinsicHandlerContext) {
+    const success = isExtrinsicSuccess(ctx)
+
+    //in first versions of kusama there aren't event for bonds, so we need to handle them
+    const alreadyHandled = isAlreadyHandled(ctx)
+
+    if (alreadyHandled && success) return
+
     const data = getCallData(ctx)
 
-    await saveStakeCall(ctx, data)
+    await saveBond(ctx, {
+        account: ctx.extrinsic.signer,
+        amount: data.amount,
+        success,
+        type: BondType.Bond,
+    })
 }

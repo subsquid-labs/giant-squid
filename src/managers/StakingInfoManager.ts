@@ -2,7 +2,6 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Manager } from './Manager'
 import { PayeeType, StakingInfo, StakingRole } from '../model'
 import { accountManager } from './AccountManager'
-import { InsertFailedError } from '../common/errors'
 import { convertPayee, createPrevStorageContext } from '../common/helpers'
 import storage from '../storage'
 
@@ -18,22 +17,22 @@ interface StakingInfoData {
 async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string) {
     const prevCtx = createPrevStorageContext(ctx)
 
-    const controller = await storage.staking.getBonded(prevCtx, stash)
+    const controller = await storage.staking.bonded.get(prevCtx, stash)
     if (!controller) return
 
     const payeeInfo = await storage.staking.getPayee(prevCtx, stash)
     if (!payeeInfo) return
 
-    const { payee: payeeTypeRaw, account: payeeAccount } = payeeInfo
+    const { payee: payeeTypeRaw, account: payeeId } = payeeInfo
 
     const { payee, payeeType } = convertPayee(payeeTypeRaw, {
         stash,
         controller,
-        payeeAccount,
+        payee: payeeId,
     })
 
     //TODO: find way to get current role of staker
-    const role = StakingRole.Indle
+    const role = StakingRole.Idle
 
     return await stakingInfoManager.create(ctx, {
         stash,
@@ -45,8 +44,14 @@ async function createMissingStakingInfo(ctx: EventHandlerContext, stash: string)
 }
 
 class StakingInfoManager extends Manager<StakingInfo> {
-    async get(ctx: EventHandlerContext, id: string): Promise<StakingInfo | undefined> {
-        return (await ctx.store.findOne(StakingInfo, id, { cache: true })) || (await createMissingStakingInfo(ctx, id))
+    async get(ctx: EventHandlerContext, id: string): Promise<StakingInfo | undefined>
+    async get(ctx: EventHandlerContext, ids: string[]): Promise<StakingInfo[]>
+    async get(ctx: EventHandlerContext, idOrIds: string | string[]) {
+        if (Array.isArray(idOrIds)) {
+            return await super.get(ctx, idOrIds)
+        } else {
+            return (await super.get(ctx, idOrIds)) || (await createMissingStakingInfo(ctx, idOrIds))
+        }
     }
 
     async create(ctx: EventHandlerContext, data: StakingInfoData): Promise<StakingInfo> {
@@ -65,7 +70,7 @@ class StakingInfoManager extends Manager<StakingInfo> {
             role: data.role,
         })
 
-        if (!(await ctx.store.insert(StakingInfo, stakingInfo))) throw new InsertFailedError(StakingInfo.name, id)
+        await ctx.store.insert(StakingInfo, stakingInfo)
 
         return stakingInfo
     }

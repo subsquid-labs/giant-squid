@@ -1,9 +1,16 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { RewardData } from '../../../types/custom/stakingData'
+import { UnknownVersionError } from '../../../common/errors'
+import { encodeId } from '../../../common/helpers'
+import storage from '../../../storage'
 import { StakingSlashedEvent, StakingSlashEvent } from '../../../types/generated/events'
-import { saveSlashEvent } from '../base/savers'
+import { saveSlash } from '../utils/savers'
 
-function getSlashedEvent(ctx: EventHandlerContext): RewardData {
+interface EventData {
+    amount: bigint
+    account: Uint8Array
+}
+
+function getSlashedEvent(ctx: EventHandlerContext): EventData {
     const event = new StakingSlashedEvent(ctx)
 
     if (event.isV9090) {
@@ -13,15 +20,11 @@ function getSlashedEvent(ctx: EventHandlerContext): RewardData {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
-function getSlashEvent(ctx: EventHandlerContext): RewardData {
+function getSlashEvent(ctx: EventHandlerContext): EventData {
     const event = new StakingSlashEvent(ctx)
 
     if (event.isV1020) {
@@ -31,17 +34,17 @@ function getSlashEvent(ctx: EventHandlerContext): RewardData {
             amount,
         }
     } else {
-        const [account, amount] = event.asLatest
-        return {
-            account,
-            amount,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
 export async function handleSlashed(ctx: EventHandlerContext, old = false) {
     const data = old ? getSlashEvent(ctx) : getSlashedEvent(ctx)
-    await saveSlashEvent(ctx, data)
+    await saveSlash(ctx, {
+        account: encodeId(data.account),
+        amount: data.amount,
+        era: (await storage.staking.getCurrentEra(ctx))?.index || 0,
+    })
 }
 
 export const handleSlash = (ctx: EventHandlerContext) => {
