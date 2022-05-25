@@ -7,7 +7,7 @@ const config: ProcessorConfig = {
         archive: 'https://polkadot.indexer.gc.subsquid.io/v4/graphql',
         chain: 'wss://rpc.polkadot.io',
     },
-    typesBundle: 'kusama',
+    typesBundle: 'polkadot',
     batchSize: 100,
     // blockRange: {
     //     from: 7567700,
