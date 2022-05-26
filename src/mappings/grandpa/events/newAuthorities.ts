@@ -63,7 +63,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         })
     )
 
-    await ctx.store.insert(EraStakingPair, pairs)
+    await ctx.store.save(pairs, { chunk: 500 })
 }
 
 async function createValidators(ctx: EventHandlerContext, era: Era, data: ValidatorData[]) {
