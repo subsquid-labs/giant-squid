@@ -18,7 +18,13 @@ export function encodeId(id: Uint8Array) {
 }
 
 export function decodeId(id: string) {
-    return ss58.codec(config.prefix).decode(id)
+    try {
+        return ss58.codec(config.prefix).decode(id)
+    } catch (e) {
+        console.warn(`Warning: Failed to encode ${id} with prefix ${config.prefix}: ${e}`)
+
+        return new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+    }
 }
 
 export interface ItemBase {
