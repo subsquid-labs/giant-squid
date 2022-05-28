@@ -1,10 +1,15 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { TransferData } from '../../../types/custom/balanceData'
+import { encodeId } from '../../../common/helpers'
 import { BalancesTransferCall } from '../../../types/generated/calls'
-import { saveTransferCall } from '../utils/base'
+import { saveTransfer } from '../utils/saver'
 
-function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
+interface CallData {
+    to: Uint8Array
+    amount: bigint
+}
+
+function getCallData(ctx: ExtrinsicHandlerContext): CallData {
     const call = new BalancesTransferCall(ctx)
     if (call.isV49) {
         const { dest, value } = call.asV49
@@ -19,7 +24,10 @@ function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
 
 export async function handleTransfer(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
-    if (!data) return
 
-    await saveTransferCall(ctx, data)
+    await saveTransfer(ctx, {
+        from: ctx.extrinsic.signer,
+        to: encodeId(data.to),
+        amount: data.amount,
+    })
 }

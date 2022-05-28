@@ -13,7 +13,7 @@ export class Bond {
   id!: string
 
   @Column_("timestamp with time zone", {nullable: true})
-  date!: Date | undefined | null
+  timestamp!: Date | undefined | null
 
   @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
@@ -22,6 +22,9 @@ export class Bond {
   @Index_()
   @Column_("text", {nullable: true})
   extrinsicHash!: string | undefined | null
+
+  @Column_("text", {nullable: false})
+  accountId!: string
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
@@ -40,7 +43,6 @@ export class Bond {
   @Column_("varchar", {length: 6, nullable: true})
   type!: BondType | undefined | null
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  candidate!: Account | undefined | null
+  @Column_("text", {nullable: true})
+  candidate!: string | undefined | null
 }

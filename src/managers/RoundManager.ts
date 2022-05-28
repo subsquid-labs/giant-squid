@@ -1,34 +1,35 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Round } from '../model'
 import { Manager } from './Manager'
-import { RoundData } from '../types/custom/stakingData'
+export interface RoundData {
+    startingBlock: number
+    round: number
+    selectedCollatorsNumber: number
+    totalBalance: bigint
+}
 
 class RoundManager extends Manager<Round> {
-    private static lastRound?: Round
+    private lastRound?: Round
 
-    async get(ctx: EventHandlerContext): Promise<Round | undefined> {
-        if (RoundManager.lastRound) {
-            return RoundManager.lastRound
+    async getRoundIndexForRewards(ctx: EventHandlerContext): Promise<number | undefined> {
+        if (!this.lastRound) {
+            this.lastRound = await ctx.store.findOne(Round, { order: { index: 'DESC' } })
         }
-        RoundManager.lastRound = await ctx.store.findOne(Round, { order: { round: 'DESC' } })
-        return RoundManager.lastRound
+        return Math.min((this.lastRound?.index || 0) - 4, 0)
     }
 
-    async getRoundNumberForRewards(ctx: EventHandlerContext): Promise<number | undefined> {
-        return this.get(ctx).then((round) => Math.min((round?.round || 0) - 4, 0))
-    }
-
-    async save(ctx: EventHandlerContext, data: RoundData): Promise<void> {
-        RoundManager.lastRound = new Round({
+    async create(ctx: EventHandlerContext, data: RoundData): Promise<void> {
+        this.lastRound = new Round({
             id: ctx.event.id,
-            ...data,
-            blockNumber: BigInt(ctx.block.height),
-            date: new Date(ctx.block.timestamp),
-            extrinsicHash: ctx.extrinsic?.hash,
+            index: data.round,
+            timestamp: new Date(ctx.block.timestamp),
+            startedAt: ctx.block.height,
+            collatorsCount: data.selectedCollatorsNumber,
+            total: data.totalBalance,
         })
 
-        await ctx.store.insert(Round, RoundManager.lastRound)
+        await ctx.store.insert(Round, this.lastRound)
     }
 }
 
-export const roundManager = new RoundManager()
+export const roundManager = new RoundManager(Round)

@@ -1,11 +1,11 @@
 import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { createPrevStorageContext, encodeId, saturatingSumBigInt } from '../../../common/helpers'
+import { createPrevStorageContext, encodeId, getMeta, saturatingSumBigInt } from '../../../common/helpers'
 import { accountManager } from '../../../managers'
 import { Account, Bond, BondType } from '../../../model'
 import storage from '../../../storage'
 import { ParachainStakingCandidateLeftEvent } from '../../../types/generated/events'
-import { saveBondEvent } from '../utils/base'
+import { saveBond } from '../utils/savers'
 
 interface EventData {
     account: Uint8Array
@@ -46,9 +46,11 @@ export const handleCandidateLeft: EventHandler = async (ctx) => {
 
     const data = getEventData(ctx)
 
-    await saveBondEvent(ctx, {
-        ...data,
+    await saveBond(ctx, {
+        account: encodeId(data.account),
+        amount: data.amount,
         type: BondType.Unbond,
+        success: true,
     })
 
     const prevCtx = createPrevStorageContext(ctx)
@@ -71,17 +73,15 @@ export const handleCandidateLeft: EventHandler = async (ctx) => {
     const bonds: Bond[] = new Array(delegations.length)
     for (let i = 0; i < delegators.length; i++) {
         delegators[i] = await accountManager.get(ctx, delegations[i].id)
-        delegators[i].totalBond = saturatingSumBigInt(delegators[i].totalBond, delegations[i].amount * -1n)
+        delegators[i].activeBond = saturatingSumBigInt(delegators[i].activeBond, delegations[i].amount * -1n)
         bonds[i] = new Bond({
             id: `ctx.event.id-${i.toString().padStart(4, '0')}`,
+            ...getMeta(ctx),
             account: delegators[i],
-            candidate,
+            candidate: candidate.id,
             amount: delegations[i].amount,
-            total: delegators[i].totalBond,
+            total: delegators[i].activeBond,
             type: BondType.Unbond,
-            extrinsicHash: ctx.extrinsic?.hash,
-            blockNumber: BigInt(ctx.block.height),
-            date: new Date(ctx.block.timestamp),
             success: true,
         })
     }

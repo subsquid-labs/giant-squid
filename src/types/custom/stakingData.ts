@@ -13,9 +13,4 @@ export interface StakeData {
     candidate?: Uint8Array
 }
 
-export interface RoundData {
-    startingBlock: number
-    round: number
-    selectedCollatorsNumber: number
-    totalBalance: bigint
-}
+

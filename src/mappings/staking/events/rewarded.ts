@@ -1,10 +1,15 @@
 import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { RewardData } from '../../../types/custom/stakingData'
-import { saveRewardedEvent } from '../utils/base'
+import { encodeId } from '../../../common/helpers'
 import { ParachainStakingRewardedEvent } from '../../../types/generated/events'
+import { saveReward } from '../utils/savers'
 
-function getEventData(ctx: EventHandlerContext): RewardData | undefined {
+interface EventData {
+    amount: bigint
+    account: Uint8Array
+}
+
+function getEventData(ctx: EventHandlerContext): EventData {
     const event = new ParachainStakingRewardedEvent(ctx)
 
     if (event.isV49) {
@@ -26,7 +31,9 @@ function getEventData(ctx: EventHandlerContext): RewardData | undefined {
 
 export const handleRewarded: EventHandler = async (ctx) => {
     const data = getEventData(ctx)
-    if (!data) return
 
-    await saveRewardedEvent(ctx, data)
+    await saveReward(ctx, {
+        account: encodeId(data.account),
+        amount: data.amount,
+    })
 }

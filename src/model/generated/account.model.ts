@@ -3,7 +3,6 @@ import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
 import {Reward} from "./reward.model"
 import {Bond} from "./bond.model"
-import {StakingInfo} from "./_stakingInfo"
 
 @Entity_()
 export class Account {
@@ -15,7 +14,7 @@ export class Account {
   id!: string
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalBond!: bigint
+  activeBond!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalReward!: bigint
@@ -28,9 +27,6 @@ export class Account {
 
   @OneToMany_(() => Bond, e => e.account)
   bonds!: Bond[]
-
-  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : new StakingInfo(undefined, obj)}, nullable: true})
-  stakingInfo!: StakingInfo | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   lastUpdateBlock!: bigint

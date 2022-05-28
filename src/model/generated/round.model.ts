@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
 import * as marshal from "./marshal"
 
 @Entity_()
@@ -11,25 +11,20 @@ export class Round {
   id!: string
 
   @Column_("integer", {nullable: false})
-  startingBlock!: number
+  index!: number
+
+  @Column_("timestamp with time zone", {nullable: false})
+  timestamp!: Date
 
   @Column_("integer", {nullable: false})
-  round!: number
+  startedAt!: number
+
+  @Column_("integer", {nullable: true})
+  endedAt!: number | undefined | null
 
   @Column_("integer", {nullable: false})
-  selectedCollatorsNumber!: number
+  collatorsCount!: number
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalBalance!: bigint
-
-  @Column_("timestamp with time zone", {nullable: true})
-  date!: Date | undefined | null
-
-  @Index_()
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
-
-  @Index_()
-  @Column_("text", {nullable: true})
-  extrinsicHash!: string | undefined | null
+  total!: bigint
 }
