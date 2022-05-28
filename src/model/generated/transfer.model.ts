@@ -22,12 +22,12 @@ export class Transfer {
   @Column_("text", {nullable: true})
   extrinsicHash!: string | undefined | null
 
-  @Column_("text", {nullable: false})
-  toId!: string
+  @Column_("text", {nullable: true})
+  toId!: string | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
-  to!: Account
+  @ManyToOne_(() => Account, {nullable: true})
+  to!: Account | undefined | null
 
   @Column_("text", {nullable: false})
   fromId!: string
