@@ -22,6 +22,9 @@ export class Slash {
   @Column_("text", {nullable: true})
   extrinsicHash!: string | undefined | null
 
+  @Column_("text", {nullable: false})
+  accountId!: string
+
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
   account!: Account

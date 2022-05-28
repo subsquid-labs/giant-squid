@@ -24,6 +24,9 @@ export class Contribution {
   @Column_("text", {nullable: true})
   extrinsicHash!: string | undefined | null
 
+  @Column_("text", {nullable: false})
+  crowdloanId!: string
+
   @Index_()
   @ManyToOne_(() => Crowdloan, {nullable: true})
   crowdloan!: Crowdloan | undefined | null
@@ -31,6 +34,9 @@ export class Contribution {
   @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
+
+  @Column_("text", {nullable: false})
+  accountId!: string
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
