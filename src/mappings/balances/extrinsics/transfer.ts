@@ -1,4 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, isAdressSS58 } from '../../../common/helpers'
 import { BalancesTransferCall } from '../../../types/generated/calls'
 import { saveTransfer } from '../utils/saver'
@@ -31,11 +32,7 @@ function getCallData(ctx: ExtrinsicHandlerContext): EventData | undefined {
             amount: value,
         }
     } else {
-        const { dest, value } = call.asLatest
-        return {
-            to: dest.value as Uint8Array,
-            amount: value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 

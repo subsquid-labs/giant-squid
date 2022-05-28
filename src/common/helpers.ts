@@ -25,12 +25,13 @@ export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {
     return ctx.event.name === EXTRINSIC_SUCCESS
 }
 
-export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string } }) {
+export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string; height: number } }) {
     return {
         _chain: ctx._chain,
         block: {
             ...ctx.block,
             hash: ctx.block.parentHash,
+            height: ctx.block.height,
         },
     }
 }

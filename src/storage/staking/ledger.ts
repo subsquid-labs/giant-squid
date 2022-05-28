@@ -1,3 +1,4 @@
+import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/helpers'
 import { StakingLedgerStorage } from '../../types/generated/storage'
@@ -13,6 +14,10 @@ async function getStorageData(
     ctx: StorageContext,
     account: Uint8Array[]
 ): Promise<(StorageData | undefined)[] | undefined> {
+    //skip corrupted blocks
+    if ((ctx as EventHandlerContext).block.height >= 1375087 && (ctx as EventHandlerContext).block.height <= 1377830)
+        return undefined
+
     const storage = new StakingLedgerStorage(ctx)
     if (!storage.isExists) return undefined
 

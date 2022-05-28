@@ -2,6 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
 import { encodeId, isAdressSS58 } from '../../../common/helpers'
 import { saveTransfer } from '../utils/saver'
+import { UnknownVersionError } from '../../../common/errors'
 
 interface EventData {
     from: Uint8Array
@@ -34,14 +35,8 @@ function getCallData(ctx: ExtrinsicHandlerContext): EventData | undefined {
             to: dest.value as Uint8Array,
             amount: value,
         }
-    }
-    {
-        const { source, dest, value } = call.asLatest
-        return {
-            from: source.value as Uint8Array,
-            to: dest.value as Uint8Array,
-            amount: value,
-        }
+    } else {
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
