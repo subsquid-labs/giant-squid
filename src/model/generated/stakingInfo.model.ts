@@ -12,14 +12,23 @@ export class StakingInfo {
   @PrimaryColumn_()
   id!: string
 
+  @Column_("text", {nullable: false})
+  stashId!: string
+
   @Index_({unique: true})
   @OneToOne_(() => Account, {nullable: false})
   @JoinColumn_()
   stash!: Account
 
+  @Column_("text", {nullable: false})
+  controllerId!: string
+
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
   controller!: Account
+
+  @Column_("text", {nullable: false})
+  payeeId!: string
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: true})

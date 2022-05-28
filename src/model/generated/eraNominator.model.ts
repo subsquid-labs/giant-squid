@@ -13,6 +13,9 @@ export class EraNominator {
   @PrimaryColumn_()
   id!: string
 
+  @Column_("text", {nullable: false})
+  stashId!: string
+
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
   stash!: Account

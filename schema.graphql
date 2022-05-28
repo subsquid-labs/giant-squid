@@ -33,8 +33,11 @@ enum PayeeType {
 # current information about stash, controller, payee and staking role
 type StakingInfo @entity {
   id: ID! #stash Id
+  stashId: ID!
   stash: Account! @unique
+  controllerId: ID!
   controller: Account!
+  payeeId: ID!
   payee: Account
   payeeType: PayeeType!
   role: StakingRole!
@@ -66,6 +69,7 @@ type EraStakingPair @entity {
 # information abount validator in era: self/total bond, nominators and their votes
 type EraValidator @entity {
   id: ID! #era + stashId
+  stashId: ID!
   stash: Account!
   era: Era!
   selfBonded: BigInt!
@@ -77,6 +81,7 @@ type EraValidator @entity {
 # information abount nominator in era: bond, validators and votes for them in each era
 type EraNominator @entity {
   id: ID! #era + stashId
+  stashId: ID!
   stash: Account!
   era: Era!
   bonded: BigInt!
@@ -119,12 +124,13 @@ type Crowdloan @entity {
   end: BigInt!
   contributors: [Contributor!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
-  parachain: Parachain
+  parachainId: ID!
+  parachain: Parachain!
   blockNumber: BigInt @index
   createdAt: DateTime
 }
 
-interface Item {
+interface Action {
   timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String
@@ -143,24 +149,28 @@ interface CanFail {
   success: Boolean
 }
 
-type Contribution implements Item & CanFail @entity {
+type Contribution implements Action & CanFail @entity {
   id: ID!
   timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  crowdloanId: ID!
   crowdloan: Crowdloan
   success: Boolean @index
+  accountId: ID!
   account: Account!
   contributor: Contributor!
   amount: BigInt
 }
 
-type Transfer implements Item & CanFail @entity {
+type Transfer implements Action & CanFail @entity {
   id: ID!
   timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  toId: ID!
   to: Account!
+  fromId: ID!
   from: Account!
   amount: BigInt
   success: Boolean @index
@@ -174,11 +184,12 @@ type AccountTransfer @entity {
   direction: TransferDicrection
 }
 
-type Reward implements Item & HasTotal & HasEra @entity  {
+type Reward implements Action & HasTotal & HasEra @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  accountId: ID!
   account: Account!
   amount: BigInt
   era: Int
@@ -186,11 +197,12 @@ type Reward implements Item & HasTotal & HasEra @entity  {
   total: BigInt
 }
 
-type Slash implements Item & HasTotal & HasEra @entity  {
+type Slash implements Action & HasTotal & HasEra @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  accountId: ID!
   account: Account!
   amount: BigInt
   era: Int
@@ -202,11 +214,12 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Item & HasTotal & CanFail @entity  {
+type Bond implements Action & HasTotal & CanFail @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  accountId: ID!
   account: Account!
   amount: BigInt
   total: BigInt

@@ -30,9 +30,12 @@ export class Crowdloan {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   raised!: bigint
 
+  @Column_("text", {nullable: false})
+  parachainId!: string
+
   @Index_()
-  @ManyToOne_(() => Parachain, {nullable: true})
-  parachain!: Parachain | undefined | null
+  @ManyToOne_(() => Parachain, {nullable: false})
+  parachain!: Parachain
 
   @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
