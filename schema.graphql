@@ -5,8 +5,8 @@ type Account @entity {
   totalReward: BigInt!
   totalSlash: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  contributions: [Contribution!] @derivedFrom(field: "account")
   crowdloans: [Contributor!] @derivedFrom(field: "account") # crowdloans there account get participation
+  contributions: [Contribution!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
@@ -108,6 +108,7 @@ type Contributor @entity {
   crowdloan: Crowdloan!
   account: Account!
   amount: BigInt!
+  contributions: [Contribution!] @derivedFrom(field: "contributor")
 }
 
 type Crowdloan @entity {
@@ -150,6 +151,7 @@ type Contribution implements Item & CanFail @entity {
   crowdloan: Crowdloan
   success: Boolean @index
   account: Account!
+  contributor: Contributor!
   amount: BigInt
 }
 

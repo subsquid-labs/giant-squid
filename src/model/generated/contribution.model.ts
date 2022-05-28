@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {Crowdloan} from "./crowdloan.model"
 import {Account} from "./account.model"
+import {Contributor} from "./contributor.model"
 
 @Entity_()
 export class Contribution {
@@ -34,6 +35,10 @@ export class Contribution {
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
   account!: Account
+
+  @Index_()
+  @ManyToOne_(() => Contributor, {nullable: false})
+  contributor!: Contributor
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
