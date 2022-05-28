@@ -12,32 +12,32 @@ export async function saveContribution(ctx: EventHandlerContext, data: Contribut
     const crowdloan = await crowdloanManager.getByParaId(ctx, data.paraId)
     if (!crowdloan) return
 
-    const contribution = new Contribution({
-        id,
-        ...getMeta(ctx),
-        account,
-        amount: data.amount,
-        success: data.success,
-        crowdloan,
-    })
-
-    await ctx.store.insert(Contribution, contribution)
+    let contributor = await contributorManager.get(ctx, `${crowdloan.id}-${account.id}`)
+    if (!contributor) {
+        contributor = await contributorManager.create(ctx, {
+            account,
+            crowdloan,
+        })
+    }
 
     if (data.success) {
-        const account = contribution.account
-
-        let contributor = await contributorManager.get(ctx, `${crowdloan.id}-${account.id}`)
-        if (!contributor) {
-            contributor = await contributorManager.create(ctx, {
-                account,
-                crowdloan,
-            })
-        }
-
-        contributor.amount += BigInt(contribution.amount || 0)
+        contributor.amount += BigInt(data.amount)
         await contributorManager.update(ctx, contributor)
 
-        crowdloan.raised += BigInt(contribution.amount || 0)
+        crowdloan.raised += BigInt(data.amount)
         await crowdloanManager.update(ctx, crowdloan)
     }
+
+    await ctx.store.insert(
+        Contribution,
+        new Contribution({
+            id,
+            ...getMeta(ctx),
+            account,
+            amount: data.amount,
+            success: data.success,
+            crowdloan,
+            contributor,
+        })
+    )
 }
