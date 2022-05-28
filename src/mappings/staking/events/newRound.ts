@@ -1,10 +1,16 @@
 import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { RoundData } from '../../../types/custom/stakingData'
 import { ParachainStakingNewRoundEvent } from '../../../types/generated/events'
 import { roundManager } from '../../../managers'
 
-function getEventData(ctx: EventHandlerContext): RoundData {
+export interface EventData {
+    startingBlock: number
+    round: number
+    selectedCollatorsNumber: number
+    totalBalance: bigint
+}
+
+function getEventData(ctx: EventHandlerContext): EventData {
     const event = new ParachainStakingNewRoundEvent(ctx)
 
     if (event.isV900) {
@@ -20,5 +26,5 @@ export const handleNewRound: EventHandler = async (ctx) => {
     const data = getEventData(ctx)
     if (!data) return
 
-    await roundManager.save(ctx, data)
+    await roundManager.create(ctx, data)
 }

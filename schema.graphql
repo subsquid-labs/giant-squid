@@ -1,22 +1,11 @@
 type Account @entity {
   id: ID!
-  totalBond: BigInt!
+  activeBond: BigInt!
   totalReward: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
-  stakingInfo: StakingInfo
   lastUpdateBlock: BigInt!
-}
-
-type StakingInfo {
-  payee: String
-  payeeAccount: String
-  controller: String
-}
-
-type Token {
-  symbol: String
 }
 
 enum TransferDirection {
@@ -24,8 +13,8 @@ enum TransferDirection {
   TO
 }
 
-interface Item {
-  date: DateTime
+interface Action {
+  timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String
   amount: BigInt
@@ -43,16 +32,17 @@ interface CanFail {
   success: Boolean
 }
 
-type Transfer implements Item & CanFail @entity {
+type Transfer implements Action & CanFail @entity {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
-  to: Account!
+  toId: ID
+  to: Account
+  fromId: ID!
   from: Account!
   amount: BigInt
   success: Boolean @index
-  name: String
 }
 
 type AccountTransfer @entity {
@@ -62,11 +52,12 @@ type AccountTransfer @entity {
   direction: TransferDirection
 }
 
-type Reward implements Item & HasTotal & HasRound @entity  {
+type Reward implements Action & HasTotal & HasRound @entity  {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  accountId: ID!
   account: Account!
   amount: BigInt
   round: Int
@@ -80,25 +71,26 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Item & HasTotal & CanFail @entity  {
+type Bond implements Action & HasTotal & CanFail @entity  {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  accountId: ID!
   account: Account!
   amount: BigInt
   total: BigInt
   success: Boolean @index
   type: BondType
-  candidate: Account
+  candidate: String
 }
 
 type Round @entity {
-  startingBlock: Int!
-  round: Int!
-  selectedCollatorsNumber: Int!
-  totalBalance: BigInt!
-  date: DateTime
-  blockNumber: BigInt @index
-  extrinsicHash: String @index
+  id: ID!
+  index: Int!
+  timestamp: DateTime!
+  startedAt: Int!
+  endedAt: Int
+  collatorsCount: Int!
+  total: BigInt!
 }

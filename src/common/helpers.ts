@@ -3,12 +3,6 @@ import { EventHandlerContext, ExtrinsicHandlerContext, toHex } from '@subsquid/s
 import { StorageContext } from '../types/generated/support'
 import { EXTRINSIC_SUCCESS } from './consts'
 
-export function populateMeta<T extends ItemBase>(ctx: ExtrinsicHandlerContext | EventHandlerContext, entity: T): void {
-    entity.extrinsicHash = ctx.extrinsic?.hash
-    entity.blockNumber = BigInt(ctx.block.height).valueOf()
-    entity.date = new Date(ctx.block.timestamp)
-}
-
 export interface ItemBase {
     id: string
     date: Date | null | undefined
@@ -16,9 +10,6 @@ export interface ItemBase {
     extrinsicHash: string | null | undefined
 }
 
-export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext): boolean {
-    return ctx.event.name === EXTRINSIC_SUCCESS
-}
 export function saturatingSumBigInt(
     a: bigint,
     b: bigint,
@@ -42,12 +33,25 @@ export function encodeId(id: Uint8Array): string {
     return getAddress(toHex(id))
 }
 
-export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string } }): StorageContext {
+export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {
+    return ctx.event.name === EXTRINSIC_SUCCESS
+}
+
+export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string; height: number } }) {
     return {
         _chain: ctx._chain,
         block: {
             ...ctx.block,
             hash: ctx.block.parentHash,
+            height: ctx.block.height,
         },
+    }
+}
+
+export function getMeta(ctx: EventHandlerContext) {
+    return {
+        extrinsicHash: ctx.extrinsic?.hash,
+        blockNumber: BigInt(ctx.block.height).valueOf(),
+        timestamp: new Date(ctx.block.timestamp),
     }
 }

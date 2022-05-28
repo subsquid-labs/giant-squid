@@ -1,8 +1,9 @@
 import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../../common/errors'
+import { encodeId } from '../../../../common/helpers'
 import { BondType } from '../../../../model'
 import { ParachainStakingNominatorLeftEvent } from '../../../../types/generated/events'
-import { saveBondEvent } from '../../utils/base'
+import { saveBond } from '../../utils/savers'
 
 interface EventData {
     account: Uint8Array
@@ -35,8 +36,11 @@ export const handleNominatorLeft: EventHandler = async (ctx) => {
 
     const data = getEventData(ctx)
 
-    await saveBondEvent(ctx, {
-        ...data,
+    await saveBond(ctx, {
+        account: encodeId(data.account),
+        newTotal: data.newTotal,
+        amount: data.amount,
         type: BondType.Unbond,
+        success: true,
     })
 }
