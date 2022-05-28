@@ -1,5 +1,5 @@
 import * as ss58 from '@subsquid/ss58'
-import { EventHandlerContext, ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
+import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import config from '../config'
 import { PayeeType } from '../model'
 import { PayeeTypeRaw } from '../types/custom/stakingData'
@@ -7,24 +7,11 @@ import { StorageContext } from '../types/generated/support'
 import { EXTRINSIC_SUCCESS } from './consts'
 
 export function encodeId(id: Uint8Array) {
-    try {
-        return ss58.codec(config.prefix).encode(id)
-    } catch (e) {
-        const hex = toHex(id)
-        console.warn(`Warning: Failed to encode ${hex} with prefix ${config.prefix}`)
-
-        return hex
-    }
+    return ss58.codec(config.prefix).encode(id)
 }
 
 export function decodeId(id: string) {
-    try {
-        return ss58.codec(config.prefix).decode(id)
-    } catch (e) {
-        console.warn(`Warning: Failed to encode ${id} with prefix ${config.prefix}: ${e}`)
-
-        return new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-    }
+    return ss58.codec(config.prefix).decode(id)
 }
 
 export interface ItemBase {
@@ -91,5 +78,19 @@ export function getMeta(ctx: EventHandlerContext) {
         extrinsicHash: ctx.extrinsic?.hash,
         blockNumber: BigInt(ctx.block.height).valueOf(),
         timestamp: new Date(ctx.block.timestamp),
+    }
+}
+
+export function isAdressSS58(address: Uint8Array) {
+    switch (address.length) {
+        case 1:
+        case 2:
+        case 4:
+        case 8:
+        case 32:
+        case 33:
+            return true
+        default:
+            return false
     }
 }

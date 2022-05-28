@@ -168,8 +168,8 @@ type Transfer implements Action & CanFail @entity {
   timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
-  toId: ID!
-  to: Account!
+  toId: ID
+  to: Account
   fromId: ID!
   from: Account!
   amount: BigInt

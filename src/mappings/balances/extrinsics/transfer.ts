@@ -1,5 +1,5 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { encodeId } from '../../../common/helpers'
+import { encodeId, isAdressSS58 } from '../../../common/helpers'
 import { BalancesTransferCall } from '../../../types/generated/calls'
 import { saveTransfer } from '../utils/saver'
 import { UnknownVersionError } from '../../../common/errors'
@@ -41,7 +41,7 @@ export async function handleTransfer(ctx: ExtrinsicHandlerContext) {
 
     await saveTransfer(ctx, {
         from: ctx.extrinsic.signer,
-        to: encodeId(data.to),
+        to: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
     })
 }
