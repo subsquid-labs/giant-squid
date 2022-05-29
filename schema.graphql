@@ -2,7 +2,7 @@ type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   xcmTransfers: [XcmTransfer!] @derivedFrom(field: "from")
-  lastUpdateBlock: BigInt!
+  lastUptimestampBlock: BigInt!
 }
 
 enum TransferDicrection {
@@ -10,8 +10,8 @@ enum TransferDicrection {
   TO
 }
 
-interface Item {
-  date: DateTime
+interface Action {
+  timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String
   amount: BigInt
@@ -21,16 +21,17 @@ interface CanFail {
   success: Boolean
 }
 
-type Transfer implements Item & CanFail @entity {
+type Transfer implements Action & CanFail @entity {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  to: Account!
+  toId: ID
+  to: Account
+  fromId: ID!
   from: Account!
   amount: BigInt
   success: Boolean @index
-  name: String
 }
 
 type AccountTransfer @entity {
@@ -42,9 +43,10 @@ type AccountTransfer @entity {
 
 type XcmTransfer implements CanFail @entity {
   id: ID!
-  date: DateTime
+  timestamp: DateTime
   blockNumber: BigInt @index
   extrinsicHash: String @index
+  fromId: ID!
   from: Account!
   to: XcmDestinationAccount!
   asset: XcmAsset!
