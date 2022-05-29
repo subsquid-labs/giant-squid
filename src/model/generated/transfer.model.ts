@@ -1,6 +1,5 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
-import {Chain} from "./chain.model"
 import {Account} from "./account.model"
 
 @Entity_()
@@ -12,12 +11,8 @@ export class Transfer {
   @PrimaryColumn_()
   id!: string
 
-  @Index_()
-  @ManyToOne_(() => Chain, {nullable: false})
-  chain!: Chain
-
   @Column_("timestamp with time zone", {nullable: true})
-  date!: Date | undefined | null
+  timestamp!: Date | undefined | null
 
   @Index_()
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
@@ -27,9 +22,15 @@ export class Transfer {
   @Column_("text", {nullable: true})
   extrinsicHash!: string | undefined | null
 
+  @Column_("text", {nullable: true})
+  toId!: string | undefined | null
+
   @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
-  to!: Account
+  @ManyToOne_(() => Account, {nullable: true})
+  to!: Account | undefined | null
+
+  @Column_("text", {nullable: false})
+  fromId!: string
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: false})
@@ -41,7 +42,4 @@ export class Transfer {
   @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
-
-  @Column_("text", {nullable: true})
-  name!: string | undefined | null
 }

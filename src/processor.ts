@@ -13,14 +13,14 @@ processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
 //events handlers
-processor.addEventHandler('balances.Transfer', modules.balances.events.handleTransfer)
-
 processor.addEventHandler('staking.Reward', modules.staking.events.handleReward)
 processor.addEventHandler('staking.Rewarded', modules.staking.events.handleRewarded)
 processor.addEventHandler('staking.Slash', modules.staking.events.handleSlash)
 processor.addEventHandler('staking.Slashed', modules.staking.events.handleSlashed)
 processor.addEventHandler('staking.Bonded', modules.staking.events.handleBonded)
 processor.addEventHandler('staking.Unbonded', modules.staking.events.handleUnbonded)
+
+processor.addEventHandler('grandpa.NewAuthorities', modules.grandpa.events.handleNewAuthorities)
 
 //extrinsics handlers
 processor.addExtrinsicHandler('staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
@@ -41,29 +41,29 @@ processor.addExtrinsicHandler(
 )
 processor.addExtrinsicHandler('staking.set_controller', modules.staking.extrinsics.handleSetController)
 processor.addExtrinsicHandler('staking.set_payee', modules.staking.extrinsics.handleSetPayee)
+processor.addExtrinsicHandler('staking.nominate', modules.staking.extrinsics.handleNominate)
+processor.addExtrinsicHandler('staking.validate', modules.staking.extrinsics.handleValidate)
+processor.addExtrinsicHandler('staking.chill', modules.staking.extrinsics.handleChill)
 
 processor.addExtrinsicHandler(
     'balances.transfer',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransfer
 )
 processor.addExtrinsicHandler(
     'balances.transfer_keep_alive',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferKeepAlive
 )
 processor.addExtrinsicHandler(
     'balances.force_transfer',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleForceTransfer
 )
 processor.addExtrinsicHandler(
     'balances.transfer_all',
-    { triggerEvents: [EXTRINSIC_FAILED] },
+    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
     modules.balances.extrinsics.handleTransferAll
 )
-
-processor.addExtrinsicHandler('sudo.sudo_as', modules.sudoCalls.handleSudoCall)
-processor.addExtrinsicHandler('proxy.proxy', modules.sudoCalls.handleSudoCall)
 
 processor.run()

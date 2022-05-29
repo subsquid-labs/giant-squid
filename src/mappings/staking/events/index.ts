@@ -1,4 +1,4 @@
-export * from './reward'
-export * from './slash'
+export * from './rewarded'
+export * from './slashed'
 export * from './bonded'
 export * from './unbonded'

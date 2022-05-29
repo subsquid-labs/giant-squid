@@ -434,6 +434,191 @@ export class StakingBondExtraCall {
   }
 }
 
+export class StakingChillCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.chill')
+  }
+
+  /**
+   *  Declare no desire to either validate or nominate.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains one read.
+   *  - Writes are limited to the `origin` account key.
+   *  --------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: EraElectionStatus, Ledger
+   *  - Write: Validators, Nominators
+   *  # </weight>
+   */
+  get isV13(): boolean {
+    return this.ctx._chain.getCallHash('staking.chill') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+  }
+
+  /**
+   *  Declare no desire to either validate or nominate.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains one read.
+   *  - Writes are limited to the `origin` account key.
+   *  --------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: EraElectionStatus, Ledger
+   *  - Write: Validators, Nominators
+   *  # </weight>
+   */
+  get asV13(): null {
+    assert(this.isV13)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV13
+  }
+
+  get asLatest(): null {
+    deprecateLatest()
+    return this.asV13
+  }
+}
+
+export class StakingKickCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.kick')
+  }
+
+  /**
+   *  Remove the given nominations from the calling validator.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`. The controller
+   *  account should represent a validator.
+   * 
+   *  - `who`: A list of nominator stash accounts who are nominating this validator which
+   *    should no longer be nominating this validator.
+   * 
+   *  Note: Making this call only makes sense if you first set the validator preferences to
+   *  block any further nominations.
+   */
+  get isV13(): boolean {
+    return this.ctx._chain.getCallHash('staking.kick') === 'e074d5a93414f189b47fbb5d94c57b62cfb9e63808a3c94665eeb2cfe53be8df'
+  }
+
+  /**
+   *  Remove the given nominations from the calling validator.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`. The controller
+   *  account should represent a validator.
+   * 
+   *  - `who`: A list of nominator stash accounts who are nominating this validator which
+   *    should no longer be nominating this validator.
+   * 
+   *  Note: Making this call only makes sense if you first set the validator preferences to
+   *  block any further nominations.
+   */
+  get asV13(): {who: Uint8Array[]} {
+    assert(this.isV13)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV13
+  }
+
+  get asLatest(): {who: Uint8Array[]} {
+    deprecateLatest()
+    return this.asV13
+  }
+}
+
+export class StakingNominateCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.nominate')
+  }
+
+  /**
+   *  Declare the desire to nominate `targets` for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era. This can only be called when
+   *  [`EraElectionStatus`] is `Closed`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - The transaction's complexity is proportional to the size of `targets` (N)
+   *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
+   *  - Both the reads and writes follow a similar pattern.
+   *  ---------
+   *  Weight: O(N)
+   *  where N is the number of targets
+   *  DB Weight:
+   *  - Reads: Era Election Status, Ledger, Current Era
+   *  - Writes: Validators, Nominators
+   *  # </weight>
+   */
+  get isV13(): boolean {
+    return this.ctx._chain.getCallHash('staking.nominate') === '730fc5a4090c1c566ea6d11126ba7258c98a461b0c6bfca8bf9e17e42f8801de'
+  }
+
+  /**
+   *  Declare the desire to nominate `targets` for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era. This can only be called when
+   *  [`EraElectionStatus`] is `Closed`.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - The transaction's complexity is proportional to the size of `targets` (N)
+   *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
+   *  - Both the reads and writes follow a similar pattern.
+   *  ---------
+   *  Weight: O(N)
+   *  where N is the number of targets
+   *  DB Weight:
+   *  - Reads: Era Election Status, Ledger, Current Era
+   *  - Writes: Validators, Nominators
+   *  # </weight>
+   */
+  get asV13(): {targets: Uint8Array[]} {
+    assert(this.isV13)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV13
+  }
+
+  get asLatest(): {targets: Uint8Array[]} {
+    deprecateLatest()
+    return this.asV13
+  }
+}
+
 export class StakingPayoutStakersCall {
   constructor(private ctx: CallContext) {
     assert(this.ctx.extrinsic.name === 'staking.payoutStakers' || this.ctx.extrinsic.name === 'staking.payout_stakers')
@@ -774,6 +959,69 @@ export class StakingUnbondCall {
   }
 
   get asLatest(): {value: bigint} {
+    deprecateLatest()
+    return this.asV13
+  }
+}
+
+export class StakingValidateCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'staking.validate')
+  }
+
+  /**
+   *  Declare the desire to validate for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  -----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Era Election Status, Ledger
+   *  - Write: Nominators, Validators
+   *  # </weight>
+   */
+  get isV13(): boolean {
+    return this.ctx._chain.getCallHash('staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
+  }
+
+  /**
+   *  Declare the desire to validate for the origin controller.
+   * 
+   *  Effects will be felt at the beginning of the next era.
+   * 
+   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
+   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
+   * 
+   *  # <weight>
+   *  - Independent of the arguments. Insignificant complexity.
+   *  - Contains a limited number of reads.
+   *  - Writes are limited to the `origin` account key.
+   *  -----------
+   *  Weight: O(1)
+   *  DB Weight:
+   *  - Read: Era Election Status, Ledger
+   *  - Write: Nominators, Validators
+   *  # </weight>
+   */
+  get asV13(): {prefs: v13.ValidatorPrefsWithBlocked} {
+    assert(this.isV13)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV13
+  }
+
+  get asLatest(): {prefs: v13.ValidatorPrefsWithBlocked} {
     deprecateLatest()
     return this.asV13
   }

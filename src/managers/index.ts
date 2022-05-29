@@ -1,4 +1,3 @@
-import { chainManager } from './ChainManager'
-import { accountManager } from './AccountManager'
-
-export { chainManager, accountManager }
+export * from './AccountManager'
+export * from './StakingInfoManager'
+export * from './EraManager'

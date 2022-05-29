@@ -1,5 +1,5 @@
-import balances from './balances'
 import staking from './staking'
-import * as sudoCalls from './sudoCalls'
+import balances from './balances'
+import grandpa from './grandpa'
 
-export { balances, staking, sudoCalls }
+export { balances, staking, grandpa }

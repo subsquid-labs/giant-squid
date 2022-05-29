@@ -3,6 +3,64 @@ import {StorageContext, Result} from './support'
 import * as v13 from './v13'
 import * as v29 from './v29'
 
+export class SessionValidatorsStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The current set of validators.
+   */
+  get isV13() {
+    return this.ctx._chain.getStorageItemTypeHash('Session', 'Validators') === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
+  }
+
+  /**
+   *  The current set of validators.
+   */
+  async getAsV13(): Promise<Uint8Array[]> {
+    assert(this.isV13)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Session', 'Validators')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Session', 'Validators') != null
+  }
+}
+
+export class StakingActiveEraStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The active era information, it holds index and start.
+   * 
+   *  The active era is the era being currently rewarded. Validator set of this era must be
+   *  equal to [`SessionInterface::validators`].
+   */
+  get isV13() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ActiveEra') === '2bb946dd9c19de9f4332897005d1255528c610172f7418fae165b5dafd3cfbfe'
+  }
+
+  /**
+   *  The active era information, it holds index and start.
+   * 
+   *  The active era is the era being currently rewarded. Validator set of this era must be
+   *  equal to [`SessionInterface::validators`].
+   */
+  async getAsV13(): Promise<v13.ActiveEraInfo | undefined> {
+    assert(this.isV13)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ActiveEra')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ActiveEra') != null
+  }
+}
+
 export class StakingBondedStorage {
   constructor(private ctx: StorageContext) {}
 
@@ -19,6 +77,11 @@ export class StakingBondedStorage {
   async getAsV13(key: Uint8Array): Promise<Uint8Array | undefined> {
     assert(this.isV13)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Bonded', key)
+  }
+
+  async getManyAsV13(keys: Uint8Array[]): Promise<(Uint8Array | undefined)[]> {
+    assert(this.isV13)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Bonded', keys.map(k => [k]))
   }
 
   /**
@@ -61,6 +124,47 @@ export class StakingCurrentEraStorage {
   }
 }
 
+export class StakingErasStakersStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  Exposure of validator at era.
+   * 
+   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+   * 
+   *  Is it removed after `HISTORY_DEPTH` eras.
+   *  If stakers hasn't been set or has been removed then empty exposure is returned.
+   */
+  get isV13() {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ErasStakers') === 'f3f726cc814cef290657008054cd10667b250a01d2842ff3bbbcca24c98abf5b'
+  }
+
+  /**
+   *  Exposure of validator at era.
+   * 
+   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+   * 
+   *  Is it removed after `HISTORY_DEPTH` eras.
+   *  If stakers hasn't been set or has been removed then empty exposure is returned.
+   */
+  async getAsV13(key1: number, key2: Uint8Array): Promise<v13.Exposure> {
+    assert(this.isV13)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', key1, key2)
+  }
+
+  async getManyAsV13(keys: [key1: number, key2: Uint8Array][]): Promise<(v13.Exposure)[]> {
+    assert(this.isV13)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', keys)
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('Staking', 'ErasStakers') != null
+  }
+}
+
 export class StakingLedgerStorage {
   constructor(private ctx: StorageContext) {}
 
@@ -77,6 +181,11 @@ export class StakingLedgerStorage {
   async getAsV13(key: Uint8Array): Promise<v13.StakingLedger | undefined> {
     assert(this.isV13)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
+  }
+
+  async getManyAsV13(keys: Uint8Array[]): Promise<(v13.StakingLedger | undefined)[]> {
+    assert(this.isV13)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Ledger', keys.map(k => [k]))
   }
 
   /**
@@ -105,6 +214,11 @@ export class StakingPayeeStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Payee', key)
   }
 
+  async getManyAsV13(keys: Uint8Array[]): Promise<(v13.RewardDestination)[]> {
+    assert(this.isV13)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Payee', keys.map(k => [k]))
+  }
+
   /**
    *  Where the reward payment should be made. Keyed by stash.
    */
@@ -118,6 +232,11 @@ export class StakingPayeeStorage {
   async getAsV29(key: v29.AccountId32): Promise<v29.RewardDestination> {
     assert(this.isV29)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Payee', key)
+  }
+
+  async getManyAsV29(keys: v29.AccountId32[]): Promise<(v29.RewardDestination)[]> {
+    assert(this.isV29)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Payee', keys.map(k => [k]))
   }
 
   /**

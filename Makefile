@@ -11,7 +11,7 @@ migrate:
 
 
 migration:
-	@npx sqd db:create-migration Data
+	@npx sqd db:create-migration
 
 
 build:
@@ -25,7 +25,6 @@ codegen:
 typegen: 
 	@make explore
 	@npx squid-substrate-typegen ./typegen/typegen.json
-
 
 
 explore:

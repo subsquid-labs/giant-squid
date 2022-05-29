@@ -27,12 +27,33 @@ export interface RewardDestination_None {
   value: null
 }
 
+export interface ValidatorPrefsWithBlocked {
+  commission: number
+  blocked: boolean
+}
+
+export interface ActiveEraInfo {
+  index: number
+  start: (bigint | undefined)
+}
+
+export interface Exposure {
+  total: bigint
+  own: bigint
+  others: IndividualExposure[]
+}
+
 export interface StakingLedger {
   stash: Uint8Array
   total: bigint
   active: bigint
   unlocking: UnlockChunk[]
   claimedRewards: number[]
+}
+
+export interface IndividualExposure {
+  who: Uint8Array
+  value: bigint
 }
 
 export interface UnlockChunk {

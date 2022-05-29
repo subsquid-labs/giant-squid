@@ -1,69 +1,68 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import config from '../config'
 import { Account } from '../model'
 import { Manager } from './Manager'
-import { chainManager } from './ChainManager'
-import { StakingInfo } from '../model/generated/_stakingInfo'
-import * as modules from '../mappings'
-import { StorageContext } from '../types/generated/support'
 
-export class AccountManager extends Manager<Account> {
-    async get(ctx: EventHandlerContext, id: string, data?: Partial<Account>): Promise<Account> {
-        let account = await ctx.store.findOne(Account, id, { cache: true })
+import storage from '../storage'
+import { createPrevStorageContext } from '../common/helpers'
 
-        if (!account) {
-            const prevCtx: StorageContext = {
-                _chain: ctx._chain,
-                block: {
-                    hash: ctx.block.parentHash,
-                },
-            }
+class AccountManager extends Manager<Account> {
+    async get(ctx: EventHandlerContext, id: string): Promise<Account>
+    async get(ctx: EventHandlerContext, ids: string[]): Promise<Account[]>
+    async get(ctx: EventHandlerContext, idOrIds: string | string[]) {
+        const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds]
 
-            const ledger = await modules.staking.storage.getLedger(prevCtx, id)
-            let stakingInfo: StakingInfo | null = null
+        const accounts = await super.get(ctx, ids)
 
-            if (ledger) {
-                const controller = await modules.staking.storage.getBonded(prevCtx, id)
-                const payeeData = await modules.staking.storage.getPayee(prevCtx, id)
+        const idsWithoutAccount = ids.filter((id) => accounts.findIndex((a) => a.id === id) < 0)
+        accounts.push(...(await this.create(ctx, idsWithoutAccount)))
 
-                stakingInfo = new StakingInfo({
-                    controller,
-                    payee: payeeData?.payee,
-                    payeeAccount: payeeData?.account,
-                })
-            }
-
-            account = new Account({
-                id: id.toString(),
-                totalReward: 0n,
-                totalBond: BigInt(ledger?.active || 0).valueOf(),
-                totalSlash: 0n,
-                chain: await chainManager.get(ctx, config.chainName),
-                lastUpdateBlock: BigInt(ctx.block.height - 1).valueOf(),
-                stakingInfo: stakingInfo,
-                ...data,
-            })
-
-            await ctx.store.insert(Account, account)
-        }
-
-        account.lastUpdateBlock = BigInt(ctx.block.height).valueOf()
-
-        return account
+        return Array.isArray(idOrIds) ? accounts : accounts[0]
     }
 
-    // async updateStakingInfo(ctx: EventHandlerContext, account: Account): Promise<void> {
-    //     const controller = await modules.staking.storage.getBonded(ctx, account.id)
-    //     const payeeData = await modules.staking.storage.getPayee(ctx, account.id)
+    async create(ctx: EventHandlerContext, id: string): Promise<Account>
+    async create(ctx: EventHandlerContext, ids: string[]): Promise<Account[]>
+    async create(ctx: EventHandlerContext, idOrIds: string | string[]) {
+        const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds]
+        const prevCtx = createPrevStorageContext(ctx)
 
-    //     account.stakingInfo = new StakingInfo({
-    //         controller,
-    //         payee: payeeData?.payee,
-    //         payeeAccount: payeeData?.account,
-    //     })
+        // query ledger to check if the account has already bonded balance
 
-    //     ctx.store.save(account)
-    // }
+        // first we need to know controller id for account
+        const controllers = await storage.staking.bonded.getMany(prevCtx, ids)
+        const notNullControllers = controllers?.filter((c): c is string => c != null) || []
+
+        // query ledgers and then convert them to map from stash ids
+        // that are equaled our initial ids and ledgers values
+        const ledgers = await storage.staking.ledger.getMany(prevCtx, notNullControllers)
+        const ledgersMap = new Map(ledgers?.map((l) => [l?.stash, l]))
+
+        const accounts = ids.map(
+            (id) =>
+                new Account({
+                    id,
+                    totalReward: 0n,
+                    activeBond: BigInt(ledgersMap.get(id)?.active || 0),
+                    totalSlash: 0n,
+                    lastUpdateBlock: BigInt(ctx.block.height - 1),
+                })
+        )
+
+        await ctx.store.insert(Account, accounts)
+
+        return Array.isArray(idOrIds) ? accounts : accounts[0]
+    }
+
+    async update(ctx: EventHandlerContext, item: Account): Promise<Account>
+    async update(ctx: EventHandlerContext, items: Account[]): Promise<Account[]>
+    async update(ctx: EventHandlerContext, item: Account | Account[]): Promise<Account | Account[]> {
+        if (Array.isArray(item)) {
+            item.forEach((i) => (i.lastUpdateBlock = BigInt(ctx.block.height)))
+            return await super.update(ctx, item)
+        } else {
+            item.lastUpdateBlock = BigInt(ctx.block.height)
+            return await super.update(ctx, item)
+        }
+    }
 }
 
-export const accountManager = new AccountManager()
+export const accountManager = new AccountManager(Account)

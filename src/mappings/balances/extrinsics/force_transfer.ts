@@ -1,11 +1,18 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { saveTransferCall } from '../utils/base'
-import { TransferData } from '../../../types/custom/balanceData'
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
+import { encodeId, isAdressSS58 } from '../../../common/helpers'
+import { saveTransfer } from '../utils/saver'
 import { UnknownVersionError } from '../../../common/errors'
 
-function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
+interface EventData {
+    from: Uint8Array
+    to: Uint8Array
+    amount: bigint
+}
+
+function getCallData(ctx: ExtrinsicHandlerContext): EventData | undefined {
     const call = new BalancesForceTransferCall(ctx)
+
     if (call.isV13) {
         const { source, dest, value } = call.asV13
         return {
@@ -22,5 +29,9 @@ export async function handleForceTransfer(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
-    await saveTransferCall(ctx, data)
+    await saveTransfer(ctx, {
+        from: encodeId(data.from),
+        to: isAdressSS58(data.to) ? encodeId(data.to) : null,
+        amount: data.amount,
+    })
 }

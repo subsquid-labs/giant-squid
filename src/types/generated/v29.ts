@@ -2,6 +2,8 @@ import type {Result} from './support'
 
 export type AccountId32 = Uint8Array
 
+export type Public = Uint8Array
+
 export type RewardDestination = RewardDestination_Staked | RewardDestination_Stash | RewardDestination_Controller | RewardDestination_Account | RewardDestination_None
 
 export interface RewardDestination_Staked {

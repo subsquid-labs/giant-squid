@@ -1,10 +1,16 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { StakeData } from '../../../types/custom/stakingData'
+import { encodeId } from '../../../common/helpers'
+import { BondType } from '../../../model'
 import { StakingUnbondedEvent } from '../../../types/generated/events'
-import { saveStakeEvent } from '../utils/base'
+import { saveBond } from '../utils/savers'
 
-function getEventData(ctx: EventHandlerContext): StakeData {
+interface EventData {
+    amount: bigint
+    account: Uint8Array
+}
+
+function getEventData(ctx: EventHandlerContext): EventData {
     const event = new StakingUnbondedEvent(ctx)
 
     if (event.isV13) {
@@ -22,5 +28,10 @@ export async function handleUnbonded(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
     if (!data) return
 
-    await saveStakeEvent(ctx, data)
+    await saveBond(ctx, {
+        account: encodeId(data.account),
+        amount: data.amount,
+        success: true,
+        type: BondType.Unbond,
+    })
 }

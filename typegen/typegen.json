@@ -4,12 +4,16 @@
   "typesBundle": "hydradx",
   "events": [
     "balances.Transfer",
-    "staking.Reward",
-    "staking.Slash",
+    "staking.EraPaid",
     "staking.Rewarded",
+    "staking.Reward",
     "staking.Slashed",
+    "staking.Slash",
     "staking.Bonded",
-    "staking.Unbonded"
+    "staking.Unbonded",
+    "staking.Withdrawn",
+    "staking.PayoutStarted",
+    "grandpa.NewAuthorities"
   ],
   "calls": [
     "balances.transfer",
@@ -21,12 +25,19 @@
     "staking.bond_extra",
     "staking.unbond",
     "staking.set_payee",
-    "staking.set_controller"
+    "staking.set_controller",
+    "staking.nominate",
+    "staking.validate",
+    "staking.kick",
+    "staking.chill"
   ],
   "storage": [
     "Staking.Bonded",
     "Staking.Payee",
     "Staking.CurrentEra",
-    "Staking.Ledger"
+    "Staking.ActiveEra",
+    "Staking.Ledger",
+    "Staking.ErasStakers",
+    "Session.Validators"
   ]
 }
