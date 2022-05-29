@@ -246,7 +246,7 @@ const chains = [
     {
         name: 'moonbeam',
         displayName: 'Moonbeam',
-        prefix: 1284,
+        prefix: null,
         tokens: [
             {
                 symbol: 'GLMR',
@@ -674,7 +674,7 @@ const chains = [
     {
         name: 'moonriver',
         displayName: 'Moonriver',
-        prefix: 1285,
+        prefix: null,
         tokens: [
             {
                 symbol: 'MOVR',
