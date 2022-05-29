@@ -1,15 +1,12 @@
-import { ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
-import { assert } from 'console'
-import { UnknownVersionError } from '../../../common/errors'
-import { getMeta } from '../../../common/helpers'
+import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
 import { accountManager } from '../../../managers'
-import { XcmAsset, XcmDestinationAccount, XcmTransfer } from '../../../model'
-import storage from '../../../storage'
-import { XTokensTransferCall } from '../../../types/generated/calls'
+import { XcmTransfer } from '../../../model'
 import * as v2000 from '../../../types/generated/v2000'
 import * as v2011 from '../../../types/generated/v2011'
 import * as v2022 from '../../../types/generated/v2022'
 import * as v2042 from '../../../types/generated/v2042'
+import { getAsset, getDest } from '../utils/parsers'
 
 type EventData =
     | { currencyId: v2000.CurrencyId; amount: bigint; dest: v2000.VersionedMultiLocation; destWeight: bigint }

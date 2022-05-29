@@ -2,10 +2,10 @@ type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   xcmTransfers: [XcmTransfer!] @derivedFrom(field: "from")
-  lastUptimestampBlock: BigInt!
+  lastUpdateBlock: BigInt!
 }
 
-enum TransferDicrection {
+enum TransferDirection {
   FROM
   TO
 }
@@ -38,7 +38,7 @@ type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
   account: Account!
-  direction: TransferDicrection
+  direction: TransferDirection
 }
 
 type XcmTransfer implements CanFail @entity {

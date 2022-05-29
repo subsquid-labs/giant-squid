@@ -3,7 +3,7 @@ import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
 import { accountManager } from '../../../managers'
 import { XcmTransfer } from '../../../model'
 import * as v2032 from '../../../types/generated/v2032'
-import * as v2041 from '../../../types/generated/v2041'
+import * as v2042 from '../../../types/generated/v2042'
 import { getAsset, getDest } from '../utils/parsers'
 
 type EventData =
@@ -14,9 +14,9 @@ type EventData =
           destWeight: bigint
       }
     | {
-          currencies: [v2041.CurrencyId, bigint][]
+          currencies: [v2042.CurrencyId, bigint][]
           feeItem: number
-          dest: v2041.VersionedMultiLocation
+          dest: v2042.VersionedMultiLocation
           destWeight: bigint
       }
 

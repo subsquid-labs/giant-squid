@@ -2,7 +2,7 @@ import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { saveTransfer } from '../utils/save'
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/helpers'
+import { encodeId, isAdressSS58 } from '../../../common/helpers'
 
 interface EventData {
     from: Uint8Array
@@ -29,7 +29,7 @@ export async function handleForceTransfer(ctx: ExtrinsicHandlerContext) {
 
     await saveTransfer(ctx, {
         from: encodeId(data.from),
-        to: encodeId(data.to),
+        to: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
     })
 }

@@ -1,7 +1,7 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
 import { accountManager } from '../../../managers'
-import { AccountTransfer, Transfer, TransferDicrection } from '../../../model'
+import { AccountTransfer, Transfer, TransferDirection } from '../../../model'
 import { TransferData } from './types'
 
 export enum Direction {
@@ -13,7 +13,7 @@ export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferD
     const id = ctx.event.id
 
     const from = await accountManager.get(ctx, data.from)
-    const to = await accountManager.get(ctx, data.to)
+    const to = data.to ? await accountManager.get(ctx, data.to) : null
 
     const transfer = new Transfer({
         id,
@@ -32,17 +32,19 @@ export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferD
             id: `${transfer.id}-from`,
             transfer,
             account: transfer.from,
-            direction: TransferDicrection.FROM,
+            direction: TransferDirection.FROM,
         })
     )
 
-    await ctx.store.insert(
-        AccountTransfer,
-        new AccountTransfer({
-            id: `${transfer.id}-to`,
-            transfer,
-            account: transfer.to,
-            direction: TransferDicrection.TO,
-        })
-    )
+    if (to) {
+        await ctx.store.insert(
+            AccountTransfer,
+            new AccountTransfer({
+                id: `${transfer.id}-to`,
+                transfer,
+                account: to,
+                direction: TransferDirection.TO,
+            })
+        )
+    }
 }

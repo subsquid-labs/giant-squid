@@ -1,6 +1,6 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/helpers'
+import { encodeId, isAdressSS58 } from '../../../common/helpers'
 import { BalancesTransferKeepAliveCall } from '../../../types/generated/calls'
 import { saveTransfer } from '../utils/save'
 
@@ -28,7 +28,7 @@ export async function handleTransferKeepAlive(ctx: ExtrinsicHandlerContext) {
 
     await saveTransfer(ctx, {
         from: ctx.extrinsic.signer,
-        to: encodeId(data.to),
+        to: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
     })
 }
