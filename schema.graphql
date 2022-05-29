@@ -44,7 +44,7 @@ type StakingInfo @entity {
   commission: Int
 }
 
-# information about era, validaotors and nominators 
+# information about era, validators and nominators 
 type Era @entity {
   id: ID!
   index: Int!
@@ -66,7 +66,7 @@ type EraStakingPair @entity {
   vote: BigInt!
 }
 
-# information abount validator in era: self/total bond, nominators and their votes
+# information about validator in era: self/total bond, nominators and their votes
 type EraValidator @entity {
   id: ID! #era + stashId
   stashId: ID!
@@ -78,7 +78,7 @@ type EraValidator @entity {
   nominators: [EraStakingPair] @derivedFrom(field: "validator")
 }
 
-# information abount nominator in era: bond, validators and votes for them in each era
+# information about nominator in era: bond, validators and votes for them in each era
 type EraNominator @entity {
   id: ID! #era + stashId
   stashId: ID!
@@ -103,7 +103,7 @@ enum CrowdloanStatus {
   DISSOLVED
 }
 
-enum TransferDicrection {
+enum TransferDirection {
   FROM
   TO
 }
@@ -181,7 +181,7 @@ type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
   account: Account!
-  direction: TransferDicrection
+  direction: TransferDirection
 }
 
 type Reward implements Action & HasTotal & HasEra @entity  {
