@@ -80,7 +80,7 @@ async function createValidators(ctx: EventHandlerContext, era: Era, data: Valida
         ])
     )
     const map = new Map(tuples)
-    await ctx.store.insert(EraValidator, [...map.values()])
+    await ctx.store.save([...map.values()], { chunk: 500 })
     return map
 }
 
@@ -100,7 +100,7 @@ async function createNominators(ctx: EventHandlerContext, era: Era, data: Nomina
         })
     )
     const map = new Map(tuples)
-    await ctx.store.insert(EraNominator, [...map.values()])
+    await ctx.store.save([...map.values()], { chunk: 500 })
     return map
 }
 
