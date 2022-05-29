@@ -51,17 +51,15 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
     const validators = await createValidators(ctx, era, validatorsData)
     const nominators = await createNominators(ctx, era, nominatorsData)
 
-    const pairs = await Promise.all(
-        pairsData.map(async (p) => {
-            return new EraStakingPair({
-                id: `${era.index}-${p.validator}-${p.nominator}`,
-                validator: validators.get(p.validator),
-                nominator: nominators.get(p.nominator),
-                vote: p.vote,
-                era,
-            })
+    const pairs = pairsData.map((p) => {
+        return new EraStakingPair({
+            id: `${era.index}-${p.validator}-${p.nominator}`,
+            validator: validators.get(p.validator),
+            nominator: nominators.get(p.nominator),
+            vote: p.vote,
+            era,
         })
-    )
+    })
 
     await ctx.store.save(pairs, { chunk: 500 })
 }
@@ -107,7 +105,7 @@ async function createNominators(ctx: EventHandlerContext, era: Era, data: Nomina
 async function getStakingData(ctx: EventHandlerContext, era: number) {
     const validatorsData: Map<string, ValidatorData> = new Map()
     const nominatorsData: Map<string, NominatorData> = new Map()
-    const pairsData: Set<PairData> = new Set()
+    const pairsData: Map<string, PairData> = new Map()
 
     const validatorIds = await storage.session.getValidators(ctx)
     if (!validatorIds) {
@@ -149,17 +147,18 @@ async function getStakingData(ctx: EventHandlerContext, era: number) {
                 })
             }
 
-            pairsData.add({
-                validator: validatorId,
-                nominator: nominatorId,
-                vote,
-            })
+            if (!pairsData.has(`${validatorId}-${nominatorId}`))
+                pairsData.set(`${validatorId}-${nominatorId}`, {
+                    validator: validatorId,
+                    nominator: nominatorId,
+                    vote,
+                })
         }
     }
 
     return {
         validatorsData: [...validatorsData.values()],
         nominatorsData: [...nominatorsData.values()],
-        pairsData: [...pairsData],
+        pairsData: [...pairsData.values()],
     }
 }
