@@ -28,7 +28,7 @@ export async function handleForceTransfer(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
 
     await saveTransfer(ctx, {
-        from: encodeId(data.from),
+        from: isAdressSS58(data.to) ? encodeId(data.from) : null,
         to: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
     })

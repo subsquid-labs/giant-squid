@@ -1,8 +1,8 @@
-module.exports = class InitV2_1653850979792 {
-  name = 'InitV2_1653850979792'
+module.exports = class InitV2_1653853658229 {
+  name = 'InitV2_1653853658229'
 
   async up(db) {
-    await db.query(`CREATE TABLE "transfer" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE, "block_number" numeric, "extrinsic_hash" text, "to_id" character varying, "from_id" character varying NOT NULL, "amount" numeric, "success" boolean, CONSTRAINT "PK_fd9ddbdd49a17afcbe014401295" PRIMARY KEY ("id"))`)
+    await db.query(`CREATE TABLE "transfer" ("id" character varying NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE, "block_number" numeric, "extrinsic_hash" text, "to_id" character varying, "from_id" character varying, "amount" numeric, "success" boolean, CONSTRAINT "PK_fd9ddbdd49a17afcbe014401295" PRIMARY KEY ("id"))`)
     await db.query(`CREATE INDEX "IDX_070c555a86b0b41a534a55a659" ON "transfer" ("extrinsic_hash") `)
     await db.query(`CREATE INDEX "IDX_0751309c66e97eac9ef1149362" ON "transfer" ("to_id") `)
     await db.query(`CREATE INDEX "IDX_76bdfed1a7eb27c6d8ecbb7349" ON "transfer" ("from_id") `)

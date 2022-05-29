@@ -28,12 +28,12 @@ export class Transfer {
   @ManyToOne_(() => Account, {nullable: true})
   to!: Account | undefined | null
 
-  @Column_("text", {nullable: false})
-  fromId!: string
+  @Column_("text", {nullable: true})
+  fromId!: string | undefined | null
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
-  from!: Account
+  @ManyToOne_(() => Account, {nullable: true})
+  from!: Account | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
