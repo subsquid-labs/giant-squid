@@ -28,8 +28,8 @@ type Transfer implements Action & CanFail @entity {
   extrinsicHash: String @index
   toId: ID
   to: Account
-  fromId: ID!
-  from: Account!
+  fromId: ID
+  from: Account
   amount: BigInt
   success: Boolean @index
 }

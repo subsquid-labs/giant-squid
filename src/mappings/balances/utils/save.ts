@@ -12,7 +12,7 @@ export enum Direction {
 export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferData) {
     const id = ctx.event.id
 
-    const from = await accountManager.get(ctx, data.from)
+    const from = data.from ? await accountManager.get(ctx, data.from) : null
     const to = data.to ? await accountManager.get(ctx, data.to) : null
 
     const transfer = new Transfer({
@@ -26,15 +26,17 @@ export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferD
 
     await ctx.store.insert(Transfer, transfer)
 
-    await ctx.store.insert(
-        AccountTransfer,
-        new AccountTransfer({
-            id: `${transfer.id}-from`,
-            transfer,
-            account: transfer.from,
-            direction: TransferDirection.FROM,
-        })
-    )
+    if (from) {
+        await ctx.store.insert(
+            AccountTransfer,
+            new AccountTransfer({
+                id: `${transfer.id}-from`,
+                transfer,
+                account: from,
+                direction: TransferDirection.FROM,
+            })
+        )
+    }
 
     if (to) {
         await ctx.store.insert(
