@@ -1,6 +1,7 @@
 import { ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
-import { assert } from 'console'
-import { XcmAsset, XcmDestination } from '../../../model'
+import assert from 'assert'
+import { nativeTokens } from '../../../common/tokens'
+import { TransferAssetToken, TransferLocationXcm } from '../../../model'
 import storage from '../../../storage'
 import { CurrencyId, MultiLocation } from './types'
 
@@ -8,25 +9,28 @@ export async function getAsset(
     ctx: ExtrinsicHandlerContext,
     currencyId: CurrencyId,
     amount: bigint
-): Promise<XcmAsset> {
+): Promise<TransferAssetToken> {
     switch (currencyId.__kind) {
         case 'Token': {
-            return new XcmAsset({
-                token: currencyId.value.__kind,
+            const token = nativeTokens.get(currencyId.value.__kind)
+            assert(token)
+
+            return new TransferAssetToken({
+                symbol: token[0],
+                decimals: token[1],
                 amount,
             })
         }
         case 'ForeignAsset': {
-            const token = (
-                await storage.assetRegestry.getAssetMetadatas(ctx, {
-                    type: 'ForeignAsset',
-                    value: currencyId.value,
-                })
-            )?.symbol
+            const token = await storage.assetRegestry.getAssetMetadatas(ctx, {
+                type: 'ForeignAsset',
+                value: currencyId.value,
+            })
             assert(token != null)
 
-            return new XcmAsset({
-                token,
+            return new TransferAssetToken({
+                symbol: token.symbol,
+                decimals: token.decimals,
                 amount,
             })
         }
@@ -35,10 +39,13 @@ export async function getAsset(
     }
 }
 
-export async function getDest(ctx: ExtrinsicHandlerContext, multilocation: MultiLocation): Promise<XcmDestination> {
+export async function getDest(
+    ctx: ExtrinsicHandlerContext,
+    multilocation: MultiLocation
+): Promise<TransferLocationXcm> {
     const interior = multilocation.__kind === 'V0' ? multilocation.value : multilocation.value.interior
 
-    const props: ConstructorParameters<typeof XcmDestination>[0] = {}
+    const props: ConstructorParameters<typeof TransferLocationXcm>[0] = {}
 
     if (interior.__kind !== 'Here' && interior.__kind !== 'Null') {
         const junctions = Array.isArray(interior.value) ? interior.value : [interior.value]
@@ -63,5 +70,5 @@ export async function getDest(ctx: ExtrinsicHandlerContext, multilocation: Multi
         }
     }
 
-    return new XcmDestination(props)
+    return new TransferLocationXcm(props)
 }

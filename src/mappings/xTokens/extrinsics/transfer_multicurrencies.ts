@@ -1,7 +1,14 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
 import { accountManager } from '../../../managers'
-import { XcmTransfer } from '../../../model'
+import {
+    AccountTransfer,
+    Transfer,
+    TransferAssetMultiToken,
+    TransferDirection,
+    TransferLocationAccount,
+    TransferType,
+} from '../../../model'
 import * as v2032 from '../../../types/generated/v2032'
 import * as v2042 from '../../../types/generated/v2042'
 import { getAsset, getDest } from '../utils/parsers'
@@ -27,20 +34,35 @@ function getCallData(ctx: ExtrinsicHandlerContext): EventData {
 export async function handleTransferMulticurrencies(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
 
+    const from = await accountManager.get(ctx, ctx.extrinsic.signer)
     const assets = await Promise.all(data.currencies.map((c) => getAsset(ctx, c[0], c[1])))
     const to = await getDest(ctx, data.dest)
 
     const id = ctx.event.id
 
-    ctx.store.insert(
-        XcmTransfer,
-        new XcmTransfer({
-            id,
-            ...getMeta(ctx),
-            from: await accountManager.get(ctx, ctx.extrinsic.signer),
-            to,
-            assets,
-            success: isExtrinsicSuccess(ctx),
+    const transfer = new Transfer({
+        id,
+        ...getMeta(ctx),
+        from: new TransferLocationAccount({
+            id: ctx.extrinsic.signer,
+        }),
+        to,
+        asset: new TransferAssetMultiToken({
+            tokens: assets,
+        }),
+        success: isExtrinsicSuccess(ctx),
+        type: TransferType.Xcm,
+    })
+
+    await ctx.store.insert(Transfer, transfer)
+
+    await ctx.store.insert(
+        AccountTransfer,
+        new AccountTransfer({
+            id: `${id}-from`,
+            transfer,
+            account: from,
+            direction: TransferDirection.FROM,
         })
     )
 }

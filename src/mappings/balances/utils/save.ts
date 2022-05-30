@@ -1,7 +1,16 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import assert from 'assert'
 import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
+import { nativeTokens } from '../../../common/tokens'
 import { accountManager } from '../../../managers'
-import { AccountTransfer, Transfer, TransferDirection } from '../../../model'
+import {
+    AccountTransfer,
+    Transfer,
+    TransferAssetToken,
+    TransferDirection,
+    TransferLocationAccount,
+    TransferType,
+} from '../../../model'
 import { TransferData } from './types'
 
 export enum Direction {
@@ -9,7 +18,11 @@ export enum Direction {
     TO,
 }
 
+const ACA = nativeTokens.get('ACA')
+
 export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferData) {
+    assert(ACA)
+
     const id = ctx.event.id
 
     const from = data.from ? await accountManager.get(ctx, data.from) : null
@@ -18,10 +31,23 @@ export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferD
     const transfer = new Transfer({
         id,
         ...getMeta(ctx),
-        from,
-        to,
-        amount: data.amount,
+        from: from
+            ? new TransferLocationAccount({
+                  id: from.id,
+              })
+            : null,
+        to: to
+            ? new TransferLocationAccount({
+                  id: to.id,
+              })
+            : null,
+        asset: new TransferAssetToken({
+            symbol: ACA[0],
+            decimals: ACA[1],
+            amount: data.amount,
+        }),
         success: isExtrinsicSuccess(ctx),
+        type: TransferType.Native,
     })
 
     await ctx.store.insert(Transfer, transfer)

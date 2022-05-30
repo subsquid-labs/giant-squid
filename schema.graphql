@@ -1,7 +1,6 @@
 type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  xcmTransfers: [XcmTransfer!] @derivedFrom(field: "from")
   lastUpdateBlock: BigInt!
 }
 
@@ -14,7 +13,6 @@ interface Action {
   timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String
-  amount: BigInt
 }
 
 interface CanFail {
@@ -26,12 +24,44 @@ type Transfer implements Action & CanFail @entity {
   timestamp: DateTime
   blockNumber: BigInt
   extrinsicHash: String @index
-  toId: ID
-  to: Account
-  fromId: ID
-  from: Account
-  amount: BigInt
+  to: TransferLocation
+  from: TransferLocation
+  asset: TransferAsset
   success: Boolean @index
+  type: TransferType
+}
+
+union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
+
+type TransferLocationAccount {
+  id: String!
+}
+
+type TransferLocationEvm {
+  address: String!
+}
+
+union TransferAsset = TransferAssetToken | TransferAssetMultiToken
+
+enum TransferType {
+  Native
+  Currency
+  Xcm
+}
+
+type TransferAssetToken {
+  symbol: String
+  decimals: Int
+  amount: BigInt
+}
+
+type TransferAssetMultiToken {
+  tokens: [TransferAssetToken]
+}
+
+type TransferLocationXcm {
+  id: String
+  paraId: Int
 }
 
 type AccountTransfer @entity {
@@ -41,24 +71,13 @@ type AccountTransfer @entity {
   direction: TransferDirection
 }
 
-type XcmTransfer implements CanFail @entity {
-  id: ID!
-  timestamp: DateTime
-  blockNumber: BigInt @index
-  extrinsicHash: String @index
-  fromId: ID!
-  from: Account!
-  to: XcmDestination!
-  assets: [XcmAsset]!
-  success: Boolean @index
-}
-
-type XcmDestination {
-  id: String
-  paraId: Int
-}
-
-type XcmAsset {
-  amount: BigInt
-  token: String
-}
+# type XcmTransfer implements CanFail @entity {
+#   id: ID!
+#   timestamp: DateTime
+#   blockNumber: BigInt @index
+#   extrinsicHash: String @index
+#   from: TransferLocation!
+#   to: XcmDestination!
+#   assets: [XcmAsset]!
+#   success: Boolean @index
+# }

@@ -1,7 +1,14 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
 import { accountManager } from '../../../managers'
-import { XcmTransfer } from '../../../model'
+import {
+    AccountTransfer,
+    Transfer,
+    TransferAssetToken,
+    TransferDirection,
+    TransferLocationAccount,
+    TransferType,
+} from '../../../model'
 import * as v2000 from '../../../types/generated/v2000'
 import * as v2011 from '../../../types/generated/v2011'
 import * as v2022 from '../../../types/generated/v2022'
@@ -23,20 +30,38 @@ function getCallData(ctx: ExtrinsicHandlerContext): EventData {
 export async function handleTransfer(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
 
+    const from = await accountManager.get(ctx, ctx.extrinsic.signer)
+
     const asset = await getAsset(ctx, data.currencyId, data.amount)
     const to = await getDest(ctx, data.dest)
 
     const id = ctx.event.id
 
-    ctx.store.insert(
-        XcmTransfer,
-        new XcmTransfer({
-            id,
-            ...getMeta(ctx),
-            from: await accountManager.get(ctx, ctx.extrinsic.signer),
-            to,
-            assets: [asset],
-            success: isExtrinsicSuccess(ctx),
+    const transfer = new Transfer({
+        id,
+        ...getMeta(ctx),
+        from: new TransferLocationAccount({
+            id: ctx.extrinsic.signer,
+        }),
+        to,
+        asset: new TransferAssetToken({
+            symbol: asset.symbol,
+            decimals: asset.decimals,
+            amount: data.amount,
+        }),
+        success: isExtrinsicSuccess(ctx),
+        type: TransferType.Xcm,
+    })
+
+    ctx.store.insert(Transfer, transfer)
+
+    await ctx.store.insert(
+        AccountTransfer,
+        new AccountTransfer({
+            id: `${id}-from`,
+            transfer,
+            account: from,
+            direction: TransferDirection.FROM,
         })
     )
 }

@@ -1,11 +1,12 @@
 import assert from "assert"
 import * as marshal from "./marshal"
 
-export class XcmDestination {
+export class TransferLocationXcm {
+  public readonly isTypeOf = 'TransferLocationXcm'
   private _id!: string | undefined | null
   private _paraId!: number | undefined | null
 
-  constructor(props?: Partial<Omit<XcmDestination, 'toJSON'>>, json?: any) {
+  constructor(props?: Partial<Omit<TransferLocationXcm, 'toJSON'>>, json?: any) {
     Object.assign(this, props)
     if (json != null) {
       this._id = json.id == null ? undefined : marshal.string.fromJSON(json.id)
@@ -31,6 +32,7 @@ export class XcmDestination {
 
   toJSON(): object {
     return {
+      isTypeOf: this.isTypeOf,
       id: this.id,
       paraId: this.paraId,
     }
