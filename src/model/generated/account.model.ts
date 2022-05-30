@@ -1,9 +1,8 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
 import {Bond} from "./bond.model"
 import {Reward} from "./reward.model"
-import {Chain} from "./chain.model"
 
 @Entity_()
 export class Account {
@@ -15,7 +14,7 @@ export class Account {
   id!: string
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalBond!: bigint
+  activeBond!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalReward!: bigint
@@ -29,10 +28,6 @@ export class Account {
   @OneToMany_(() => Reward, e => e.account)
   rewards!: Reward[]
 
-  @Index_()
-  @ManyToOne_(() => Chain, {nullable: false})
-  chain!: Chain
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  lastUpdateBlock!: bigint
+  @Column_("int4", {nullable: false})
+  lastUpdateBlock!: number
 }

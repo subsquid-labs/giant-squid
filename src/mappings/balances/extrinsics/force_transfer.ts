@@ -1,9 +1,16 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { saveTransferCall } from '../utils/base'
-import { TransferData } from '../../../types/custom/balanceData'
+import { saveTransfer } from '../utils/save'
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
+import { UnknownVersionError } from '../../../common/errors'
+import { encodeId, isAdressSS58 } from '../../../common/helpers'
 
-function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
+interface EventData {
+    from: Uint8Array
+    to: Uint8Array
+    amount: bigint
+}
+
+function getCallData(ctx: ExtrinsicHandlerContext): EventData {
     const call = new BalancesForceTransferCall(ctx)
     if (call.isV1) {
         const { source, dest, value } = call.asV1
@@ -13,18 +20,16 @@ function getCallData(ctx: ExtrinsicHandlerContext): TransferData | undefined {
             amount: value,
         }
     } else {
-        const { source, dest, value } = call.asLatest
-        return {
-            from: source.value as Uint8Array,
-            to: dest.value as Uint8Array,
-            amount: value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
 export async function handleForceTransfer(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
-    if (!data) return
 
-    await saveTransferCall(ctx, data)
+    await saveTransfer(ctx, {
+        from: isAdressSS58(data.to) ? encodeId(data.from) : null,
+        to: isAdressSS58(data.to) ? encodeId(data.to) : null,
+        amount: data.amount,
+    })
 }

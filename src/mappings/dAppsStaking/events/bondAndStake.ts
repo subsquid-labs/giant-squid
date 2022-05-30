@@ -1,9 +1,17 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { StakeData } from '../../../types/custom/stakingData'
+import { UnknownVersionError } from '../../../common/errors'
+import { encodeEvm, encodeId } from '../../../common/helpers'
+import { BondType } from '../../../model'
 import { DappsStakingBondAndStakeEvent } from '../../../types/generated/events'
-import { saveStakeEvent } from '../utils/base'
+import { saveBond } from '../utils/savers'
 
-function getEventData(ctx: EventHandlerContext): StakeData {
+interface EventData {
+    amount: bigint
+    account: Uint8Array
+    smartContract: Uint8Array
+}
+
+function getEventData(ctx: EventHandlerContext): EventData {
     const event = new DappsStakingBondAndStakeEvent(ctx)
 
     if (event.isV4) {
@@ -14,12 +22,7 @@ function getEventData(ctx: EventHandlerContext): StakeData {
             smartContract: smartContract.value,
         }
     } else {
-        const [account, smartContract, amount] = event.asLatest
-        return {
-            account,
-            amount,
-            smartContract: smartContract.value,
-        }
+        throw new UnknownVersionError(event.constructor.name)
     }
 }
 
@@ -27,5 +30,11 @@ export async function handleBonded(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
     if (!data) return
 
-    await saveStakeEvent(ctx, data)
+    await saveBond(ctx, {
+        account: encodeId(data.account),
+        amount: data.amount,
+        type: BondType.Bond,
+        smartContract: encodeEvm(data.smartContract),
+        success: true,
+    })
 }

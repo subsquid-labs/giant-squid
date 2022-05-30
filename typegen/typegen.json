@@ -6,7 +6,8 @@
     "balances.Transfer",
     "dappsStaking.Reward",
     "dappsStaking.BondAndStake",
-    "dappsStaking.UnbondUnstakeAndWithdraw"
+    "dappsStaking.UnbondUnstakeAndWithdraw",
+    "dappsStaking.RewardDestination"
   ],
   "calls": [
     "balances.transfer",

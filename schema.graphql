@@ -1,36 +1,22 @@
 type Account @entity {
   id: ID!
-  totalBond: BigInt!
+  activeBond: BigInt!
   totalReward: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
-  chain: Chain!
-  lastUpdateBlock: BigInt!
+  lastUpdateBlock: Int!
 }
 
-type Chain @entity {
-  id: ID!
-  token: Token!
-  paraId: Int
-  relayChain: Chain
-}
-
-type Token {
-  symbol: String
-  decimals: Int
-}
-
-enum TransferDicrection {
+enum TransferDirection {
   FROM
   TO
 }
 
-interface Item {
-  date: DateTime
-  blockNumber: BigInt
+interface Action {
+  timestamp: DateTime
+  blockNumber: Int
   extrinsicHash: String
-  chain: Chain!
   amount: BigInt
 }
 
@@ -38,54 +24,58 @@ interface CanFail {
   success: Boolean
 }
 
-type Transfer implements Item & CanFail @entity {
+type Transfer implements Action & CanFail @entity {
   id: ID!
-  chain: Chain! @index
-  date: DateTime
-  blockNumber: BigInt
+  timestamp: DateTime
+  blockNumber: Int
   extrinsicHash: String @index
-  to: Account!
-  from: Account!
+  toId: ID
+  to: Account
+  fromId: ID
+  from: Account
   amount: BigInt
   success: Boolean @index
-  name: String
 }
 
 type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
   account: Account!
-  direction: TransferDicrection
+  direction: TransferDirection
 }
 
 interface HasTotal {
   total: BigInt
 }
 
-type Reward implements Item & HasTotal @entity  {
+type Reward implements Action & HasTotal @entity  {
   id: ID!
-  chain: Chain! @index
-  date: DateTime
-  blockNumber: BigInt
+  timestamp: DateTime
+  blockNumber: Int
   extrinsicHash: String @index
+  accountId: ID!
   account: Account!
   amount: BigInt
   era: Int
   smartContract: String
   total: BigInt
-  name: String
 }
 
-type Bond implements Item & HasTotal & CanFail @entity  {
+enum BondType {
+  Bond
+  Unbond
+}
+
+type Bond implements Action & HasTotal & CanFail @entity  {
   id: ID!
-  chain: Chain! @index
-  date: DateTime
-  blockNumber: BigInt
+  timestamp: DateTime
+  blockNumber: Int
   extrinsicHash: String @index
+  accountId: ID!
   account: Account!
   amount: BigInt
   total: BigInt
   smartContract: String
   success: Boolean
-  name: String
+  type: BondType
 }

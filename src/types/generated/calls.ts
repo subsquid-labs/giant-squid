@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
 import * as v1 from './v1'
+import * as v4 from './v4'
 
 export class BalancesForceTransferCall {
   constructor(private ctx: CallContext) {
@@ -239,5 +240,95 @@ export class BalancesTransferKeepAliveCall {
   get asLatest(): {dest: v1.MultiAddress, value: bigint} {
     deprecateLatest()
     return this.asV1
+  }
+}
+
+export class DappsStakingBondAndStakeCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'dappsStaking.bondAndStake' || this.ctx.extrinsic.name === 'dappsStaking.bond_and_stake')
+  }
+
+  /**
+   * Lock up and stake balance of the origin account.
+   * 
+   * `value` must be more than the `minimum_balance` specified by `T::Currency`
+   * unless account already has bonded value equal or more than 'minimum_balance'.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the staker's account.
+   * 
+   * Effects of staking will be felt at the beginning of the next era.
+   * 
+   */
+  get isV4(): boolean {
+    return this.ctx._chain.getCallHash('dappsStaking.bond_and_stake') === '6672ecd9402312c35802b77f170edc72a7da0d94f1eba35efb11822174eb6435'
+  }
+
+  /**
+   * Lock up and stake balance of the origin account.
+   * 
+   * `value` must be more than the `minimum_balance` specified by `T::Currency`
+   * unless account already has bonded value equal or more than 'minimum_balance'.
+   * 
+   * The dispatch origin for this call must be _Signed_ by the staker's account.
+   * 
+   * Effects of staking will be felt at the beginning of the next era.
+   * 
+   */
+  get asV4(): {contractId: v4.SmartContract, value: bigint} {
+    assert(this.isV4)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV4
+  }
+
+  get asLatest(): {contractId: v4.SmartContract, value: bigint} {
+    deprecateLatest()
+    return this.asV4
+  }
+}
+
+export class DappsStakingUnbondUnstakeAndWithdrawCall {
+  constructor(private ctx: CallContext) {
+    assert(this.ctx.extrinsic.name === 'dappsStaking.unbondUnstakeAndWithdraw' || this.ctx.extrinsic.name === 'dappsStaking.unbond_unstake_and_withdraw')
+  }
+
+  /**
+   * Unbond, unstake and withdraw balance from the contract.
+   * 
+   * Value will be unlocked for the user.
+   * 
+   * In case remaining staked balance on contract is below minimum staking amount,
+   * entire stake for that contract will be unstaked.
+   * 
+   */
+  get isV4(): boolean {
+    return this.ctx._chain.getCallHash('dappsStaking.unbond_unstake_and_withdraw') === '6672ecd9402312c35802b77f170edc72a7da0d94f1eba35efb11822174eb6435'
+  }
+
+  /**
+   * Unbond, unstake and withdraw balance from the contract.
+   * 
+   * Value will be unlocked for the user.
+   * 
+   * In case remaining staked balance on contract is below minimum staking amount,
+   * entire stake for that contract will be unstaked.
+   * 
+   */
+  get asV4(): {contractId: v4.SmartContract, value: bigint} {
+    assert(this.isV4)
+    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+  }
+
+  get isLatest(): boolean {
+    deprecateLatest()
+    return this.isV4
+  }
+
+  get asLatest(): {contractId: v4.SmartContract, value: bigint} {
+    deprecateLatest()
+    return this.asV4
   }
 }

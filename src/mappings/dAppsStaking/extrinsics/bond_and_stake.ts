@@ -1,25 +1,26 @@
 import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { StakeData } from '../../../types/custom/stakingData'
-import { DappsStakingBondAndStakeEvent } from '../../../types/generated/events'
-import { saveStakeCall } from '../utils/base'
+import { UnknownVersionError } from '../../../common/errors'
+import { encodeEvm, isExtrinsicSuccess } from '../../../common/helpers'
+import { BondType } from '../../../model'
+import { DappsStakingBondAndStakeCall } from '../../../types/generated/calls'
+import { saveBond } from '../utils/savers'
 
-function getCallData(ctx: ExtrinsicHandlerContext): StakeData | undefined {
-    const call = new DappsStakingBondAndStakeEvent(ctx)
+interface CallData {
+    amount: bigint
+    smartContract: Uint8Array
+}
+
+function getCallData(ctx: ExtrinsicHandlerContext): CallData {
+    const call = new DappsStakingBondAndStakeCall(ctx)
 
     if (call.isV4) {
-        const [account, smartContract, value] = call.asV4
+        const { contractId, value } = call.asV4
         return {
             amount: value,
-            account: account,
-            smartContract: smartContract.value,
+            smartContract: contractId.value,
         }
     } else {
-        const [account, smartContract, value] = call.asLatest
-        return {
-            amount: value,
-            account: account,
-            smartContract: smartContract.value,
-        }
+        throw new UnknownVersionError(call.constructor.name)
     }
 }
 
@@ -27,5 +28,11 @@ export async function handleBond(ctx: ExtrinsicHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
-    await saveStakeCall(ctx, data)
+    await saveBond(ctx, {
+        account: ctx.extrinsic.signer,
+        amount: data.amount,
+        type: BondType.Bond,
+        smartContract: encodeEvm(data.smartContract),
+        success: isExtrinsicSuccess(ctx),
+    })
 }

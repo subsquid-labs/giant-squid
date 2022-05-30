@@ -1,6 +1,7 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
-import chains from '../../chains'
-import { ChainName } from './chainInfo'
+import { networkRegistry } from '@subsquid/archive-registry'
+
+export type ChainName = typeof networkRegistry['networks'][number]['name']
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
