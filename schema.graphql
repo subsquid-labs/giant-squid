@@ -34,7 +34,7 @@ type Transfer implements Action & CanFail @entity {
 union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
 
 type TransferLocationAccount {
-  id: String!
+  id: String
 }
 
 type TransferLocationEvm {

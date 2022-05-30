@@ -32,6 +32,8 @@ export interface CurrencyId_ForeignAsset {
   value: number
 }
 
+export type AccountId32 = Uint8Array
+
 export type VersionedMultiLocation = VersionedMultiLocation_V0 | VersionedMultiLocation_V1
 
 export interface VersionedMultiLocation_V0 {

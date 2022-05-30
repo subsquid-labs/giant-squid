@@ -42,8 +42,8 @@ export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferD
               })
             : null,
         asset: new TransferAssetToken({
-            symbol: ACA[0],
-            decimals: ACA[1],
+            symbol: ACA.symbol,
+            decimals: ACA.decimals,
             amount: data.amount,
         }),
         success: isExtrinsicSuccess(ctx),

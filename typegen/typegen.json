@@ -18,6 +18,7 @@
     "AssetRegistry.AssetMetadatas"
   ],
   "events": [
-    "xTokens.TransferredMultiAssets"
+    "xTokens.TransferredMultiAssets",
+    "currencies.Transferred"
   ]
 }

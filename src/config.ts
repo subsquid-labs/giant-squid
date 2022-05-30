@@ -10,9 +10,9 @@ const config: ProcessorConfig = {
     },
     typesBundle: 'acala',
     batchSize: 100,
-    // blockRange: {
-    //     from: 7828270,
-    // },
+    blockRange: {
+        from: 1120940,
+    },
 }
 
 export default config

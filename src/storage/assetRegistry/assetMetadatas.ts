@@ -35,6 +35,13 @@ type AssetId =
               value: TokenSymbol
           }
       }
+    | {
+          __kind: 'NativeAssetId'
+          value: {
+              __kind: 'LiquidCrowdloan'
+              value: number
+          }
+      }
 
 async function getStorageData(ctx: StorageContext, key: AssetId): Promise<StorageData | undefined> {
     const storage = new AssetRegistryAssetMetadatasStorage(ctx)
@@ -77,6 +84,10 @@ type Asset =
           type: 'Token'
           value: TokenSymbol
       }
+    | {
+          type: 'LiquidCrowdloan'
+          value: number
+      }
 
 export async function getAssetMetadatas(ctx: StorageContext, asset: Asset): Promise<AssetMetadata | undefined> {
     const key: AssetId = (() => {
@@ -100,7 +111,15 @@ export async function getAssetMetadatas(ctx: StorageContext, asset: Asset): Prom
                 return {
                     __kind: 'NativeAssetId',
                     value: {
-                        __kind: 'Token',
+                        __kind: asset.type,
+                        value: asset.value,
+                    },
+                }
+            case 'LiquidCrowdloan':
+                return {
+                    __kind: 'NativeAssetId',
+                    value: {
+                        __kind: 'LiquidCrowdloan',
                         value: asset.value,
                     },
                 }

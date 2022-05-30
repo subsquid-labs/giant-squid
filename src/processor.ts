@@ -12,6 +12,9 @@ processor.setDataSource(config.dataSource)
 processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
+//event handlers
+processor.addEventHandler('currencies.Transferred', modules.currencies.events.handleTransferred)
+
 //extrinsics handlers
 processor.addExtrinsicHandler(
     'balances.transfer',

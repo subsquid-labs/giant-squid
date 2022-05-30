@@ -16,8 +16,8 @@ export async function getAsset(
             assert(token)
 
             return new TransferAssetToken({
-                symbol: token[0],
-                decimals: token[1],
+                symbol: token.symbol,
+                decimals: token.decimals,
                 amount,
             })
         }
