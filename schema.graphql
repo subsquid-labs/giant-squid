@@ -91,10 +91,8 @@ type EraNominator @entity {
 # information about known parachains and their crowdloans
 type Parachain @entity {
   id: ID! #paraId
-  name: String
   paraId: Int
   crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
-  relayChain: String
 }
 
 enum CrowdloanStatus {

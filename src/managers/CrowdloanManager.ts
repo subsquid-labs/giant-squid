@@ -37,7 +37,7 @@ class CrowdloanManager extends Manager<Crowdloan> {
             lastPeriod: BigInt(lastPeriod),
             firstPeriod: BigInt(firstPeriod),
             blockNumber: BigInt(ctx.block.height),
-            parachain: await chainManager.get(ctx, paraId.toString()),
+            parachain: await chainManager.get(ctx, `${paraId}`),
             createdAt: new Date(ctx.block.timestamp),
         })
 

@@ -4,29 +4,28 @@ import config from '../config'
 import { Parachain } from '../model'
 import { Manager } from './Manager'
 
+type ParaId = `${number}`
+
 class ParachainManager extends Manager<Parachain> {
-    async get(ctx: EventHandlerContext, id: string): Promise<Parachain>
-    async get(ctx: EventHandlerContext, ids: string[]): Promise<Parachain[]>
-    async get(ctx: EventHandlerContext, idOrIds: string | string[]) {
+    async get(ctx: EventHandlerContext, id: ParaId): Promise<Parachain>
+    async get(ctx: EventHandlerContext, ids: ParaId[]): Promise<Parachain[]>
+    async get(ctx: EventHandlerContext, idOrIds: ParaId | ParaId[]) {
         const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds]
         const parachains = await super.get(ctx, ids)
 
         const idsWithoutChains = ids.filter((id) => parachains.findIndex((pc) => pc.id === id))
         parachains.push(
-            ...chains
-                .filter((c) => idsWithoutChains.includes(String(c.paraId)) && c.relay === config.chainName)
-                .map(
-                    (c) =>
+            ...(await ctx.store.save(
+                Parachain,
+                idsWithoutChains.map(
+                    (id) =>
                         new Parachain({
-                            id: String(c.paraId),
-                            name: c.name,
-                            paraId: c.paraId,
-                            relayChain: c.relay,
+                            id: id,
+                            paraId: Number(id),
                         })
                 )
+            ))
         )
-
-        await ctx.store.insert(Parachain, parachains)
 
         return Array.isArray(idOrIds) ? parachains : parachains[0]
     }
