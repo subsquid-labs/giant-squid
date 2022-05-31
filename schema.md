@@ -157,6 +157,8 @@ type Bond implements Item & HasTotal & CanFail @entity  {
   total: BigInt
   success: Boolean @index
   type: BondType
+  # only for parachain-staking
+  candidate: String
 }
 ```
 #### Crowdloans
