@@ -1,3 +1,4 @@
+#### Account
 ```gql
 # account entity can be used to get info about current account state and absorb account actions 
 type Account @entity {
