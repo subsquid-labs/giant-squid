@@ -129,6 +129,8 @@ type Reward implements Item & HasTotal & HasEra @entity  {
   era: Int
   validator: String
   total: BigInt
+  # only for dApps-staking
+  smartConstract: String
 }
 
 type Slash implements Item & HasTotal & HasEra @entity  {
@@ -159,6 +161,8 @@ type Bond implements Item & HasTotal & CanFail @entity  {
   type: BondType
   # only for parachain-staking
   candidate: String
+  # only for dApps-staking
+  smartConstract: String
 }
 ```
 #### Crowdloans
