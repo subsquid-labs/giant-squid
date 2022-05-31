@@ -210,7 +210,7 @@ type Contribution implements Item & CanFail @entity {
 }
 ```
 #### Interfaces
-```
+```gql
 interface Item {
   timestamp: DateTime
   blockNumber: BigInt
