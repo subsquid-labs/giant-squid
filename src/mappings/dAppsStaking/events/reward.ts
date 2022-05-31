@@ -1,7 +1,6 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { EventHandlerContext, toHex } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeEvm, encodeId } from '../../../common/helpers'
-import { RewardData } from '../../../types/custom/stakingData'
 import { DappsStakingRewardEvent } from '../../../types/generated/events'
 import { saveReward } from '../utils/savers'
 
@@ -10,9 +9,10 @@ export interface EventData {
     account: Uint8Array
     smartContract: Uint8Array
     era: number
+    type: 'Evm' | 'Wasm'
 }
 
-function getEventData(ctx: EventHandlerContext): RewardData | undefined {
+function getEventData(ctx: EventHandlerContext): EventData | undefined {
     const event = new DappsStakingRewardEvent(ctx)
 
     if (event.isV4) {
@@ -22,6 +22,7 @@ function getEventData(ctx: EventHandlerContext): RewardData | undefined {
             amount,
             smartContract: smartContract.value,
             era,
+            type: smartContract.__kind,
         }
     } else {
         throw new UnknownVersionError(event.constructor.name)
@@ -36,6 +37,6 @@ export async function handleReward(ctx: EventHandlerContext) {
         account: encodeId(data.account),
         amount: data.amount,
         era: data.era,
-        smartContract: encodeEvm(data.smartContract),
+        smartContract: data.type === 'Evm' ? encodeEvm(data.smartContract) : toHex(data.smartContract),
     })
 }

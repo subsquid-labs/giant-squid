@@ -1,4 +1,4 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { EventHandlerContext, toHex } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeEvm, encodeId } from '../../../common/helpers'
 import { BondType } from '../../../model'
@@ -9,6 +9,7 @@ interface EventData {
     amount: bigint
     account: Uint8Array
     smartContract: Uint8Array
+    type: 'Evm' | 'Wasm'
 }
 
 function getEventData(ctx: EventHandlerContext): EventData {
@@ -20,6 +21,7 @@ function getEventData(ctx: EventHandlerContext): EventData {
             account,
             amount,
             smartContract: smartContract.value,
+            type: smartContract.__kind,
         }
     } else {
         throw new UnknownVersionError(event.constructor.name)
@@ -34,7 +36,7 @@ export async function handleUnbonded(ctx: EventHandlerContext) {
         account: encodeId(data.account),
         amount: data.amount,
         type: BondType.Unbond,
-        smartContract: encodeEvm(data.smartContract),
+        smartContract: data.type === 'Evm' ? encodeEvm(data.smartContract) : toHex(data.smartContract),
         success: true,
     })
 }
