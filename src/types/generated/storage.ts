@@ -2,6 +2,7 @@ import assert from 'assert'
 import {StorageContext, Result} from './support'
 import * as v1001 from './v1001'
 import * as v1201 from './v1201'
+import * as v1502 from './v1502'
 import * as v200 from './v200'
 import * as v49 from './v49'
 import * as v53 from './v53'
@@ -23,6 +24,11 @@ export class ParachainStakingBottomDelegationsStorage {
   async getAsV1201(key: v1201.AccountId20): Promise<v1201.Delegations_209 | undefined> {
     assert(this.isV1201)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'BottomDelegations', key)
+  }
+
+  async getManyAsV1201(keys: v1201.AccountId20[]): Promise<(v1201.Delegations_209 | undefined)[]> {
+    assert(this.isV1201)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'BottomDelegations', keys.map(k => [k]))
   }
 
   /**
@@ -51,6 +57,11 @@ export class ParachainStakingCandidateInfoStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CandidateInfo', key)
   }
 
+  async getManyAsV1201(keys: v1201.AccountId20[]): Promise<(v1201.CandidateMetadata | undefined)[]> {
+    assert(this.isV1201)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'CandidateInfo', keys.map(k => [k]))
+  }
+
   /**
    * Checks whether the storage item is defined for the current chain version.
    */
@@ -75,6 +86,11 @@ export class ParachainStakingCandidateStateStorage {
   async getAsV1001(key: v1001.AccountId20): Promise<v1001.CollatorCandidate | undefined> {
     assert(this.isV1001)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CandidateState', key)
+  }
+
+  async getManyAsV1001(keys: v1001.AccountId20[]): Promise<(v1001.CollatorCandidate | undefined)[]> {
+    assert(this.isV1001)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'CandidateState', keys.map(k => [k]))
   }
 
   /**
@@ -103,6 +119,11 @@ export class ParachainStakingCollatorStateStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState', key)
   }
 
+  async getManyAsV49(keys: Uint8Array[]): Promise<(v49.Collator | undefined)[]> {
+    assert(this.isV49)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState', keys.map(k => [k]))
+  }
+
   /**
    * Checks whether the storage item is defined for the current chain version.
    */
@@ -129,6 +150,11 @@ export class ParachainStakingCollatorState2Storage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', key)
   }
 
+  async getManyAsV53(keys: Uint8Array[]): Promise<(v53.Collator2 | undefined)[]> {
+    assert(this.isV53)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', keys.map(k => [k]))
+  }
+
   /**
    *  Get collator state associated with an account if account is collating else None
    */
@@ -142,6 +168,11 @@ export class ParachainStakingCollatorState2Storage {
   async getAsV900(key: v900.H160): Promise<v900.Collator2 | undefined> {
     assert(this.isV900)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', key)
+  }
+
+  async getManyAsV900(keys: v900.H160[]): Promise<(v900.Collator2 | undefined)[]> {
+    assert(this.isV900)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', keys.map(k => [k]))
   }
 
   /**
@@ -170,6 +201,31 @@ export class ParachainStakingDelegatorStateStorage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'DelegatorState', key)
   }
 
+  async getManyAsV1001(keys: v1001.AccountId20[]): Promise<(v1001.Delegator | undefined)[]> {
+    assert(this.isV1001)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'DelegatorState', keys.map(k => [k]))
+  }
+
+  /**
+   *  Get delegator state associated with an account if account is delegating else None
+   */
+  get isV1502() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'DelegatorState') === '637263cfee3190d24faafd4e41f925a782ec1a9b5d80de08bd6ae287d0f0a10a'
+  }
+
+  /**
+   *  Get delegator state associated with an account if account is delegating else None
+   */
+  async getAsV1502(key: v1502.AccountId20): Promise<v1502.Delegator | undefined> {
+    assert(this.isV1502)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'DelegatorState', key)
+  }
+
+  async getManyAsV1502(keys: v1502.AccountId20[]): Promise<(v1502.Delegator | undefined)[]> {
+    assert(this.isV1502)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'DelegatorState', keys.map(k => [k]))
+  }
+
   /**
    * Checks whether the storage item is defined for the current chain version.
    */
@@ -194,6 +250,11 @@ export class ParachainStakingNominatorStateStorage {
   async getAsV49(key: Uint8Array): Promise<v49.Nominator | undefined> {
     assert(this.isV49)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState', key)
+  }
+
+  async getManyAsV49(keys: Uint8Array[]): Promise<(v49.Nominator | undefined)[]> {
+    assert(this.isV49)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState', keys.map(k => [k]))
   }
 
   /**
@@ -222,6 +283,11 @@ export class ParachainStakingNominatorState2Storage {
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', key)
   }
 
+  async getManyAsV200(keys: Uint8Array[]): Promise<(v200.Nominator2 | undefined)[]> {
+    assert(this.isV200)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', keys.map(k => [k]))
+  }
+
   /**
    *  Get nominator state associated with an account if account is nominating else None
    */
@@ -235,6 +301,11 @@ export class ParachainStakingNominatorState2Storage {
   async getAsV900(key: v900.H160): Promise<v900.Nominator2 | undefined> {
     assert(this.isV900)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', key)
+  }
+
+  async getManyAsV900(keys: v900.H160[]): Promise<(v900.Nominator2 | undefined)[]> {
+    assert(this.isV900)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', keys.map(k => [k]))
   }
 
   /**
@@ -252,6 +323,11 @@ export class ParachainStakingNominatorState2Storage {
   async getAsV1001(key: v1001.AccountId20): Promise<v1001.Nominator2 | undefined> {
     assert(this.isV1001)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', key)
+  }
+
+  async getManyAsV1001(keys: v1001.AccountId20[]): Promise<(v1001.Nominator2 | undefined)[]> {
+    assert(this.isV1001)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', keys.map(k => [k]))
   }
 
   /**
@@ -278,6 +354,11 @@ export class ParachainStakingTopDelegationsStorage {
   async getAsV1201(key: v1201.AccountId20): Promise<v1201.Delegations_209 | undefined> {
     assert(this.isV1201)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'TopDelegations', key)
+  }
+
+  async getManyAsV1201(keys: v1201.AccountId20[]): Promise<(v1201.Delegations_209 | undefined)[]> {
+    assert(this.isV1201)
+    return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'TopDelegations', keys.map(k => [k]))
   }
 
   /**
