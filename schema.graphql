@@ -13,18 +13,11 @@ enum TransferDirection {
   TO
 }
 
-interface Action {
-  timestamp: DateTime
-  blockNumber: Int
-  extrinsicHash: String
-  amount: BigInt
-}
-
 interface CanFail {
   success: Boolean
 }
 
-type Transfer implements Action & CanFail @entity {
+type Transfer implements CanFail @entity {
   id: ID!
   timestamp: DateTime
   blockNumber: Int
@@ -48,7 +41,7 @@ interface HasTotal {
   total: BigInt
 }
 
-type Reward implements Action & HasTotal @entity  {
+type Reward implements HasTotal @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int
@@ -66,7 +59,7 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Action & HasTotal & CanFail @entity  {
+type Bond implements HasTotal & CanFail @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int

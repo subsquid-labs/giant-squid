@@ -1,4 +1,4 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeEvm, isExtrinsicSuccess } from '../../../common/helpers'
 import { BondType } from '../../../model'
