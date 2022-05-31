@@ -1,18 +1,21 @@
 # subsquid-super-api
 - acala
-  transfers
-  xcmTransfers
+  - transfers
+  - xcmTransfers
 - astar
-  transfers
-  staking
+  - transfers
+  - staking
 - kusama
-  transfers
-  staking
-  crowdloan
+  - transfers
+  - staking
+  - crowdloan
 - polkadot
-  transfers
-  staking
-  crowdloan
+  - transfers
+  - staking
+  - crowdloan
 - moonbeam
-  transfers
-  staking
+  - transfers
+  - staking
+- hydradx
+  - transfers
+  - staking
