@@ -1,1 +1,0 @@
-export { handleContribute } from './contribute'
