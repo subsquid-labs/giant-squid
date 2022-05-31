@@ -20,7 +20,36 @@ type Account @entity {
 
   lastUpdateBlock: BigInt!
 }
+```
+#### Transfers
+```
+enum TransferDicrection {
+  FROM
+  TO
+}
 
+type Transfer implements Item & CanFail @entity {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: BigInt @index
+  extrinsicHash: String @index
+  to: Account!
+  from: Account!
+  amount: BigInt
+  success: Boolean @index
+}
+
+# entity for linking account and transfer
+type AccountTransfer @entity {
+  id: ID!
+  transfer: Transfer
+  account: Account!
+  direction: TransferDicrection
+}
+```
+#### Staking
+See https://docs.substrate.io/rustdocs/latest/pallet_staking/index.html
+```
 enum StakingRole {
   Validator
   Nominator
@@ -36,7 +65,6 @@ enum PayeeType {
 }
 
 # current information about stash, controller, payee and staking role.
-# See https://docs.substrate.io/rustdocs/latest/pallet_staking/index.html
 type StakingInfo @entity {
   id: ID! #stash Id
   stash: Account! @unique
@@ -89,96 +117,6 @@ type EraNominator @entity {
   validators: [EraStakingPair] @derivedFrom(field: "nominator")
 }
 
-# information about known parachains and their crowdloans
-type Parachain @entity {
-  id: ID! #paraId
-  name: String
-  paraId: Int
-  crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
-  relayChain: String
-}
-
-enum CrowdloanStatus {
-  CREATED
-  WON
-  DISSOLVED
-}
-
-enum TransferDicrection {
-  FROM
-  TO
-}
-
-type Contributor @entity {
-  id: ID!
-  crowdloan: Crowdloan!
-  account: Account!
-  amount: BigInt!
-}
-
-# information about known crowdloans.
-# See https://wiki.polkadot.network/docs/learn-crowdloans
-type Crowdloan @entity {
-  id: ID!
-  cap: BigInt!
-  firstPeriod: BigInt!
-  lastPeriod: BigInt!
-  end: BigInt!
-  contributors: [Contributor!] @derivedFrom(field: "crowdloan")
-  raised: BigInt!
-  parachain: Parachain
-  blockNumber: BigInt @index
-  createdAt: DateTime
-}
-
-interface Item {
-  timestamp: DateTime
-  blockNumber: BigInt
-  extrinsicHash: String
-  amount: BigInt
-}
-
-interface HasTotal {
-  total: BigInt
-}
-
-interface HasEra {
-  era: Int
-}
-
-interface CanFail {
-  success: Boolean
-}
-
-type Contribution implements Item & CanFail @entity {
-  id: ID!
-  timestamp: DateTime
-  blockNumber: BigInt @index
-  extrinsicHash: String @index
-  crowdloan: Crowdloan
-  success: Boolean @index
-  account: Account!
-  amount: BigInt
-}
-
-type Transfer implements Item & CanFail @entity {
-  id: ID!
-  timestamp: DateTime
-  blockNumber: BigInt @index
-  extrinsicHash: String @index
-  to: Account!
-  from: Account!
-  amount: BigInt
-  success: Boolean @index
-}
-
-# entity for linking account and transfer
-type AccountTransfer @entity {
-  id: ID!
-  transfer: Transfer
-  account: Account!
-  direction: TransferDicrection
-}
 
 type Reward implements Item & HasTotal & HasEra @entity  {
   id: ID!
@@ -219,3 +157,75 @@ type Bond implements Item & HasTotal & CanFail @entity  {
   success: Boolean @index
   type: BondType
 }
+```
+#### Crowdloans
+See https://wiki.polkadot.network/docs/learn-crowdloans
+```
+# information about known parachains and their crowdloans
+type Parachain @entity {
+  id: ID! #paraId
+  name: String
+  paraId: Int
+  crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
+  relayChain: String
+}
+
+enum CrowdloanStatus {
+  CREATED
+  WON
+  DISSOLVED
+}
+
+type Contributor @entity {
+  id: ID!
+  crowdloan: Crowdloan!
+  account: Account!
+  amount: BigInt!
+}
+
+# information about known crowdloans.
+type Crowdloan @entity {
+  id: ID!
+  cap: BigInt!
+  firstPeriod: BigInt!
+  lastPeriod: BigInt!
+  end: BigInt!
+  contributors: [Contributor!] @derivedFrom(field: "crowdloan")
+  raised: BigInt!
+  parachain: Parachain
+  blockNumber: BigInt @index
+  createdAt: DateTime
+}
+
+type Contribution implements Item & CanFail @entity {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: BigInt @index
+  extrinsicHash: String @index
+  crowdloan: Crowdloan
+  success: Boolean @index
+  account: Account!
+  amount: BigInt
+}
+```
+#### Interfaces
+```
+interface Item {
+  timestamp: DateTime
+  blockNumber: BigInt
+  extrinsicHash: String
+  amount: BigInt
+}
+
+interface HasTotal {
+  total: BigInt
+}
+
+interface HasEra {
+  era: Int
+}
+
+interface CanFail {
+  success: Boolean
+}
+```
