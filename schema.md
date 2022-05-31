@@ -23,7 +23,7 @@ type Account @entity {
 }
 ```
 #### Transfers
-```
+```gql
 enum TransferDicrection {
   FROM
   TO
@@ -50,7 +50,7 @@ type AccountTransfer @entity {
 ```
 #### Staking
 See https://docs.substrate.io/rustdocs/latest/pallet_staking/index.html
-```
+```gql
 enum StakingRole {
   Validator
   Nominator
@@ -161,7 +161,7 @@ type Bond implements Item & HasTotal & CanFail @entity  {
 ```
 #### Crowdloans
 See https://wiki.polkadot.network/docs/learn-crowdloans
-```
+```gql
 # information about known parachains and their crowdloans
 type Parachain @entity {
   id: ID! #paraId
