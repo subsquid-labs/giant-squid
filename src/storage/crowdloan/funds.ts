@@ -2,14 +2,35 @@ import { UnknownVersionError } from '../../common/errors'
 import { CrowdloanFundsStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
-async function getStorageData(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
+interface StorageData {
+    raised: bigint
+    end: number
+    cap: bigint
+    firstPeriod: number
+    lastPeriod: number
+    fundIndex: number
+}
+
+async function getStorageData(ctx: StorageContext, paraId: number): Promise<StorageData | undefined> {
     const storage = new CrowdloanFundsStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV9010) {
-        return await storage.getAsV9010(paraId)
+        const data = await storage.getAsV9010(paraId)
+        if (!data) return undefined
+        return {
+            fundIndex: data.trieIndex,
+            ...data,
+        }
     } else if (storage.isV9111) {
-        return await storage.getAsV9111(paraId)
+        const data = await storage.getAsV9111(paraId)
+        if (!data) return undefined
+        return {
+            fundIndex: data.trieIndex,
+            ...data,
+        }
+    } else if (storage.isV9180) {
+        return storage.getAsV9180(paraId)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -28,7 +49,7 @@ export interface FundInfo {
     cap: bigint
     firstPeriod: number
     lastPeriod: number
-    trieIndex: number
+    fundIndex: number
 }
 
 export async function getFunds(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {

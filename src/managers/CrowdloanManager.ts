@@ -6,7 +6,7 @@ import { InsertFailedError } from '../common/errors'
 
 interface CrowdloanData {
     paraId: number
-    trieIndex: number
+    fundIndex: number
     end: number
     firstPeriod: number
     lastPeriod: number
@@ -25,9 +25,9 @@ class CrowdloanManager extends Manager<Crowdloan> {
     }
 
     async create(ctx: EventHandlerContext, data: CrowdloanData) {
-        const { trieIndex, end, firstPeriod, lastPeriod, cap, paraId } = data
+        const { fundIndex, end, firstPeriod, lastPeriod, cap, paraId } = data
 
-        const id = `${paraId}-${trieIndex}`
+        const id = `${paraId}-${fundIndex}`
 
         const crowdloan = new Crowdloan({
             id,
