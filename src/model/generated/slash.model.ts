@@ -15,8 +15,8 @@ export class Slash {
   timestamp!: Date | undefined | null
 
   @Index_()
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
+  @Column_("int4", {nullable: true})
+  blockNumber!: number | undefined | null
 
   @Index_()
   @Column_("text", {nullable: true})

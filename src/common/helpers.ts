@@ -77,7 +77,7 @@ export function convertPayee(
 export function getMeta(ctx: EventHandlerContext) {
     return {
         extrinsicHash: ctx.extrinsic?.hash,
-        blockNumber: BigInt(ctx.block.height).valueOf(),
+        blockNumber: ctx.block.height,
         timestamp: new Date(ctx.block.timestamp),
     }
 }

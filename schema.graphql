@@ -13,7 +13,7 @@ type Account @entity {
   validatorHistory: [EraValidator!] @derivedFrom(field: "stash") # validator history for each era
   nominatorHistory: [EraNominator!] @derivedFrom(field: "stash") # nominator history for each era
   stakingInfo: StakingInfo @derivedFrom(field: "stash")
-  lastUpdateBlock: BigInt!
+  lastUpdateBlock: Int!
 }
 
 enum StakingRole {
@@ -117,20 +117,20 @@ type Contributor @entity {
 type Crowdloan @entity {
   id: ID!
   cap: BigInt!
-  firstPeriod: BigInt!
-  lastPeriod: BigInt!
-  end: BigInt!
+  firstPeriod: Int!
+  lastPeriod: Int!
+  end: Int!
   contributors: [Contributor!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
   parachainId: ID!
   parachain: Parachain!
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   createdAt: DateTime
 }
 
 interface Action {
   timestamp: DateTime
-  blockNumber: BigInt
+  blockNumber: Int
   extrinsicHash: String
   amount: BigInt
 }
@@ -150,7 +150,7 @@ interface CanFail {
 type Contribution implements Action & CanFail @entity {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   crowdloanId: ID!
   crowdloan: Crowdloan
@@ -164,7 +164,7 @@ type Contribution implements Action & CanFail @entity {
 type Transfer implements Action & CanFail @entity {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   toId: ID
   to: Account
@@ -185,7 +185,7 @@ type AccountTransfer @entity {
 type Reward implements Action & HasTotal & HasEra @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
@@ -198,7 +198,7 @@ type Reward implements Action & HasTotal & HasEra @entity  {
 type Slash implements Action & HasTotal & HasEra @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
@@ -215,7 +215,7 @@ enum BondType {
 type Bond implements Action & HasTotal & CanFail @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!

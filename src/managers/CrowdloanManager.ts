@@ -2,7 +2,6 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Parachain, Crowdloan } from '../model'
 import { Manager } from './Manager'
 import { chainManager } from './ChainManager'
-import { InsertFailedError } from '../common/errors'
 
 interface CrowdloanData {
     paraId: number
@@ -33,15 +32,15 @@ class CrowdloanManager extends Manager<Crowdloan> {
             id,
             cap,
             raised: 0n,
-            end: BigInt(end),
-            lastPeriod: BigInt(lastPeriod),
-            firstPeriod: BigInt(firstPeriod),
-            blockNumber: BigInt(ctx.block.height),
+            end: end,
+            lastPeriod: lastPeriod,
+            firstPeriod: firstPeriod,
+            blockNumber: ctx.block.height,
             parachain: await chainManager.get(ctx, `${paraId}`),
             createdAt: new Date(ctx.block.timestamp),
         })
 
-        if (!(await ctx.store.insert(Crowdloan, crowdloan))) throw new InsertFailedError(Crowdloan.name, id)
+        await ctx.store.insert(Crowdloan, crowdloan)
 
         return crowdloan
     }

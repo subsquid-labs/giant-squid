@@ -43,7 +43,7 @@ class AccountManager extends Manager<Account> {
                     totalReward: 0n,
                     activeBond: BigInt(ledgersMap.get(id)?.active || 0),
                     totalSlash: 0n,
-                    lastUpdateBlock: BigInt(ctx.block.height - 1),
+                    lastUpdateBlock: ctx.block.height - 1,
                 })
         )
 
@@ -56,10 +56,10 @@ class AccountManager extends Manager<Account> {
     async update(ctx: EventHandlerContext, items: Account[]): Promise<Account[]>
     async update(ctx: EventHandlerContext, item: Account | Account[]): Promise<Account | Account[]> {
         if (Array.isArray(item)) {
-            item.forEach((i) => (i.lastUpdateBlock = BigInt(ctx.block.height)))
+            item.forEach((i) => (i.lastUpdateBlock = ctx.block.height))
             return await super.update(ctx, item)
         } else {
-            item.lastUpdateBlock = BigInt(ctx.block.height)
+            item.lastUpdateBlock = ctx.block.height
             return await super.update(ctx, item)
         }
     }
