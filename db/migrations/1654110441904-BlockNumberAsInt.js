@@ -2,7 +2,7 @@ module.exports = class BlockNumberAsInt1654110441904 {
   name = 'BlockNumberAsInt1654110441904'
 
   async up(db) {
-    await db.query(`set statement_timeout to 120000`)
+    await db.query(`set statement_timeout to 300000`)
     await db.query(`DROP INDEX "public"."IDX_d6624eacc30144ea97915fe846"`)
     await db.query(`ALTER TABLE "transfer" ALTER COLUMN "block_number" TYPE integer`)
     await db.query(`ALTER TABLE "crowdloan" ALTER COLUMN "first_period" TYPE integer`)
