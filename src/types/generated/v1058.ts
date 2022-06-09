@@ -1,11 +1,15 @@
 import type {Result} from './support'
 
+export type AccountId = Uint8Array
+
+export type EraIndex = number
+
 export interface StakingLedger {
-  stash: Uint8Array
+  stash: AccountId
   total: bigint
   active: bigint
   unlocking: UnlockChunk[]
-  claimedRewards: number[]
+  claimedRewards: EraIndex[]
 }
 
 export interface UnlockChunk {
