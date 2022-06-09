@@ -71,21 +71,7 @@ export function convertPayee(
     }
 }
 
-export function getMeta(ctx: {
-    extrinsic?: {
-        hash: string
-    }
-    block: {
-        height: number
-        timestamp: number
-    }
-}) {
-    return {
-        extrinsicHash: ctx.extrinsic?.hash,
-        blockNumber: ctx.block.height,
-        timestamp: new Date(ctx.block.timestamp),
-    }
-}
+
 
 export function isAdressSS58(address: Uint8Array) {
     switch (address.length) {

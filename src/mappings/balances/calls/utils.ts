@@ -1,33 +1,38 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
 import { accountManager } from '../../../managers'
 import { AccountTransfer, Transfer, TransferDirection } from '../../../model'
-import { TransferData } from './types'
+import { CommonHandlerContext } from '../../types/contexts'
+import { ActionData } from '../../types/data'
+import { getMeta } from '../../util/actions'
 
 export enum Direction {
     FROM,
     TO,
 }
 
-export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferData) {
-    const id = ctx.event.id
+export interface TransferData extends ActionData {
+    fromId: string
+    toId: string | null
+    amount: bigint
+    success: boolean
+}
 
-    const from = await accountManager.get(ctx, data.from)
-    const to = data.to ? await accountManager.get(ctx, data.to) : null
+export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData) {
+    const { fromId, toId, amount, success } = data
+
+    const from = await accountManager.get(ctx, fromId)
+    const to = toId ? await accountManager.get(ctx, toId) : null
 
     const transfer = new Transfer({
-        id,
-        ...getMeta(ctx),
+        ...getMeta(data),
         from,
         to,
-        amount: data.amount,
-        success: isExtrinsicSuccess(ctx),
+        amount,
+        success,
     })
 
-    await ctx.store.insert(Transfer, transfer)
+    await ctx.store.insert(transfer)
 
     await ctx.store.insert(
-        AccountTransfer,
         new AccountTransfer({
             id: `${transfer.id}-from`,
             transfer,
@@ -38,7 +43,6 @@ export async function saveTransfer(ctx: ExtrinsicHandlerContext, data: TransferD
 
     if (to) {
         await ctx.store.insert(
-            AccountTransfer,
             new AccountTransfer({
                 id: `${transfer.id}-to`,
                 transfer,
