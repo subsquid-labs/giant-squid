@@ -1,10 +1,11 @@
 import * as ss58 from '@subsquid/ss58'
-import { EventHandlerContext, ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
+import { EventHandlerContext } from '@subsquid/substrate-processor'
 import config from '../config'
 import { PayeeType } from '../model'
 import { PayeeTypeRaw } from '../types/custom/stakingData'
 import { StorageContext } from '../types/generated/support'
-import { EXTRINSIC_SUCCESS } from './consts'
+import { decodeHex } from '@subsquid/util-internal-hex'
+import { Hash } from 'crypto'
 
 export function encodeId(id: Uint8Array) {
     return ss58.codec(config.prefix).encode(id)
@@ -21,16 +22,13 @@ export interface ItemBase {
     extrinsicHash: string | null | undefined
 }
 
-export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {
-    return ctx.event.name === EXTRINSIC_SUCCESS
-}
-
-export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string } }) {
+export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string; height: number } }) {
     return {
         _chain: ctx._chain,
         block: {
             ...ctx.block,
             hash: ctx.block.parentHash,
+            height: ctx.block.height,
         },
     }
 }
@@ -73,10 +71,18 @@ export function convertPayee(
     }
 }
 
-export function getMeta(ctx: EventHandlerContext) {
+export function getMeta(ctx: {
+    extrinsic?: {
+        hash: string
+    }
+    block: {
+        height: number
+        timestamp: number
+    }
+}) {
     return {
         extrinsicHash: ctx.extrinsic?.hash,
-        blockNumber: BigInt(ctx.block.height).valueOf(),
+        blockNumber: ctx.block.height,
         timestamp: new Date(ctx.block.timestamp),
     }
 }
@@ -92,5 +98,21 @@ export function isAdressSS58(address: Uint8Array) {
             return true
         default:
             return false
+    }
+}
+
+export function getOriginAccountId(origin: any) {
+    // eslint-disable-next-line sonarjs/no-small-switch
+    switch (origin.__kind) {
+        case 'system':
+            // eslint-disable-next-line sonarjs/no-nested-switch, sonarjs/no-small-switch
+            switch (origin.value.__kind) {
+                case 'Signed':
+                    return encodeId(decodeHex(origin.value.value))
+                default:
+                    throw new Error(`Unknown origin type ${origin.__kind}.${origin.value.__kind}`)
+            }
+        default:
+            throw new Error(`Unknown origin type ${origin.__kind}`)
     }
 }

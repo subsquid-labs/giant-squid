@@ -1,14 +1,14 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { crowdloanManager } from '../../../managers'
 import storage from '../../../storage'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
+import { EventContext, EventHandlerContext } from '../../types/contexts'
 
 interface EventData {
     index: number
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new CrowdloanCreatedEvent(ctx)
 
     if (event.isV9110) {
