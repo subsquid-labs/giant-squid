@@ -1,15 +1,16 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
 import { encodeId, isAdressSS58 } from '../../../common/helpers'
-import { saveTransfer } from '../utils/saver'
+import { saveTransfer } from './utils'
 import { UnknownVersionError } from '../../../common/errors'
+import { CallContext, CallHandlerContext } from '../../types/contexts'
+
 interface EventData {
     from: Uint8Array
     to: Uint8Array
     amount: bigint
 }
 
-function getCallData(ctx: ExtrinsicHandlerContext): EventData | undefined {
+function getCallData(ctx: CallContext): EventData | undefined {
     const call = new BalancesForceTransferCall(ctx)
 
     if (call.isV0) {
@@ -38,13 +39,18 @@ function getCallData(ctx: ExtrinsicHandlerContext): EventData | undefined {
     }
 }
 
-export async function handleForceTransfer(ctx: ExtrinsicHandlerContext) {
+export async function handleForceTransfer(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
     if (!data) return
 
     await saveTransfer(ctx, {
-        from: encodeId(data.from),
-        to: isAdressSS58(data.to) ? encodeId(data.to) : null,
+        id: ctx.call.id,
+        timestamp: new Date(ctx.block.timestamp),
+        blockNumber: ctx.block.height,
+        extrinsicHash: ctx.extrinsic.hash,
+        fromId: encodeId(data.from),
+        toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
+        success: ctx.call.success,
     })
 }

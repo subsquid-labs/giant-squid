@@ -1,14 +1,14 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { saveTransfer } from '../utils/saver'
+import { saveTransfer } from './utils'
 import { BalancesTransferAllCall } from '../../../types/generated/calls'
-import { encodeId, isAdressSS58 } from '../../../common/helpers'
+import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/helpers'
 import { UnknownVersionError } from '../../../common/errors'
+import { CallContext, CallHandlerContext } from '../../types/contexts'
 
 interface EventData {
     to: Uint8Array
 }
 
-function getCallData(ctx: ExtrinsicHandlerContext): EventData {
+function getCallData(ctx: CallContext): EventData {
     const call = new BalancesTransferAllCall(ctx)
 
     if (call.isV9050) {
@@ -26,12 +26,17 @@ function getCallData(ctx: ExtrinsicHandlerContext): EventData {
     }
 }
 
-export async function handleTransferAll(ctx: ExtrinsicHandlerContext) {
+export async function handleTransferAll(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
     await saveTransfer(ctx, {
-        from: ctx.extrinsic.signer,
-        to: isAdressSS58(data.to) ? encodeId(data.to) : null,
+        id: ctx.call.id,
+        timestamp: new Date(ctx.block.timestamp),
+        blockNumber: ctx.block.height,
+        extrinsicHash: ctx.extrinsic.hash,
+        fromId: getOriginAccountId(ctx.call.origin),
+        toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: 0n,
+        success: ctx.call.success,
     })
 }
