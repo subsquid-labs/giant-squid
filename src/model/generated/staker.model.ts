@@ -1,8 +1,13 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToOne as OneToOne_, Index as Index_, JoinColumn as JoinColumn_, ManyToOne as ManyToOne_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToOne as OneToOne_, Index as Index_, JoinColumn as JoinColumn_, ManyToOne as ManyToOne_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {PayeeType} from "./_payeeType"
 import {StakingRole} from "./_stakingRole"
+import {EraValidator} from "./eraValidator.model"
+import {EraNominator} from "./eraNominator.model"
+import {Reward} from "./reward.model"
+import {Slash} from "./slash.model"
+import {Bond} from "./bond.model"
 
 @Entity_()
 export class Staker {
@@ -52,4 +57,19 @@ export class Staker {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalSlash!: bigint
+
+  @OneToMany_(() => EraValidator, e => e.staker)
+  validatorHistory!: EraValidator[]
+
+  @OneToMany_(() => EraNominator, e => e.staker)
+  nominatorHistory!: EraNominator[]
+
+  @OneToMany_(() => Reward, e => e.staker)
+  rewards!: Reward[]
+
+  @OneToMany_(() => Slash, e => e.staker)
+  slashes!: Slash[]
+
+  @OneToMany_(() => Bond, e => e.staker)
+  bonds!: Bond[]
 }

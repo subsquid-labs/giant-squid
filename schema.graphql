@@ -7,8 +7,6 @@ type Account @entity {
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
-  validatorHistory: [EraValidator!] @derivedFrom(field: "stash") # validator history for each era
-  nominatorHistory: [EraNominator!] @derivedFrom(field: "stash") # nominator history for each era
   stakingInfo: Staker @derivedFrom(field: "stash")
   lastUpdateBlock: Int!
 }
@@ -42,6 +40,11 @@ type Staker @entity {
   activeBond: BigInt! # current bond balance
   totalReward: BigInt!
   totalSlash: BigInt!
+  validatorHistory: [EraValidator!] @derivedFrom(field: "staker") # validator history for each era
+  nominatorHistory: [EraNominator!] @derivedFrom(field: "staker") # nominator history for each era
+  rewards: [Reward!] @derivedFrom(field: "staker")
+  slashes: [Slash!] @derivedFrom(field: "staker")
+  bonds: [Bond!] @derivedFrom(field: "staker")
 }
 
 # information about era, validators and nominators 
@@ -69,8 +72,8 @@ type EraStakingPair @entity {
 # information about validator in era: self/total bond, nominators and their votes
 type EraValidator @entity {
   id: ID! #era + stashId
-  stashId: ID!
-  stash: Account!
+  stakerId: ID!
+  staker: Staker!
   era: Era!
   selfBonded: BigInt!
   totalBonded: BigInt!
@@ -81,8 +84,8 @@ type EraValidator @entity {
 # information about nominator in era: bond, validators and votes for them in each era
 type EraNominator @entity {
   id: ID! #era + stashId
-  stashId: ID!
-  stash: Account!
+  stakerId: ID!
+  staker: Staker!
   era: Era!
   bonded: BigInt!
   validators: [EraStakingPair] @derivedFrom(field: "nominator")

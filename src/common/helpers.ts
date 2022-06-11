@@ -1,11 +1,6 @@
 import * as ss58 from '@subsquid/ss58'
-import { EventHandlerContext } from '@subsquid/substrate-processor'
 import config from '../config'
-import { PayeeType } from '../model'
-import { PayeeTypeRaw } from '../types/custom/stakingData'
-import { StorageContext } from '../types/generated/support'
 import { decodeHex } from '@subsquid/util-internal-hex'
-import { Hash } from 'crypto'
 
 export function encodeId(id: Uint8Array) {
     return ss58.codec(config.prefix).encode(id)
@@ -22,17 +17,6 @@ export interface ItemBase {
     extrinsicHash: string | null | undefined
 }
 
-export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string; height: number } }) {
-    return {
-        _chain: ctx._chain,
-        block: {
-            ...ctx.block,
-            hash: ctx.block.parentHash,
-            height: ctx.block.height,
-        },
-    }
-}
-
 export function isAdressSS58(address: Uint8Array) {
     switch (address.length) {
         case 1:
@@ -47,6 +31,7 @@ export function isAdressSS58(address: Uint8Array) {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getOriginAccountId(origin: any) {
     // eslint-disable-next-line sonarjs/no-small-switch
     switch (origin.__kind) {

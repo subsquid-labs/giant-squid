@@ -68,9 +68,9 @@ export async function saveReward(ctx: EventHandlerContext, data: RewardData) {
 
     const staker = await ctx.store.get(Staker, {
         where: {
-            payeeId: accountId,
+            stashId: accountId,
         },
-        relations: ['payee'],
+        relations: ['stash'],
     })
     assert(staker != null, `Missing staking info for ${accountId}`)
 

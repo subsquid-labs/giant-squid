@@ -1,9 +1,9 @@
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, getOriginAccountId } from '../../../common/helpers'
-import { accountManager } from '../../../managers'
-import { BondType, PayeeType, Staker, StakingRole } from '../../../model'
+import { BondType, PayeeType } from '../../../model'
 import { StakingBondCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
+import { createStaker } from '../../util/entities'
 import { saveBond } from './utils'
 
 interface CallData {
@@ -94,29 +94,21 @@ export async function handleBond(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
     const accountId = getOriginAccountId(ctx.call.origin)
-    const stash = await accountManager.get(ctx, accountId)
+    const controllerId = encodeId(data.controller)
 
-    const controller = await accountManager.get(ctx, encodeId(data.controller))
-
-    const payee =
-        data.payee.destination === 'Stash' || data.payee.destination === 'Staked'
-            ? stash
-            : data.payee.destination === 'Controller'
-            ? controller
-            : data.payee.destination === 'Account'
-            ? await accountManager.get(ctx, encodeId(data.payee.account))
-            : null
-
-    ctx.store.save(
-        new Staker({
-            id: accountId,
-            stash,
-            controller,
-            payee,
-            payeeType: data.payee.destination as PayeeType,
-            role: StakingRole.Idle,
-        })
-    )
+    await createStaker(ctx, {
+        stashId: accountId,
+        controllerId,
+        payeeId:
+            data.payee.destination === 'Stash' || data.payee.destination === 'Staked'
+                ? accountId
+                : data.payee.destination === 'Controller'
+                ? controllerId
+                : data.payee.destination === 'Account'
+                ? encodeId(data.payee.account)
+                : null,
+        payeeType: data.payee.destination as PayeeType,
+    })
 
     await saveBond(ctx, {
         id: ctx.call.id,

@@ -1,3 +1,4 @@
+import { CommonHandlerContext } from '../types/contexts'
 import { ActionData } from '../types/data'
 
 export function getMeta(data: ActionData) {
@@ -7,5 +8,16 @@ export function getMeta(data: ActionData) {
         extrinsicHash,
         timestamp,
         blockNumber,
+    }
+}
+
+export function createPrevStorageContext(ctx: CommonHandlerContext) {
+    return {
+        _chain: ctx._chain,
+        block: {
+            ...ctx.block,
+            hash: ctx.block.parentHash,
+            height: ctx.block.height,
+        },
     }
 }

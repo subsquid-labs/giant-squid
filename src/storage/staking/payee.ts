@@ -1,5 +1,4 @@
 import { decodeId, encodeId } from '../../common/helpers'
-import { PayeeTypeRaw } from '../../types/custom/stakingData'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9110 from '../../types/generated/v9110'
 import { StorageContext } from '../../types/generated/support'

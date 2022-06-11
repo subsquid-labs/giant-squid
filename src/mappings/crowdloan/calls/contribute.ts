@@ -4,8 +4,9 @@ import { CrowdloanContributeCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext, CommonHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'
 import { getMeta } from '../../util/actions'
-import { accountManager, contributorManager, crowdloanManager } from '../../../managers'
-import { Contribution } from '../../../model'
+import { Contribution, Contributor } from '../../../model'
+import { getLastCrowdloan, getOrCreateAccount } from '../../util/entities'
+import assert from 'assert'
 
 export interface CallData {
     paraId: number
@@ -50,25 +51,28 @@ export interface ContributionData extends ActionData {
 export async function saveContribution(ctx: CommonHandlerContext, data: ContributionData) {
     const { accountId, paraId, amount, success } = data
 
-    const account = await accountManager.get(ctx, accountId)
+    const account = await getOrCreateAccount(ctx, accountId)
 
-    const crowdloan = await crowdloanManager.getByParaId(ctx, paraId)
-    if (!crowdloan) return
+    const crowdloan = await getLastCrowdloan(ctx, paraId)
+    assert(crowdloan != null, `Missing crowdloan ${paraId}`)
 
-    let contributor = await contributorManager.get(ctx, `${crowdloan.id}-${account.id}`)
+    let contributor = await ctx.store.get(Contributor, `${crowdloan.id}-${account.id}`)
     if (!contributor) {
-        contributor = await contributorManager.create(ctx, {
+        contributor = new Contributor({
+            id: `${crowdloan.id}-${account.id}`,
             account,
             crowdloan,
+            amount: 0n,
         })
+        await ctx.store.insert(contributor)
     }
 
     if (success) {
         contributor.amount += BigInt(amount)
-        await contributorManager.update(ctx, contributor)
+        await ctx.store.save(contributor)
 
         crowdloan.raised += BigInt(amount)
-        await crowdloanManager.update(ctx, crowdloan)
+        await ctx.store.save(crowdloan)
     }
 
     await ctx.store.insert(
