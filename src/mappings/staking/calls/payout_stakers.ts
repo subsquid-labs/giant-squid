@@ -25,7 +25,7 @@ function getCallData(ctx: CallContext): CallData {
 
 export async function handlePauoutStakers(ctx: CallHandlerContext) {
     if (!ctx.call.success) return
-    
+
     const data = getCallData(ctx)
 
     const rewards = await ctx.store.find(Reward, { extrinsicHash: ctx.extrinsic.hash })

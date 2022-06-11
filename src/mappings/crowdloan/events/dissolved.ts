@@ -1,5 +1,4 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { crowdloanManager } from '../../../managers'
 import { CrowdloanDissolvedEvent } from '../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../types/contexts'
 
@@ -22,6 +21,6 @@ function getEventData(ctx: EventContext): EventData {
 export async function handleDissolved(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
-    const crowdloan = await crowdloanManager.getByParaId(ctx, data.index)
-    if (!crowdloan) return
+    // const crowdloan = await crowdloanManager.getByParaId(ctx, data.index)
+    // if (!crowdloan) return
 }

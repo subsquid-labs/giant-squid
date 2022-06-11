@@ -1,10 +1,10 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
 import { getOriginAccountId } from '../../../common/helpers'
-import { Staker, StakingRole } from '../../../model'
-import storage from '../../../storage'
+import { StakingRole } from '../../../model'
 import { StakingValidateCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
+import { getOrCreateStaker } from '../../util/entities'
 
 interface CallData {
     commission: number
@@ -31,14 +31,10 @@ function getCallData(ctx: CallContext): CallData {
 export async function handleValidate(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
-    const accountId = getOriginAccountId(ctx.call.origin)
+    const controllerId = getOriginAccountId(ctx.call.origin)
 
-    const staker = await ctx.store.get(Staker, {
-        where: {
-            controllerId: accountId,
-        },
-    })
-    assert(staker != null, `Missing staking info for ${accountId}`)
+    const staker = await getOrCreateStaker(ctx, { controllerId })
+    assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Validator
     staker.commission = data?.commission

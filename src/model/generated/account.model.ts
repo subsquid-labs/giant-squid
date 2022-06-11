@@ -5,8 +5,6 @@ import {Contribution} from "./contribution.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
-import {EraValidator} from "./eraValidator.model"
-import {EraNominator} from "./eraNominator.model"
 import {Staker} from "./staker.model"
 
 @Entity_()
@@ -35,12 +33,6 @@ export class Account {
 
   @OneToMany_(() => Bond, e => e.account)
   bonds!: Bond[]
-
-  @OneToMany_(() => EraValidator, e => e.stash)
-  validatorHistory!: EraValidator[]
-
-  @OneToMany_(() => EraNominator, e => e.stash)
-  nominatorHistory!: EraNominator[]
 
   @OneToOne_(() => Staker)
   stakingInfo!: Staker | undefined | null

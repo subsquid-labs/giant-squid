@@ -1,8 +1,8 @@
-import { accountManager } from '../../../managers'
 import { AccountTransfer, Transfer, TransferDirection } from '../../../model'
 import { CommonHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'
 import { getMeta } from '../../util/actions'
+import { getOrCreateAccount } from '../../util/entities'
 
 export enum Direction {
     FROM,
@@ -19,8 +19,8 @@ export interface TransferData extends ActionData {
 export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData) {
     const { fromId, toId, amount, success } = data
 
-    const from = await accountManager.get(ctx, fromId)
-    const to = toId ? await accountManager.get(ctx, toId) : null
+    const from = await getOrCreateAccount(ctx, fromId)
+    const to = toId ? await getOrCreateAccount(ctx, toId) : null
 
     const transfer = new Transfer({
         ...getMeta(data),

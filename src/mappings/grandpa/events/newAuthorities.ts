@@ -1,7 +1,7 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { accountManager, eraManager } from '../../../managers'
 import { Era, EraNominator, EraStakingPair, EraValidator } from '../../../model'
 import storage from '../../../storage'
+import { EventHandlerContext } from '../../types/contexts'
+import { getOrCreateStaker } from '../../util/entities'
 
 interface ValidatorData {
     stash: string
@@ -29,7 +29,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         return console.warn(`Warning: Unknown era at block ${ctx.block.height}`)
     }
 
-    if (await eraManager.getByIndex(ctx, storageEraData.index)) {
+    if ((await ctx.store.count(Era, { id: storageEraData.index.toString() })) > 0) {
         return console.warn(
             `Warning: Era ${storageEraData.index} has been already proceed at block ${ctx.block.height}`
         )
@@ -39,14 +39,16 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
     if (!stakingData) return
     const { validatorsData, nominatorsData, pairsData } = stakingData
 
-    const era = await eraManager.create(ctx, {
+    const era = new Era({
+        id: storageEraData.index.toString(),
         index: storageEraData.index,
         startedAt: ctx.block.height,
-        timestamp: activeEraData?.timestamp,
+        timestamp: new Date(activeEraData?.timestamp || ctx.block.timestamp),
         validatorsCount: validatorsData.length,
         nominatorsCount: nominatorsData.length,
         total: validatorsData.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n),
     })
+    await ctx.store.insert(era)
 
     const validators = await createValidators(ctx, era, validatorsData)
     const nominators = await createNominators(ctx, era, nominatorsData)
@@ -61,44 +63,55 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         })
     })
 
-    await ctx.store.save(pairs, { chunk: 500 })
+    await ctx.store.save(pairs)
 }
 
 async function createValidators(ctx: EventHandlerContext, era: Era, data: ValidatorData[]) {
-    const tuples: [string, EraValidator][] = await Promise.all(
-        data.map(async (v) => [
-            v.stash,
-            new EraValidator({
-                id: `${era.index}-${v.stash}`,
-                stash: await accountManager.get(ctx, v.stash),
-                totalBonded: v.totalBonded,
-                selfBonded: v.selfBonded,
-                era,
-            }),
-        ])
-    )
+    const tuples: [string, EraValidator][] = (
+        await Promise.all(
+            data.map(async (v) => {
+                const staker = await getOrCreateStaker(ctx, { stashId: v.stash })
+                return staker
+                    ? [
+                          v.stash,
+                          new EraValidator({
+                              id: `${era.index}-${v.stash}`,
+                              staker,
+                              totalBonded: v.totalBonded,
+                              selfBonded: v.selfBonded,
+                              era,
+                          }),
+                      ]
+                    : undefined
+            })
+        )
+    ).filter((t): t is [string, EraValidator] => t != null)
     const map = new Map(tuples)
-    await ctx.store.save([...map.values()], { chunk: 500 })
+    await ctx.store.save([...map.values()])
     return map
 }
 
 async function createNominators(ctx: EventHandlerContext, era: Era, data: NominatorData[]) {
-    const tuples: [string, EraNominator][] = await Promise.all(
-        data.map(async (n) => {
-            const stash = await accountManager.get(ctx, n.stash)
-            return [
-                n.stash,
-                new EraNominator({
-                    id: `${era.index}-${n.stash}`,
-                    stash,
-                    bonded: stash.activeBond,
-                    era,
-                }),
-            ]
-        })
-    )
+    const tuples: [string, EraNominator][] = (
+        await Promise.all(
+            data.map(async (n) => {
+                const staker = await getOrCreateStaker(ctx, { stashId: n.stash })
+                return staker
+                    ? [
+                          n.stash,
+                          new EraNominator({
+                              id: `${era.index}-${n.stash}`,
+                              staker,
+                              bonded: staker.activeBond,
+                              era,
+                          }),
+                      ]
+                    : undefined
+            })
+        )
+    ).filter((t): t is [string, EraNominator] => t != null)
     const map = new Map(tuples)
-    await ctx.store.save([...map.values()], { chunk: 500 })
+    await ctx.store.save([...map.values()])
     return map
 }
 
