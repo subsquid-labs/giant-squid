@@ -1,11 +1,12 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToOne as OneToOne_, Index as Index_, JoinColumn as JoinColumn_, ManyToOne as ManyToOne_} from "typeorm"
+import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {PayeeType} from "./_payeeType"
 import {StakingRole} from "./_stakingRole"
 
 @Entity_()
-export class StakingInfo {
-  constructor(props?: Partial<StakingInfo>) {
+export class Staker {
+  constructor(props?: Partial<Staker>) {
     Object.assign(this, props)
   }
 
@@ -42,4 +43,13 @@ export class StakingInfo {
 
   @Column_("int4", {nullable: true})
   commission!: number | undefined | null
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  activeBond!: bigint
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  totalReward!: bigint
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  totalSlash!: bigint
 }

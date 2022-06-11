@@ -4,11 +4,14 @@ import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
 import { StorageContext } from '../../types/generated/support'
 import { UnknownVersionError } from '../../common/errors'
+import assert from 'assert'
 
-async function getStorageData(
-    ctx: StorageContext,
-    account: Uint8Array
-): Promise<{ payee: string; account?: Uint8Array } | undefined> {
+export interface StorageData {
+    payee: 'Account' | 'Staked' | 'Stash' | 'Controller' | 'None'
+    account: Uint8Array | undefined
+}
+
+async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<StorageData | undefined> {
     const storage = new StakingPayeeStorage(ctx)
     if (!storage.isExists) return undefined
 
@@ -37,9 +40,14 @@ const storageCache: {
     values: new Map(),
 }
 
-export interface Payee {
-    payee: PayeeTypeRaw
-    account?: string
+export type Payee = PayeeCommon | PayeeAccount
+export interface PayeeCommon {
+    payee: 'Staked' | 'Stash' | 'Controller' | 'None'
+}
+
+export interface PayeeAccount {
+    payee: 'Account'
+    account: string
 }
 
 export async function getPayee(ctx: StorageContext, account: string): Promise<Payee | undefined> {
@@ -58,9 +66,16 @@ export async function getPayee(ctx: StorageContext, account: string): Promise<Pa
         const data = await getStorageData(ctx, u8)
         if (!data) return undefined
 
-        value = {
-            payee: data.payee as PayeeTypeRaw,
-            account: data.account ? encodeId(data.account) : undefined,
+        if (data.payee === 'Account') {
+            assert(data.account != null)
+            value = {
+                payee: data.payee,
+                account: encodeId(data.account),
+            }
+        } else {
+            value = {
+                payee: data.payee,
+            }
         }
 
         storageCache.values.set(key, value)

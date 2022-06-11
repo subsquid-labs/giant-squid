@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {BondType} from "./_bondType"
+import {Staker} from "./staker.model"
 
 @Entity_()
 export class Bond {
@@ -33,13 +34,14 @@ export class Bond {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  total!: bigint | undefined | null
-
   @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
 
   @Column_("varchar", {length: 6, nullable: true})
   type!: BondType | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => Staker, {nullable: true})
+  staker!: Staker | undefined | null
 }

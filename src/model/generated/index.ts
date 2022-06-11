@@ -1,5 +1,5 @@
 export * from "./account.model"
-export * from "./stakingInfo.model"
+export * from "./staker.model"
 export * from "./_payeeType"
 export * from "./_stakingRole"
 export * from "./era.model"

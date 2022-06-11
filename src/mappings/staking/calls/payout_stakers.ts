@@ -1,15 +1,15 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
 import { encodeId } from '../../../common/helpers'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { UnknownVersionError } from '../../../common/errors'
 import { Reward } from '../../../model'
+import { CallContext, CallHandlerContext } from '../../types/contexts'
 
 export interface CallData {
     era: number
     validator: Uint8Array
 }
 
-function getCallData(ctx: ExtrinsicHandlerContext): CallData {
+function getCallData(ctx: CallContext): CallData {
     const call = new StakingPayoutStakersCall(ctx)
 
     if (call.isV1058) {
@@ -23,7 +23,9 @@ function getCallData(ctx: ExtrinsicHandlerContext): CallData {
     }
 }
 
-export async function handlePauoutStakers(ctx: ExtrinsicHandlerContext) {
+export async function handlePauoutStakers(ctx: CallHandlerContext) {
+    if (!ctx.call.success) return
+    
     const data = getCallData(ctx)
 
     const rewards = await ctx.store.find(Reward, { extrinsicHash: ctx.extrinsic.hash })

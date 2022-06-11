@@ -1,9 +1,6 @@
 # account entity can be used to get info about current account state and absorb account actions 
 type Account @entity {
   id: ID!
-  activeBond: BigInt! # current bond balance
-  totalReward: BigInt!
-  totalSlash: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   crowdloans: [Contributor!] @derivedFrom(field: "account") # crowdloans there account get participation
   contributions: [Contribution!] @derivedFrom(field: "account")
@@ -12,7 +9,7 @@ type Account @entity {
   bonds: [Bond!] @derivedFrom(field: "account")
   validatorHistory: [EraValidator!] @derivedFrom(field: "stash") # validator history for each era
   nominatorHistory: [EraNominator!] @derivedFrom(field: "stash") # nominator history for each era
-  stakingInfo: StakingInfo @derivedFrom(field: "stash")
+  stakingInfo: Staker @derivedFrom(field: "stash")
   lastUpdateBlock: Int!
 }
 
@@ -31,7 +28,7 @@ enum PayeeType {
 }
 
 # current information about stash, controller, payee and staking role
-type StakingInfo @entity {
+type Staker @entity {
   id: ID! #stash Id
   stashId: ID!
   stash: Account! @unique
@@ -42,6 +39,9 @@ type StakingInfo @entity {
   payeeType: PayeeType!
   role: StakingRole!
   commission: Int
+  activeBond: BigInt! # current bond balance
+  totalReward: BigInt!
+  totalSlash: BigInt!
 }
 
 # information about era, validators and nominators 
@@ -182,7 +182,7 @@ type AccountTransfer @entity {
   direction: TransferDirection
 }
 
-type Reward implements Action & HasTotal & HasEra @entity  {
+type Reward implements Action & HasEra @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
@@ -192,10 +192,10 @@ type Reward implements Action & HasTotal & HasEra @entity  {
   amount: BigInt
   era: Int
   validator: String
-  total: BigInt
+  staker: Staker
 }
 
-type Slash implements Action & HasTotal & HasEra @entity  {
+type Slash implements Action & HasEra @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
@@ -204,7 +204,7 @@ type Slash implements Action & HasTotal & HasEra @entity  {
   account: Account!
   amount: BigInt
   era: Int
-  total: BigInt
+  staker: Staker
 }
 
 enum BondType {
@@ -212,7 +212,7 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Action & HasTotal & CanFail @entity  {
+type Bond implements Action & CanFail @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
@@ -220,7 +220,7 @@ type Bond implements Action & HasTotal & CanFail @entity  {
   accountId: ID!
   account: Account!
   amount: BigInt
-  total: BigInt
   success: Boolean @index
   type: BondType
+  staker: Staker
 }
