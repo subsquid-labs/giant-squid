@@ -1,9 +1,9 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { InsertFailedError } from '../common/errors'
+import { Store } from '@subsquid/typeorm-store'
 import { Account, Contributor, Crowdloan } from '../model'
 import { accountManager } from './AccountManager'
 import { crowdloanManager } from './CrowdloanManager'
 import { Manager } from './Manager'
+import { CommonHandlerContext } from './types'
 
 interface ContributorData {
     crowdloan: string | Crowdloan
@@ -15,7 +15,7 @@ class ContributorManager extends Manager<Contributor> {
         return `${crowdloan}-${account}`
     }
 
-    async create(ctx: EventHandlerContext, data: ContributorData) {
+    async create(ctx: CommonHandlerContext, data: ContributorData) {
         const account = typeof data.account === 'string' ? await accountManager.get(ctx, data.account) : data.account
         const crowdloan =
             typeof data.crowdloan === 'string' ? await crowdloanManager.get(ctx, data.crowdloan) : data.crowdloan
@@ -29,7 +29,7 @@ class ContributorManager extends Manager<Contributor> {
             amount: 0n,
         })
 
-        if (!(await ctx.store.insert(Contributor, contributor))) throw new InsertFailedError(Contributor.name, id)
+        await ctx.store.insert(contributor)
 
         return contributor
     }

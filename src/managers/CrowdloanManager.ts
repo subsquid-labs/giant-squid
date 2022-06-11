@@ -1,7 +1,8 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
-import { Parachain, Crowdloan } from '../model'
+import { Crowdloan } from '../model'
 import { Manager } from './Manager'
 import { chainManager } from './ChainManager'
+import { Store } from '@subsquid/typeorm-store'
+import { CommonHandlerContext } from './types'
 
 interface CrowdloanData {
     paraId: number
@@ -10,21 +11,29 @@ interface CrowdloanData {
     firstPeriod: number
     lastPeriod: number
     cap: bigint
+    blockNumber: number
+    timestamp: Date
 }
 
 class CrowdloanManager extends Manager<Crowdloan> {
-    async getByParaId(ctx: EventHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
-        return await ctx.store
-            .createQueryBuilder(Crowdloan, 'crowdloan')
-            .innerJoin(Parachain, 'parachain', 'crowdloan.parachain_id = parachain.id')
-            .where('parachain.id = :id', { id: paraId.toString() })
-            .andWhere('crowdloan.end > :height', { height: ctx.block.height })
-            .cache(true)
-            .getOne()
+    async getByParaId(ctx: CommonHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
+        return (
+            await ctx.store.find(Crowdloan, {
+                where: {
+                    parachain: {
+                        paraId,
+                    },
+                },
+                order: {
+                    blockNumber: 'DESC',
+                },
+                relations: ['parachain'],
+            })
+        )[0]
     }
 
-    async create(ctx: EventHandlerContext, data: CrowdloanData) {
-        const { fundIndex, end, firstPeriod, lastPeriod, cap, paraId } = data
+    async create(ctx: CommonHandlerContext, data: CrowdloanData) {
+        const { fundIndex, end, firstPeriod, lastPeriod, cap, paraId, blockNumber, timestamp } = data
 
         const id = `${paraId}-${fundIndex}`
 
@@ -35,12 +44,12 @@ class CrowdloanManager extends Manager<Crowdloan> {
             end: end,
             lastPeriod: lastPeriod,
             firstPeriod: firstPeriod,
-            blockNumber: ctx.block.height,
+            blockNumber: blockNumber,
             parachain: await chainManager.get(ctx, `${paraId}`),
-            createdAt: new Date(ctx.block.timestamp),
+            createdAt: timestamp,
         })
 
-        await ctx.store.insert(Crowdloan, crowdloan)
+        await ctx.store.insert(crowdloan)
 
         return crowdloan
     }
