@@ -33,46 +33,6 @@ export function createPrevStorageContext(ctx: StorageContext & { block: { parent
     }
 }
 
-export function convertPayee(
-    payeeTypeRaw: PayeeTypeRaw,
-    accounts: {
-        stash: string
-        controller: string
-        payee?: string
-    }
-) {
-    switch (payeeTypeRaw) {
-        case 'Account':
-            return {
-                payeeType: PayeeType.Account,
-                payee: accounts.payee,
-            }
-        case 'Stash':
-            return {
-                payeeType: PayeeType.Stash,
-                payee: accounts.stash,
-            }
-        case 'Staked':
-            return {
-                payeeType: PayeeType.Staked,
-                payee: accounts.stash,
-            }
-        case 'Controller':
-            return {
-                payeeType: PayeeType.Controller,
-                payee: accounts.stash,
-            }
-        case 'None': {
-            return {
-                payeeType: PayeeType.None,
-                payee: undefined,
-            }
-        }
-    }
-}
-
-
-
 export function isAdressSS58(address: Uint8Array) {
     switch (address.length) {
         case 1:
@@ -100,5 +60,20 @@ export function getOriginAccountId(origin: any) {
             }
         default:
             throw new Error(`Unknown origin type ${origin.__kind}`)
+    }
+}
+
+export function saturatingSumBigInt(
+    a: bigint,
+    b: bigint,
+    { max, min }: { max: null | bigint; min: bigint } = { max: null, min: 0n }
+): bigint {
+    const sum = BigInt(a) + BigInt(b)
+    if (sum < min) {
+        return min
+    } else if (max && sum > max) {
+        return max
+    } else {
+        return sum
     }
 }
