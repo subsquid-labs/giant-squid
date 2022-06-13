@@ -28,6 +28,6 @@ export class Account {
   @OneToMany_(() => Bond, e => e.account)
   bonds!: Bond[]
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  lastUpdateBlock!: bigint
+  @Column_("int4", {nullable: false})
+  lastUpdateBlock!: number
 }

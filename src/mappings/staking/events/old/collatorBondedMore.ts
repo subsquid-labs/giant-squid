@@ -1,9 +1,9 @@
-import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../../common/errors'
-import { encodeId } from '../../../../common/helpers'
+import { encodeId } from '../../../../common/tools'
 import { BondType } from '../../../../model'
 import { ParachainStakingCollatorBondedMoreEvent } from '../../../../types/generated/events'
-import { saveBond } from '../../utils/savers'
+import { EventContext, EventHandlerContext } from '../../../types/contexts'
+import { saveBond } from '.././utils'
 
 interface EventData {
     account: Uint8Array
@@ -11,7 +11,7 @@ interface EventData {
     newTotal: bigint
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new ParachainStakingCollatorBondedMoreEvent(ctx)
 
     if (event.isV49) {
@@ -25,11 +25,15 @@ function getEventData(ctx: EventHandlerContext): EventData {
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export const handleCollatorBondedMore: EventHandler = async (ctx) => {
+export async function handleCollatorBondedMore(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
     await saveBond(ctx, {
-        account: encodeId(data.account),
+        id: ctx.event.id,
+        blockNumber: ctx.block.height,
+        timestamp: new Date(ctx.block.timestamp),
+        extrinsicHash: ctx.event.extrinsic?.hash,
+        accountId: encodeId(data.account),
         newTotal: data.newTotal,
         amount: data.amount,
         type: BondType.Unbond,

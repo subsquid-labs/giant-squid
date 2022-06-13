@@ -5,7 +5,7 @@ type Account @entity {
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
-  lastUpdateBlock: BigInt!
+  lastUpdateBlock: Int!
 }
 
 enum TransferDirection {
@@ -15,13 +15,9 @@ enum TransferDirection {
 
 interface Action {
   timestamp: DateTime
-  blockNumber: BigInt
+  blockNumber: Int
   extrinsicHash: String
   amount: BigInt
-}
-
-interface HasTotal {
-  total: BigInt
 }
 
 interface HasRound {
@@ -35,7 +31,7 @@ interface CanFail {
 type Transfer implements Action & CanFail @entity {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   toId: ID
   to: Account
@@ -52,18 +48,15 @@ type AccountTransfer @entity {
   direction: TransferDirection
 }
 
-type Reward implements Action & HasTotal & HasRound @entity  {
+type Reward implements Action & HasRound @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
   amount: BigInt
   round: Int
-  validator: String
-  total: BigInt
-  name: String
 }
 
 enum BondType {
@@ -71,15 +64,14 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Action & HasTotal & CanFail @entity  {
+type Bond implements Action & CanFail @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
   amount: BigInt
-  total: BigInt
   success: Boolean @index
   type: BondType
   candidate: String

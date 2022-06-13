@@ -1,9 +1,11 @@
 import assert from 'assert'
 import {CallContext, Result, deprecateLatest} from './support'
+import * as v49 from './v49'
+import * as v155 from './v155'
 
 export class BalancesForceTransferCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.forceTransfer' || this.ctx.extrinsic.name === 'balances.force_transfer')
+    assert(this.ctx.call.name === 'Balances.force_transfer')
   }
 
   /**
@@ -15,7 +17,7 @@ export class BalancesForceTransferCall {
    *  # </weight>
    */
   get isV49(): boolean {
-    return this.ctx._chain.getCallHash('balances.force_transfer') === '5943ae1ef3513ee6550de75db5107994b40b854e8b6882c4a9016266af9e639b'
+    return this.ctx._chain.getCallHash('Balances.force_transfer') === '5943ae1ef3513ee6550de75db5107994b40b854e8b6882c4a9016266af9e639b'
   }
 
   /**
@@ -26,9 +28,9 @@ export class BalancesForceTransferCall {
    *    not assumed to be in the overlay.
    *  # </weight>
    */
-  get asV49(): {source: Uint8Array, dest: Uint8Array, value: bigint} {
+  get asV49(): {source: v49.LookupSource, dest: v49.LookupSource, value: bigint} {
     assert(this.isV49)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -36,7 +38,7 @@ export class BalancesForceTransferCall {
     return this.isV49
   }
 
-  get asLatest(): {source: Uint8Array, dest: Uint8Array, value: bigint} {
+  get asLatest(): {source: v49.LookupSource, dest: v49.LookupSource, value: bigint} {
     deprecateLatest()
     return this.asV49
   }
@@ -44,7 +46,7 @@ export class BalancesForceTransferCall {
 
 export class BalancesTransferCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transfer')
+    assert(this.ctx.call.name === 'Balances.transfer')
   }
 
   /**
@@ -77,7 +79,7 @@ export class BalancesTransferCall {
    *  # </weight>
    */
   get isV49(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
+    return this.ctx._chain.getCallHash('Balances.transfer') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
   }
 
   /**
@@ -109,9 +111,9 @@ export class BalancesTransferCall {
    *  - Origin account is already in memory, so no DB operations for them.
    *  # </weight>
    */
-  get asV49(): {dest: Uint8Array, value: bigint} {
+  get asV49(): {dest: v49.LookupSource, value: bigint} {
     assert(this.isV49)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -119,7 +121,7 @@ export class BalancesTransferCall {
     return this.isV49
   }
 
-  get asLatest(): {dest: Uint8Array, value: bigint} {
+  get asLatest(): {dest: v49.LookupSource, value: bigint} {
     deprecateLatest()
     return this.asV49
   }
@@ -127,7 +129,7 @@ export class BalancesTransferCall {
 
 export class BalancesTransferAllCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transferAll' || this.ctx.extrinsic.name === 'balances.transfer_all')
+    assert(this.ctx.call.name === 'Balances.transfer_all')
   }
 
   /**
@@ -151,7 +153,7 @@ export class BalancesTransferAllCall {
    *    #</weight>
    */
   get isV155(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_all') === 'f8ce8e577c7dd91d99648a56e9a48561995bf0be3a680c01895f87fb1c0f92e6'
+    return this.ctx._chain.getCallHash('Balances.transfer_all') === 'f8ce8e577c7dd91d99648a56e9a48561995bf0be3a680c01895f87fb1c0f92e6'
   }
 
   /**
@@ -174,9 +176,9 @@ export class BalancesTransferAllCall {
    *  - O(1). Just like transfer, but reading the user's transferable balance first.
    *    #</weight>
    */
-  get asV155(): {dest: Uint8Array, keepAlive: boolean} {
+  get asV155(): {dest: v155.LookupSource, keepAlive: boolean} {
     assert(this.isV155)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -184,7 +186,7 @@ export class BalancesTransferAllCall {
     return this.isV155
   }
 
-  get asLatest(): {dest: Uint8Array, keepAlive: boolean} {
+  get asLatest(): {dest: v155.LookupSource, keepAlive: boolean} {
     deprecateLatest()
     return this.asV155
   }
@@ -192,7 +194,7 @@ export class BalancesTransferAllCall {
 
 export class BalancesTransferKeepAliveCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transferKeepAlive' || this.ctx.extrinsic.name === 'balances.transfer_keep_alive')
+    assert(this.ctx.call.name === 'Balances.transfer_keep_alive')
   }
 
   /**
@@ -209,7 +211,7 @@ export class BalancesTransferKeepAliveCall {
    *  #</weight>
    */
   get isV49(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
+    return this.ctx._chain.getCallHash('Balances.transfer_keep_alive') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
   }
 
   /**
@@ -225,9 +227,9 @@ export class BalancesTransferKeepAliveCall {
    *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    *  #</weight>
    */
-  get asV49(): {dest: Uint8Array, value: bigint} {
+  get asV49(): {dest: v49.LookupSource, value: bigint} {
     assert(this.isV49)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -235,7 +237,7 @@ export class BalancesTransferKeepAliveCall {
     return this.isV49
   }
 
-  get asLatest(): {dest: Uint8Array, value: bigint} {
+  get asLatest(): {dest: v49.LookupSource, value: bigint} {
     deprecateLatest()
     return this.asV49
   }

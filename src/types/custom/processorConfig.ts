@@ -1,5 +1,4 @@
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
-import { ChainName } from './chainInfo'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Parameters<T> = T extends (...args: infer T) => any ? T : never
@@ -11,13 +10,11 @@ enum HandlerParams {
 }
 
 export interface ProcessorConfig {
-    chainName: ChainName
+    chainName: string
     prefix: number | string
-    dataSource: Parameters<SubstrateProcessor['setDataSource']>[HandlerParams.NAME]
-    typesBundle: Parameters<SubstrateProcessor['setTypesBundle']>[HandlerParams.NAME]
-    batchSize?: Parameters<SubstrateProcessor['setBatchSize']>[HandlerParams.NAME]
-    // eventHandlers?: Handlers<SubstrateProcessor['addEventHandler']>
-    // extrinsicsHandlers?: Handlers<SubstrateProcessor['addExtrinsicHandler']>
-    port?: Parameters<SubstrateProcessor['setPrometheusPort']>[HandlerParams.NAME]
-    blockRange?: Parameters<SubstrateProcessor['setBlockRange']>[HandlerParams.NAME]
+    dataSource: Parameters<SubstrateProcessor<any>['setDataSource']>[HandlerParams.NAME]
+    typesBundle: Parameters<SubstrateProcessor<any>['setTypesBundle']>[HandlerParams.NAME]
+    batchSize?: Parameters<SubstrateProcessor<any>['setBatchSize']>[HandlerParams.NAME]
+    port?: Parameters<SubstrateProcessor<any>['setPrometheusPort']>[HandlerParams.NAME]
+    blockRange?: Parameters<SubstrateProcessor<any>['setBlockRange']>[HandlerParams.NAME]
 }

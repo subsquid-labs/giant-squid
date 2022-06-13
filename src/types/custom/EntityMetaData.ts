@@ -1,1 +1,0 @@
-export type EntityMetadataFields = 'date' | 'blockNumber' | 'extrinsicHash'

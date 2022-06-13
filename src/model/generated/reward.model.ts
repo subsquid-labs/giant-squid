@@ -15,8 +15,8 @@ export class Reward {
   timestamp!: Date | undefined | null
 
   @Index_()
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
+  @Column_("int4", {nullable: true})
+  blockNumber!: number | undefined | null
 
   @Index_()
   @Column_("text", {nullable: true})
@@ -32,15 +32,6 @@ export class Reward {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
 
-  @Column_("integer", {nullable: true})
+  @Column_("int4", {nullable: true})
   round!: number | undefined | null
-
-  @Column_("text", {nullable: true})
-  validator!: string | undefined | null
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  total!: bigint | undefined | null
-
-  @Column_("text", {nullable: true})
-  name!: string | undefined | null
 }
