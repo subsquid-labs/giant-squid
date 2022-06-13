@@ -1,7 +1,7 @@
-import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
 import { ParachainStakingNewRoundEvent } from '../../../types/generated/events'
-import { roundManager } from '../../../managers'
+import { EventContext, EventHandlerContext } from '../../types/contexts'
+import { Round } from '../../../model'
 
 export interface EventData {
     startingBlock: number
@@ -10,7 +10,7 @@ export interface EventData {
     totalBalance: bigint
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new ParachainStakingNewRoundEvent(ctx)
 
     if (event.isV900) {
@@ -22,9 +22,17 @@ function getEventData(ctx: EventHandlerContext): EventData {
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export const handleNewRound: EventHandler = async (ctx) => {
+export async function handleNewRound(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
-    if (!data) return
 
-    await roundManager.create(ctx, data)
+    await ctx.store.insert(
+        new Round({
+            id: ctx.event.id,
+            index: data.round,
+            timestamp: new Date(ctx.block.timestamp),
+            startedAt: ctx.block.height,
+            collatorsCount: data.selectedCollatorsNumber,
+            total: data.totalBalance,
+        })
+    )
 }

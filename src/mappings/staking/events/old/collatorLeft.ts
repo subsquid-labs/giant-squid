@@ -1,11 +1,12 @@
-import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../../common/errors'
-import { createPrevStorageContext, encodeId, getMeta, saturatingSumBigInt } from '../../../../common/helpers'
-import { accountManager } from '../../../../managers'
+import { encodeId, saturatingSumBigInt } from '../../../../common/tools'
 import { Account, Bond, BondType } from '../../../../model'
 import storage from '../../../../storage'
 import { ParachainStakingCollatorLeftEvent } from '../../../../types/generated/events'
-import { saveBond } from '../../utils/savers'
+import { EventContext, EventHandlerContext } from '../../../types/contexts'
+import { createPrevStorageContext } from '../../../util/actions'
+import { getOrCreateAccount } from '../../../util/entities'
+import { saveBond } from '.././utils'
 
 interface EventData {
     account: Uint8Array
@@ -13,7 +14,7 @@ interface EventData {
     newTotal: bigint
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new ParachainStakingCollatorLeftEvent(ctx)
 
     if (event.isV900) {
@@ -27,19 +28,15 @@ function getEventData(ctx: EventHandlerContext): EventData {
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export const handleCollatorLeft: EventHandler = async (ctx) => {
-    if (
-        ctx.block.events.find(
-            (event) =>
-                event.extrinsicId === ctx.event.extrinsic?.id && event.name === 'parachainStaking.CollatorLeftCollator'
-        )
-    )
-        return
-
+export async function handleCollatorLeft(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
     await saveBond(ctx, {
-        account: encodeId(data.account),
+        id: ctx.event.id,
+        blockNumber: ctx.block.height,
+        timestamp: new Date(ctx.block.timestamp),
+        extrinsicHash: ctx.event.extrinsic?.hash,
+        accountId: encodeId(data.account),
         amount: data.amount,
         type: BondType.Unbond,
         success: true,
@@ -47,7 +44,7 @@ export const handleCollatorLeft: EventHandler = async (ctx) => {
 
     const prevCtx = createPrevStorageContext(ctx)
     const candidateId = encodeId(data.account)
-    const candidate = await accountManager.get(ctx, candidateId)
+    const candidate = await getOrCreateAccount(ctx, candidateId)
 
     let topDelegations = (await storage.parachainStaking.getTopDelegations(prevCtx, candidateId))?.delegations
     let bottomDelegations = (await storage.parachainStaking.getBottomDelegations(prevCtx, candidateId))?.delegations
@@ -64,19 +61,21 @@ export const handleCollatorLeft: EventHandler = async (ctx) => {
     const delegators: Account[] = new Array(delegations.length)
     const bonds: Bond[] = new Array(delegations.length)
     for (let i = 0; i < delegators.length; i++) {
-        delegators[i] = await accountManager.get(ctx, delegations[i].id)
+        delegators[i] = await getOrCreateAccount(ctx, delegations[i].id)
         delegators[i].activeBond = saturatingSumBigInt(delegators[i].activeBond, delegations[i].amount * -1n)
         bonds[i] = new Bond({
-            id: `ctx.event.id-${i.toString().padStart(4, '0')}`,
-            ...getMeta(ctx),
+            id: `${ctx.event.id}-${i.toString().padStart(4, '0')}`,
+            blockNumber: ctx.block.height,
+            timestamp: new Date(ctx.block.timestamp),
+            extrinsicHash: ctx.event.extrinsic?.hash,
             account: delegators[i],
             candidate: candidate.id,
             amount: delegations[i].amount,
-            total: delegators[i].activeBond,
             type: BondType.Unbond,
             success: true,
         })
     }
 
-    await ctx.store.save([...delegators, ...bonds])
+    await ctx.store.save(delegators)
+    await ctx.store.save(bonds)
 }

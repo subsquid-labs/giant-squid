@@ -16,8 +16,8 @@ export class Bond {
   timestamp!: Date | undefined | null
 
   @Index_()
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
+  @Column_("int4", {nullable: true})
+  blockNumber!: number | undefined | null
 
   @Index_()
   @Column_("text", {nullable: true})
@@ -32,9 +32,6 @@ export class Bond {
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  total!: bigint | undefined | null
 
   @Index_()
   @Column_("bool", {nullable: true})

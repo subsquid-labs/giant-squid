@@ -1,15 +1,15 @@
-import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/helpers'
+import { encodeId } from '../../../common/tools'
 import { ParachainStakingRewardedEvent } from '../../../types/generated/events'
-import { saveReward } from '../utils/savers'
+import { EventContext, EventHandlerContext } from '../../types/contexts'
+import { saveReward } from './utils'
 
 interface EventData {
     amount: bigint
     account: Uint8Array
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new ParachainStakingRewardedEvent(ctx)
 
     if (event.isV900) {
@@ -29,11 +29,15 @@ function getEventData(ctx: EventHandlerContext): EventData {
     }
 }
 
-export const handleRewarded: EventHandler = async (ctx) => {
+export async function handleRewarded(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
     await saveReward(ctx, {
-        account: encodeId(data.account),
+        id: ctx.event.id,
+        blockNumber: ctx.block.height,
+        timestamp: new Date(ctx.block.timestamp),
+        extrinsicHash: ctx.event.extrinsic?.hash,
+        accountId: encodeId(data.account),
         amount: data.amount,
     })
 }

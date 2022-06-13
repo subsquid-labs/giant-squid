@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { decodeId, encodeId } from '../../../common/helpers'
+import { decodeId, encodeId } from '../../../common/tools'
 import { ParachainStakingNominatorState2Storage } from '../../../types/generated/storage'
 import { StorageContext } from '../../../types/generated/support'
 
