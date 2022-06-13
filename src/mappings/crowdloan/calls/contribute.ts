@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { getOriginAccountId } from '../../../common/helpers'
+import { getOriginAccountId } from '../../../common/tools'
 import { CrowdloanContributeCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext, CommonHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'

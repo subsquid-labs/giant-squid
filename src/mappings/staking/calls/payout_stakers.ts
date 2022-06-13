@@ -1,4 +1,4 @@
-import { encodeId } from '../../../common/helpers'
+import { encodeId } from '../../../common/tools'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { UnknownVersionError } from '../../../common/errors'
 import { Reward } from '../../../model'

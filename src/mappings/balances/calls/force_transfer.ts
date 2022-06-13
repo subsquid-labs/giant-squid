@@ -1,5 +1,5 @@
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
-import { encodeId, isAdressSS58 } from '../../../common/helpers'
+import { encodeId, isAdressSS58 } from '../../../common/tools'
 import { saveTransfer } from './utils'
 import { UnknownVersionError } from '../../../common/errors'
 import { CallContext, CallHandlerContext } from '../../types/contexts'

@@ -1,7 +1,7 @@
 import { Era, EraNominator, EraStakingPair, EraValidator } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
-import { getOrCreateStaker } from '../../util/entities'
+import { getOrCreateStakers } from '../../util/entities'
 
 interface ValidatorData {
     stash: string
@@ -67,49 +67,49 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
 }
 
 async function createValidators(ctx: EventHandlerContext, era: Era, data: ValidatorData[]) {
-    const tuples: [string, EraValidator][] = (
-        await Promise.all(
-            data.map(async (v) => {
-                const staker = await getOrCreateStaker(ctx, { stashId: v.stash })
-                return staker
-                    ? [
-                          v.stash,
-                          new EraValidator({
-                              id: `${era.index}-${v.stash}`,
-                              staker,
-                              totalBonded: v.totalBonded,
-                              selfBonded: v.selfBonded,
-                              era,
-                          }),
-                      ]
-                    : undefined
-            })
-        )
-    ).filter((t): t is [string, EraValidator] => t != null)
+    const stakers = await getOrCreateStakers(
+        ctx,
+        'Stash',
+        data.map((v) => v.stash)
+    )
+    if (!stakers) return new Map()
+
+    const tuples: [string, EraValidator][] = stakers.map((s) => {
+        const validator = data.find((v) => v.stash === s.stashId)
+        return [
+            s.stashId,
+            new EraValidator({
+                id: `${era.index}-${s.stashId}`,
+                staker: s,
+                totalBonded: validator?.totalBonded || 0n,
+                selfBonded: validator?.selfBonded || 0n,
+                era,
+            }),
+        ]
+    })
     const map = new Map(tuples)
     await ctx.store.save([...map.values()])
     return map
 }
 
 async function createNominators(ctx: EventHandlerContext, era: Era, data: NominatorData[]) {
-    const tuples: [string, EraNominator][] = (
-        await Promise.all(
-            data.map(async (n) => {
-                const staker = await getOrCreateStaker(ctx, { stashId: n.stash })
-                return staker
-                    ? [
-                          n.stash,
-                          new EraNominator({
-                              id: `${era.index}-${n.stash}`,
-                              staker,
-                              bonded: staker.activeBond,
-                              era,
-                          }),
-                      ]
-                    : undefined
-            })
-        )
-    ).filter((t): t is [string, EraNominator] => t != null)
+    const stakers = await getOrCreateStakers(
+        ctx,
+        'Stash',
+        data.map((n) => n.stash)
+    )
+    if (!stakers) return new Map()
+
+    const tuples: [string, EraNominator][] = stakers.map((s) => [
+        s.stashId,
+        new EraNominator({
+            id: `${era.index}-${s.stashId}`,
+            staker: s,
+            bonded: s.activeBond,
+            era,
+        }),
+    ])
+
     const map = new Map(tuples)
     await ctx.store.save([...map.values()])
     return map

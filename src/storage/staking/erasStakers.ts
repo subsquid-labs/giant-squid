@@ -1,6 +1,6 @@
 import { UnknownVersionError } from '../../common/errors'
-import { decodeId, encodeId } from '../../common/helpers'
-import { StakingErasStakersStorage } from '../../types/generated/storage'
+import { decodeId, encodeId } from '../../common/tools'
+import { StakingErasStakersStorage, StakingStakersStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
 interface StorageData {

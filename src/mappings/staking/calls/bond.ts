@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId } from '../../../common/helpers'
+import { encodeId, getOriginAccountId } from '../../../common/tools'
 import { BondType, PayeeType } from '../../../model'
 import { StakingBondCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'

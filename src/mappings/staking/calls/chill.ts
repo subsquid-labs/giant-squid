@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { getOriginAccountId } from '../../../common/helpers'
+import { getOriginAccountId } from '../../../common/tools'
 import { Staker, StakingRole } from '../../../model'
 import { CallHandlerContext } from '../../types/contexts'
 

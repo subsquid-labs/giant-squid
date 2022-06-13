@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { getOriginAccountId } from '../../../common/helpers'
+import { getOriginAccountId } from '../../../common/tools'
 import { StakingRole } from '../../../model'
 import { StakingNominateCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
@@ -43,7 +43,7 @@ export async function handleNominate(ctx: CallHandlerContext) {
 
     const controllerId = getOriginAccountId(ctx.call.origin)
 
-    const staker = await getOrCreateStaker(ctx, { controllerId })
+    const staker = await getOrCreateStaker(ctx, 'Controller', controllerId)
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Nominator

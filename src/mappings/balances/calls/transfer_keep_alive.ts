@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/helpers'
+import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
 import { BalancesTransferKeepAliveCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { saveTransfer } from './utils'

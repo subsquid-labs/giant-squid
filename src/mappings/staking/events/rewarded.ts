@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/helpers'
+import { encodeId } from '../../../common/tools'
 import { PayeeType, Reward, Staker } from '../../../model'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../types/contexts'

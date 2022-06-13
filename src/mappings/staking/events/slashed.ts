@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, saturatingSumBigInt } from '../../../common/helpers'
+import { encodeId, saturatingSumBigInt } from '../../../common/tools'
 import { Slash, Staker } from '../../../model'
 import storage from '../../../storage'
 import { StakingSlashedEvent, StakingSlashEvent } from '../../../types/generated/events'
