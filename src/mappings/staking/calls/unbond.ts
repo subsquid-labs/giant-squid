@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { getOriginAccountId } from '../../../common/helpers'
+import { getOriginAccountId } from '../../../common/tools'
 import { BondType } from '../../../model'
 import { StakingUnbondCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'

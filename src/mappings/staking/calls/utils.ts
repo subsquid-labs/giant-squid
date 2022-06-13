@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { saturatingSumBigInt } from '../../../common/helpers'
+import { saturatingSumBigInt } from '../../../common/tools'
 import { Bond, BondType } from '../../../model'
 import { CommonHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'
@@ -16,10 +16,10 @@ export interface BondData extends ActionData {
 export async function saveBond(ctx: CommonHandlerContext, data: BondData) {
     const { accountId, amount, success, type } = data
 
-    const staker = await getOrCreateStaker(
-        ctx,
-        type === BondType.Bond ? { stashId: accountId } : { controllerId: accountId }
-    )
+    const staker =
+        type === BondType.Bond
+            ? await getOrCreateStaker(ctx, 'Stash', accountId)
+            : await getOrCreateStaker(ctx, 'Controller', accountId)
     assert(staker != null, `Missing staking info for ${accountId}`)
 
     const account = type === BondType.Bond ? staker.stash : staker.controller

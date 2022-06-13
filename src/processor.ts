@@ -42,4 +42,8 @@ processor.addCallHandler('Balances.transfer_keep_alive', modules.balances.extrin
 processor.addCallHandler('Balances.force_transfer', modules.balances.extrinsics.handleForceTransfer)
 processor.addCallHandler('Balances.transfer_all', modules.balances.extrinsics.handleTransferAll)
 
+// processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
+//     console.log(ctx.block.height, ctx.items)
+// })
+
 processor.run()

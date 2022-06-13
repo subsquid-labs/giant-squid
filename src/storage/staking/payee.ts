@@ -1,4 +1,4 @@
-import { decodeId, encodeId } from '../../common/helpers'
+import { decodeId, encodeId } from '../../common/tools'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
 import { StorageContext } from '../../types/generated/support'

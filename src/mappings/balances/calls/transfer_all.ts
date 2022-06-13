@@ -1,6 +1,6 @@
 import { saveTransfer } from './utils'
 import { BalancesTransferAllCall } from '../../../types/generated/calls'
-import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/helpers'
+import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
 import { UnknownVersionError } from '../../../common/errors'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 
