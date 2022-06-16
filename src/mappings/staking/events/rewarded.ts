@@ -1,8 +1,13 @@
+import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId } from '../../../common/tools'
+import { Reward, Round } from '../../../model'
 import { ParachainStakingRewardedEvent } from '../../../types/generated/events'
-import { EventContext, EventHandlerContext } from '../../types/contexts'
-import { saveReward } from './utils'
+import { CommonHandlerContext, EventContext, EventHandlerContext } from '../../types/contexts'
+import { ActionData } from '../../types/data'
+import { getMeta } from '../../util/actions'
+import { RewardPaymentDelay } from '../../util/consts'
+import { getOrCreateStaker } from '../../util/entities'
 
 interface EventData {
     amount: bigint
@@ -40,4 +45,30 @@ export async function handleRewarded(ctx: EventHandlerContext) {
         accountId: encodeId(data.account),
         amount: data.amount,
     })
+}
+
+export interface RewardData extends ActionData {
+    amount: bigint
+    accountId: string
+}
+
+export async function saveReward(ctx: CommonHandlerContext, data: RewardData) {
+    const staker = await getOrCreateStaker(ctx, data.accountId)
+    assert(staker != null)
+
+    staker.totalReward += data.amount
+
+    await ctx.store.save(staker)
+
+    const round = await ctx.store.get(Round, { order: { index: 'DESC' } })
+
+    await ctx.store.insert(
+        new Reward({
+            ...getMeta(data),
+            account: staker.stash,
+            amount: data.amount,
+            round: Math.min((round?.index || 0) - RewardPaymentDelay, 0),
+            staker,
+        })
+    )
 }

@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
+import {Staker} from "./staker.model"
 
 @Entity_()
 export class Reward {
@@ -34,4 +35,8 @@ export class Reward {
 
   @Column_("int4", {nullable: true})
   round!: number | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => Staker, {nullable: true})
+  staker!: Staker | undefined | null
 }

@@ -38,7 +38,9 @@
     "ParachainStaking.TopDelegations",
     "ParachainStaking.BottomDelegations",
     "ParachainStaking.CollatorState2",
-    "ParachainStaking.NominatorState2"
-
+    "ParachainStaking.NominatorState2",
+    "ParachainStaking.CollatorState",
+    "ParachainStaking.NominatorState",
+    "ParachainStaking.SelectedCandidates"
   ]
 }

@@ -1,11 +1,31 @@
 type Account @entity {
   id: ID!
-  activeBond: BigInt!
-  totalReward: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
+  stakingInfo: Staker @derivedFrom(field: "stash")
   lastUpdateBlock: Int!
+}
+
+enum StakingRole {
+  Collator
+  Nominator
+  Idle
+}
+
+# current information about stash, controller, payee and staking role
+type Staker @entity {
+  id: ID! #stash Id
+  stashId: ID!
+  stash: Account! @unique
+  role: StakingRole!
+  commission: Float
+  activeBond: BigInt! # current bond balance
+  totalReward: BigInt!
+  collatorHistory: [RoundCollator!] @derivedFrom(field: "staker") # collator history for each round
+  nominatorHistory: [RoundNominator!] @derivedFrom(field: "staker") # nominator history for each round
+  rewards: [Reward!] @derivedFrom(field: "staker")
+  bonds: [Bond!] @derivedFrom(field: "staker")
 }
 
 enum TransferDirection {
@@ -57,6 +77,7 @@ type Reward implements Action & HasRound @entity  {
   account: Account!
   amount: BigInt
   round: Int
+  staker: Staker
 }
 
 enum BondType {
@@ -75,6 +96,7 @@ type Bond implements Action & CanFail @entity  {
   success: Boolean @index
   type: BondType
   candidate: String
+  staker: Staker
 }
 
 type Round @entity {
@@ -84,5 +106,35 @@ type Round @entity {
   startedAt: Int!
   endedAt: Int
   collatorsCount: Int!
+  collators: [RoundCollator] @derivedFrom(field: "round")
+  nominators: [RoundNominator] @derivedFrom(field: "round")
   total: BigInt!
+}
+
+type RoundCollator @entity {
+  id: ID!
+  round: Round!
+  selfBond: BigInt!
+  totalBond: BigInt!
+  commission: Float!
+  nominators: [RoundNomination!] @derivedFrom(field: "collator")
+  nominatorsCount: Int!
+  staker: Staker!
+}
+
+type RoundNominator @entity {
+  id: ID!
+  round: Round!
+  bond: BigInt!
+  collators: [RoundNomination!] @derivedFrom(field: "nominator")
+  collatorsCount: Int!
+  staker: Staker!
+}
+
+type RoundNomination @entity {
+  id: ID!
+  round: Round!
+  collator: RoundCollator!
+  nominator: RoundNominator!
+  vote: BigInt!
 }

@@ -1,14 +1,10 @@
+import assert from 'assert'
 import { saturatingSumBigInt } from '../../../common/tools'
-import { Bond, BondType, Round } from '../../../model'
+import { Bond, BondType } from '../../../model'
 import { CommonHandlerContext, EventHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'
 import { getMeta } from '../../util/actions'
-import { getOrCreateAccount } from '../../util/entities'
-
-export interface RewardData extends ActionData {
-    amount: bigint
-    accountId: string
-}
+import { getOrCreateStaker } from '../../util/entities'
 
 export interface BondData extends ActionData {
     amount: bigint
@@ -19,42 +15,29 @@ export interface BondData extends ActionData {
     candidateId?: string
 }
 
-export async function saveReward(ctx: CommonHandlerContext, data: RewardData) {
-    const account = await getOrCreateAccount(ctx, data.accountId)
-    account.totalReward = account.totalReward + data.amount
-
-    await ctx.store.save(account)
-
-    const round = await ctx.store.get(Round, { order: { index: 'DESC' } })
-
-    await ctx.store.insert({
-        ...getMeta(data),
-        account,
-        amount: data.amount,
-        round: Math.min((round?.index || 0) - 4, 0),
-    })
-}
-
 export async function saveBond(ctx: CommonHandlerContext, data: BondData) {
-    const account = await getOrCreateAccount(ctx, data.accountId)
+    const staker = await getOrCreateStaker(ctx, data.accountId)
+    assert(staker != null)
 
     if (data.success) {
-        account.activeBond = data.newTotal
+        staker.activeBond = data.newTotal
             ? data.newTotal
-            : saturatingSumBigInt(account.activeBond, data.amount * (data.type === BondType.Bond ? 1n : -1n))
+            : saturatingSumBigInt(staker.activeBond, data.amount * (data.type === BondType.Bond ? 1n : -1n))
     }
 
-    await ctx.store.save(account)
+    await ctx.store.save(staker)
 
-    await ctx.store.insert({
-        ...getMeta(data),
-        account,
-        candidate: data.candidateId,
-        type: data.type,
-        amount: data.amount,
-        total: account.activeBond,
-        success: data.success,
-    })
+    await ctx.store.insert(
+        new Bond({
+            ...getMeta(data),
+            account: staker.stash,
+            candidate: data.candidateId,
+            type: data.type,
+            amount: data.amount,
+            success: data.success,
+            staker,
+        })
+    )
 }
 
 export async function isDoubleEvent(ctx: EventHandlerContext, accountId: string, amount: bigint, type: BondType) {

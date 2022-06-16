@@ -5,7 +5,7 @@ const config: ProcessorConfig = {
     chainName: 'moonbeam',
     prefix: 'moonbeam',
     dataSource: {
-        archive: lookupArchive('moonbeam')[0].url,
+        archive: 'https://moonbeam.archive.subsquid.io/graphql',
         chain: 'wss://wss.api.moonbeam.network',
     },
     typesBundle: 'moonbeam',

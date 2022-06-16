@@ -5,7 +5,7 @@ import storage from '../../../storage'
 import { ParachainStakingCandidateLeftEvent } from '../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../types/contexts'
 import { createPrevStorageContext } from '../../util/actions'
-import { getOrCreateAccount } from '../../util/entities'
+import { getOrCreateAccount, getOrCreateStakers } from '../../util/entities'
 import { saveBond } from './utils'
 
 interface EventData {
@@ -65,21 +65,26 @@ export async function handleCandidateLeft(ctx: EventHandlerContext) {
     const delegations = topDelegations?.concat(bottomDelegations || [])
     if (!delegations) return
 
-    const delegators: Account[] = new Array(delegations.length)
+    const delegators = await getOrCreateStakers(
+        ctx,
+        delegations.map((d) => d.id)
+    )
+    if (!delegators) return
+
     const bonds: Bond[] = new Array(delegations.length)
     for (let i = 0; i < delegators.length; i++) {
-        delegators[i] = await getOrCreateAccount(ctx, delegations[i].id)
         delegators[i].activeBond = saturatingSumBigInt(delegators[i].activeBond, delegations[i].amount * -1n)
         bonds[i] = new Bond({
             id: `${ctx.event.id}-${i.toString().padStart(4, '0')}`,
             blockNumber: ctx.block.height,
             timestamp: new Date(ctx.block.timestamp),
             extrinsicHash: ctx.event.extrinsic?.hash,
-            account: delegators[i],
+            account: delegators[i].stash,
             candidate: candidate.id,
             amount: delegations[i].amount,
             type: BondType.Unbond,
             success: true,
+            staker: delegators[i],
         })
     }
 
