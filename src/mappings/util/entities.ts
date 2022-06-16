@@ -116,7 +116,7 @@ export async function getOrCreateStakers(
     })
 
     const stakersMap: Map<string, Staker> = new Map()
-    for (const q of query) stakersMap.set(type === 'Controller' ? q.stashId : q.controllerId, q)
+    for (const q of query) stakersMap.set(type === 'Stash' ? q.stashId : q.controllerId, q)
 
     const missingIds = ids.filter((id) => !stakersMap.has(id))
 
@@ -145,7 +145,7 @@ export async function getOrCreateStakers(
         newStakers.set(
             stashId,
             await createStaker(ctx, {
-                stashId: ledgers[i]?.stash as string,
+                stashId,
                 controllerId: notNullControllerIds[i],
                 payeeId:
                     payeeInfo.payee === 'Account'
