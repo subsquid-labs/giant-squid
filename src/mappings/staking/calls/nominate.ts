@@ -13,23 +13,15 @@ interface CallData {
 function getCallData(ctx: CallContext): CallData | undefined {
     const call = new StakingNominateCall(ctx)
 
-    if (call.isV1020) {
-        const { targets } = call.asV1020
-        return {
-            targets: targets.map((t) => {
-                assert(t.__kind === 'AccountId')
-                return t.value
-            }),
-        }
-    } else if (call.isV1050) {
-        return call.asV1050
-    } else if (call.isV2028) {
-        const { targets } = call.asV2028
+    if (call.isV0) {
+        return call.asV0
+    } else if (call.isV28) {
+        const { targets } = call.asV28
         return {
             targets: targets.map((t) => t.value as Uint8Array),
         }
-    } else if (call.isV9111) {
-        const { targets } = call.asV9111
+    } else if (call.isV9110) {
+        const { targets } = call.asV9110
         return {
             targets: targets.map((t) => t.value as Uint8Array),
         }

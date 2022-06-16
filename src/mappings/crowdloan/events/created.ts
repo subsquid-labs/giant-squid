@@ -31,7 +31,7 @@ export async function handleCreated(ctx: EventHandlerContext) {
 
     await ctx.store.insert(
         new Crowdloan({
-            id: `${data.index}-${fundInfo.fundIndex}`,
+            id: `${data.index}-${fundInfo.trieIndex}`,
             parachain,
             blockNumber: ctx.block.height,
             createdAt: new Date(ctx.block.timestamp),

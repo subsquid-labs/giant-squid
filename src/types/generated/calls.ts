@@ -7,7 +7,7 @@ import * as v9110 from './v9110'
 
 export class BalancesForceTransferCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.forceTransfer' || this.ctx.extrinsic.name === 'balances.force_transfer')
+    assert(this.ctx.call.name === 'Balances.force_transfer')
   }
 
   /**
@@ -19,7 +19,7 @@ export class BalancesForceTransferCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('balances.force_transfer') === '2fe8348cf811b833de74f02f6eeab668dbfad8a5d53274dd89837666ed3eb6fe'
+    return this.ctx._chain.getCallHash('Balances.force_transfer') === '2fe8348cf811b833de74f02f6eeab668dbfad8a5d53274dd89837666ed3eb6fe'
   }
 
   /**
@@ -30,9 +30,9 @@ export class BalancesForceTransferCall {
    *    not assumed to be in the overlay.
    *  # </weight>
    */
-  get asV0(): {source: Uint8Array, dest: Uint8Array, value: bigint} {
+  get asV0(): {source: v0.LookupSource, dest: v0.LookupSource, value: bigint} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -44,7 +44,7 @@ export class BalancesForceTransferCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('balances.force_transfer') === '906df11f4f65ebd03a2b87ba248e1fba11c3a0bca42c892bee828bac3ec80348'
+    return this.ctx._chain.getCallHash('Balances.force_transfer') === '906df11f4f65ebd03a2b87ba248e1fba11c3a0bca42c892bee828bac3ec80348'
   }
 
   /**
@@ -55,9 +55,9 @@ export class BalancesForceTransferCall {
    *    not assumed to be in the overlay.
    *  # </weight>
    */
-  get asV28(): {source: v28.GenericMultiAddress, dest: v28.GenericMultiAddress, value: bigint} {
+  get asV28(): {source: v28.LookupSource, dest: v28.LookupSource, value: bigint} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -69,7 +69,7 @@ export class BalancesForceTransferCall {
    * # </weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('balances.force_transfer') === 'e5944fbe8224a17fe49f9c1d1d01efaf87fb1778fd39618512af54c9ba6f9dff'
+    return this.ctx._chain.getCallHash('Balances.force_transfer') === 'e5944fbe8224a17fe49f9c1d1d01efaf87fb1778fd39618512af54c9ba6f9dff'
   }
 
   /**
@@ -82,7 +82,7 @@ export class BalancesForceTransferCall {
    */
   get asV9110(): {source: v9110.MultiAddress, dest: v9110.MultiAddress, value: bigint} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -98,7 +98,7 @@ export class BalancesForceTransferCall {
 
 export class BalancesTransferCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transfer')
+    assert(this.ctx.call.name === 'Balances.transfer')
   }
 
   /**
@@ -131,7 +131,7 @@ export class BalancesTransferCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
+    return this.ctx._chain.getCallHash('Balances.transfer') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
   }
 
   /**
@@ -163,9 +163,9 @@ export class BalancesTransferCall {
    *  - Origin account is already in memory, so no DB operations for them.
    *  # </weight>
    */
-  get asV0(): {dest: Uint8Array, value: bigint} {
+  get asV0(): {dest: v0.LookupSource, value: bigint} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -198,7 +198,7 @@ export class BalancesTransferCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
+    return this.ctx._chain.getCallHash('Balances.transfer') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
   }
 
   /**
@@ -230,9 +230,9 @@ export class BalancesTransferCall {
    *  - Origin account is already in memory, so no DB operations for them.
    *  # </weight>
    */
-  get asV28(): {dest: v28.GenericMultiAddress, value: bigint} {
+  get asV28(): {dest: v28.LookupSource, value: bigint} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -266,7 +266,7 @@ export class BalancesTransferCall {
    * # </weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
+    return this.ctx._chain.getCallHash('Balances.transfer') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
   }
 
   /**
@@ -301,7 +301,7 @@ export class BalancesTransferCall {
    */
   get asV9110(): {dest: v9110.MultiAddress, value: bigint} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -317,7 +317,7 @@ export class BalancesTransferCall {
 
 export class BalancesTransferAllCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transferAll' || this.ctx.extrinsic.name === 'balances.transfer_all')
+    assert(this.ctx.call.name === 'Balances.transfer_all')
   }
 
   /**
@@ -341,7 +341,7 @@ export class BalancesTransferAllCall {
    *    #</weight>
    */
   get isV9050(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_all') === '56952003e07947f758a9928d8462037abffea6a7fa991c0d3451f5c47d45f254'
+    return this.ctx._chain.getCallHash('Balances.transfer_all') === '56952003e07947f758a9928d8462037abffea6a7fa991c0d3451f5c47d45f254'
   }
 
   /**
@@ -364,9 +364,9 @@ export class BalancesTransferAllCall {
    *  - O(1). Just like transfer, but reading the user's transferable balance first.
    *    #</weight>
    */
-  get asV9050(): {dest: v9050.GenericMultiAddress, keepAlive: boolean} {
+  get asV9050(): {dest: v9050.LookupSource, keepAlive: boolean} {
     assert(this.isV9050)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -389,7 +389,7 @@ export class BalancesTransferAllCall {
    *   #</weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_all') === '9c94c2ca9979f6551af6e123fb6b6ba14d026f862f9a023706f8f88c556b355f'
+    return this.ctx._chain.getCallHash('Balances.transfer_all') === '9c94c2ca9979f6551af6e123fb6b6ba14d026f862f9a023706f8f88c556b355f'
   }
 
   /**
@@ -413,7 +413,7 @@ export class BalancesTransferAllCall {
    */
   get asV9110(): {dest: v9110.MultiAddress, keepAlive: boolean} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -429,7 +429,7 @@ export class BalancesTransferAllCall {
 
 export class BalancesTransferKeepAliveCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transferKeepAlive' || this.ctx.extrinsic.name === 'balances.transfer_keep_alive')
+    assert(this.ctx.call.name === 'Balances.transfer_keep_alive')
   }
 
   /**
@@ -446,7 +446,7 @@ export class BalancesTransferKeepAliveCall {
    *  #</weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
+    return this.ctx._chain.getCallHash('Balances.transfer_keep_alive') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
   }
 
   /**
@@ -462,9 +462,9 @@ export class BalancesTransferKeepAliveCall {
    *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    *  #</weight>
    */
-  get asV0(): {dest: Uint8Array, value: bigint} {
+  get asV0(): {dest: v0.LookupSource, value: bigint} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -481,7 +481,7 @@ export class BalancesTransferKeepAliveCall {
    *  #</weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
+    return this.ctx._chain.getCallHash('Balances.transfer_keep_alive') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
   }
 
   /**
@@ -497,9 +497,9 @@ export class BalancesTransferKeepAliveCall {
    *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    *  #</weight>
    */
-  get asV28(): {dest: v28.GenericMultiAddress, value: bigint} {
+  get asV28(): {dest: v28.LookupSource, value: bigint} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -516,7 +516,7 @@ export class BalancesTransferKeepAliveCall {
    * #</weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
+    return this.ctx._chain.getCallHash('Balances.transfer_keep_alive') === 'fc85bea9d0d171982f66e8a55667d58dc9a1612bcafe84309942bf47e23e3094'
   }
 
   /**
@@ -534,7 +534,7 @@ export class BalancesTransferKeepAliveCall {
    */
   get asV9110(): {dest: v9110.MultiAddress, value: bigint} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -550,7 +550,7 @@ export class BalancesTransferKeepAliveCall {
 
 export class CrowdloanContributeCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'crowdloan.contribute')
+    assert(this.ctx.call.name === 'Crowdloan.contribute')
   }
 
   /**
@@ -558,7 +558,7 @@ export class CrowdloanContributeCall {
    * slot. It will be withdrawable when the crowdloan has ended and the funds are unused.
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('crowdloan.contribute') === 'c85a49d78a97667f6d8d7cdda206ad3ba38bd873ab2e82a42135a31c48152a6c'
+    return this.ctx._chain.getCallHash('Crowdloan.contribute') === 'c85a49d78a97667f6d8d7cdda206ad3ba38bd873ab2e82a42135a31c48152a6c'
   }
 
   /**
@@ -567,7 +567,7 @@ export class CrowdloanContributeCall {
    */
   get asV9110(): {index: number, value: bigint, signature: (v9110.MultiSignature | undefined)} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -583,7 +583,7 @@ export class CrowdloanContributeCall {
 
 export class CrowdloanCreateCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'crowdloan.create')
+    assert(this.ctx.call.name === 'Crowdloan.create')
   }
 
   /**
@@ -593,7 +593,7 @@ export class CrowdloanCreateCall {
    * by the parachain manager.
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('crowdloan.create') === '9d0529ac9fb92b6a7eca157299243acd0d2eb82a352509475556c79f78f47aa3'
+    return this.ctx._chain.getCallHash('Crowdloan.create') === '9d0529ac9fb92b6a7eca157299243acd0d2eb82a352509475556c79f78f47aa3'
   }
 
   /**
@@ -604,7 +604,7 @@ export class CrowdloanCreateCall {
    */
   get asV9110(): {index: number, cap: bigint, firstPeriod: number, lastPeriod: number, end: number, verifier: (v9110.MultiSigner | undefined)} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -620,7 +620,7 @@ export class CrowdloanCreateCall {
 
 export class StakingBondCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.bond')
+    assert(this.ctx.call.name === 'Staking.bond')
   }
 
   /**
@@ -648,7 +648,7 @@ export class StakingBondCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.bond') === '20db399e4963916b83c2636d8d5e414b30d79d868ca62d05181259e5d0c02e7e'
+    return this.ctx._chain.getCallHash('Staking.bond') === '20db399e4963916b83c2636d8d5e414b30d79d868ca62d05181259e5d0c02e7e'
   }
 
   /**
@@ -675,9 +675,9 @@ export class StakingBondCall {
    *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
    *  # </weight>
    */
-  get asV0(): {controller: Uint8Array, value: bigint, payee: v0.RewardDestination} {
+  get asV0(): {controller: v0.LookupSource, value: bigint, payee: v0.RewardDestination} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -705,7 +705,7 @@ export class StakingBondCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('staking.bond') === '6c5de9285e9c4ba450dfa1ed6ebededa6083cc2b06cee317e92c1f89751818c6'
+    return this.ctx._chain.getCallHash('Staking.bond') === '6c5de9285e9c4ba450dfa1ed6ebededa6083cc2b06cee317e92c1f89751818c6'
   }
 
   /**
@@ -732,9 +732,9 @@ export class StakingBondCall {
    *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
    *  # </weight>
    */
-  get asV28(): {controller: v28.GenericMultiAddress, value: bigint, payee: v28.RewardDestination} {
+  get asV28(): {controller: v28.LookupSource, value: bigint, payee: v28.RewardDestination} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -757,7 +757,7 @@ export class StakingBondCall {
    * # </weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('staking.bond') === 'c0b607a5cbdc40ee9aed26b3c86cfe3159aeccd5ac4e9005210dd39d0317ba48'
+    return this.ctx._chain.getCallHash('Staking.bond') === 'c0b607a5cbdc40ee9aed26b3c86cfe3159aeccd5ac4e9005210dd39d0317ba48'
   }
 
   /**
@@ -781,7 +781,7 @@ export class StakingBondCall {
    */
   get asV9110(): {controller: v9110.MultiAddress, value: bigint, payee: v9110.RewardDestination} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -797,7 +797,7 @@ export class StakingBondCall {
 
 export class StakingBondExtraCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.bondExtra' || this.ctx.extrinsic.name === 'staking.bond_extra')
+    assert(this.ctx.call.name === 'Staking.bond_extra')
   }
 
   /**
@@ -825,7 +825,7 @@ export class StakingBondExtraCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.bond_extra') === 'f92c56c980d6a55c468653fc3149548edcf2481e5da53835a201cafa7dc02fd8'
+    return this.ctx._chain.getCallHash('Staking.bond_extra') === 'f92c56c980d6a55c468653fc3149548edcf2481e5da53835a201cafa7dc02fd8'
   }
 
   /**
@@ -854,7 +854,7 @@ export class StakingBondExtraCall {
    */
   get asV0(): {maxAdditional: bigint} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -870,7 +870,7 @@ export class StakingBondExtraCall {
 
 export class StakingChillCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.chill')
+    assert(this.ctx.call.name === 'Staking.chill')
   }
 
   /**
@@ -893,7 +893,7 @@ export class StakingChillCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.chill') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    return this.ctx._chain.getCallHash('Staking.chill') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
   }
 
   /**
@@ -917,7 +917,7 @@ export class StakingChillCall {
    */
   get asV0(): null {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -933,7 +933,7 @@ export class StakingChillCall {
 
 export class StakingKickCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.kick')
+    assert(this.ctx.call.name === 'Staking.kick')
   }
 
   /**
@@ -952,7 +952,7 @@ export class StakingKickCall {
    *  block any further nominations.
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('staking.kick') === '760f2d470d3cb5efbef130b8d79a202238d983a6680d5e2d4eee31ad48834e9f'
+    return this.ctx._chain.getCallHash('Staking.kick') === '760f2d470d3cb5efbef130b8d79a202238d983a6680d5e2d4eee31ad48834e9f'
   }
 
   /**
@@ -970,9 +970,9 @@ export class StakingKickCall {
    *  Note: Making this call only makes sense if you first set the validator preferences to
    *  block any further nominations.
    */
-  get asV28(): {who: v28.GenericMultiAddress[]} {
+  get asV28(): {who: v28.LookupSource[]} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -989,7 +989,7 @@ export class StakingKickCall {
    * block any further nominations.
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('staking.kick') === 'e538d9391f8376022db5c010fa7390c92954267b2d5ebc13e621f87adebe57b9'
+    return this.ctx._chain.getCallHash('Staking.kick') === 'e538d9391f8376022db5c010fa7390c92954267b2d5ebc13e621f87adebe57b9'
   }
 
   /**
@@ -1007,7 +1007,7 @@ export class StakingKickCall {
    */
   get asV9110(): {who: v9110.MultiAddress[]} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -1023,7 +1023,7 @@ export class StakingKickCall {
 
 export class StakingNominateCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.nominate')
+    assert(this.ctx.call.name === 'Staking.nominate')
   }
 
   /**
@@ -1048,7 +1048,7 @@ export class StakingNominateCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.nominate') === '730fc5a4090c1c566ea6d11126ba7258c98a461b0c6bfca8bf9e17e42f8801de'
+    return this.ctx._chain.getCallHash('Staking.nominate') === '730fc5a4090c1c566ea6d11126ba7258c98a461b0c6bfca8bf9e17e42f8801de'
   }
 
   /**
@@ -1072,9 +1072,9 @@ export class StakingNominateCall {
    *  - Writes: Validators, Nominators
    *  # </weight>
    */
-  get asV0(): {targets: Uint8Array[]} {
+  get asV0(): {targets: v0.LookupSource[]} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -1099,7 +1099,7 @@ export class StakingNominateCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('staking.nominate') === 'a653cde167810e73479047a5ef0738fdd0dc4e9afa5b310a19c8335e4378f706'
+    return this.ctx._chain.getCallHash('Staking.nominate') === 'a653cde167810e73479047a5ef0738fdd0dc4e9afa5b310a19c8335e4378f706'
   }
 
   /**
@@ -1123,9 +1123,9 @@ export class StakingNominateCall {
    *  - Writes: Validators, Nominators
    *  # </weight>
    */
-  get asV28(): {targets: v28.GenericMultiAddress[]} {
+  get asV28(): {targets: v28.LookupSource[]} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -1142,7 +1142,7 @@ export class StakingNominateCall {
    * # </weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('staking.nominate') === '4b7eca27044655bd9da5cc614a4bf774babc00decbed9ca59d95298b300d72de'
+    return this.ctx._chain.getCallHash('Staking.nominate') === '4b7eca27044655bd9da5cc614a4bf774babc00decbed9ca59d95298b300d72de'
   }
 
   /**
@@ -1160,7 +1160,7 @@ export class StakingNominateCall {
    */
   get asV9110(): {targets: v9110.MultiAddress[]} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -1176,7 +1176,7 @@ export class StakingNominateCall {
 
 export class StakingPayoutStakersCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.payoutStakers' || this.ctx.extrinsic.name === 'staking.payout_stakers')
+    assert(this.ctx.call.name === 'Staking.payout_stakers')
   }
 
   /**
@@ -1205,7 +1205,7 @@ export class StakingPayoutStakersCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.payout_stakers') === '1a09dc413ed4b8ce5cbcdc282b798636ca24268cca001e43fc92d892de3b6a5f'
+    return this.ctx._chain.getCallHash('Staking.payout_stakers') === '1a09dc413ed4b8ce5cbcdc282b798636ca24268cca001e43fc92d892de3b6a5f'
   }
 
   /**
@@ -1233,9 +1233,9 @@ export class StakingPayoutStakersCall {
    *  - Write Each: System Account, Locks, Ledger (3 items)
    *  # </weight>
    */
-  get asV0(): {validatorStash: Uint8Array, era: number} {
+  get asV0(): {validatorStash: v0.AccountId, era: v0.EraIndex} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -1243,7 +1243,7 @@ export class StakingPayoutStakersCall {
     return this.isV0
   }
 
-  get asLatest(): {validatorStash: Uint8Array, era: number} {
+  get asLatest(): {validatorStash: v0.AccountId, era: v0.EraIndex} {
     deprecateLatest()
     return this.asV0
   }
@@ -1251,7 +1251,7 @@ export class StakingPayoutStakersCall {
 
 export class StakingSetControllerCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.setController' || this.ctx.extrinsic.name === 'staking.set_controller')
+    assert(this.ctx.call.name === 'Staking.set_controller')
   }
 
   /**
@@ -1273,7 +1273,7 @@ export class StakingSetControllerCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.set_controller') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
+    return this.ctx._chain.getCallHash('Staking.set_controller') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
   }
 
   /**
@@ -1294,9 +1294,9 @@ export class StakingSetControllerCall {
    *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
    *  # </weight>
    */
-  get asV0(): {controller: Uint8Array} {
+  get asV0(): {controller: v0.LookupSource} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -1318,7 +1318,7 @@ export class StakingSetControllerCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('staking.set_controller') === '61b4041aa7366e679d366d2062deb643451b64015c330746395765e6865e5af2'
+    return this.ctx._chain.getCallHash('Staking.set_controller') === '61b4041aa7366e679d366d2062deb643451b64015c330746395765e6865e5af2'
   }
 
   /**
@@ -1339,9 +1339,9 @@ export class StakingSetControllerCall {
    *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
    *  # </weight>
    */
-  get asV28(): {controller: v28.GenericMultiAddress} {
+  get asV28(): {controller: v28.LookupSource} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -1363,7 +1363,7 @@ export class StakingSetControllerCall {
    * # </weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('staking.set_controller') === '81dc3a18eb19c7f258654686fb92e5bf48185191f2c59179a5b4626965fc66cd'
+    return this.ctx._chain.getCallHash('Staking.set_controller') === '81dc3a18eb19c7f258654686fb92e5bf48185191f2c59179a5b4626965fc66cd'
   }
 
   /**
@@ -1386,7 +1386,7 @@ export class StakingSetControllerCall {
    */
   get asV9110(): {controller: v9110.MultiAddress} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -1402,7 +1402,7 @@ export class StakingSetControllerCall {
 
 export class StakingSetPayeeCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.setPayee' || this.ctx.extrinsic.name === 'staking.set_payee')
+    assert(this.ctx.call.name === 'Staking.set_payee')
   }
 
   /**
@@ -1424,7 +1424,7 @@ export class StakingSetPayeeCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.set_payee') === 'e3e8a6a5ee204c56e926f714a3d580d47fe315d3b243872e40cc8959db768aa8'
+    return this.ctx._chain.getCallHash('Staking.set_payee') === 'e3e8a6a5ee204c56e926f714a3d580d47fe315d3b243872e40cc8959db768aa8'
   }
 
   /**
@@ -1447,7 +1447,7 @@ export class StakingSetPayeeCall {
    */
   get asV0(): {payee: v0.RewardDestination} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -1469,7 +1469,7 @@ export class StakingSetPayeeCall {
    * # </weight>
    */
   get isV9110(): boolean {
-    return this.ctx._chain.getCallHash('staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
+    return this.ctx._chain.getCallHash('Staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
   }
 
   /**
@@ -1492,7 +1492,7 @@ export class StakingSetPayeeCall {
    */
   get asV9110(): {payee: v9110.RewardDestination} {
     assert(this.isV9110)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -1508,7 +1508,7 @@ export class StakingSetPayeeCall {
 
 export class StakingUnbondCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.unbond')
+    assert(this.ctx.call.name === 'Staking.unbond')
   }
 
   /**
@@ -1546,7 +1546,7 @@ export class StakingUnbondCall {
    *  </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.unbond') === 'd13cb91c3f61510beece366e7f7c2d0705f01d70f9bc28721d2437cd210a3372'
+    return this.ctx._chain.getCallHash('Staking.unbond') === 'd13cb91c3f61510beece366e7f7c2d0705f01d70f9bc28721d2437cd210a3372'
   }
 
   /**
@@ -1585,7 +1585,7 @@ export class StakingUnbondCall {
    */
   get asV0(): {value: bigint} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -1601,7 +1601,7 @@ export class StakingUnbondCall {
 
 export class StakingValidateCall {
   constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'staking.validate')
+    assert(this.ctx.call.name === 'Staking.validate')
   }
 
   /**
@@ -1624,7 +1624,7 @@ export class StakingValidateCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this.ctx._chain.getCallHash('staking.validate') === 'a03cfe73ae98f87de904386556fc6e78943abbd5d595884756c4155f8694e080'
+    return this.ctx._chain.getCallHash('Staking.validate') === 'a03cfe73ae98f87de904386556fc6e78943abbd5d595884756c4155f8694e080'
   }
 
   /**
@@ -1646,9 +1646,9 @@ export class StakingValidateCall {
    *  - Write: Nominators, Validators
    *  # </weight>
    */
-  get asV0(): {prefs: v0.ValidatorPrefsWithCommission} {
+  get asV0(): {prefs: v0.ValidatorPrefs} {
     assert(this.isV0)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   /**
@@ -1671,7 +1671,7 @@ export class StakingValidateCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this.ctx._chain.getCallHash('staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
+    return this.ctx._chain.getCallHash('Staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
   }
 
   /**
@@ -1693,9 +1693,9 @@ export class StakingValidateCall {
    *  - Write: Nominators, Validators
    *  # </weight>
    */
-  get asV28(): {prefs: v28.ValidatorPrefsWithBlocked} {
+  get asV28(): {prefs: v28.ValidatorPrefs} {
     assert(this.isV28)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this.ctx._chain.decodeCall(this.ctx.call)
   }
 
   get isLatest(): boolean {
@@ -1703,7 +1703,7 @@ export class StakingValidateCall {
     return this.isV28
   }
 
-  get asLatest(): {prefs: v28.ValidatorPrefsWithBlocked} {
+  get asLatest(): {prefs: v28.ValidatorPrefs} {
     deprecateLatest()
     return this.asV28
   }

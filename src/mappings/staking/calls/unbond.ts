@@ -12,8 +12,8 @@ interface CallData {
 function getCallData(ctx: CallContext): CallData {
     const call = new StakingUnbondCall(ctx)
 
-    if (call.isV1020) {
-        const { value } = call.asV1020
+    if (call.isV0) {
+        const { value } = call.asV0
         return {
             amount: value,
         }

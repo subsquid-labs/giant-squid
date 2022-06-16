@@ -15,8 +15,8 @@ export interface CallData {
 
 function getCallData(ctx: CallContext): CallData {
     const call = new CrowdloanContributeCall(ctx)
-    if (call.isV9010) {
-        const { index, value } = call.asV9010
+    if (call.isV9110) {
+        const { index, value } = call.asV9110
         return {
             paraId: index,
             amount: value,

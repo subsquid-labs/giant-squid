@@ -13,13 +13,13 @@ interface CallData {
 function getCallData(ctx: CallContext): CallData {
     const call = new StakingValidateCall(ctx)
 
-    if (call.isV1020) {
-        const { prefs } = call.asV1020
+    if (call.isV0) {
+        const { prefs } = call.asV0
         return {
             commission: prefs.commission,
         }
-    } else if (call.isV2028) {
-        const { prefs } = call.asV2028
+    } else if (call.isV28) {
+        const { prefs } = call.asV28
         return {
             commission: prefs.commission,
         }

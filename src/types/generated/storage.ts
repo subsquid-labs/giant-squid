@@ -68,7 +68,7 @@ export class SessionValidatorsStorage {
   /**
    *  The current set of validators.
    */
-  async getAsV0(): Promise<Uint8Array[]> {
+  async getAsV0(): Promise<v0.ValidatorId[]> {
     assert(this.isV0)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Session', 'Validators')
   }
@@ -126,12 +126,12 @@ export class StakingBondedStorage {
   /**
    *  Map from all locked "stash" accounts to the controller account.
    */
-  async getAsV0(key: Uint8Array): Promise<Uint8Array | undefined> {
+  async getAsV0(key: v0.AccountId): Promise<v0.AccountId | undefined> {
     assert(this.isV0)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Bonded', key)
   }
 
-  async getManyAsV0(keys: Uint8Array[]): Promise<(Uint8Array | undefined)[]> {
+  async getManyAsV0(keys: v0.AccountId[]): Promise<(v0.AccountId | undefined)[]> {
     assert(this.isV0)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Bonded', keys.map(k => [k]))
   }
@@ -163,7 +163,7 @@ export class StakingCurrentEraStorage {
    *  This is the latest planned era, depending on how the Session pallet queues the validator
    *  set, it might be active or not.
    */
-  async getAsV0(): Promise<number | undefined> {
+  async getAsV0(): Promise<v0.EraIndex | undefined> {
     assert(this.isV0)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'CurrentEra')
   }
@@ -199,12 +199,12 @@ export class StakingErasStakersStorage {
    *  Is it removed after `HISTORY_DEPTH` eras.
    *  If stakers hasn't been set or has been removed then empty exposure is returned.
    */
-  async getAsV0(key1: number, key2: Uint8Array): Promise<v0.Exposure> {
+  async getAsV0(key1: v0.EraIndex, key2: v0.AccountId): Promise<v0.Exposure> {
     assert(this.isV0)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', key1, key2)
   }
 
-  async getManyAsV0(keys: [key1: number, key2: Uint8Array][]): Promise<(v0.Exposure)[]> {
+  async getManyAsV0(keys: [v0.EraIndex, v0.AccountId][]): Promise<(v0.Exposure)[]> {
     assert(this.isV0)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'ErasStakers', keys)
   }
@@ -230,12 +230,12 @@ export class StakingLedgerStorage {
   /**
    *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
    */
-  async getAsV0(key: Uint8Array): Promise<v0.StakingLedger | undefined> {
+  async getAsV0(key: v0.AccountId): Promise<v0.StakingLedger | undefined> {
     assert(this.isV0)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Ledger', key)
   }
 
-  async getManyAsV0(keys: Uint8Array[]): Promise<(v0.StakingLedger | undefined)[]> {
+  async getManyAsV0(keys: v0.AccountId[]): Promise<(v0.StakingLedger | undefined)[]> {
     assert(this.isV0)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Ledger', keys.map(k => [k]))
   }
@@ -261,12 +261,12 @@ export class StakingPayeeStorage {
   /**
    *  Where the reward payment should be made. Keyed by stash.
    */
-  async getAsV0(key: Uint8Array): Promise<v0.RewardDestination> {
+  async getAsV0(key: v0.AccountId): Promise<v0.RewardDestination> {
     assert(this.isV0)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Staking', 'Payee', key)
   }
 
-  async getManyAsV0(keys: Uint8Array[]): Promise<(v0.RewardDestination)[]> {
+  async getManyAsV0(keys: v0.AccountId[]): Promise<(v0.RewardDestination)[]> {
     assert(this.isV0)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'Staking', 'Payee', keys.map(k => [k]))
   }

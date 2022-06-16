@@ -37,6 +37,6 @@ export class Account {
   @OneToOne_(() => Staker)
   stakingInfo!: Staker | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  lastUpdateBlock!: bigint
+  @Column_("int4", {nullable: false})
+  lastUpdateBlock!: number
 }

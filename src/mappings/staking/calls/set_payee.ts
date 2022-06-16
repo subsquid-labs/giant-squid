@@ -13,14 +13,14 @@ export interface CallData {
 function getCallData(ctx: CallContext): CallData {
     const call = new StakingSetPayeeCall(ctx)
 
-    if (call.isV1020) {
-        const { payee } = call.asV1020
+    if (call.isV0) {
+        const { payee } = call.asV0
         return {
             payee: payee.__kind,
             account: (payee as { value: Uint8Array }).value,
         }
-    } else if (call.isV9111) {
-        const { payee } = call.asV9111
+    } else if (call.isV9110) {
+        const { payee } = call.asV9110
         return {
             payee: payee.__kind,
             account: (payee as { value: Uint8Array }).value,

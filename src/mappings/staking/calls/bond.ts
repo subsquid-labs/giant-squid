@@ -24,24 +24,9 @@ interface PayeeDataAccount {
 function getCallData(ctx: CallContext): CallData {
     const call = new StakingBondCall(ctx)
 
-    if (call.isV1020) {
-        const { value, controller, payee } = call.asV1020
-        if (controller.__kind !== 'AccountId') throw new Error()
-        return {
-            amount: value,
-            controller: controller.value,
-            payee:
-                payee.__kind === 'Account'
-                    ? {
-                          destination: payee.__kind,
-                          account: payee.value,
-                      }
-                    : {
-                          destination: payee.__kind,
-                      },
-        }
-    } else if (call.isV1050) {
-        const { value, controller, payee } = call.asV1050
+    if (call.isV0) {
+        const { value, controller, payee } = call.asV0
+
         return {
             amount: value,
             controller: controller,
@@ -55,8 +40,8 @@ function getCallData(ctx: CallContext): CallData {
                           destination: payee.__kind,
                       },
         }
-    } else if (call.isV2028) {
-        const { value, controller, payee } = call.asV2028
+    } else if (call.isV28) {
+        const { value, controller, payee } = call.asV28
         return {
             amount: value,
             controller: controller.value as Uint8Array,
@@ -70,8 +55,8 @@ function getCallData(ctx: CallContext): CallData {
                           destination: payee.__kind,
                       },
         }
-    } else if (call.isV9111) {
-        const { value, controller, payee } = call.asV9111
+    } else if (call.isV9110) {
+        const { value, controller, payee } = call.asV9110
         return {
             amount: value,
             controller: controller.value as Uint8Array,

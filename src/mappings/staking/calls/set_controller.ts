@@ -8,15 +8,13 @@ import { getOrCreateAccount, getOrCreateStaker } from '../../util/entities'
 function getCallData(ctx: CallContext): { controller: Uint8Array } | undefined {
     const call = new StakingSetControllerCall(ctx)
 
-    if (call.isV1020) {
-        return undefined
-    } else if (call.isV1050) {
-        return call.asV1050
-    } else if (call.isV2028) {
-        const { controller } = call.asV2028
+    if (call.isV0) {
+        return call.asV0
+    } else if (call.isV28) {
+        const { controller } = call.asV28
         return { controller: controller.value as Uint8Array }
-    } else if (call.isV9111) {
-        const { controller } = call.asV9111
+    } else if (call.isV9110) {
+        const { controller } = call.asV9110
         return { controller: controller.value as Uint8Array }
     } else {
         throw new UnknownVersionError(call.constructor.name)

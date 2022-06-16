@@ -15,14 +15,14 @@ export class Crowdloan {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   cap!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  firstPeriod!: bigint
+  @Column_("int4", {nullable: false})
+  firstPeriod!: number
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  lastPeriod!: bigint
+  @Column_("int4", {nullable: false})
+  lastPeriod!: number
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  end!: bigint
+  @Column_("int4", {nullable: false})
+  end!: number
 
   @OneToMany_(() => Contributor, e => e.crowdloan)
   contributors!: Contributor[]
@@ -38,8 +38,8 @@ export class Crowdloan {
   parachain!: Parachain
 
   @Index_()
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
+  @Column_("int4", {nullable: true})
+  blockNumber!: number | undefined | null
 
   @Column_("timestamp with time zone", {nullable: true})
   createdAt!: Date | undefined | null
