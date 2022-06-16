@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { Era, EraNominator, EraStakingPair, EraValidator } from '../../../model'
+import { Era, EraNominator, EraNomination, EraValidator } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
 import { getOrCreateStakers } from '../../util/entities'
@@ -119,7 +119,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         )
     }
 
-    const nominations: Map<string, EraStakingPair> = new Map()
+    const nominations: Map<string, EraNomination> = new Map()
 
     for (const nominationData of nominationsData) {
         const validator = validators.get(nominationData.validator)
@@ -129,7 +129,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         const id = `${era.index}-${validator.stakerId}-${nominator.stakerId}`
         nominations.set(
             id,
-            new EraStakingPair({
+            new EraNomination({
                 id,
                 validator,
                 nominator,

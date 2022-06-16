@@ -5,8 +5,8 @@ import {EraNominator} from "./eraNominator.model"
 import {EraValidator} from "./eraValidator.model"
 
 @Entity_()
-export class EraStakingPair {
-  constructor(props?: Partial<EraStakingPair>) {
+export class EraNomination {
+  constructor(props?: Partial<EraNomination>) {
     Object.assign(this, props)
   }
 

@@ -2,7 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {Staker} from "./staker.model"
 import {Era} from "./era.model"
-import {EraStakingPair} from "./eraStakingPair.model"
+import {EraNomination} from "./eraNomination.model"
 
 @Entity_()
 export class EraValidator {
@@ -33,6 +33,6 @@ export class EraValidator {
   @Column_("int4", {nullable: true})
   commission!: number | undefined | null
 
-  @OneToMany_(() => EraStakingPair, e => e.validator)
-  nominators!: EraStakingPair[]
+  @OneToMany_(() => EraNomination, e => e.validator)
+  nominators!: EraNomination[]
 }
