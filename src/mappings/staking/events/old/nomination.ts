@@ -1,8 +1,9 @@
 import { UnknownVersionError } from '../../../../common/errors'
 import { encodeId } from '../../../../common/tools'
-import { BondType } from '../../../../model'
+import { BondType, StakingRole } from '../../../../model'
 import { ParachainStakingNominationEvent } from '../../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../../types/contexts'
+import { createStaker, getOrCreateStaker } from '../../../util/entities'
 import { saveBond } from '.././utils'
 
 interface EventData {
@@ -49,6 +50,17 @@ function getEventData(ctx: EventContext): EventData {
 
 export async function handleNomination(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
+
+    const accountId = encodeId(data.account)
+
+    const staker = await getOrCreateStaker(ctx, accountId)
+    if (!staker) {
+        await createStaker(ctx, {
+            stashId: accountId,
+            activeBond: 0n,
+            role: StakingRole.Nominator,
+        })
+    }
 
     await saveBond(ctx, {
         id: ctx.event.id,

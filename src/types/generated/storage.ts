@@ -338,6 +338,32 @@ export class ParachainStakingNominatorState2Storage {
   }
 }
 
+export class ParachainStakingSelectedCandidatesStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The collator candidates selected for the current round
+   */
+  get isV49() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'SelectedCandidates') === 'd14508def9da76532021b53d553e9048fd079e2e735d2393e6d531e6d1fd29ca'
+  }
+
+  /**
+   *  The collator candidates selected for the current round
+   */
+  async getAsV49(): Promise<v49.AccountId[]> {
+    assert(this.isV49)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'SelectedCandidates')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'SelectedCandidates') != null
+  }
+}
+
 export class ParachainStakingTopDelegationsStorage {
   constructor(private ctx: StorageContext) {}
 

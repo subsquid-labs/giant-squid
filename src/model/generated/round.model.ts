@@ -1,5 +1,6 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
+import {RoundCollator} from "./roundCollator.model"
 
 @Entity_()
 export class Round {
@@ -24,6 +25,12 @@ export class Round {
 
   @Column_("int4", {nullable: false})
   collatorsCount!: number
+
+  @OneToMany_(() => RoundCollator, e => e.round)
+  collators!: RoundCollator[]
+
+  @OneToMany_(() => RoundCollator, e => e.round)
+  nominators!: RoundCollator[]
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   total!: bigint

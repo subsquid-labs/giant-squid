@@ -2,6 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, I
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {BondType} from "./_bondType"
+import {Staker} from "./staker.model"
 
 @Entity_()
 export class Bond {
@@ -42,4 +43,8 @@ export class Bond {
 
   @Column_("text", {nullable: true})
   candidate!: string | undefined | null
+
+  @Index_()
+  @ManyToOne_(() => Staker, {nullable: true})
+  staker!: Staker | undefined | null
 }
