@@ -61,7 +61,7 @@ type Era @entity {
   nominators: [EraNominator] @derivedFrom(field: "era")
 }
 
-type EraStakingPair @entity {
+type EraNomination @entity {
   id: ID! #era + validatorId + nominatorId
   era: Era!
   nominator: EraNominator
@@ -78,7 +78,7 @@ type EraValidator @entity {
   selfBonded: BigInt!
   totalBonded: BigInt!
   commission: Int
-  nominators: [EraStakingPair] @derivedFrom(field: "validator")
+  nominators: [EraNomination] @derivedFrom(field: "validator")
 }
 
 # information about nominator in era: bond, validators and votes for them in each era
@@ -88,7 +88,7 @@ type EraNominator @entity {
   staker: Staker!
   era: Era!
   bonded: BigInt!
-  validators: [EraStakingPair] @derivedFrom(field: "nominator")
+  validators: [EraNomination] @derivedFrom(field: "nominator")
 }
 
 # information about known parachains and their crowdloans
