@@ -138,10 +138,6 @@ interface Action {
   amount: BigInt
 }
 
-interface HasTotal {
-  total: BigInt
-}
-
 interface HasEra {
   era: Int
 }

@@ -98,22 +98,18 @@ export async function getOrCreateStaker(
     return staker
 }
 
-export async function getOrCreateStakers(
-    ctx: CommonHandlerContext,
-    type: 'Stash',
-    stashes: string[]
-): Promise<Staker[] | undefined>
+export async function getOrCreateStakers(ctx: CommonHandlerContext, type: 'Stash', stashes: string[]): Promise<Staker[]>
 export async function getOrCreateStakers(
     ctx: CommonHandlerContext,
     type: 'Controller',
     cotrollers: string[]
-): Promise<Staker[] | undefined>
+): Promise<Staker[]>
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export async function getOrCreateStakers(
     ctx: CommonHandlerContext,
     type: 'Controller' | 'Stash',
     ids: string[]
-): Promise<Staker[] | undefined> {
+): Promise<Staker[]> {
     const query = await ctx.store.find<Staker>(Staker, {
         where: type === 'Controller' ? { controllerId: In(ids) } : { stashId: In(ids) },
         relations: ['stash', 'controller', 'payee'],
@@ -136,7 +132,7 @@ export async function getOrCreateStakers(
     const ledgers = await storage.staking.ledger.getMany(prevCtx, notNullControllerIds)
     if (!ledgers) return [...stakersMap.values()]
 
-    const newStakers: Set<Staker> = new Set()
+    const newStakers: Map<string, Staker> = new Map()
     for (let i = 0; i < ledgers.length; i++) {
         if (!ledgers[i]) continue
 
@@ -146,7 +142,8 @@ export async function getOrCreateStakers(
         const stashId = ledgers[i]?.stash as string
         const controllerId = notNullControllerIds[i]
 
-        newStakers.add(
+        newStakers.set(
+            stashId,
             await createStaker(ctx, {
                 stashId: ledgers[i]?.stash as string,
                 controllerId: notNullControllerIds[i],
@@ -164,7 +161,7 @@ export async function getOrCreateStakers(
         )
     }
 
-    return [...stakersMap.values(), ...newStakers]
+    return [...stakersMap.values(), ...newStakers.values()]
 }
 
 interface StakerData {

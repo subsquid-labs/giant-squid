@@ -1,17 +1,8 @@
+import assert from 'assert'
 import { Era, EraNominator, EraStakingPair, EraValidator } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
 import { getOrCreateStakers } from '../../util/entities'
-
-interface ValidatorData {
-    stash: string
-    totalBonded: bigint
-    selfBonded: bigint
-}
-
-interface NominatorData {
-    stash: string
-}
 
 interface PairData {
     validator: string
@@ -26,152 +17,130 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
     const storageEraData = activeEraData || currentEraData
 
     if (!storageEraData || storageEraData?.index == null) {
-        return console.warn(`Warning: Unknown era at block ${ctx.block.height}`)
+        return ctx.log.warn(`Unknown era`)
     }
 
     if ((await ctx.store.count(Era, { id: storageEraData.index.toString() })) > 0) {
-        return console.warn(
-            `Warning: Era ${storageEraData.index} has been already proceed at block ${ctx.block.height}`
-        )
+        return ctx.log.warn(`Era ${storageEraData.index} has been already proceed`)
     }
-
-    const stakingData = await getStakingData(ctx, storageEraData.index)
-    if (!stakingData) return
-    const { validatorsData, nominatorsData, pairsData } = stakingData
 
     const era = new Era({
         id: storageEraData.index.toString(),
         index: storageEraData.index,
         startedAt: ctx.block.height,
         timestamp: new Date(activeEraData?.timestamp || ctx.block.timestamp),
-        validatorsCount: validatorsData.length,
-        nominatorsCount: nominatorsData.length,
-        total: validatorsData.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n),
     })
+
+    const stakingData = await getStakingData(ctx, era)
+    if (!stakingData) return
+    const { validators, nominators, nominations } = stakingData
+
+    era.validatorsCount = validators.length
+    era.nominatorsCount = nominators.length
+    era.total = validators.reduce((total, validator) => (total += BigInt(validator.totalBonded)), 0n)
     await ctx.store.insert(era)
 
-    const validators = await createValidators(ctx, era, validatorsData)
-    const nominators = await createNominators(ctx, era, nominatorsData)
-
-    const pairs = pairsData.map((p) => {
-        return new EraStakingPair({
-            id: `${era.index}-${p.validator}-${p.nominator}`,
-            validator: validators.get(p.validator),
-            nominator: nominators.get(p.nominator),
-            vote: p.vote,
-            era,
-        })
-    })
-
-    await ctx.store.save(pairs)
+    await ctx.store.save(validators)
+    await ctx.store.save(nominators)
+    await ctx.store.save(nominations)
 }
 
-async function createValidators(ctx: EventHandlerContext, era: Era, data: ValidatorData[]) {
-    const stakers = await getOrCreateStakers(
-        ctx,
-        'Stash',
-        data.map((v) => v.stash)
-    )
-    if (!stakers) return new Map()
-
-    const tuples: [string, EraValidator][] = stakers.map((s) => {
-        const validator = data.find((v) => v.stash === s.stashId)
-        return [
-            s.stashId,
-            new EraValidator({
-                id: `${era.index}-${s.stashId}`,
-                staker: s,
-                totalBonded: validator?.totalBonded || 0n,
-                selfBonded: validator?.selfBonded || 0n,
-                era,
-            }),
-        ]
-    })
-    const map = new Map(tuples)
-    await ctx.store.save([...map.values()])
-    return map
-}
-
-async function createNominators(ctx: EventHandlerContext, era: Era, data: NominatorData[]) {
-    const stakers = await getOrCreateStakers(
-        ctx,
-        'Stash',
-        data.map((n) => n.stash)
-    )
-    if (!stakers) return new Map()
-
-    const tuples: [string, EraNominator][] = stakers.map((s) => [
-        s.stashId,
-        new EraNominator({
-            id: `${era.index}-${s.stashId}`,
-            staker: s,
-            bonded: s.activeBond,
-            era,
-        }),
-    ])
-
-    const map = new Map(tuples)
-    await ctx.store.save([...map.values()])
-    return map
-}
-
-async function getStakingData(ctx: EventHandlerContext, era: number) {
-    const validatorsData: Map<string, ValidatorData> = new Map()
-    const nominatorsData: Map<string, NominatorData> = new Map()
-    const pairsData: Map<string, PairData> = new Map()
+async function getStakingData(ctx: EventHandlerContext, era: Era) {
+    const validators: Map<string, EraValidator> = new Map()
 
     const validatorIds = await storage.session.getValidators(ctx)
     if (!validatorIds) {
-        return console.warn(`Warning: Validators for era ${era} not found at block ${ctx.block.height}`)
+        return ctx.log.warn(`Validators for era ${era} not found`)
     }
 
-    const validatorInfos = await storage.staking.erasStakers.getMany(
+    const validatorsData = await storage.staking.getEraStakersData(
         ctx,
-        validatorIds.map((id) => [id, era])
+        validatorIds.map((id) => [id, era.index] as [string, number])
     )
-    if (!validatorInfos) {
-        return console.warn(`Warning: Missing info for validators in era ${era} at block ${ctx.block.height}`)
+    if (!validatorsData) {
+        return ctx.log.warn(`Missing info for validators in era ${era}`)
     }
+
+    const validatorStakers = new Map((await getOrCreateStakers(ctx, 'Stash', validatorIds)).map((s) => [s.stashId, s]))
+    const nominatorIds: string[] = []
+    const nominationsData: PairData[] = []
 
     for (let i = 0; i < validatorIds.length; i++) {
         const validatorId = validatorIds[i]
-        const validatorInfo = validatorInfos[i]
-        if (!validatorInfo) {
-            console.warn(
-                `Warning: Missing info for validator ${validatorId} in era ${era} at block ${ctx.block.height}`
-            )
+        const validatorData = validatorsData[i]
+        if (!validatorData) {
+            ctx.log.warn(`Missing info for validator ${validatorId} in era ${era}`)
             continue
         }
 
-        if (validatorsData.has(validatorId)) continue
+        const staker = validatorStakers.get(validatorId)
+        if (!staker) {
+            ctx.log.warn(`Missing info for staker ${validatorId} in era ${era}`)
+            continue
+        }
 
-        validatorsData.set(validatorId, {
-            stash: validatorId,
-            totalBonded: validatorInfo.total,
-            selfBonded: validatorInfo.own,
-        })
+        validators.set(
+            validatorId,
+            new EraValidator({
+                id: `${era.index}-${validatorId}`,
+                staker,
+                totalBonded: validatorData.total,
+                selfBonded: validatorData.own,
+            })
+        )
 
-        for (const nominatorInfo of validatorInfo.nominators) {
-            const { id: nominatorId, vote } = nominatorInfo
-
-            if (!nominatorsData.has(nominatorId)) {
-                nominatorsData.set(nominatorId, {
-                    stash: nominatorId,
-                })
-            }
-
-            if (!pairsData.has(`${validatorId}-${nominatorId}`))
-                pairsData.set(`${validatorId}-${nominatorId}`, {
-                    validator: validatorId,
-                    nominator: nominatorId,
-                    vote,
-                })
+        for (const nomination of validatorData.nominators) {
+            nominatorIds.push(nomination.id)
+            nominationsData.push({
+                nominator: nomination.id,
+                validator: validatorId,
+                vote: nomination.vote,
+            })
         }
     }
 
+    const nominatorStakers = new Map((await getOrCreateStakers(ctx, 'Stash', nominatorIds)).map((s) => [s.stashId, s]))
+    const nominators: Map<string, EraNominator> = new Map()
+
+    for (const nominatorId of nominatorIds) {
+        const staker = nominatorStakers.get(nominatorId)
+        if (!staker) {
+            ctx.log.warn(`Missing info for staker ${nominatorId} in era ${era}`)
+            continue
+        }
+
+        nominators.set(
+            nominatorId,
+            new EraNominator({
+                id: `${era.index}-${nominatorId}`,
+                staker,
+                bonded: staker.activeBond,
+            })
+        )
+    }
+
+    const nominations: Map<string, EraStakingPair> = new Map()
+
+    for (const nominationData of nominationsData) {
+        const validator = validators.get(nominationData.validator)
+        const nominator = nominators.get(nominationData.nominator)
+        assert(validator != null && nominator != null)
+
+        const id = `${era.index}-${validator.stakerId}-${nominator.stakerId}`
+        nominations.set(
+            id,
+            new EraStakingPair({
+                id,
+                validator,
+                nominator,
+                vote: nominationData.vote,
+            })
+        )
+    }
+
     return {
-        validatorsData: [...validatorsData.values()],
-        nominatorsData: [...nominatorsData.values()],
-        pairsData: [...pairsData.values()],
+        nominators: [...nominators.values()],
+        validators: [...validators.values()],
+        nominations: [...nominations.values()],
     }
 }

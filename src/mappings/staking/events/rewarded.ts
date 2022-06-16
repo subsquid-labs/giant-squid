@@ -54,7 +54,7 @@ export async function handleRewarded(ctx: EventHandlerContext, old = false) {
     })
 }
 
-export const handleReward = (ctx: EventHandlerContext) => {
+export async function handleReward(ctx: EventHandlerContext) {
     return handleRewarded(ctx, true)
 }
 
