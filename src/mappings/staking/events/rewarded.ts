@@ -6,6 +6,7 @@ import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generat
 import { EventContext, EventHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'
 import { getMeta } from '../../util/actions'
+import { getOrCreateStaker } from '../../util/entities'
 
 interface EventData {
     amount: bigint
@@ -66,12 +67,7 @@ export interface RewardData extends ActionData {
 export async function saveReward(ctx: EventHandlerContext, data: RewardData) {
     const { accountId, amount } = data
 
-    const staker = await ctx.store.get(Staker, {
-        where: {
-            stashId: accountId,
-        },
-        relations: ['stash'],
-    })
+    const staker = await getOrCreateStaker(ctx, 'Stash', accountId)
     assert(staker != null, `Missing staking info for ${accountId}`)
 
     const account = staker.payee
@@ -87,6 +83,7 @@ export async function saveReward(ctx: EventHandlerContext, data: RewardData) {
             ...getMeta(data),
             account,
             amount: data.amount,
+            staker,
         })
     )
 }

@@ -23,6 +23,8 @@ function getCallData(ctx: CallContext): CallData {
 }
 
 export async function handleBondExtra(ctx: CallHandlerContext) {
+    if (!ctx.call.success) return
+
     const data = getCallData(ctx)
 
     await saveBond(ctx, {

@@ -27,7 +27,16 @@ processor.addEventHandler('Grandpa.NewAuthorities', modules.grandpa.events.handl
 //extrinsics handlers
 processor.addCallHandler('Crowdloan.contribute', modules.crowdloan.extrinsics.handleContribute)
 
-processor.addCallHandler('Staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
+processor.addCallHandler(
+    'Staking.payout_stakers',
+    {
+        data: {
+            call: true,
+            extrinsic: true,
+        },
+    },
+    modules.staking.extrinsics.handlePauoutStakers
+)
 processor.addCallHandler('Staking.bond', modules.staking.extrinsics.handleBond)
 processor.addCallHandler('Staking.bond_extra', modules.staking.extrinsics.handleBondExtra)
 processor.addCallHandler('Staking.unbond', modules.staking.extrinsics.handleUnbond)

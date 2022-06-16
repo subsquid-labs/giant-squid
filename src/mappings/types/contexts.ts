@@ -9,7 +9,7 @@ import { CallDataRequest, EventDataRequest } from '@subsquid/substrate-processor
 
 export type EventHandlerContext<T extends EventDataRequest = { event: true }> = PrEventHandlerContext<Store, T>
 export type BlockHandlerContext = PrBlockHandlerContext<Store>
-export type CallHandlerContext<T extends CallDataRequest = { call: true; extrinsic?: true }> = PrCallHandlerContext<
+export type CallHandlerContext<T extends CallDataRequest = { call: true; extrinsic: true }> = PrCallHandlerContext<
     Store,
     T
 >

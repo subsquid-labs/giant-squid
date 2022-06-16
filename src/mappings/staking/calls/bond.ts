@@ -76,6 +76,8 @@ function getCallData(ctx: CallContext): CallData {
 }
 
 export async function handleBond(ctx: CallHandlerContext) {
+    if (!ctx.call.success) return
+
     const data = getCallData(ctx)
 
     const accountId = getOriginAccountId(ctx.call.origin)
