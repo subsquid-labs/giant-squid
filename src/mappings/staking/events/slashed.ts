@@ -54,7 +54,7 @@ export async function handleSlashed(ctx: EventHandlerContext, old = false) {
     })
 }
 
-export const handleSlash = (ctx: EventHandlerContext) => {
+export async function handleSlash(ctx: EventHandlerContext) {
     return handleSlashed(ctx, true)
 }
 
