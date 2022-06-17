@@ -1,6 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
+import {Staker} from "./staker.model"
 
 @Entity_()
 export class Reward {
@@ -15,8 +16,8 @@ export class Reward {
   timestamp!: Date | undefined | null
 
   @Index_()
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
+  @Column_("int4", {nullable: true})
+  blockNumber!: number | undefined | null
 
   @Index_()
   @Column_("text", {nullable: true})
@@ -38,6 +39,7 @@ export class Reward {
   @Column_("text", {nullable: true})
   validator!: string | undefined | null
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  total!: bigint | undefined | null
+  @Index_()
+  @ManyToOne_(() => Staker, {nullable: true})
+  staker!: Staker | undefined | null
 }

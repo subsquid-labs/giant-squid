@@ -1,6 +1,6 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../common/errors'
-import { decodeId, encodeId } from '../../common/helpers'
+import { decodeId, encodeId } from '../../common/tools'
+import { CommonHandlerContext } from '../../mappings/types/contexts'
 import { StakingLedgerStorage } from '../../types/generated/storage'
 import { StorageContext } from '../../types/generated/support'
 
@@ -12,13 +12,13 @@ interface StorageData {
 
 async function getStorageData(
     ctx: StorageContext,
-    account: Uint8Array[]
+    accounts: Uint8Array[]
 ): Promise<(StorageData | undefined)[] | undefined> {
     const storage = new StakingLedgerStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV13) {
-        return await storage.getManyAsV13(account)
+        return await storage.getManyAsV13(accounts)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
