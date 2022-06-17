@@ -9,8 +9,8 @@ async function getStorageData(ctx: StorageContext): Promise<StorageData | undefi
     const storage = new ParachainStakingSelectedCandidatesStorage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV49) {
-        return await storage.getAsV49()
+    if (storage.isV900) {
+        return await storage.getAsV900()
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }

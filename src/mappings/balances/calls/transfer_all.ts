@@ -11,8 +11,8 @@ interface EventData {
 function getCallData(ctx: CallContext): EventData {
     const call = new BalancesTransferAllCall(ctx)
 
-    if (call.isV155) {
-        const { dest } = call.asV155
+    if (call.isV900) {
+        const { dest } = call.asV900
         return {
             to: dest,
         }
