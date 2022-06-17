@@ -4,9 +4,10 @@ import { EventContext, EventHandlerContext } from '../../types/contexts'
 import { Round, RoundCollator, RoundNomination, RoundNominator } from '../../../model'
 import assert from 'assert'
 import storage from '../../../storage'
-import { getCollatorsData, getNominatorsData } from '../../util/stakers'
+import { getCollatorsData } from '../../util/stakers'
 import { getOrCreateStakers } from '../../util/entities'
 import { DefaultCollatorCommission } from '../../util/consts'
+import { createPrevStorageContext } from '../../util/actions'
 
 export interface EventData {
     startingBlock: number
@@ -45,11 +46,13 @@ export async function handleNewRound(ctx: EventHandlerContext) {
     const collatorIds = await storage.parachainStaking.getSelectedCandidates(ctx)
     if (!collatorIds) return
 
-    const collatorsData = await getCollatorsData(ctx, collatorIds)
+    const prevCtx = createPrevStorageContext(ctx)
+
+    const collatorsData = await getCollatorsData(prevCtx, collatorIds)
     if (!collatorsData) return
 
     const collators = new Map<string, RoundCollator>()
-    const collatorStakers = await getOrCreateStakers(ctx, collatorIds)
+    const collatorStakers = new Map((await getOrCreateStakers(ctx, collatorIds)).map((s) => [s.id, s]))
 
     const nominatorIds = new Array<string>()
     const delegationsData = new Array<{ vote: bigint; nominatorId: string; collatorId: string }>()
@@ -64,7 +67,7 @@ export async function handleNewRound(ctx: EventHandlerContext) {
             delegationsData.push({ vote: nomination.amount, nominatorId: nomination.id, collatorId: collatorData.id })
         }
 
-        const staker = collatorStakers?.find((s) => s.id === collatorData.id)
+        const staker = collatorStakers.get(collatorData.id)
         assert(staker != null)
 
         collators.set(
@@ -83,28 +86,23 @@ export async function handleNewRound(ctx: EventHandlerContext) {
 
     await ctx.store.save([...collators.values()])
 
-    const nominatorsData = await getNominatorsData(ctx, nominatorIds)
-    if (!nominatorsData) return
-
     const nominators = new Map<string, RoundNominator>()
 
-    const nominatorStakers = await getOrCreateStakers(ctx, nominatorIds)
+    const nominatorStakers = new Map((await getOrCreateStakers(ctx, nominatorIds)).map((s) => [s.id, s]))
 
-    for (const nominatorData of nominatorsData) {
-        if (!nominatorData || nominators.has(nominatorData.id)) continue
-
-        const staker = nominatorStakers?.find((s) => s.id === nominatorData.id)
+    for (const nominatorId of nominatorIds) {
+        const staker = nominatorStakers.get(nominatorId)
         assert(staker != null)
 
         nominators.set(
-            nominatorData.id,
+            nominatorId,
             new RoundNominator({
-                id: `${round.index}-${nominatorData.id}`,
+                id: `${round.index}-${nominatorId}`,
                 round,
                 staker,
-                bond: nominatorData.bond,
+                bond: staker.activeBond,
                 collatorsCount: delegationsData.reduce(
-                    (count, d) => (d.nominatorId === nominatorData.id ? count++ : count),
+                    (count, d) => (d.nominatorId === nominatorId ? count++ : count),
                     0
                 ),
             })
