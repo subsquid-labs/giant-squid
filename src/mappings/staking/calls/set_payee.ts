@@ -31,6 +31,8 @@ function getCallData(ctx: CallContext): CallData {
 }
 
 export async function handleSetPayee(ctx: CallHandlerContext) {
+    if (!ctx.call.success) return
+
     const data = getCallData(ctx)
 
     const controllerId = getOriginAccountId(ctx.call.origin)

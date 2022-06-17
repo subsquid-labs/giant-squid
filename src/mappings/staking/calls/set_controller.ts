@@ -24,6 +24,8 @@ function getCallData(ctx: CallContext): { controller: Uint8Array } | undefined {
 }
 
 export async function handleSetController(ctx: CallHandlerContext) {
+    if (!ctx.call.success) return
+
     const data = getCallData(ctx)
     if (!data) return
 

@@ -2,7 +2,7 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {Staker} from "./staker.model"
 import {Era} from "./era.model"
-import {EraStakingPair} from "./eraStakingPair.model"
+import {EraNomination} from "./eraNomination.model"
 
 @Entity_()
 export class EraNominator {
@@ -27,6 +27,6 @@ export class EraNominator {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   bonded!: bigint
 
-  @OneToMany_(() => EraStakingPair, e => e.nominator)
-  validators!: EraStakingPair[]
+  @OneToMany_(() => EraNomination, e => e.nominator)
+  validators!: EraNomination[]
 }
