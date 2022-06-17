@@ -73,7 +73,7 @@ export async function getOrCreateStaker(ctx: CommonHandlerContext, id: string): 
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export async function getOrCreateStakers(ctx: CommonHandlerContext, ids: string[]): Promise<Staker[] | undefined> {
+export async function getOrCreateStakers(ctx: CommonHandlerContext, ids: string[]): Promise<Staker[]> {
     const query = await ctx.store.find<Staker>(Staker, {
         where: { stashId: In(ids) },
         relations: ['stash'],
@@ -92,11 +92,12 @@ export async function getOrCreateStakers(ctx: CommonHandlerContext, ids: string[
 
     // if (!collatorsData && !nominatorsData) return [...stakersMap.values()]
 
-    const newStakers: Staker[] = []
+    const newStakers: Map<string, Staker> = new Map()
 
     if (collatorsData) {
         for (const collatorData of collatorsData) {
             if (!collatorData) continue
+
             const stashId = collatorData.id
 
             const staker = await createStaker(ctx, {
@@ -105,16 +106,17 @@ export async function getOrCreateStakers(ctx: CommonHandlerContext, ids: string[
                 role: StakingRole.Collator,
                 commission: DefaultCollatorCommission,
             })
-            newStakers.push(staker)
+            newStakers.set(stashId, staker)
         }
     }
 
-    const notCollatorIds = missingIds.filter((id, i) => collatorsData?.[i] != null)
+    const notCollatorIds = missingIds.filter((id, i) => collatorsData?.[i] == null)
     const nominatorsData = await getNominatorsData(prevCtx, notCollatorIds)
 
     if (nominatorsData) {
         for (const nominatorData of nominatorsData) {
             if (!nominatorData) continue
+
             const stashId = nominatorData.id
 
             const staker = await createStaker(ctx, {
@@ -122,11 +124,11 @@ export async function getOrCreateStakers(ctx: CommonHandlerContext, ids: string[
                 activeBond: nominatorData.bond,
                 role: StakingRole.Nominator,
             })
-            newStakers.push(staker)
+            newStakers.set(stashId, staker)
         }
     }
 
-    return [...stakersMap.values(), ...newStakers]
+    return [...stakersMap.values(), ...newStakers.values()]
 }
 
 interface StakerData {

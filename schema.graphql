@@ -119,6 +119,7 @@ type RoundCollator @entity {
   commission: Float!
   nominators: [RoundNomination!] @derivedFrom(field: "collator")
   nominatorsCount: Int!
+  stakerId: ID!
   staker: Staker!
 }
 
@@ -128,6 +129,7 @@ type RoundNominator @entity {
   bond: BigInt!
   collators: [RoundNomination!] @derivedFrom(field: "nominator")
   collatorsCount: Int!
+  stakerId: ID!
   staker: Staker!
 }
 
