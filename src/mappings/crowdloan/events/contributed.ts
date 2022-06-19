@@ -14,10 +14,10 @@ function getEventData(ctx: EventHandlerContext): ContributionData {
             amount,
         }
     } else {
-        const [account, paraId, amount] = event.asLatest
+        const { who, fundIndex, amount } = event.asLatest
         return {
-            account,
-            paraId,
+            account: who,
+            paraId: fundIndex,
             amount,
         }
     }

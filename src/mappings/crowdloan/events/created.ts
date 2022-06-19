@@ -12,7 +12,7 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
         }
     } else {
         return {
-            index: event.asLatest,
+            index: event.asLatest.paraId,
         }
     }
 }
