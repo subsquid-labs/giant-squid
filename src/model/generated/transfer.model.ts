@@ -1,6 +1,8 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_, ManyToOne as ManyToOne_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
-import {Account} from "./account.model"
+import {TransferLocation, fromJsonTransferLocation} from "./_transferLocation"
+import {TransferAsset, fromJsonTransferAsset} from "./_transferAsset"
+import {TransferType} from "./_transferType"
 
 @Entity_()
 export class Transfer {
@@ -22,24 +24,19 @@ export class Transfer {
   @Column_("text", {nullable: true})
   extrinsicHash!: string | undefined | null
 
-  @Column_("text", {nullable: true})
-  toId!: string | undefined | null
+  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferLocation(obj)}, nullable: true})
+  to!: TransferLocation | undefined | null
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  to!: Account | undefined | null
+  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferLocation(obj)}, nullable: true})
+  from!: TransferLocation | undefined | null
 
-  @Column_("text", {nullable: false})
-  fromId!: string
-
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
-  from!: Account
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  amount!: bigint | undefined | null
+  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferAsset(obj)}, nullable: true})
+  asset!: TransferAsset | undefined | null
 
   @Index_()
   @Column_("bool", {nullable: true})
   success!: boolean | undefined | null
+
+  @Column_("varchar", {length: 12, nullable: true})
+  type!: TransferType | undefined | null
 }
