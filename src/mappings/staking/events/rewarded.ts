@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/tools'
-import { PayeeType, Reward, Staker } from '../../../model'
+import { encodeId, saturatingSumBigInt } from '../../../common/tools'
+import { PayeeType, Reward } from '../../../model'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'
@@ -66,6 +66,8 @@ export interface RewardData extends ActionData {
     accountId: string
 }
 
+const PayoutCallName = 'Staking.payout_stakers'
+
 export async function saveReward(ctx: EventHandlerContext, data: RewardData) {
     const { accountId, amount } = data
 
@@ -75,8 +77,8 @@ export async function saveReward(ctx: EventHandlerContext, data: RewardData) {
     const account = staker.payee
     assert(account != null, `Payee is null for staker ${staker.id}`)
 
-    staker.totalReward += amount
-    if (staker.payeeType === PayeeType.Staked) staker.activeBond += amount
+    staker.totalReward = saturatingSumBigInt(staker.totalReward, amount)
+    if (staker.payeeType === PayeeType.Staked) staker.activeBond = saturatingSumBigInt(staker.activeBond, amount)
 
     await ctx.store.save(staker)
 
@@ -86,6 +88,7 @@ export async function saveReward(ctx: EventHandlerContext, data: RewardData) {
             account,
             amount: data.amount,
             staker,
+            callId: ctx.event.call?.name === PayoutCallName ? ctx.event.call.id : undefined,
         })
     )
 }
