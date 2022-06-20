@@ -2,8 +2,7 @@
 type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  crowdloans: [Contributor!] @derivedFrom(field: "account") # crowdloans there account get participation
-  contributions: [Contribution!] @derivedFrom(field: "account")
+  crowdloans: [Contribution!] @derivedFrom(field: "account") # crowdloans there account get participation
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
@@ -109,12 +108,11 @@ enum TransferDirection {
   TO
 }
 
-type Contributor @entity {
+type Contribution @entity {
   id: ID!
   crowdloan: Crowdloan!
   account: Account!
   amount: BigInt!
-  contributions: [Contribution!] @derivedFrom(field: "contributor")
 }
 
 type Crowdloan @entity {
@@ -123,7 +121,7 @@ type Crowdloan @entity {
   firstPeriod: Int!
   lastPeriod: Int!
   end: Int!
-  contributors: [Contributor!] @derivedFrom(field: "crowdloan")
+  contributions: [Contribution!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
   parachainId: ID!
   parachain: Parachain!
@@ -135,7 +133,6 @@ interface Action {
   timestamp: DateTime
   blockNumber: Int
   extrinsicHash: String
-  amount: BigInt
 }
 
 interface HasEra {
@@ -146,31 +143,48 @@ interface CanFail {
   success: Boolean
 }
 
-type Contribution implements Action & CanFail @entity {
-  id: ID!
-  timestamp: DateTime
-  blockNumber: Int @index
-  extrinsicHash: String @index
-  crowdloanId: ID!
-  crowdloan: Crowdloan
-  success: Boolean @index
-  accountId: ID!
-  account: Account!
-  contributor: Contributor!
-  amount: BigInt
-}
-
 type Transfer implements Action & CanFail @entity {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
-  toId: ID
-  to: Account
-  fromId: ID!
-  from: Account!
-  amount: BigInt
+  to: TransferLocation
+  from: TransferLocation
+  asset: TransferAsset
   success: Boolean @index
+  type: TransferType
+}
+
+union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
+
+type TransferLocationAccount {
+  id: String
+}
+
+type TransferLocationEvm {
+  address: String!
+}
+
+union TransferAsset = TransferAssetToken | TransferAssetMultiToken
+
+enum TransferType {
+  Native
+  Contribution
+  Xcm
+}
+
+type TransferAssetToken {
+  symbol: String
+  amount: BigInt
+}
+
+type TransferAssetMultiToken {
+  tokens: [TransferAssetToken]
+}
+
+type TransferLocationXcm {
+  id: String
+  paraId: Int
 }
 
 # entity for linking account and transfer

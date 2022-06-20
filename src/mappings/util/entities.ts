@@ -1,8 +1,22 @@
 import { In, MoreThanOrEqual } from 'typeorm'
-import { Account, Crowdloan, Parachain, PayeeType, Staker, StakingRole } from '../../model'
+import {
+    Account,
+    AccountTransfer,
+    Crowdloan,
+    Parachain,
+    PayeeType,
+    Staker,
+    StakingRole,
+    Transfer,
+    TransferAssetToken,
+    TransferDirection,
+    TransferLocationAccount,
+    TransferType,
+} from '../../model'
 import storage from '../../storage'
 import { CommonHandlerContext } from '../types/contexts'
-import { createPrevStorageContext } from './actions'
+import { ActionData } from '../types/data'
+import { createPrevStorageContext, getMeta } from './actions'
 
 export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string): Promise<Account> {
     let account = await ctx.store.get(Account, id)
@@ -234,16 +248,54 @@ export async function getLastCrowdloan(ctx: CommonHandlerContext, paraId: number
     })
 }
 
-// async function createAccount(ctx: CommonHandlerContext, idOrIds: string | string[]) {
-//     // const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds]
-//     //
+export interface TransferData extends ActionData {
+    fromId: string
+    toId: string | null
+    amount: bigint
+    success: boolean
+    type: TransferType
+}
 
-//     const accounts = ids.map(
-//         (id) =>
+export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData) {
+    const { fromId, toId, amount, success } = data
 
-//     )
+    const from = await getOrCreateAccount(ctx, fromId)
+    const to = toId ? await getOrCreateAccount(ctx, toId) : null
 
-//     await ctx.store.insert(accounts)
+    const transfer = new Transfer({
+        ...getMeta(data),
+        from: new TransferLocationAccount({
+            id: fromId,
+        }),
+        to: new TransferLocationAccount({
+            id: toId,
+        }),
+        asset: new TransferAssetToken({
+            symbol: 'KSM',
+            amount,
+        }),
+        success,
+    })
 
-//     return Array.isArray(idOrIds) ? accounts : accounts[0]
-// }
+    await ctx.store.insert(transfer)
+
+    await ctx.store.insert(
+        new AccountTransfer({
+            id: `${transfer.id}-from`,
+            transfer,
+            account: from,
+            direction: TransferDirection.FROM,
+        })
+    )
+
+    if (to) {
+        await ctx.store.insert(
+            new AccountTransfer({
+                id: `${transfer.id}-to`,
+                transfer,
+                account: to,
+                direction: TransferDirection.TO,
+            })
+        )
+    }
+}
