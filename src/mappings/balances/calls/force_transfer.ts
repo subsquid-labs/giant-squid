@@ -1,8 +1,9 @@
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
 import { encodeId, isAdressSS58 } from '../../../common/tools'
-import { saveTransfer } from './utils'
 import { UnknownVersionError } from '../../../common/errors'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
+import { saveTransfer } from '../../util/entities'
+import { TransferType } from '../../../model'
 
 interface CallData {
     from: Uint8Array
@@ -38,5 +39,6 @@ export async function handleForceTransfer(ctx: CallHandlerContext) {
         toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
         success: ctx.call.success,
+        type: TransferType.Native,
     })
 }
