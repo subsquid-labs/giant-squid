@@ -1,8 +1,9 @@
-import { saveTransfer } from './utils'
 import { BalancesTransferAllCall } from '../../../types/generated/calls'
 import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
 import { UnknownVersionError } from '../../../common/errors'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
+import { saveTransfer } from '../../util/entities'
+import { TransferType } from '../../../model'
 
 interface EventData {
     to: Uint8Array
@@ -37,5 +38,6 @@ export async function handleTransferAll(ctx: CallHandlerContext) {
         toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: 0n,
         success: ctx.call.success,
+        type: TransferType.Native,
     })
 }

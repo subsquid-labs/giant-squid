@@ -1,6 +1,5 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, OneToOne as OneToOne_} from "typeorm"
 import {AccountTransfer} from "./accountTransfer.model"
-import {Contributor} from "./contributor.model"
 import {Contribution} from "./contribution.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
@@ -19,11 +18,8 @@ export class Account {
   @OneToMany_(() => AccountTransfer, e => e.account)
   transfers!: AccountTransfer[]
 
-  @OneToMany_(() => Contributor, e => e.account)
-  crowdloans!: Contributor[]
-
   @OneToMany_(() => Contribution, e => e.account)
-  contributions!: Contribution[]
+  crowdloans!: Contribution[]
 
   @OneToMany_(() => Reward, e => e.account)
   rewards!: Reward[]

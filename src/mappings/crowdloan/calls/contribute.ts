@@ -1,11 +1,9 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { getOriginAccountId } from '../../../common/tools'
+import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
 import { CrowdloanContributeCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext, CommonHandlerContext } from '../../types/contexts'
-import { ActionData } from '../../types/data'
-import { getMeta } from '../../util/actions'
-import { Contribution, Contributor } from '../../../model'
-import { getLastCrowdloan, getOrCreateAccount } from '../../util/entities'
+import { Contribution, TransferType } from '../../../model'
+import { getLastCrowdloan, getOrCreateAccount, saveTransfer } from '../../util/entities'
 import assert from 'assert'
 
 export interface CallData {
@@ -29,60 +27,55 @@ function getCallData(ctx: CallContext): CallData {
 export async function handleContribute(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
-    await saveContribution(ctx, {
-        id: ctx.call.id,
-        timestamp: new Date(ctx.block.timestamp),
-        blockNumber: ctx.block.height,
-        extrinsicHash: ctx.extrinsic.hash,
-        accountId: getOriginAccountId(ctx.call.origin),
-        amount: data.amount,
-        paraId: data.paraId,
-        success: ctx.call.success,
-    })
+    if (ctx.call.success) {
+        await saveContribution(ctx, {
+            accountId: getOriginAccountId(ctx.call.origin),
+            amount: data.amount,
+            paraId: data.paraId,
+        })
+    }
+
+    // await saveTransfer(ctx, {
+    //     id: ctx.call.id,
+    //     timestamp: new Date(ctx.block.timestamp),
+    //     blockNumber: ctx.block.height,
+    //     extrinsicHash: ctx.extrinsic.hash,
+    //     fromId: getOriginAccountId(ctx.call.origin),
+    //     toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
+    //     amount: data.amount,
+    //     success: ctx.call.success,
+    //     type: TransferType.Contribution,
+    // })
 }
 
-export interface ContributionData extends ActionData {
+export interface ContributionData {
     paraId: number
     amount: bigint
     accountId: string
-    success: boolean
 }
 
 export async function saveContribution(ctx: CommonHandlerContext, data: ContributionData) {
-    const { accountId, paraId, amount, success } = data
+    const { accountId, paraId, amount } = data
 
     const account = await getOrCreateAccount(ctx, accountId)
 
     const crowdloan = await getLastCrowdloan(ctx, paraId)
     assert(crowdloan != null, `Missing crowdloan ${paraId}`)
 
-    let contributor = await ctx.store.get(Contributor, `${crowdloan.id}-${account.id}`)
-    if (!contributor) {
-        contributor = new Contributor({
+    let contribution = await ctx.store.get(Contribution, `${crowdloan.id}-${account.id}`)
+    if (!contribution) {
+        contribution = new Contribution({
             id: `${crowdloan.id}-${account.id}`,
             account,
             crowdloan,
             amount: 0n,
         })
-        await ctx.store.insert(contributor)
+        await ctx.store.insert(contribution)
     }
 
-    if (success) {
-        contributor.amount += BigInt(amount)
-        await ctx.store.save(contributor)
+    contribution.amount += BigInt(amount)
+    await ctx.store.save(contribution)
 
-        crowdloan.raised += BigInt(amount)
-        await ctx.store.save(crowdloan)
-    }
-
-    await ctx.store.insert(
-        new Contribution({
-            ...getMeta(data),
-            account,
-            amount,
-            success,
-            crowdloan,
-            contributor,
-        })
-    )
+    crowdloan.raised += BigInt(amount)
+    await ctx.store.save(crowdloan)
 }
