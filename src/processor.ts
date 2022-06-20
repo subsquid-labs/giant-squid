@@ -4,7 +4,7 @@ import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
 import * as modules from './mappings'
 import { TypeormDatabase } from '@subsquid/typeorm-store'
 
-const database = new TypeormDatabase(`${config.chainName}_processor`)
+const database = new TypeormDatabase()
 const processor = new SubstrateProcessor(database)
 
 processor.setTypesBundle(config.typesBundle)
