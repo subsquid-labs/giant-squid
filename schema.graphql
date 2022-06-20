@@ -206,6 +206,7 @@ type Reward implements Action & HasEra @entity  {
   era: Int
   validator: String
   staker: Staker
+  callId: ID @index
 }
 
 type Slash implements Action & HasEra @entity  {

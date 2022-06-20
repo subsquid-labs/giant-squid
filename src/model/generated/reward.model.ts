@@ -42,4 +42,8 @@ export class Reward {
   @Index_()
   @ManyToOne_(() => Staker, {nullable: true})
   staker!: Staker | undefined | null
+
+  @Index_()
+  @Column_("text", {nullable: true})
+  callId!: string | undefined | null
 }
