@@ -1,5 +1,4 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
-import { lookupArchive } from '@subsquid/archive-registry'
 
 const config: ProcessorConfig = {
     chainName: 'moonbeam',
