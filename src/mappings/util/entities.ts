@@ -188,7 +188,7 @@ export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData
             id: toId,
         }),
         asset: new TransferAssetToken({
-            symbol: 'MOVR',
+            symbol: 'GLMR',
             amount,
         }),
         success,
