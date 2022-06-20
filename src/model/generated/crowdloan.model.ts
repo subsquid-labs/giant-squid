@@ -39,7 +39,7 @@ export class Crowdloan {
 
   @Index_()
   @Column_("int4", {nullable: true})
-  blockNumber!: number | undefined | null
+  start!: number | undefined | null
 
   @Column_("timestamp with time zone", {nullable: true})
   createdAt!: Date | undefined | null

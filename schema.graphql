@@ -127,7 +127,7 @@ type Crowdloan @entity {
   raised: BigInt!
   parachainId: ID!
   parachain: Parachain!
-  blockNumber: Int @index
+  start: Int @index
   createdAt: DateTime
 }
 

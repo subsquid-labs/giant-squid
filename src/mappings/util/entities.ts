@@ -228,7 +228,7 @@ export async function getLastCrowdloan(ctx: CommonHandlerContext, paraId: number
             end: MoreThanOrEqual(ctx.block.height),
         },
         order: {
-            blockNumber: 'DESC',
+            start: 'DESC',
         },
         relations: ['parachain'],
     })
