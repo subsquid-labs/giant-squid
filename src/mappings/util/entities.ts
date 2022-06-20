@@ -1,9 +1,20 @@
-import { Account, Staker, StakingRole } from '../../model'
+import {
+    Account,
+    AccountTransfer,
+    Staker,
+    StakingRole,
+    Transfer,
+    TransferAssetToken,
+    TransferDirection,
+    TransferLocationAccount,
+    TransferType,
+} from '../../model'
 import { CommonHandlerContext } from '../types/contexts'
-import { createPrevStorageContext } from './actions'
+import { createPrevStorageContext, getMeta } from './actions'
 import { In } from 'typeorm'
 import { getCollatorsData, getNominatorsData } from './stakers'
 import { DefaultCollatorCommission } from './consts'
+import { ActionData } from '../types/data'
 
 export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string): Promise<Account> {
     let account = await ctx.store.get(Account, id)
@@ -152,4 +163,56 @@ export async function createStaker(ctx: CommonHandlerContext, data: StakerData) 
     await ctx.store.save(staker)
 
     return staker
+}
+
+export interface TransferData extends ActionData {
+    fromId: string
+    toId: string | null
+    amount: bigint
+    success: boolean
+    type: TransferType
+}
+
+export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData) {
+    const { fromId, toId, amount, success } = data
+
+    const from = await getOrCreateAccount(ctx, fromId)
+    const to = toId ? await getOrCreateAccount(ctx, toId) : null
+
+    const transfer = new Transfer({
+        ...getMeta(data),
+        from: new TransferLocationAccount({
+            id: fromId,
+        }),
+        to: new TransferLocationAccount({
+            id: toId,
+        }),
+        asset: new TransferAssetToken({
+            symbol: 'MOVR',
+            amount,
+        }),
+        success,
+    })
+
+    await ctx.store.insert(transfer)
+
+    await ctx.store.insert(
+        new AccountTransfer({
+            id: `${transfer.id}-from`,
+            transfer,
+            account: from,
+            direction: TransferDirection.FROM,
+        })
+    )
+
+    if (to) {
+        await ctx.store.insert(
+            new AccountTransfer({
+                id: `${transfer.id}-to`,
+                transfer,
+                account: to,
+                direction: TransferDirection.TO,
+            })
+        )
+    }
 }

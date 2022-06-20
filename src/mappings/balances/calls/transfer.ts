@@ -1,8 +1,9 @@
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, getOriginAccountId } from '../../../common/tools'
+import { TransferType } from '../../../model'
 import { BalancesTransferCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
-import { saveTransfer } from './utils'
+import { saveTransfer } from '../../util/entities'
 
 interface EventData {
     to: Uint8Array
@@ -35,5 +36,6 @@ export async function handleTransfer(ctx: CallHandlerContext) {
         toId: encodeId(data.to),
         amount: data.amount,
         success: ctx.call.success,
+        type: TransferType.Native,
     })
 }
