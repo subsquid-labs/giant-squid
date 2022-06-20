@@ -1,7 +1,7 @@
 import { encodeId } from '../../../common/tools'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { UnknownVersionError } from '../../../common/errors'
-import { Reward } from '../../../model'
+import { EraValidator, Reward } from '../../../model'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 
 export interface CallData {
@@ -28,7 +28,7 @@ export async function handlePauoutStakers(ctx: CallHandlerContext) {
 
     const data = getCallData(ctx)
 
-    const rewards = await ctx.store.find(Reward, { extrinsicHash: ctx.extrinsic.hash })
+    const rewards = await ctx.store.find(Reward, { callId: ctx.call.id })
 
     for (const reward of rewards) {
         reward.era = data.era
