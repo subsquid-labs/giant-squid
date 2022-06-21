@@ -1,6 +1,7 @@
 import assert from 'assert'
 import {EventContext, Result, deprecateLatest} from './support'
 import * as v9130 from './v9130'
+import * as v9230 from './v9230'
 
 export class BalancesTransferEvent {
   constructor(private ctx: EventContext) {
@@ -83,14 +84,29 @@ export class CrowdloanContributedEvent {
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9010
+  /**
+   * Contributed to a crowd sale.
+   */
+  get isV9230(): boolean {
+    return this.ctx._chain.getEventHash('crowdloan.Contributed') === 'a09bba4441a47a7b463e5f26020197386183019a6130ce697a434ee31cc39482'
   }
 
-  get asLatest(): [Uint8Array, number, bigint] {
+  /**
+   * Contributed to a crowd sale.
+   */
+  get asV9230(): {who: v9230.AccountId32, fundIndex: v9230.Id, amount: bigint} {
+    assert(this.isV9230)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV9010
+    return this.isV9230
+  }
+
+  get asLatest(): {who: v9230.AccountId32, fundIndex: v9230.Id, amount: bigint} {
+    deprecateLatest()
+    return this.asV9230
   }
 }
 
@@ -114,14 +130,29 @@ export class CrowdloanCreatedEvent {
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9010
+  /**
+   * Create a new crowdloaning campaign.
+   */
+  get isV9230(): boolean {
+    return this.ctx._chain.getEventHash('crowdloan.Created') === 'de61486138d2b3b92b3ed0bdfddb05a4a7e6ae35d065c89bba1f47c365c252e2'
   }
 
-  get asLatest(): number {
+  /**
+   * Create a new crowdloaning campaign.
+   */
+  get asV9230(): {paraId: v9230.Id} {
+    assert(this.isV9230)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV9010
+    return this.isV9230
+  }
+
+  get asLatest(): {paraId: v9230.Id} {
+    deprecateLatest()
+    return this.asV9230
   }
 }
 
@@ -145,14 +176,29 @@ export class CrowdloanDissolvedEvent {
     return this.ctx._chain.decodeEvent(this.ctx.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9010
+  /**
+   * Fund is dissolved.
+   */
+  get isV9230(): boolean {
+    return this.ctx._chain.getEventHash('crowdloan.Dissolved') === 'de61486138d2b3b92b3ed0bdfddb05a4a7e6ae35d065c89bba1f47c365c252e2'
   }
 
-  get asLatest(): number {
+  /**
+   * Fund is dissolved.
+   */
+  get asV9230(): {paraId: v9230.Id} {
+    assert(this.isV9230)
+    return this.ctx._chain.decodeEvent(this.ctx.event)
+  }
+
+  get isLatest(): boolean {
     deprecateLatest()
-    return this.asV9010
+    return this.isV9230
+  }
+
+  get asLatest(): {paraId: v9230.Id} {
+    deprecateLatest()
+    return this.asV9230
   }
 }
 

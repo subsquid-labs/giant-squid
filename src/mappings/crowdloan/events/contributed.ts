@@ -20,6 +20,13 @@ function getEventData(ctx: EventHandlerContext): EventData {
             paraId,
             amount,
         }
+    } else if (event.isV9230) {
+        const { who, fundIndex, amount } = event.asV9230
+        return {
+            account: who,
+            paraId: fundIndex,
+            amount,
+        }
     } else {
         throw new UnknownVersionError(event.constructor.name)
     }
