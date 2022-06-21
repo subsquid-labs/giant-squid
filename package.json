@@ -1,5 +1,5 @@
 {
-  "name": "subwallet",
+  "name": "GiantSquid",
   "private": true,
   "scripts": {
     "build": "rm -rf lib && tsc",
