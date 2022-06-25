@@ -16,10 +16,9 @@ function getCallData(ctx: CallContext): CallData | undefined {
     if (call.isV1020) {
         const { targets } = call.asV1020
         return {
-            targets: targets.map((t) => {
-                assert(t.__kind === 'AccountId')
-                return t.value
-            }),
+            targets: targets
+                .filter((t): t is { __kind: 'AccountId'; value: Uint8Array } => t.__kind === 'AccountId')
+                .map((t) => t.value),
         }
     } else if (call.isV1050) {
         return call.asV1050

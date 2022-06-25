@@ -90,9 +90,10 @@ export async function getOrCreateStaker(
         // that are equaled our initial ids and ledgers values
         const ledger = await storage.staking.ledger.get(prevCtx, controllerId)
         // if ledger doesn't exist
-        if (!ledger) return undefined
+        // if (!ledger) return undefined
 
-        const stashId = ledger.stash
+        const stashId = type === 'Stash' ? id : ledger?.stash
+        if (!stashId) return undefined
 
         const payeeInfo = await storage.staking.getPayee(ctx, stashId)
         if (!payeeInfo) return undefined
@@ -109,7 +110,7 @@ export async function getOrCreateStaker(
                     ? stashId
                     : null,
             payeeType: payeeInfo.payee as PayeeType,
-            activeBond: ledger.active,
+            activeBond: ledger?.active || 0n,
         })
     }
 
