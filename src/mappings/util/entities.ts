@@ -1,9 +1,7 @@
-import { In, MoreThanOrEqual } from 'typeorm'
+import { ArrayContains, In } from 'typeorm'
 import {
     Account,
     AccountTransfer,
-    Crowdloan,
-    Parachain,
     PayeeType,
     Staker,
     StakingRole,
@@ -32,7 +30,7 @@ export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string):
 }
 
 export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string[]): Promise<Account[]> {
-    const query = await ctx.store.findByIds(Account, ids)
+    const query = await ctx.store.findBy(Account, { id: ArrayContains(ids) })
 
     const accountsMap: Map<string, Account> = new Map()
     for (const q of query) accountsMap.set(q.id, q)
@@ -48,7 +46,7 @@ export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string
         newAccounts.add(account)
     }
 
-    if (newAccounts.size > 0) await ctx.store.save(newAccounts)
+    if (newAccounts.size > 0) await ctx.store.save([...newAccounts])
 
     return [...accountsMap.values(), ...newAccounts]
 }
@@ -71,7 +69,11 @@ export async function getOrCreateStaker(
 ): Promise<Staker | undefined> {
     let staker = await ctx.store.get<Staker>(Staker, {
         where: type === 'Controller' ? { controllerId: id } : { stashId: id },
-        relations: ['stash', 'controller', 'payee'],
+        relations: {
+            stash: true,
+            controller: true,
+            payee: true,
+        },
     })
     if (!staker) {
         // query ledger to check if the account has already bonded balance
@@ -126,7 +128,11 @@ export async function getOrCreateStakers(
 ): Promise<Staker[]> {
     const query = await ctx.store.find<Staker>(Staker, {
         where: type === 'Controller' ? { controllerId: In(ids) } : { stashId: In(ids) },
-        relations: ['stash', 'controller', 'payee'],
+        relations: {
+            stash: true,
+            controller: true,
+            payee: true,
+        },
     })
 
     const stakersMap: Map<string, Staker> = new Map()
