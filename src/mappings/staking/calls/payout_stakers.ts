@@ -28,7 +28,7 @@ export async function handlePauoutStakers(ctx: CallHandlerContext) {
 
     const data = getCallData(ctx)
 
-    const rewards = await ctx.store.find(Reward, { callId: ctx.call.id })
+    const rewards = await ctx.store.findBy(Reward, { callId: ctx.call.id })
 
     for (const reward of rewards) {
         reward.era = data.era
