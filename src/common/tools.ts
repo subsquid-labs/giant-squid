@@ -33,7 +33,7 @@ export function isAdressSS58(address: Uint8Array) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getOriginAccountId(origin: any) {
-    // eslint-disable-next-line sonarjs/no-small-switch
+    if (!origin) return undefined
     switch (origin.__kind) {
         case 'system':
             // eslint-disable-next-line sonarjs/no-nested-switch, sonarjs/no-small-switch
@@ -41,10 +41,10 @@ export function getOriginAccountId(origin: any) {
                 case 'Signed':
                     return encodeId(decodeHex(origin.value.value))
                 default:
-                    throw new Error(`Unknown origin type ${origin.__kind}.${origin.value.__kind}`)
+                    return undefined
             }
         default:
-            throw new Error(`Unknown origin type ${origin.__kind}`)
+            return undefined
     }
 }
 

@@ -27,9 +27,12 @@ function getCallData(ctx: CallContext): CallData {
 export async function handleContribute(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
+    const accountId = getOriginAccountId(ctx.call.origin)
+    if (!accountId) return
+
     if (ctx.call.success) {
         await saveContribution(ctx, {
-            accountId: getOriginAccountId(ctx.call.origin),
+            accountId,
             amount: data.amount,
             paraId: data.paraId,
         })

@@ -96,6 +96,8 @@ export async function handleBond(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
     const accountId = getOriginAccountId(ctx.call.origin)
+    if (!accountId) return
+
     const controllerId = encodeId(data.controller)
 
     await createStaker(ctx, {
