@@ -1,5 +1,5 @@
 {
-  "name": "GiantSquid",
+  "name": "giant-squid",
   "private": true,
   "scripts": {
     "build": "rm -rf lib && tsc",
