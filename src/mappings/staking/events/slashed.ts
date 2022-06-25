@@ -7,6 +7,7 @@ import { StakingSlashedEvent, StakingSlashEvent } from '../../../types/generated
 import { EventContext, EventHandlerContext } from '../../types/contexts'
 import { ActionData } from '../../types/data'
 import { getMeta } from '../../util/actions'
+import { getOrCreateStaker } from '../../util/entities'
 
 interface EventData {
     amount: bigint
@@ -67,12 +68,7 @@ export interface SlashData extends ActionData {
 export async function saveSlash(ctx: EventHandlerContext, data: SlashData) {
     const { accountId, amount } = data
 
-    const staker = await ctx.store.get(Staker, {
-        where: {
-            stashId: accountId,
-        },
-        relations: ['stash'],
-    })
+    const staker = await getOrCreateStaker(ctx, 'Stash', accountId)
     assert(staker != null, `Missing staking info for ${accountId}`)
 
     const account = staker.stash

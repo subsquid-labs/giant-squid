@@ -21,7 +21,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
         return ctx.log.warn(`Unknown era`)
     }
 
-    if ((await ctx.store.count(Era, { id: storageEraData.index.toString() })) > 0) {
+    if ((await ctx.store.countBy(Era, { id: storageEraData.index.toString() })) > 0) {
         return ctx.log.warn(`Era ${storageEraData.index} has been already proceed`)
     }
 
