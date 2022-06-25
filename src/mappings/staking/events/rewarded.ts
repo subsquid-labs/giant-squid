@@ -60,7 +60,7 @@ export async function saveReward(ctx: CommonHandlerContext, data: RewardData) {
 
     await ctx.store.save(staker)
 
-    const round = await ctx.store.get(Round, { order: { index: 'DESC' } })
+    const round = await ctx.store.get(Round, { where: {}, order: { index: 'DESC' } })
 
     await ctx.store.insert(
         new Reward({

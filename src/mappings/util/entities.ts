@@ -15,6 +15,7 @@ import { In } from 'typeorm'
 import { getCollatorsData, getNominatorsData } from './stakers'
 import { DefaultCollatorCommission } from './consts'
 import { ActionData } from '../types/data'
+import { ArrayContains } from 'typeorm'
 
 export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string): Promise<Account> {
     let account = await ctx.store.get(Account, id)
@@ -30,7 +31,7 @@ export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string):
 }
 
 export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string[]): Promise<Account[]> {
-    const query = await ctx.store.findByIds(Account, ids)
+    const query = await ctx.store.findBy(Account, { id: ArrayContains(ids) })
 
     const accountsMap: Map<string, Account> = new Map()
     for (const q of query) accountsMap.set(q.id, q)
@@ -46,7 +47,7 @@ export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string
         newAccounts.add(account)
     }
 
-    if (newAccounts.size > 0) await ctx.store.save(newAccounts)
+    if (newAccounts.size > 0) await ctx.store.save([...newAccounts])
 
     return [...accountsMap.values(), ...newAccounts]
 }
@@ -54,7 +55,7 @@ export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string
 export async function getOrCreateStaker(ctx: CommonHandlerContext, id: string): Promise<Staker | undefined> {
     let staker = await ctx.store.get<Staker>(Staker, {
         where: { stashId: id },
-        relations: ['stash'],
+        relations: { stash: true },
     })
     if (!staker) {
         const prevCtx = createPrevStorageContext(ctx)
@@ -87,7 +88,7 @@ export async function getOrCreateStaker(ctx: CommonHandlerContext, id: string): 
 export async function getOrCreateStakers(ctx: CommonHandlerContext, ids: string[]): Promise<Staker[]> {
     const query = await ctx.store.find<Staker>(Staker, {
         where: { stashId: In(ids) },
-        relations: ['stash'],
+        relations: { stash: true },
     })
 
     const stakersMap: Map<string, Staker> = new Map()
