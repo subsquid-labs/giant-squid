@@ -36,6 +36,7 @@ export async function handleNominate(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
     const controllerId = getOriginAccountId(ctx.call.origin)
+    if (!controllerId) return
 
     const staker = await getOrCreateStaker(ctx, 'Controller', controllerId)
     assert(staker != null, `Missing staking info for ${controllerId}`)

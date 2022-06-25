@@ -27,12 +27,15 @@ export async function handleUnbond(ctx: CallHandlerContext) {
 
     const data = getCallData(ctx)
 
+    const accountId = getOriginAccountId(ctx.call.origin)
+    if (!accountId) return
+
     await saveBond(ctx, {
         id: ctx.call.id,
         timestamp: new Date(ctx.block.timestamp),
         blockNumber: ctx.block.height,
         extrinsicHash: ctx.extrinsic.hash,
-        accountId: getOriginAccountId(ctx.call.origin),
+        accountId,
         amount: data.amount,
         type: BondType.Unbond,
         success: ctx.call.success,

@@ -36,6 +36,7 @@ export async function handleSetPayee(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
     const controllerId = getOriginAccountId(ctx.call.origin)
+    if (!controllerId) return
 
     const staker = await getOrCreateStaker(ctx, 'Controller', controllerId)
     if (!staker) throw new Error(`Missing staking info for ${controllerId}`)
