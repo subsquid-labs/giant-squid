@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, saturatingSumBigInt } from '../../../common/tools'
+import { encodeId, isStorageCorrupted, saturatingSumBigInt } from '../../../common/tools'
 import { PayeeType, Reward } from '../../../model'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../types/contexts'
@@ -72,6 +72,7 @@ export async function saveReward(ctx: EventHandlerContext, data: RewardData) {
     const { accountId, amount } = data
 
     const staker = await getOrCreateStaker(ctx, 'Stash', accountId)
+    if (!staker && isStorageCorrupted(ctx)) return
     assert(staker != null, `Missing staking info for ${accountId}`)
 
     const account = staker.payee

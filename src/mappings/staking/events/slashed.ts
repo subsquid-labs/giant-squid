@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, saturatingSumBigInt } from '../../../common/tools'
+import { encodeId, isStorageCorrupted, saturatingSumBigInt } from '../../../common/tools'
 import { Slash, Staker } from '../../../model'
 import storage from '../../../storage'
 import { StakingSlashedEvent, StakingSlashEvent } from '../../../types/generated/events'
@@ -69,6 +69,7 @@ export async function saveSlash(ctx: EventHandlerContext, data: SlashData) {
     const { accountId, amount } = data
 
     const staker = await getOrCreateStaker(ctx, 'Stash', accountId)
+    if (!staker && isStorageCorrupted(ctx)) return
     assert(staker != null, `Missing staking info for ${accountId}`)
 
     const account = staker.stash

@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { getOriginAccountId } from '../../../common/tools'
+import { getOriginAccountId, isStorageCorrupted } from '../../../common/tools'
 import { StakingRole } from '../../../model'
 import { StakingValidateCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
@@ -37,6 +37,7 @@ export async function handleValidate(ctx: CallHandlerContext) {
     if (!controllerId) return
 
     const staker = await getOrCreateStaker(ctx, 'Controller', controllerId)
+    if (!staker && isStorageCorrupted(ctx)) return
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Validator

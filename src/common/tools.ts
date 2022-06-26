@@ -1,6 +1,7 @@
 import * as ss58 from '@subsquid/ss58'
 import config from '../config'
 import { decodeHex } from '@subsquid/util-internal-hex'
+import { CommonHandlerContext } from '@subsquid/substrate-processor'
 
 export function encodeId(id: Uint8Array) {
     return ss58.codec(config.prefix).encode(id)
@@ -61,4 +62,8 @@ export function saturatingSumBigInt(
     } else {
         return sum
     }
+}
+
+export function isStorageCorrupted(ctx: CommonHandlerContext<unknown>) {
+    if (ctx.block.height >= 1375087 && ctx.block.height <= 1500000) return undefined
 }

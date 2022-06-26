@@ -1,4 +1,5 @@
 import assert from 'assert'
+import { isStorageCorrupted } from '../../../common/tools'
 import { Era, EraNominator, EraNomination, EraValidator } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
@@ -46,6 +47,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
     await ctx.store.save(nominations)
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 async function getStakingData(ctx: EventHandlerContext, era: Era) {
     const validators: Map<string, EraValidator> = new Map()
 
@@ -77,10 +79,11 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
 
         const staker = validatorStakers.get(validatorId)
-        if (!staker) {
+        if (!staker && isStorageCorrupted(ctx)) {
             ctx.log.warn(`Missing info for staker ${validatorId} in era ${era}`)
             continue
         }
+        assert(staker != null)
 
         validators.set(
             validatorId,
@@ -108,10 +111,11 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
 
     for (const nominatorId of nominatorIds) {
         const staker = nominatorStakers.get(nominatorId)
-        if (!staker) {
+        if (!staker && isStorageCorrupted(ctx)) {
             ctx.log.warn(`Missing info for staker ${nominatorId} in era ${era}`)
             continue
         }
+        assert(staker != null)
 
         nominators.set(
             nominatorId,
@@ -129,6 +133,10 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
     for (const nominationData of nominationsData) {
         const validator = validators.get(nominationData.validator)
         const nominator = nominators.get(nominationData.nominator)
+        if ((!validator || !nominator) && isStorageCorrupted(ctx)) {
+            ctx.log.warn(`Missing info for stakers`)
+            continue
+        }
         assert(validator != null && nominator != null)
 
         const id = `${era.index}-${validator.stakerId}-${nominator.stakerId}`
