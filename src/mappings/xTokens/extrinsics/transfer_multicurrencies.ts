@@ -1,6 +1,4 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
-import { accountManager } from '../../../managers'
+import { getOriginAccountId } from '../../../common/tools'
 import {
     AccountTransfer,
     Transfer,
@@ -11,9 +9,11 @@ import {
 } from '../../../model'
 import * as v2032 from '../../../types/generated/v2032'
 import * as v2042 from '../../../types/generated/v2042'
-import { getAsset, getDest } from '../utils/parsers'
+import { CallContext, CallHandlerContext } from '../../types/contexts'
+import { getOrCreateAccount } from '../../util/entities'
+import { getAsset, getDest } from './utils'
 
-type EventData =
+type CallData =
     | {
           currencies: [v2032.CurrencyId, bigint][]
           feeItem: number
@@ -27,37 +27,42 @@ type EventData =
           destWeight: bigint
       }
 
-function getCallData(ctx: ExtrinsicHandlerContext): EventData {
-    return ctx._chain.decodeCall(ctx.extrinsic)
+function getCallData(ctx: CallContext): CallData {
+    return ctx._chain.decodeCall(ctx.call)
 }
 
-export async function handleTransferMulticurrencies(ctx: ExtrinsicHandlerContext) {
+export async function handleTransferMulticurrencies(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
-    const from = await accountManager.get(ctx, ctx.extrinsic.signer)
+    const accountId = getOriginAccountId(ctx.call.origin)
+    if (!accountId) return
+
+    const from = await getOrCreateAccount(ctx, accountId)
+
     const assets = await Promise.all(data.currencies.map((c) => getAsset(ctx, c[0], c[1])))
     const to = await getDest(ctx, data.dest)
 
-    const id = ctx.event.id
+    const id = ctx.call.id
 
     const transfer = new Transfer({
         id,
-        ...getMeta(ctx),
+        blockNumber: ctx.block.height,
+        timestamp: new Date(ctx.block.timestamp),
+        extrinsicHash: ctx.extrinsic.hash,
         from: new TransferLocationAccount({
-            id: ctx.extrinsic.signer,
+            id: accountId,
         }),
         to,
         asset: new TransferAssetMultiToken({
             tokens: assets,
         }),
-        success: isExtrinsicSuccess(ctx),
+        success: ctx.call.success,
         type: TransferType.Xcm,
     })
 
-    await ctx.store.insert(Transfer, transfer)
+    await ctx.store.insert(transfer)
 
     await ctx.store.insert(
-        AccountTransfer,
         new AccountTransfer({
             id: `${id}-from`,
             transfer,

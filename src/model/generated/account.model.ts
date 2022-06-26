@@ -1,5 +1,4 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
-import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
 
 @Entity_()
@@ -14,6 +13,6 @@ export class Account {
   @OneToMany_(() => AccountTransfer, e => e.account)
   transfers!: AccountTransfer[]
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  lastUpdateBlock!: bigint
+  @Column_("int4", {nullable: false})
+  lastUpdateBlock!: number
 }

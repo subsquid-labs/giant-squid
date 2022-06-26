@@ -1,6 +1,4 @@
-import { ExtrinsicHandlerContext } from '@subsquid/substrate-processor'
-import { getMeta, isExtrinsicSuccess } from '../../../common/helpers'
-import { accountManager } from '../../../managers'
+import { getOriginAccountId } from '../../../common/tools'
 import {
     AccountTransfer,
     Transfer,
@@ -13,9 +11,11 @@ import * as v2000 from '../../../types/generated/v2000'
 import * as v2011 from '../../../types/generated/v2011'
 import * as v2022 from '../../../types/generated/v2022'
 import * as v2042 from '../../../types/generated/v2042'
-import { getAsset, getDest } from '../utils/parsers'
+import { CallContext, CallHandlerContext } from '../../types/contexts'
+import { getOrCreateAccount } from '../../util/entities'
+import { getAsset, getDest } from './utils'
 
-type EventData =
+type CallData =
     | { currencyId: v2000.CurrencyId; amount: bigint; dest: v2000.VersionedMultiLocation; destWeight: bigint }
     | { currencyId: v2011.CurrencyId; amount: bigint; dest: v2011.VersionedMultiLocation; destWeight: bigint }
     | { currencyId: v2022.CurrencyId; amount: bigint; dest: v2022.VersionedMultiLocation; destWeight: bigint }
@@ -23,40 +23,43 @@ type EventData =
 
 // type Interior = (DestData & { __kind: 'V1' })['value']['interior'] | (DestData & { __kind: 'V0' })['value']
 
-function getCallData(ctx: ExtrinsicHandlerContext): EventData {
-    return ctx._chain.decodeCall(ctx.extrinsic)
+function getCallData(ctx: CallContext): CallData {
+    return ctx._chain.decodeCall(ctx.call)
 }
 
-export async function handleTransfer(ctx: ExtrinsicHandlerContext) {
+export async function handleTransfer(ctx: CallHandlerContext) {
     const data = getCallData(ctx)
 
-    const from = await accountManager.get(ctx, ctx.extrinsic.signer)
+    const accountId = getOriginAccountId(ctx.call.origin)
+    if (!accountId) return
+
+    const from = await getOrCreateAccount(ctx, accountId)
 
     const asset = await getAsset(ctx, data.currencyId, data.amount)
     const to = await getDest(ctx, data.dest)
 
-    const id = ctx.event.id
+    const id = ctx.call.id
 
     const transfer = new Transfer({
         id,
-        ...getMeta(ctx),
+        blockNumber: ctx.block.height,
+        timestamp: new Date(ctx.block.timestamp),
+        extrinsicHash: ctx.extrinsic.hash,
         from: new TransferLocationAccount({
-            id: ctx.extrinsic.signer,
+            id: accountId,
         }),
         to,
         asset: new TransferAssetToken({
             symbol: asset.symbol,
-            decimals: asset.decimals,
             amount: data.amount,
         }),
-        success: isExtrinsicSuccess(ctx),
+        success: ctx.call.success,
         type: TransferType.Xcm,
     })
 
-    ctx.store.insert(Transfer, transfer)
+    await ctx.store.insert(transfer)
 
     await ctx.store.insert(
-        AccountTransfer,
         new AccountTransfer({
             id: `${id}-from`,
             transfer,

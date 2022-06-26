@@ -1,14 +1,23 @@
 import assert from 'assert'
-import {CallContext, Result, deprecateLatest} from './support'
+import {Chain, ChainContext, CallContext, Call, Result} from './support'
 import * as v2000 from './v2000'
 import * as v2011 from './v2011'
 import * as v2022 from './v2022'
 import * as v2032 from './v2032'
 import * as v2042 from './v2042'
+import * as v2080 from './v2080'
 
 export class BalancesForceTransferCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.forceTransfer' || this.ctx.extrinsic.name === 'balances.force_transfer')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.force_transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -20,7 +29,7 @@ export class BalancesForceTransferCall {
    * # </weight>
    */
   get isV2000(): boolean {
-    return this.ctx._chain.getCallHash('balances.force_transfer') === '906df11f4f65ebd03a2b87ba248e1fba11c3a0bca42c892bee828bac3ec80348'
+    return this._chain.getCallHash('Balances.force_transfer') === '906df11f4f65ebd03a2b87ba248e1fba11c3a0bca42c892bee828bac3ec80348'
   }
 
   /**
@@ -33,23 +42,21 @@ export class BalancesForceTransferCall {
    */
   get asV2000(): {source: v2000.MultiAddress, dest: v2000.MultiAddress, value: bigint} {
     assert(this.isV2000)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2000
-  }
-
-  get asLatest(): {source: v2000.MultiAddress, dest: v2000.MultiAddress, value: bigint} {
-    deprecateLatest()
-    return this.asV2000
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transfer')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -83,7 +90,7 @@ export class BalancesTransferCall {
    * # </weight>
    */
   get isV2000(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
+    return this._chain.getCallHash('Balances.transfer') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
   }
 
   /**
@@ -118,23 +125,21 @@ export class BalancesTransferCall {
    */
   get asV2000(): {dest: v2000.MultiAddress, value: bigint} {
     assert(this.isV2000)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2000
-  }
-
-  get asLatest(): {dest: v2000.MultiAddress, value: bigint} {
-    deprecateLatest()
-    return this.asV2000
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferAllCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transferAll' || this.ctx.extrinsic.name === 'balances.transfer_all')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer_all')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -157,7 +162,7 @@ export class BalancesTransferAllCall {
    *   #</weight>
    */
   get isV2000(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_all') === '56952003e07947f758a9928d8462037abffea6a7fa991c0d3451f5c47d45f254'
+    return this._chain.getCallHash('Balances.transfer_all') === '56952003e07947f758a9928d8462037abffea6a7fa991c0d3451f5c47d45f254'
   }
 
   /**
@@ -181,23 +186,21 @@ export class BalancesTransferAllCall {
    */
   get asV2000(): {dest: v2000.MultiAddress, keepAlive: boolean} {
     assert(this.isV2000)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2000
-  }
-
-  get asLatest(): {dest: v2000.MultiAddress, keepAlive: boolean} {
-    deprecateLatest()
-    return this.asV2000
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferKeepAliveCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'balances.transferKeepAlive' || this.ctx.extrinsic.name === 'balances.transfer_keep_alive')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer_keep_alive')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -214,7 +217,7 @@ export class BalancesTransferKeepAliveCall {
    * #</weight>
    */
   get isV2000(): boolean {
-    return this.ctx._chain.getCallHash('balances.transfer_keep_alive') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
+    return this._chain.getCallHash('Balances.transfer_keep_alive') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
   }
 
   /**
@@ -232,23 +235,128 @@ export class BalancesTransferKeepAliveCall {
    */
   get asV2000(): {dest: v2000.MultiAddress, value: bigint} {
     assert(this.isV2000)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
+  }
+}
+
+export class CurrenciesTransferCall {
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Currencies.transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2000
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get isV2000(): boolean {
+    return this._chain.getCallHash('Currencies.transfer') === '363725d8f0303d53dabf1a5996a9520d8c5fe3abca7640a8436bcbc43f46b6d7'
   }
 
-  get asLatest(): {dest: v2000.MultiAddress, value: bigint} {
-    deprecateLatest()
-    return this.asV2000
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get asV2000(): {dest: v2000.MultiAddress, currencyId: v2000.CurrencyId, amount: bigint} {
+    assert(this.isV2000)
+    return this._chain.decodeCall(this.call)
+  }
+
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get isV2011(): boolean {
+    return this._chain.getCallHash('Currencies.transfer') === '789d4f709fe23bf0a1586d4a685ebcc3362efaf89aac966552eac6cde594d28d'
+  }
+
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get asV2011(): {dest: v2011.MultiAddress, currencyId: v2011.CurrencyId, amount: bigint} {
+    assert(this.isV2011)
+    return this._chain.decodeCall(this.call)
+  }
+
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get isV2022(): boolean {
+    return this._chain.getCallHash('Currencies.transfer') === 'a7da4ad21ecaff7d2f61aa80e2721af882625d7784ab70c9d3e150ba31e0104f'
+  }
+
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get asV2022(): {dest: v2022.MultiAddress, currencyId: v2022.CurrencyId, amount: bigint} {
+    assert(this.isV2022)
+    return this._chain.decodeCall(this.call)
+  }
+
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get isV2042(): boolean {
+    return this._chain.getCallHash('Currencies.transfer') === 'f179e0335371d3c8efb735180ee45e3470fe438aca555f5c79fe12e8957030fa'
+  }
+
+  /**
+   * Transfer some balance to another account under `currency_id`.
+   * 
+   * The dispatch origin for this call must be `Signed` by the
+   * transactor.
+   */
+  get asV2042(): {dest: v2042.MultiAddress, currencyId: v2042.CurrencyId, amount: bigint} {
+    assert(this.isV2042)
+    return this._chain.decodeCall(this.call)
+  }
+
+  get isV2080(): boolean {
+    return this._chain.getCallHash('Currencies.transfer') === '3ff2c33da0687132a52a8f6f220f21184e515605cd3d047ec7ebb3c8ad35381e'
+  }
+
+  get asV2080(): {dest: v2080.MultiAddress, currencyId: v2080.CurrencyId, amount: bigint} {
+    assert(this.isV2080)
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class XTokensTransferCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'xTokens.transfer')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'XTokens.transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -266,7 +374,7 @@ export class XTokensTransferCall {
    * messages correctly.
    */
   get isV2000(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer') === '549bc23af2b15d1ef029a24065c12589fb72c0ec56638a2d5527f5bc7891cb2a'
+    return this._chain.getCallHash('XTokens.transfer') === '549bc23af2b15d1ef029a24065c12589fb72c0ec56638a2d5527f5bc7891cb2a'
   }
 
   /**
@@ -285,7 +393,7 @@ export class XTokensTransferCall {
    */
   get asV2000(): {currencyId: v2000.CurrencyId, amount: bigint, dest: v2000.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2000)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -303,7 +411,7 @@ export class XTokensTransferCall {
    * messages correctly.
    */
   get isV2011(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer') === '519e0a2fee52a7964a31855b5757e1d3cd13658a812f1b4ae0b91c3ee3d79bd3'
+    return this._chain.getCallHash('XTokens.transfer') === '519e0a2fee52a7964a31855b5757e1d3cd13658a812f1b4ae0b91c3ee3d79bd3'
   }
 
   /**
@@ -322,7 +430,7 @@ export class XTokensTransferCall {
    */
   get asV2011(): {currencyId: v2011.CurrencyId, amount: bigint, dest: v2011.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2011)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -340,7 +448,7 @@ export class XTokensTransferCall {
    * messages correctly.
    */
   get isV2022(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer') === 'a8db18f32e2498022a594a802194aed8618bdc29625d68f3c8baab6553665be2'
+    return this._chain.getCallHash('XTokens.transfer') === 'a8db18f32e2498022a594a802194aed8618bdc29625d68f3c8baab6553665be2'
   }
 
   /**
@@ -359,7 +467,7 @@ export class XTokensTransferCall {
    */
   get asV2022(): {currencyId: v2022.CurrencyId, amount: bigint, dest: v2022.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2022)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -377,7 +485,7 @@ export class XTokensTransferCall {
    * messages correctly.
    */
   get isV2042(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer') === '8ee59781cb701d7549c2ef235213264bdf60593ec5c1fcbf9a006967295c25cd'
+    return this._chain.getCallHash('XTokens.transfer') === '8ee59781cb701d7549c2ef235213264bdf60593ec5c1fcbf9a006967295c25cd'
   }
 
   /**
@@ -396,23 +504,30 @@ export class XTokensTransferCall {
    */
   get asV2042(): {currencyId: v2042.CurrencyId, amount: bigint, dest: v2042.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2042)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2042
+  get isV2080(): boolean {
+    return this._chain.getCallHash('XTokens.transfer') === 'ac9acedc53b516498a500528f413e4488c6e4bf5fb0af39e65481a37c55a4d75'
   }
 
-  get asLatest(): {currencyId: v2042.CurrencyId, amount: bigint, dest: v2042.VersionedMultiLocation, destWeight: bigint} {
-    deprecateLatest()
-    return this.asV2042
+  get asV2080(): {currencyId: v2080.CurrencyId, amount: bigint, dest: v2080.VersionedMultiLocation, destWeight: bigint} {
+    assert(this.isV2080)
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class XTokensTransferMultiassetCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'xTokens.transferMultiasset' || this.ctx.extrinsic.name === 'xTokens.transfer_multiasset')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'XTokens.transfer_multiasset')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -430,7 +545,7 @@ export class XTokensTransferMultiassetCall {
    * messages correctly.
    */
   get isV2000(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_multiasset') === 'f33cd4d2466c1e767a4c2d9b00f7b71b359b07f3e78d76d466e3928a3e2ed9b8'
+    return this._chain.getCallHash('XTokens.transfer_multiasset') === 'f33cd4d2466c1e767a4c2d9b00f7b71b359b07f3e78d76d466e3928a3e2ed9b8'
   }
 
   /**
@@ -449,23 +564,21 @@ export class XTokensTransferMultiassetCall {
    */
   get asV2000(): {asset: v2000.VersionedMultiAsset, dest: v2000.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2000)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2000
-  }
-
-  get asLatest(): {asset: v2000.VersionedMultiAsset, dest: v2000.VersionedMultiLocation, destWeight: bigint} {
-    deprecateLatest()
-    return this.asV2000
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class XTokensTransferMultiassetWithFeeCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'xTokens.transferMultiassetWithFee' || this.ctx.extrinsic.name === 'xTokens.transfer_multiasset_with_fee')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'XTokens.transfer_multiasset_with_fee')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -492,7 +605,7 @@ export class XTokensTransferMultiassetWithFeeCall {
    * messages correctly.
    */
   get isV2011(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_multiasset_with_fee') === '72aca3119f971190d4dd5493791879ff41295c5e290079c6179cb41be01e6226'
+    return this._chain.getCallHash('XTokens.transfer_multiasset_with_fee') === '72aca3119f971190d4dd5493791879ff41295c5e290079c6179cb41be01e6226'
   }
 
   /**
@@ -520,23 +633,21 @@ export class XTokensTransferMultiassetWithFeeCall {
    */
   get asV2011(): {asset: v2011.VersionedMultiAsset, fee: v2011.VersionedMultiAsset, dest: v2011.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2011)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2011
-  }
-
-  get asLatest(): {asset: v2011.VersionedMultiAsset, fee: v2011.VersionedMultiAsset, dest: v2011.VersionedMultiLocation, destWeight: bigint} {
-    deprecateLatest()
-    return this.asV2011
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class XTokensTransferMulticurrenciesCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'xTokens.transferMulticurrencies' || this.ctx.extrinsic.name === 'xTokens.transfer_multicurrencies')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'XTokens.transfer_multicurrencies')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -557,7 +668,7 @@ export class XTokensTransferMulticurrenciesCall {
    * messages correctly.
    */
   get isV2032(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_multicurrencies') === 'a2b19d9d4e6bce0676a4b28b17bbb911c35bc84e7adde3f6d2f5d28b38241e5f'
+    return this._chain.getCallHash('XTokens.transfer_multicurrencies') === 'a2b19d9d4e6bce0676a4b28b17bbb911c35bc84e7adde3f6d2f5d28b38241e5f'
   }
 
   /**
@@ -579,7 +690,7 @@ export class XTokensTransferMulticurrenciesCall {
    */
   get asV2032(): {currencies: [v2032.CurrencyId, bigint][], feeItem: number, dest: v2032.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2032)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -600,7 +711,7 @@ export class XTokensTransferMulticurrenciesCall {
    * messages correctly.
    */
   get isV2042(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_multicurrencies') === 'e80bd05b0f8a2637ad58d8018ab1c45b459ba824b174c47d9f89b995f0756bcc'
+    return this._chain.getCallHash('XTokens.transfer_multicurrencies') === 'e80bd05b0f8a2637ad58d8018ab1c45b459ba824b174c47d9f89b995f0756bcc'
   }
 
   /**
@@ -622,23 +733,30 @@ export class XTokensTransferMulticurrenciesCall {
    */
   get asV2042(): {currencies: [v2042.CurrencyId, bigint][], feeItem: number, dest: v2042.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2042)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2042
+  get isV2080(): boolean {
+    return this._chain.getCallHash('XTokens.transfer_multicurrencies') === '71b9281afabf869f34e2d6aad7a8fc9de09a8bd9a36777bdd74fcd7beee6a3d2'
   }
 
-  get asLatest(): {currencies: [v2042.CurrencyId, bigint][], feeItem: number, dest: v2042.VersionedMultiLocation, destWeight: bigint} {
-    deprecateLatest()
-    return this.asV2042
+  get asV2080(): {currencies: [v2080.CurrencyId, bigint][], feeItem: number, dest: v2080.VersionedMultiLocation, destWeight: bigint} {
+    assert(this.isV2080)
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class XTokensTransferWithFeeCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.extrinsic.name === 'xTokens.transferWithFee' || this.ctx.extrinsic.name === 'xTokens.transfer_with_fee')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'XTokens.transfer_with_fee')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -665,7 +783,7 @@ export class XTokensTransferWithFeeCall {
    * messages correctly.
    */
   get isV2011(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_with_fee') === '74fdb36d92d1b2f417c89516d16faafe1093e0223d7fa56e747c7a8f3d6b6d31'
+    return this._chain.getCallHash('XTokens.transfer_with_fee') === '74fdb36d92d1b2f417c89516d16faafe1093e0223d7fa56e747c7a8f3d6b6d31'
   }
 
   /**
@@ -693,7 +811,7 @@ export class XTokensTransferWithFeeCall {
    */
   get asV2011(): {currencyId: v2011.CurrencyId, amount: bigint, fee: bigint, dest: v2011.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2011)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -720,7 +838,7 @@ export class XTokensTransferWithFeeCall {
    * messages correctly.
    */
   get isV2022(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_with_fee') === '7a29eec4e391c80e142048d95eeac304ccf2abd715d3ef810c8b71853169a863'
+    return this._chain.getCallHash('XTokens.transfer_with_fee') === '7a29eec4e391c80e142048d95eeac304ccf2abd715d3ef810c8b71853169a863'
   }
 
   /**
@@ -748,7 +866,7 @@ export class XTokensTransferWithFeeCall {
    */
   get asV2022(): {currencyId: v2022.CurrencyId, amount: bigint, fee: bigint, dest: v2022.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2022)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -775,7 +893,7 @@ export class XTokensTransferWithFeeCall {
    * messages correctly.
    */
   get isV2042(): boolean {
-    return this.ctx._chain.getCallHash('xTokens.transfer_with_fee') === 'd030d901b07080c7d5f055035ef9dccc1209804d1a753f6a413d816dfcfd141b'
+    return this._chain.getCallHash('XTokens.transfer_with_fee') === 'd030d901b07080c7d5f055035ef9dccc1209804d1a753f6a413d816dfcfd141b'
   }
 
   /**
@@ -803,16 +921,15 @@ export class XTokensTransferWithFeeCall {
    */
   get asV2042(): {currencyId: v2042.CurrencyId, amount: bigint, fee: bigint, dest: v2042.VersionedMultiLocation, destWeight: bigint} {
     assert(this.isV2042)
-    return this.ctx._chain.decodeCall(this.ctx.extrinsic)
+    return this._chain.decodeCall(this.call)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV2042
+  get isV2080(): boolean {
+    return this._chain.getCallHash('XTokens.transfer_with_fee') === 'bcf150c29200cfb90b60305529f2a17fb6b75a07ba65b1bb604ecaef75f1ca59'
   }
 
-  get asLatest(): {currencyId: v2042.CurrencyId, amount: bigint, fee: bigint, dest: v2042.VersionedMultiLocation, destWeight: bigint} {
-    deprecateLatest()
-    return this.asV2042
+  get asV2080(): {currencyId: v2080.CurrencyId, amount: bigint, fee: bigint, dest: v2080.VersionedMultiLocation, destWeight: bigint} {
+    assert(this.isV2080)
+    return this._chain.decodeCall(this.call)
   }
 }

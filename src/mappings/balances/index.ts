@@ -1,4 +1,4 @@
-import * as extrinsics from './extrinsics'
+import * as extrinsics from './calls'
 
 export default {
     extrinsics,

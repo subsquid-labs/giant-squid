@@ -1,10 +1,11 @@
 import { UnknownVersionError } from '../../common/errors'
 import { AssetRegistryAssetMetadatasStorage } from '../../types/generated/storage'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext } from '../../types/generated/support'
 import * as v2042 from '../../types/generated/v2042'
 import * as v2000 from '../../types/generated/v2000'
 import * as v2011 from '../../types/generated/v2011'
 import * as v2022 from '../../types/generated/v2022'
+import * as v2080 from '../../types/generated/v2080'
 
 interface StorageData {
     name: Uint8Array
@@ -13,7 +14,7 @@ interface StorageData {
     minimalBalance: bigint
 }
 
-type TokenSymbol = v2000.TokenSymbol | v2011.TokenSymbol | v2022.TokenSymbol | v2042.TokenSymbol
+type TokenSymbol = v2000.TokenSymbol | v2011.TokenSymbol | v2022.TokenSymbol | v2042.TokenSymbol | v2080.TokenSymbol
 
 type AssetId =
     | {
@@ -43,7 +44,8 @@ type AssetId =
           }
       }
 
-async function getStorageData(ctx: StorageContext, key: AssetId): Promise<StorageData | undefined> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function getStorageData(ctx: BlockContext, key: any): Promise<StorageData | undefined> {
     const storage = new AssetRegistryAssetMetadatasStorage(ctx)
     if (!storage.isExists) return undefined
 
@@ -55,6 +57,8 @@ async function getStorageData(ctx: StorageContext, key: AssetId): Promise<Storag
         return await storage.getAsV2020(key)
     } else if (storage.isV2042) {
         return await storage.getAsV2042(key)
+    } else if (storage.isV2080) {
+        return await storage.getAsV2080(key)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -89,7 +93,7 @@ type Asset =
           value: number
       }
 
-export async function getAssetMetadatas(ctx: StorageContext, asset: Asset): Promise<AssetMetadata | undefined> {
+export async function getAssetMetadatas(ctx: BlockContext, asset: Asset): Promise<AssetMetadata | undefined> {
     const key: AssetId = (() => {
         switch (asset.type) {
             case 'Erc20':
