@@ -29,8 +29,8 @@ type Staker @entity {
 }
 
 enum TransferDirection {
-  FROM
-  TO
+  From
+  To
 }
 
 interface Action {
@@ -49,20 +49,20 @@ interface CanFail {
 
 type Transfer implements Action & CanFail @entity {
   id: ID!
-  timestamp: DateTime
-  blockNumber: Int @index
-  extrinsicHash: String @index
+  timestamp: DateTime!
+  blockNumber: Int! @index
+  extrinsicHash: String! @index
   to: TransferLocation
-  from: TransferLocation
-  asset: TransferAsset
-  success: Boolean @index
-  type: TransferType
+  from: TransferLocation!
+  asset: TransferAsset!
+  success: Boolean! @index
+  type: TransferType!
 }
 
 union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
 
 type TransferLocationAccount {
-  id: String
+  id: String!
 }
 
 type TransferLocationEvm {

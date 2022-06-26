@@ -3,20 +3,21 @@ import * as marshal from "./marshal"
 
 export class TransferLocationAccount {
   public readonly isTypeOf = 'TransferLocationAccount'
-  private _id!: string | undefined | null
+  private _id!: string
 
   constructor(props?: Partial<Omit<TransferLocationAccount, 'toJSON'>>, json?: any) {
     Object.assign(this, props)
     if (json != null) {
-      this._id = json.id == null ? undefined : marshal.string.fromJSON(json.id)
+      this._id = marshal.string.fromJSON(json.id)
     }
   }
 
-  get id(): string | undefined | null {
+  get id(): string {
+    assert(this._id != null, 'uninitialized access')
     return this._id
   }
 
-  set id(value: string | undefined | null) {
+  set id(value: string) {
     this._id = value
   }
 
