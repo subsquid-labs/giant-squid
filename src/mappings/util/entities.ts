@@ -175,7 +175,7 @@ export interface TransferData extends ActionData {
 }
 
 export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData) {
-    const { fromId, toId, amount, success } = data
+    const { fromId, toId, amount, success, type } = data
 
     const from = await getOrCreateAccount(ctx, fromId)
     const to = toId ? await getOrCreateAccount(ctx, toId) : null
@@ -185,14 +185,17 @@ export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData
         from: new TransferLocationAccount({
             id: fromId,
         }),
-        to: new TransferLocationAccount({
-            id: toId,
-        }),
+        to: toId
+            ? new TransferLocationAccount({
+                  id: toId,
+              })
+            : null,
         asset: new TransferAssetToken({
             symbol: 'GLMR',
             amount,
         }),
         success,
+        type,
     })
 
     await ctx.store.insert(transfer)
@@ -202,7 +205,7 @@ export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData
             id: `${transfer.id}-from`,
             transfer,
             account: from,
-            direction: TransferDirection.FROM,
+            direction: TransferDirection.From,
         })
     )
 
@@ -212,7 +215,7 @@ export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData
                 id: `${transfer.id}-to`,
                 transfer,
                 account: to,
-                direction: TransferDirection.TO,
+                direction: TransferDirection.To,
             })
         )
     }
