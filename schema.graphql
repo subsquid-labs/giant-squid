@@ -90,13 +90,13 @@ type EraNominator @entity {
 }
 
 enum TransferDirection {
-  FROM
-  TO
+  From
+  To
 }
 
 interface Action {
   timestamp: DateTime
-  blockNumber: BigInt
+  blockNumber: Int
   extrinsicHash: String
 }
 
@@ -110,20 +110,20 @@ interface CanFail {
 
 type Transfer implements Action & CanFail @entity {
   id: ID!
-  timestamp: DateTime
-  blockNumber: BigInt @index
-  extrinsicHash: String @index
+  timestamp: DateTime!
+  blockNumber: Int! @index
+  extrinsicHash: String! @index
   to: TransferLocation
-  from: TransferLocation
-  asset: TransferAsset
-  success: Boolean @index
-  type: TransferType
+  from: TransferLocation!
+  asset: TransferAsset!
+  success: Boolean! @index
+  type: TransferType!
 }
 
 union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
 
 type TransferLocationAccount {
-  id: String
+  id: String!
 }
 
 type TransferLocationEvm {
@@ -163,7 +163,7 @@ type AccountTransfer @entity {
 type Reward implements Action & HasEra @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
@@ -177,7 +177,7 @@ type Reward implements Action & HasEra @entity  {
 type Slash implements Action & HasEra @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
@@ -194,7 +194,7 @@ enum BondType {
 type Bond implements Action & CanFail @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
