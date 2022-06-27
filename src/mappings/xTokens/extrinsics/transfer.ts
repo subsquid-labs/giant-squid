@@ -64,7 +64,7 @@ export async function handleTransfer(ctx: CallHandlerContext) {
             id: `${id}-from`,
             transfer,
             account: from,
-            direction: TransferDirection.FROM,
+            direction: TransferDirection.From,
         })
     )
 }

@@ -6,8 +6,8 @@ type Account @entity {
 }
 
 enum TransferDirection {
-  FROM
-  TO
+  From
+  To
 }
 
 interface Action {

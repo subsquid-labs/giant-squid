@@ -67,7 +67,7 @@ export async function handleTransferMulticurrencies(ctx: CallHandlerContext) {
             id: `${id}-from`,
             transfer,
             account: from,
-            direction: TransferDirection.FROM,
+            direction: TransferDirection.From,
         })
     )
 }
