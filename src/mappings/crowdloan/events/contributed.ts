@@ -13,11 +13,18 @@ function getEventData(ctx: EventHandlerContext): ContributionData {
             paraId,
             amount,
         }
-    } else {
-        const [account, paraId, amount] = event.asLatest
+    } else if (event.isV9230) {
+        const { who, fundIndex, amount } = event.asV9230
         return {
-            account,
-            paraId,
+            account: who,
+            paraId: fundIndex,
+            amount,
+        }
+    } else {
+        const { who, fundIndex, amount } = event.asLatest
+        return {
+            account: who,
+            paraId: fundIndex,
             amount,
         }
     }

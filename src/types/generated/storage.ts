@@ -2,6 +2,7 @@ import assert from 'assert'
 import {StorageContext, Result} from './support'
 import * as v0 from './v0'
 import * as v9110 from './v9110'
+import * as v9180 from './v9180'
 
 export class CrowdloanFundsStorage {
   constructor(private ctx: StorageContext) {}
@@ -18,6 +19,21 @@ export class CrowdloanFundsStorage {
    */
   async getAsV9110(key: v9110.Id): Promise<v9110.FundInfo | undefined> {
     assert(this.isV9110)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
+  }
+
+  /**
+   *  Info on all of the funds.
+   */
+  get isV9180() {
+    return this.ctx._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === 'e837aa8c7af80bff126d455e0237189b2b62b5bf6586a1f2e67a22edfaf5a596'
+  }
+
+  /**
+   *  Info on all of the funds.
+   */
+  async getAsV9180(key: v9180.Id): Promise<v9180.FundInfo | undefined> {
+    assert(this.isV9180)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'Crowdloan', 'Funds', key)
   }
 
