@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { Era, EraNominator, EraNomination, EraValidator } from '../../../model'
+import { Era, EraNomination, EraStaker, StakingRole } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
 import { createPrevStorageContext } from '../../util/actions'
@@ -47,7 +47,7 @@ export async function handleNewAuthorities(ctx: EventHandlerContext) {
 }
 
 async function getStakingData(ctx: EventHandlerContext, era: Era) {
-    const validators: Map<string, EraValidator> = new Map()
+    const validators: Map<string, EraStaker> = new Map()
 
     const validatorIds = await storage.session.getValidators(ctx)
     if (!validatorIds) {
@@ -84,12 +84,15 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
 
         validators.set(
             validatorId,
-            new EraValidator({
+            new EraStaker({
                 id: `${era.index}-${validatorId}`,
                 era,
                 staker,
                 totalBonded: validatorData.total,
                 selfBonded: validatorData.own,
+                totalReward: staker.totalReward,
+                totalSlash: staker.totalSlash,
+                role: StakingRole.Validator,
             })
         )
 
@@ -104,7 +107,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
     }
 
     const nominatorStakers = new Map((await getOrCreateStakers(ctx, 'Stash', nominatorIds)).map((s) => [s.id, s]))
-    const nominators: Map<string, EraNominator> = new Map()
+    const nominators: Map<string, EraStaker> = new Map()
 
     for (const nominatorId of nominatorIds) {
         const staker = nominatorStakers.get(nominatorId)
@@ -115,11 +118,15 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
 
         nominators.set(
             nominatorId,
-            new EraNominator({
+            new EraStaker({
                 id: `${era.index}-${nominatorId}`,
                 era,
                 staker,
-                bonded: staker.activeBond,
+                role: StakingRole.Nominator,
+                selfBonded: staker.activeBond,
+                totalBonded: staker.activeBond,
+                totalReward: staker.totalReward,
+                totalSlash: staker.totalSlash,
             })
         )
     }

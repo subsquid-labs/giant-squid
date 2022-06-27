@@ -3,8 +3,7 @@ import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {PayeeType} from "./_payeeType"
 import {StakingRole} from "./_stakingRole"
-import {EraValidator} from "./eraValidator.model"
-import {EraNominator} from "./eraNominator.model"
+import {EraStaker} from "./eraStaker.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
@@ -58,11 +57,8 @@ export class Staker {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalSlash!: bigint
 
-  @OneToMany_(() => EraValidator, e => e.staker)
-  validatorHistory!: EraValidator[]
-
-  @OneToMany_(() => EraNominator, e => e.staker)
-  nominatorHistory!: EraNominator[]
+  @OneToMany_(() => EraStaker, e => e.staker)
+  stakerHistory!: EraStaker[]
 
   @OneToMany_(() => Reward, e => e.staker)
   rewards!: Reward[]
