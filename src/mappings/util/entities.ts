@@ -86,7 +86,7 @@ export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData
             id: `${transfer.id}-from`,
             transfer,
             account: from,
-            direction: TransferDirection.FROM,
+            direction: TransferDirection.From,
         })
     )
 
@@ -96,7 +96,7 @@ export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData
                 id: `${transfer.id}-to`,
                 transfer,
                 account: to,
-                direction: TransferDirection.TO,
+                direction: TransferDirection.To,
             })
         )
     }

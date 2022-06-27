@@ -1,11 +1,6 @@
 import { UnknownVersionError } from '../../common/errors'
 import { AssetRegistryAssetMetadatasStorage } from '../../types/generated/storage'
 import { BlockContext } from '../../types/generated/support'
-import * as v2042 from '../../types/generated/v2042'
-import * as v2000 from '../../types/generated/v2000'
-import * as v2011 from '../../types/generated/v2011'
-import * as v2022 from '../../types/generated/v2022'
-import * as v2080 from '../../types/generated/v2080'
 
 interface StorageData {
     name: Uint8Array
@@ -14,7 +9,7 @@ interface StorageData {
     minimalBalance: bigint
 }
 
-type TokenSymbol = v2000.TokenSymbol | v2011.TokenSymbol | v2022.TokenSymbol | v2042.TokenSymbol | v2080.TokenSymbol
+type TokenSymbol = { __kind: string }
 
 type AssetId =
     | {
@@ -49,12 +44,12 @@ async function getStorageData(ctx: BlockContext, key: any): Promise<StorageData 
     const storage = new AssetRegistryAssetMetadatasStorage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV2011) {
+    if (storage.isV2001) {
         if (typeof key.value !== 'number') return undefined
-        return await storage.getAsV2011(key.value)
-    } else if (storage.isV2020) {
+        return await storage.getAsV2001(key.value)
+    } else if (storage.isV2012) {
         if (key.__kind === 'NativeAssetId') return undefined
-        return await storage.getAsV2020(key)
+        return await storage.getAsV2012(key)
     } else if (storage.isV2042) {
         return await storage.getAsV2042(key)
     } else if (storage.isV2080) {

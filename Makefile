@@ -27,7 +27,7 @@ typegen:
 	@npx squid-substrate-typegen ./typegen/typegen.json
 
 explore:
-	@npx squid-substrate-metadata-explorer --chain wss://acala.polkawallet.io --archive https://acala.archive.subsquid.io/graphql --out ./typegen/versions.jsonl
+	@npx squid-substrate-metadata-explorer --chain wss://karura.polkawallet.io --archive https://karura.archive.subsquid.io/graphql --out ./typegen/versions.jsonl
 
 
 up:

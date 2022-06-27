@@ -7,25 +7,16 @@ import {
     TransferLocationAccount,
     TransferType,
 } from '../../../model'
-import * as v2032 from '../../../types/generated/v2032'
-import * as v2042 from '../../../types/generated/v2042'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { getOrCreateAccount } from '../../util/entities'
 import { getAsset, getDest } from './utils'
 
-type CallData =
-    | {
-          currencies: [v2032.CurrencyId, bigint][]
-          feeItem: number
-          dest: v2032.VersionedMultiLocation
-          destWeight: bigint
-      }
-    | {
-          currencies: [v2042.CurrencyId, bigint][]
-          feeItem: number
-          dest: v2042.VersionedMultiLocation
-          destWeight: bigint
-      }
+type CallData = {
+    currencies: [any, bigint][]
+    feeItem: number
+    dest: any
+    destWeight: bigint
+}
 
 function getCallData(ctx: CallContext): CallData {
     return ctx._chain.decodeCall(ctx.call)
@@ -67,7 +58,7 @@ export async function handleTransferMulticurrencies(ctx: CallHandlerContext) {
             id: `${id}-from`,
             transfer,
             account: from,
-            direction: TransferDirection.FROM,
+            direction: TransferDirection.From,
         })
     )
 }

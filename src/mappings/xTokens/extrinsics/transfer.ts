@@ -7,19 +7,29 @@ import {
     TransferLocationAccount,
     TransferType,
 } from '../../../model'
-import * as v2000 from '../../../types/generated/v2000'
+import * as v1019 from '../../../types/generated/v1019'
+import * as v2001 from '../../../types/generated/v2001'
+import * as v2010 from '../../../types/generated/v2010'
 import * as v2011 from '../../../types/generated/v2011'
 import * as v2022 from '../../../types/generated/v2022'
-import * as v2042 from '../../../types/generated/v2042'
+import * as v2032 from '../../../types/generated/v2032'
+import * as v2041 from '../../../types/generated/v2041'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { getOrCreateAccount } from '../../util/entities'
 import { getAsset, getDest } from './utils'
 
 type CallData =
-    | { currencyId: v2000.CurrencyId; amount: bigint; dest: v2000.VersionedMultiLocation; destWeight: bigint }
+    // | { currencyId: v1001.CurrencyId; amount: bigint; dest: v1019.VersionedMultiLocation; destWeight: bigint }
+    // | { currencyId: v1008.CurrencyId; amount: bigint; dest: v1019.VersionedMultiLocation; destWeight: bigint }
+    // | { currencyId: v1009.CurrencyId; amount: bigint; dest: v1019.VersionedMultiLocation; destWeight: bigint }
+    // | { currencyId: v1014.CurrencyId; amount: bigint; dest: v1019.VersionedMultiLocation; destWeight: bigint }
+    | { currencyId: v1019.CurrencyId; amount: bigint; dest: v1019.VersionedMultiLocation; destWeight: bigint }
+    | { currencyId: v2001.CurrencyId; amount: bigint; dest: v2001.VersionedMultiLocation; destWeight: bigint }
+    | { currencyId: v2010.CurrencyId; amount: bigint; dest: v2010.VersionedMultiLocation; destWeight: bigint }
     | { currencyId: v2011.CurrencyId; amount: bigint; dest: v2011.VersionedMultiLocation; destWeight: bigint }
     | { currencyId: v2022.CurrencyId; amount: bigint; dest: v2022.VersionedMultiLocation; destWeight: bigint }
-    | { currencyId: v2042.CurrencyId; amount: bigint; dest: v2042.VersionedMultiLocation; destWeight: bigint }
+    | { currencyId: v2032.CurrencyId; amount: bigint; dest: v2032.VersionedMultiLocation; destWeight: bigint }
+    | { currencyId: v2041.CurrencyId; amount: bigint; dest: v2041.VersionedMultiLocation; destWeight: bigint }
 
 // type Interior = (DestData & { __kind: 'V1' })['value']['interior'] | (DestData & { __kind: 'V0' })['value']
 
@@ -64,7 +74,7 @@ export async function handleTransfer(ctx: CallHandlerContext) {
             id: `${id}-from`,
             transfer,
             account: from,
-            direction: TransferDirection.FROM,
+            direction: TransferDirection.From,
         })
     )
 }

@@ -1,13 +1,13 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
 
 const config: ProcessorConfig = {
-    chainName: 'acala',
-    prefix: 'acala',
+    chainName: 'karura',
+    prefix: 'karura',
     dataSource: {
-        archive: 'https://acala.archive.subsquid.io/graphql',
-        chain: 'wss://acala.polkawallet.io',
+        archive: 'https://karura.archive.subsquid.io/graphql',
+        chain: 'wss://karura.polkawallet.io',
     },
-    typesBundle: 'acala',
+    typesBundle: 'karura',
     batchSize: 100,
     // blockRange: {
     //     from: 1120940,
