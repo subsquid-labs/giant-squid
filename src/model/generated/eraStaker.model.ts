@@ -2,11 +2,12 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, M
 import * as marshal from "./marshal"
 import {Staker} from "./staker.model"
 import {Era} from "./era.model"
+import {StakingRole} from "./_stakingRole"
 import {EraNomination} from "./eraNomination.model"
 
 @Entity_()
-export class EraValidator {
-  constructor(props?: Partial<EraValidator>) {
+export class EraStaker {
+  constructor(props?: Partial<EraStaker>) {
     Object.assign(this, props)
   }
 
@@ -24,15 +25,27 @@ export class EraValidator {
   @ManyToOne_(() => Era, {nullable: false})
   era!: Era
 
+  @Column_("varchar", {length: 9, nullable: false})
+  role!: StakingRole
+
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   selfBonded!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalBonded!: bigint
 
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  totalReward!: bigint
+
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  totalSlash!: bigint
+
   @Column_("int4", {nullable: true})
   commission!: number | undefined | null
 
   @OneToMany_(() => EraNomination, e => e.validator)
   nominators!: EraNomination[]
+
+  @OneToMany_(() => EraNomination, e => e.nominator)
+  validators!: EraNomination[]
 }

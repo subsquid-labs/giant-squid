@@ -1,8 +1,7 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
 import {Era} from "./era.model"
-import {EraNominator} from "./eraNominator.model"
-import {EraValidator} from "./eraValidator.model"
+import {EraStaker} from "./eraStaker.model"
 
 @Entity_()
 export class EraNomination {
@@ -18,12 +17,12 @@ export class EraNomination {
   era!: Era
 
   @Index_()
-  @ManyToOne_(() => EraNominator, {nullable: true})
-  nominator!: EraNominator | undefined | null
+  @ManyToOne_(() => EraStaker, {nullable: true})
+  nominator!: EraStaker | undefined | null
 
   @Index_()
-  @ManyToOne_(() => EraValidator, {nullable: true})
-  validator!: EraValidator | undefined | null
+  @ManyToOne_(() => EraStaker, {nullable: true})
+  validator!: EraStaker | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   vote!: bigint

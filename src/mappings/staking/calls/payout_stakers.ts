@@ -1,7 +1,7 @@
 import { encodeId } from '../../../common/tools'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { UnknownVersionError } from '../../../common/errors'
-import { EraValidator, Reward } from '../../../model'
+import { Reward } from '../../../model'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 
 export interface CallData {
