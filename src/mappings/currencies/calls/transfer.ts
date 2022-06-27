@@ -68,6 +68,10 @@ export async function handleTransfer(ctx: CallHandlerContext) {
     if (!accountId) return
 
     const token = await getToken(ctx, data.currency)
+    if (!token) {
+        ctx.log.warn('No token')
+        return
+    }
 
     await saveTransfer(ctx, {
         id: ctx.call.id,
@@ -88,7 +92,7 @@ export async function handleTransfer(ctx: CallHandlerContext) {
 async function getToken(
     ctx: CommonHandlerContext,
     currency: CurrencyId
-): Promise<{ symbol: string; decimals: number }> {
+): Promise<{ symbol: string; decimals: number } | undefined> {
     switch (currency.__kind) {
         case 'Token': {
             const token =
@@ -124,6 +128,7 @@ async function getToken(
             return token
         }
         default:
-            throw new Error(`Unknown currency type ${currency.__kind} at block ${ctx.block.height}`)
+            // throw new Error(`Unknown currency type ${currency.__kind} at block ${ctx.block.height}`)
+            return undefined
     }
 }
