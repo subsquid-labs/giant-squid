@@ -14,7 +14,14 @@ interface EventData {
 function getEventData(ctx: EventContext): EventData {
     const event = new ParachainStakingCandidateBondedMoreEvent(ctx)
 
-    if (event.isV1300) {
+    if (event.isV1001) {
+        const [account, amount, newTotal] = event.asV1001
+        return {
+            account,
+            amount,
+            newTotal,
+        }
+    } else if (event.isV1300) {
         const { candidate: account, amount, newTotalBond: newTotal } = event.asV1300
         return {
             account,
