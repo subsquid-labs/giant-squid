@@ -1,7 +1,7 @@
 import { decodeId, encodeId } from '../../common/tools'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v29 from '../../types/generated/v29'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext } from '../../types/generated/support'
 import { UnknownVersionError } from '../../common/errors'
 import assert from 'assert'
 
@@ -10,7 +10,7 @@ export interface StorageData {
     account: Uint8Array | undefined
 }
 
-async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<StorageData | undefined> {
+async function getStorageData(ctx: BlockContext, account: Uint8Array): Promise<StorageData | undefined> {
     const storage = new StakingPayeeStorage(ctx)
     if (!storage.isExists) return undefined
 
@@ -49,7 +49,7 @@ export interface PayeeAccount {
     account: string
 }
 
-export async function getPayee(ctx: StorageContext, account: string): Promise<Payee | undefined> {
+export async function getPayee(ctx: BlockContext, account: string): Promise<Payee | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
         storageCache.values.clear()

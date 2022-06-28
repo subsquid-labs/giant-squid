@@ -1,10 +1,10 @@
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/tools'
 import { StakingBondedStorage } from '../../types/generated/storage'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext } from '../../types/generated/support'
 
 async function getStorageData(
-    ctx: StorageContext,
+    ctx: BlockContext,
     accounts: Uint8Array[]
 ): Promise<(Uint8Array | undefined)[] | undefined> {
     const storage = new StakingBondedStorage(ctx)
@@ -18,7 +18,7 @@ async function getStorageData(
 }
 
 export const bonded = {
-    get: async (ctx: StorageContext, account: string) => {
+    get: async (ctx: BlockContext, account: string) => {
         const u8 = decodeId(account)
 
         const data = await getStorageData(ctx, [u8])
@@ -26,7 +26,7 @@ export const bonded = {
 
         return encodeId(data[0])
     },
-    getMany: async (ctx: StorageContext, accounts: string[]) => {
+    getMany: async (ctx: BlockContext, accounts: string[]) => {
         if (accounts.length === 0) return []
 
         const u8s = accounts.map((a) => decodeId(a))

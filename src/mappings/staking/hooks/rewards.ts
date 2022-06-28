@@ -1,12 +1,12 @@
 import { SubstrateCall, SubstrateEvent } from '@subsquid/substrate-processor'
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, isStorageCorrupted, saturatingSumBigInt } from '../../../common/tools'
+import { encodeId, saturatingSumBigInt } from '../../../common/tools'
 import { PayeeType, Reward } from '../../../model'
 import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
 import { Call, ChainContext, Event } from '../../../types/generated/support'
-import { EventContext, CallContext, EventHandlerContext, BlockHandlerContext } from '../../types/contexts'
+import { BlockHandlerContext } from '../../types/contexts'
 import { getMeta } from '../../util/actions'
 import { getOrCreateStakers } from '../../util/entities'
 import { RewardData } from '../events'
@@ -19,8 +19,8 @@ interface EventData {
 function getRewardedEventData(ctx: ChainContext, event: Event): EventData {
     const data = new StakingRewardedEvent(ctx, event)
 
-    if (data.isV9090) {
-        const [account, amount] = data.asV9090
+    if (data.isV29) {
+        const [account, amount] = data.asV29
         return {
             account,
             amount,
@@ -33,10 +33,8 @@ function getRewardedEventData(ctx: ChainContext, event: Event): EventData {
 function getRewardEventData(ctx: ChainContext, event: Event): EventData | undefined {
     const data = new StakingRewardEvent(ctx, event)
 
-    if (data.isV1020) {
-        return undefined
-    } else if (data.isV1050) {
-        const [account, amount] = data.asV1050
+    if (data.isV13) {
+        const [account, amount] = data.asV13
         return {
             account,
             amount,
@@ -54,8 +52,8 @@ export interface CallData {
 function getCallData(ctx: ChainContext, call: Call): CallData {
     const data = new StakingPayoutStakersCall(ctx, call)
 
-    if (data.isV1058) {
-        const { validatorStash, era } = data.asV1058
+    if (data.isV13) {
+        const { validatorStash, era } = data.asV13
         return {
             validator: validatorStash,
             era,
@@ -139,7 +137,6 @@ export async function rewardsHook(ctx: BlockHandlerContext<typeof rewardsRequest
         for (const rewardData of callRewardsData) {
             const { accountId, amount } = rewardData
             const staker = stakers.get(accountId)
-            if (!staker && isStorageCorrupted(ctx)) return
             assert(staker != null, `Missing staking info for ${accountId}`)
 
             const account = staker.payee

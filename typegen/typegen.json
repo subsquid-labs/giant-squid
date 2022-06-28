@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/generated",
-  "chainVersions": "./versions.json",
+  "specVersions": "./versions.jsonl",
   "typesBundle": "hydradx",
   "events": [
     "Staking.EraPaid",

@@ -1,12 +1,20 @@
 import assert from 'assert'
-import {CallContext, Result, deprecateLatest} from './support'
+import {Chain, ChainContext, CallContext, Call, Result} from './support'
 import * as v13 from './v13'
 import * as v22 from './v22'
 import * as v29 from './v29'
 
 export class BalancesForceTransferCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.force_transfer')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.force_transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -18,7 +26,7 @@ export class BalancesForceTransferCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Balances.force_transfer') === '2fe8348cf811b833de74f02f6eeab668dbfad8a5d53274dd89837666ed3eb6fe'
+    return this._chain.getCallHash('Balances.force_transfer') === '2fe8348cf811b833de74f02f6eeab668dbfad8a5d53274dd89837666ed3eb6fe'
   }
 
   /**
@@ -31,23 +39,21 @@ export class BalancesForceTransferCall {
    */
   get asV13(): {source: v13.LookupSource, dest: v13.LookupSource, value: bigint} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {source: v13.LookupSource, dest: v13.LookupSource, value: bigint} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.transfer')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -80,7 +86,7 @@ export class BalancesTransferCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Balances.transfer') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
+    return this._chain.getCallHash('Balances.transfer') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
   }
 
   /**
@@ -114,23 +120,21 @@ export class BalancesTransferCall {
    */
   get asV13(): {dest: v13.LookupSource, value: bigint} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {dest: v13.LookupSource, value: bigint} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferAllCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.transfer_all')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer_all')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -154,7 +158,7 @@ export class BalancesTransferAllCall {
    *    #</weight>
    */
   get isV22(): boolean {
-    return this.ctx._chain.getCallHash('Balances.transfer_all') === '55f3f63b765a5b0a714fcbe6c824b0f6fc21773aab999a719c36e7dc7db49575'
+    return this._chain.getCallHash('Balances.transfer_all') === '55f3f63b765a5b0a714fcbe6c824b0f6fc21773aab999a719c36e7dc7db49575'
   }
 
   /**
@@ -179,23 +183,21 @@ export class BalancesTransferAllCall {
    */
   get asV22(): {dest: v22.LookupSource, keepAlive: boolean} {
     assert(this.isV22)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV22
-  }
-
-  get asLatest(): {dest: v22.LookupSource, keepAlive: boolean} {
-    deprecateLatest()
-    return this.asV22
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferKeepAliveCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.transfer_keep_alive')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer_keep_alive')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -212,7 +214,7 @@ export class BalancesTransferKeepAliveCall {
    *  #</weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Balances.transfer_keep_alive') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
+    return this._chain.getCallHash('Balances.transfer_keep_alive') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
   }
 
   /**
@@ -230,23 +232,21 @@ export class BalancesTransferKeepAliveCall {
    */
   get asV13(): {dest: v13.LookupSource, value: bigint} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {dest: v13.LookupSource, value: bigint} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingBondCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.bond')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.bond')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -274,7 +274,7 @@ export class StakingBondCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.bond') === '20db399e4963916b83c2636d8d5e414b30d79d868ca62d05181259e5d0c02e7e'
+    return this._chain.getCallHash('Staking.bond') === '20db399e4963916b83c2636d8d5e414b30d79d868ca62d05181259e5d0c02e7e'
   }
 
   /**
@@ -303,7 +303,7 @@ export class StakingBondCall {
    */
   get asV13(): {controller: v13.LookupSource, value: bigint, payee: v13.RewardDestination} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -326,7 +326,7 @@ export class StakingBondCall {
    * # </weight>
    */
   get isV29(): boolean {
-    return this.ctx._chain.getCallHash('Staking.bond') === 'bb948688bed1a70b8b0ff155f0a4555536a3bab1f35f7432580a502b100ae8e4'
+    return this._chain.getCallHash('Staking.bond') === 'bb948688bed1a70b8b0ff155f0a4555536a3bab1f35f7432580a502b100ae8e4'
   }
 
   /**
@@ -350,23 +350,21 @@ export class StakingBondCall {
    */
   get asV29(): {controller: v29.AccountId32, value: bigint, payee: v29.RewardDestination} {
     assert(this.isV29)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV29
-  }
-
-  get asLatest(): {controller: v29.AccountId32, value: bigint, payee: v29.RewardDestination} {
-    deprecateLatest()
-    return this.asV29
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingBondExtraCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.bond_extra')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.bond_extra')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -393,7 +391,7 @@ export class StakingBondExtraCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.bond_extra') === 'f92c56c980d6a55c468653fc3149548edcf2481e5da53835a201cafa7dc02fd8'
+    return this._chain.getCallHash('Staking.bond_extra') === 'f92c56c980d6a55c468653fc3149548edcf2481e5da53835a201cafa7dc02fd8'
   }
 
   /**
@@ -421,23 +419,21 @@ export class StakingBondExtraCall {
    */
   get asV13(): {maxAdditional: bigint} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {maxAdditional: bigint} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingChillCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.chill')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.chill')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -460,7 +456,7 @@ export class StakingChillCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.chill') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
+    return this._chain.getCallHash('Staking.chill') === '01f2f9c28aa1d4d36a81ff042620b6677d25bf07c2bf4acc37b58658778a4fca'
   }
 
   /**
@@ -484,23 +480,21 @@ export class StakingChillCall {
    */
   get asV13(): null {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): null {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingKickCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.kick')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.kick')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -519,7 +513,7 @@ export class StakingKickCall {
    *  block any further nominations.
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.kick') === 'e074d5a93414f189b47fbb5d94c57b62cfb9e63808a3c94665eeb2cfe53be8df'
+    return this._chain.getCallHash('Staking.kick') === 'e074d5a93414f189b47fbb5d94c57b62cfb9e63808a3c94665eeb2cfe53be8df'
   }
 
   /**
@@ -539,23 +533,21 @@ export class StakingKickCall {
    */
   get asV13(): {who: v13.LookupSource[]} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {who: v13.LookupSource[]} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingNominateCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.nominate')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.nominate')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -580,7 +572,7 @@ export class StakingNominateCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.nominate') === '730fc5a4090c1c566ea6d11126ba7258c98a461b0c6bfca8bf9e17e42f8801de'
+    return this._chain.getCallHash('Staking.nominate') === '730fc5a4090c1c566ea6d11126ba7258c98a461b0c6bfca8bf9e17e42f8801de'
   }
 
   /**
@@ -606,23 +598,21 @@ export class StakingNominateCall {
    */
   get asV13(): {targets: v13.LookupSource[]} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {targets: v13.LookupSource[]} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingPayoutStakersCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.payout_stakers')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.payout_stakers')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -656,7 +646,7 @@ export class StakingPayoutStakersCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.payout_stakers') === '1a09dc413ed4b8ce5cbcdc282b798636ca24268cca001e43fc92d892de3b6a5f'
+    return this._chain.getCallHash('Staking.payout_stakers') === '1a09dc413ed4b8ce5cbcdc282b798636ca24268cca001e43fc92d892de3b6a5f'
   }
 
   /**
@@ -691,23 +681,21 @@ export class StakingPayoutStakersCall {
    */
   get asV13(): {validatorStash: v13.AccountId, era: v13.EraIndex} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {validatorStash: v13.AccountId, era: v13.EraIndex} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingSetControllerCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.set_controller')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.set_controller')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -729,7 +717,7 @@ export class StakingSetControllerCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.set_controller') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
+    return this._chain.getCallHash('Staking.set_controller') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
   }
 
   /**
@@ -752,23 +740,21 @@ export class StakingSetControllerCall {
    */
   get asV13(): {controller: v13.LookupSource} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {controller: v13.LookupSource} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingSetPayeeCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.set_payee')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.set_payee')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -790,7 +776,7 @@ export class StakingSetPayeeCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.set_payee') === 'e3e8a6a5ee204c56e926f714a3d580d47fe315d3b243872e40cc8959db768aa8'
+    return this._chain.getCallHash('Staking.set_payee') === 'e3e8a6a5ee204c56e926f714a3d580d47fe315d3b243872e40cc8959db768aa8'
   }
 
   /**
@@ -813,7 +799,7 @@ export class StakingSetPayeeCall {
    */
   get asV13(): {payee: v13.RewardDestination} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
+    return this._chain.decodeCall(this.call)
   }
 
   /**
@@ -835,7 +821,7 @@ export class StakingSetPayeeCall {
    * # </weight>
    */
   get isV29(): boolean {
-    return this.ctx._chain.getCallHash('Staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
+    return this._chain.getCallHash('Staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
   }
 
   /**
@@ -858,23 +844,21 @@ export class StakingSetPayeeCall {
    */
   get asV29(): {payee: v29.RewardDestination} {
     assert(this.isV29)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV29
-  }
-
-  get asLatest(): {payee: v29.RewardDestination} {
-    deprecateLatest()
-    return this.asV29
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingUnbondCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.unbond')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.unbond')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -912,7 +896,7 @@ export class StakingUnbondCall {
    *  </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.unbond') === 'd13cb91c3f61510beece366e7f7c2d0705f01d70f9bc28721d2437cd210a3372'
+    return this._chain.getCallHash('Staking.unbond') === 'd13cb91c3f61510beece366e7f7c2d0705f01d70f9bc28721d2437cd210a3372'
   }
 
   /**
@@ -951,23 +935,21 @@ export class StakingUnbondCall {
    */
   get asV13(): {value: bigint} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {value: bigint} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class StakingValidateCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Staking.validate')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Staking.validate')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -990,7 +972,7 @@ export class StakingValidateCall {
    *  # </weight>
    */
   get isV13(): boolean {
-    return this.ctx._chain.getCallHash('Staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
+    return this._chain.getCallHash('Staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
   }
 
   /**
@@ -1014,16 +996,6 @@ export class StakingValidateCall {
    */
   get asV13(): {prefs: v13.ValidatorPrefs} {
     assert(this.isV13)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV13
-  }
-
-  get asLatest(): {prefs: v13.ValidatorPrefs} {
-    deprecateLatest()
-    return this.asV13
+    return this._chain.decodeCall(this.call)
   }
 }

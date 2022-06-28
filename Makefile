@@ -28,7 +28,7 @@ typegen:
 
 
 explore:
-	@npx squid-substrate-metadata-explorer --chain wss://archive.snakenet.hydradx.io --archive https://hydradx.indexer.gc.subsquid.io/v4/graphql --out ./typegen/versions.json
+	@npx squid-substrate-metadata-explorer --chain wss://archive.snakenet.hydradx.io --archive https://hydradx-snakenet.archive.subsquid.io/graphql --out ./typegen/versions.jsonl
 
 
 up:

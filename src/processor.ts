@@ -1,6 +1,6 @@
 import config from './config'
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
-import { DEFAULT_BATCH_SIZE, DEFAULT_PORT, EXTRINSIC_SUCCESS } from './common/consts'
+import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
 import * as modules from './mappings'
 import { TypeormDatabase } from '@subsquid/typeorm-store'
 
@@ -51,10 +51,6 @@ processor.addCallHandler(
     { triggerForFailedCalls: true },
     modules.balances.extrinsics.handleTransferAll
 )
-processor.addCallHandler('System.remark', modules.remark.handleRemark)
-// processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
-//     console.log(ctx.block.height, ctx.items)
-// })
 
 processor.addPostHook({ data: modules.staking.hooks.rewardsRequest }, modules.staking.hooks.rewardsHook)
 
