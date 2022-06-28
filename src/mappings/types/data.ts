@@ -1,8 +1,6 @@
-
-
 export interface ActionData {
-    id: string,
+    id: string
     timestamp: Date
-    blockNumber: number,
-    extrinsicHash?: string,
+    blockNumber: number
+    extrinsicHash?: string
 }
