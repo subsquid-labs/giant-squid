@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/generated",
-  "chainVersions": "./versions.json",
+  "specVersions": "./versions.jsonl",
   "typesBundle": "polkadot",
   "events": [
     "Staking.EraPaid",

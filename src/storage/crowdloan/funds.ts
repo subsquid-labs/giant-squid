@@ -1,8 +1,8 @@
 import { UnknownVersionError } from '../../common/errors'
 import { CrowdloanFundsStorage } from '../../types/generated/storage'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext } from '../../types/generated/support'
 
-async function getStorageData(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
+async function getStorageData(ctx: BlockContext, paraId: number): Promise<FundInfo | undefined> {
     const storage = new CrowdloanFundsStorage(ctx)
     if (!storage.isExists) return undefined
 
@@ -36,7 +36,7 @@ export interface FundInfo {
     trieIndex: number
 }
 
-export async function getFunds(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
+export async function getFunds(ctx: BlockContext, paraId: number): Promise<FundInfo | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
         storageCache.values.clear()

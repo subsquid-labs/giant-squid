@@ -2,7 +2,7 @@ import assert from 'assert'
 import { Era, EraNomination, EraStaker, StakingRole } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
-import { createPrevStorageContext } from '../../util/actions'
+import { createPrevBlockContext } from '../../util/actions'
 import { getOrCreateStakers } from '../../util/entities'
 
 interface PairData {
@@ -54,7 +54,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         return ctx.log.warn(`Validators for era ${era} not found`)
     }
 
-    const prevCtx = createPrevStorageContext(ctx)
+    const prevCtx = createPrevBlockContext(ctx)
 
     const validatorsData = await storage.staking.getEraStakersData(
         prevCtx,

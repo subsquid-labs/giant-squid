@@ -27,7 +27,7 @@ typegen:
 	@npx squid-substrate-typegen ./typegen/typegen.json
 
 explore:
-	@npx squid-substrate-metadata-explorer --chain wss://rpc.polkadot.io --archive https://polkadot.indexer.gc.subsquid.io/v4/graphql --out ./typegen/versions.json
+	@npx squid-substrate-metadata-explorer --chain wss://rpc.polkadot.io --archive https://polkadot.archive.subsquid.io/graphql --out ./typegen/versions.jsonl
 
 
 up:

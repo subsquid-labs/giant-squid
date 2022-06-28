@@ -16,7 +16,7 @@ import {
 import storage from '../../storage'
 import { CommonHandlerContext } from '../types/contexts'
 import { ActionData } from '../types/data'
-import { createPrevStorageContext, getMeta } from './actions'
+import { createPrevBlockContext, getMeta } from './actions'
 
 export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string): Promise<Account> {
     let account = await ctx.store.get(Account, id)
@@ -79,7 +79,7 @@ export async function getOrCreateStaker(
     })
     if (!staker) {
         // query ledger to check if the account has already bonded balance
-        const prevCtx = createPrevStorageContext(ctx)
+        const prevCtx = createPrevBlockContext(ctx)
         // first we need to know controller id for account
         const controllerId = type === 'Controller' ? id : (await storage.staking.bonded.get(prevCtx, id)) || id
 
@@ -142,7 +142,7 @@ export async function getOrCreateStakers(
 
     // const newStakers: Set<Staker> = new Set()
     if (missingIds.length === 0) return [...stakersMap.values()]
-    const prevCtx = createPrevStorageContext(ctx)
+    const prevCtx = createPrevBlockContext(ctx)
 
     const controllerIds = type === 'Stash' ? await storage.staking.bonded.getMany(prevCtx, missingIds) : missingIds
     if (!controllerIds) return [...stakersMap.values()]
@@ -193,7 +193,7 @@ interface StakerData {
 }
 
 export async function createStaker(ctx: CommonHandlerContext, data: StakerData) {
-    const prevCtx = createPrevStorageContext(ctx)
+    const prevCtx = createPrevBlockContext(ctx)
 
     const stash = await getOrCreateAccount(ctx, data.stashId)
 

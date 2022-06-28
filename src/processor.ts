@@ -57,9 +57,6 @@ processor.addCallHandler(
     { triggerForFailedCalls: true },
     modules.balances.extrinsics.handleTransferAll
 )
-// processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
-//     console.log(ctx.block.height, ctx.items)
-// })
 
 processor.addPostHook({ data: modules.staking.hooks.rewardsRequest }, modules.staking.hooks.rewardsHook)
 
