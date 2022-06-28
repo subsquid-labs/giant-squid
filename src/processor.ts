@@ -27,16 +27,7 @@ processor.addEventHandler('Grandpa.NewAuthorities', modules.grandpa.events.handl
 //extrinsics handlers
 processor.addCallHandler('Crowdloan.contribute', modules.crowdloan.extrinsics.handleContribute)
 
-processor.addCallHandler(
-    'Staking.payout_stakers',
-    {
-        data: {
-            call: true,
-            extrinsic: true,
-        },
-    },
-    modules.staking.extrinsics.handlePauoutStakers
-)
+processor.addCallHandler('Staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
 processor.addCallHandler('Staking.bond', modules.staking.extrinsics.handleBond)
 processor.addCallHandler('Staking.bond_extra', modules.staking.extrinsics.handleBondExtra)
 processor.addCallHandler('Staking.unbond', modules.staking.extrinsics.handleUnbond)
@@ -46,10 +37,26 @@ processor.addCallHandler('Staking.nominate', modules.staking.extrinsics.handleNo
 processor.addCallHandler('Staking.validate', modules.staking.extrinsics.handleValidate)
 processor.addCallHandler('Staking.chill', modules.staking.extrinsics.handleChill)
 
-processor.addCallHandler('Balances.transfer', modules.balances.extrinsics.handleTransfer)
-processor.addCallHandler('Balances.transfer_keep_alive', modules.balances.extrinsics.handleTransferKeepAlive)
-processor.addCallHandler('Balances.force_transfer', modules.balances.extrinsics.handleForceTransfer)
-processor.addCallHandler('Balances.transfer_all', modules.balances.extrinsics.handleTransferAll)
+processor.addCallHandler(
+    'Balances.transfer',
+    { triggerForFailedCalls: true },
+    modules.balances.extrinsics.handleTransfer
+)
+processor.addCallHandler(
+    'Balances.transfer_keep_alive',
+    { triggerForFailedCalls: true },
+    modules.balances.extrinsics.handleTransferKeepAlive
+)
+processor.addCallHandler(
+    'Balances.force_transfer',
+    { triggerForFailedCalls: true },
+    modules.balances.extrinsics.handleForceTransfer
+)
+processor.addCallHandler(
+    'Balances.transfer_all',
+    { triggerForFailedCalls: true },
+    modules.balances.extrinsics.handleTransferAll
+)
 processor.addCallHandler('System.remark', modules.remark.handleRemark)
 // processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
 //     console.log(ctx.block.height, ctx.items)
