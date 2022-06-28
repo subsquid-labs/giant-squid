@@ -14,8 +14,8 @@ processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
 //events handlers
-processor.addEventHandler('Staking.Rewarded', modules.staking.events.handleRewarded)
-processor.addEventHandler('Staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
+// processor.addEventHandler('Staking.Rewarded', modules.staking.events.handleRewarded)
+// processor.addEventHandler('Staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
 processor.addEventHandler('Staking.Slashed', modules.staking.events.handleSlashed)
 processor.addEventHandler('Staking.Slash', modules.staking.events.handleSlash) //Old name of Slashed event
 
@@ -27,7 +27,7 @@ processor.addEventHandler('Grandpa.NewAuthorities', modules.grandpa.events.handl
 //extrinsics handlers
 processor.addCallHandler('Crowdloan.contribute', modules.crowdloan.extrinsics.handleContribute)
 
-processor.addCallHandler('Staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
+// processor.addCallHandler('Staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
 processor.addCallHandler('Staking.bond', modules.staking.extrinsics.handleBond)
 processor.addCallHandler('Staking.bond_extra', modules.staking.extrinsics.handleBondExtra)
 processor.addCallHandler('Staking.unbond', modules.staking.extrinsics.handleUnbond)
@@ -61,5 +61,7 @@ processor.addCallHandler('System.remark', modules.remark.handleRemark)
 // processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
 //     console.log(ctx.block.height, ctx.items)
 // })
+
+processor.addPostHook({ data: modules.staking.hooks.rewardsRequest }, modules.staking.hooks.rewardsHook)
 
 processor.run()

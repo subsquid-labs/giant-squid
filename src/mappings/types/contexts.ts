@@ -4,11 +4,13 @@ import {
     EventHandlerContext as PrEventHandlerContext,
     CallHandlerContext as PrCallHandlerContext,
     CommonHandlerContext as PrCommonHandlerContext,
+    BlockHandlerDataRequest,
 } from '@subsquid/substrate-processor'
 import { CallDataRequest, EventDataRequest } from '@subsquid/substrate-processor/lib/interfaces/dataSelection'
 
 export type EventHandlerContext<T extends EventDataRequest = { event: true }> = PrEventHandlerContext<Store, T>
-export type BlockHandlerContext = PrBlockHandlerContext<Store>
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type BlockHandlerContext<T extends BlockHandlerDataRequest = {}> = PrBlockHandlerContext<Store, T>
 export type CallHandlerContext<T extends CallDataRequest = { call: true; extrinsic: true }> = PrCallHandlerContext<
     Store,
     T
