@@ -1,21 +1,30 @@
 import assert from 'assert'
-import {EventContext, Result, deprecateLatest} from './support'
+import {Chain, ChainContext, EventContext, Event, Result} from './support'
 import * as v1020 from './v1020'
 import * as v1050 from './v1050'
 import * as v1051 from './v1051'
 import * as v9010 from './v9010'
 import * as v9090 from './v9090'
+import * as v9230 from './v9230'
 
 export class CrowdloanContributedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Crowdloan.Contributed')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Crowdloan.Contributed')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  Contributed to a crowd sale. [who, fund_index, amount]
    */
   get isV9010(): boolean {
-    return this.ctx._chain.getEventHash('Crowdloan.Contributed') === 'ad00729b31f26d2879a6f96c1691ed42a69cd4947c75e84221a6bde93a3415bc'
+    return this._chain.getEventHash('Crowdloan.Contributed') === 'ad00729b31f26d2879a6f96c1691ed42a69cd4947c75e84221a6bde93a3415bc'
   }
 
   /**
@@ -23,30 +32,43 @@ export class CrowdloanContributedEvent {
    */
   get asV9010(): [v9010.AccountId, v9010.ParaId, v9010.Balance] {
     assert(this.isV9010)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
+    return this._chain.decodeEvent(this.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9010
+  /**
+   * Contributed to a crowd sale.
+   */
+  get isV9230(): boolean {
+    return this._chain.getEventHash('Crowdloan.Contributed') === 'a09bba4441a47a7b463e5f26020197386183019a6130ce697a434ee31cc39482'
   }
 
-  get asLatest(): [v9010.AccountId, v9010.ParaId, v9010.Balance] {
-    deprecateLatest()
-    return this.asV9010
+  /**
+   * Contributed to a crowd sale.
+   */
+  get asV9230(): {who: v9230.AccountId32, fundIndex: v9230.Id, amount: bigint} {
+    assert(this.isV9230)
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class CrowdloanCreatedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Crowdloan.Created')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Crowdloan.Created')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  Create a new crowdloaning campaign. [fund_index]
    */
   get isV9010(): boolean {
-    return this.ctx._chain.getEventHash('Crowdloan.Created') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+    return this._chain.getEventHash('Crowdloan.Created') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
   }
 
   /**
@@ -54,30 +76,43 @@ export class CrowdloanCreatedEvent {
    */
   get asV9010(): v9010.ParaId {
     assert(this.isV9010)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
+    return this._chain.decodeEvent(this.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9010
+  /**
+   * Create a new crowdloaning campaign.
+   */
+  get isV9230(): boolean {
+    return this._chain.getEventHash('Crowdloan.Created') === 'de61486138d2b3b92b3ed0bdfddb05a4a7e6ae35d065c89bba1f47c365c252e2'
   }
 
-  get asLatest(): v9010.ParaId {
-    deprecateLatest()
-    return this.asV9010
+  /**
+   * Create a new crowdloaning campaign.
+   */
+  get asV9230(): {paraId: v9230.Id} {
+    assert(this.isV9230)
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class CrowdloanDissolvedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Crowdloan.Dissolved')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Crowdloan.Dissolved')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  Fund is dissolved. [fund_index]
    */
   get isV9010(): boolean {
-    return this.ctx._chain.getEventHash('Crowdloan.Dissolved') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
+    return this._chain.getEventHash('Crowdloan.Dissolved') === '0a0f30b1ade5af5fade6413c605719d59be71340cf4884f65ee9858eb1c38f6c'
   }
 
   /**
@@ -85,30 +120,43 @@ export class CrowdloanDissolvedEvent {
    */
   get asV9010(): v9010.ParaId {
     assert(this.isV9010)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
+    return this._chain.decodeEvent(this.event)
   }
 
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9010
+  /**
+   * Fund is dissolved.
+   */
+  get isV9230(): boolean {
+    return this._chain.getEventHash('Crowdloan.Dissolved') === 'de61486138d2b3b92b3ed0bdfddb05a4a7e6ae35d065c89bba1f47c365c252e2'
   }
 
-  get asLatest(): v9010.ParaId {
-    deprecateLatest()
-    return this.asV9010
+  /**
+   * Fund is dissolved.
+   */
+  get asV9230(): {paraId: v9230.Id} {
+    assert(this.isV9230)
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class GrandpaNewAuthoritiesEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Grandpa.NewAuthorities')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Grandpa.NewAuthorities')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  New authority set has been applied.
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getEventHash('Grandpa.NewAuthorities') === 'a1a8c88e19b8fedde4aab1bef41aa9e1bdfc3748b1e39f7ad5bb09d0347d9505'
+    return this._chain.getEventHash('Grandpa.NewAuthorities') === 'a1a8c88e19b8fedde4aab1bef41aa9e1bdfc3748b1e39f7ad5bb09d0347d9505'
   }
 
   /**
@@ -116,14 +164,14 @@ export class GrandpaNewAuthoritiesEvent {
    */
   get asV1020(): v1020.AuthorityList {
     assert(this.isV1020)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
+    return this._chain.decodeEvent(this.event)
   }
 
   /**
    * New authority set has been applied.
    */
   get isV9130(): boolean {
-    return this.ctx._chain.getEventHash('Grandpa.NewAuthorities') === 'e25505d283e6b21359efad4ea3b01da035cbbe2b268fd3cbfb12ca0b5577a9de'
+    return this._chain.getEventHash('Grandpa.NewAuthorities') === 'e25505d283e6b21359efad4ea3b01da035cbbe2b268fd3cbfb12ca0b5577a9de'
   }
 
   /**
@@ -131,23 +179,21 @@ export class GrandpaNewAuthoritiesEvent {
    */
   get asV9130(): {authoritySet: [Uint8Array, bigint][]} {
     assert(this.isV9130)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9130
-  }
-
-  get asLatest(): {authoritySet: [Uint8Array, bigint][]} {
-    deprecateLatest()
-    return this.asV9130
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingBondedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.Bonded')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.Bonded')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
@@ -157,7 +203,7 @@ export class StakingBondedEvent {
    *  it will not be emitted for staking rewards when they are added to stake.
    */
   get isV1051(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Bonded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    return this._chain.getEventHash('Staking.Bonded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -168,23 +214,21 @@ export class StakingBondedEvent {
    */
   get asV1051(): [v1051.AccountId, v1051.Balance] {
     assert(this.isV1051)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV1051
-  }
-
-  get asLatest(): [v1051.AccountId, v1051.Balance] {
-    deprecateLatest()
-    return this.asV1051
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingEraPaidEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.EraPaid')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.EraPaid')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
@@ -193,7 +237,7 @@ export class StakingEraPaidEvent {
    *  \[era_index, validator_payout, remainder\]
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getEventHash('Staking.EraPaid') === '1b75f96f7f74feed246668e0244abf707060018d56d88b1a638f75594d2a8005'
+    return this._chain.getEventHash('Staking.EraPaid') === '1b75f96f7f74feed246668e0244abf707060018d56d88b1a638f75594d2a8005'
   }
 
   /**
@@ -203,30 +247,28 @@ export class StakingEraPaidEvent {
    */
   get asV9090(): [v9090.EraIndex, v9090.Balance, v9090.Balance] {
     assert(this.isV9090)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9090
-  }
-
-  get asLatest(): [v9090.EraIndex, v9090.Balance, v9090.Balance] {
-    deprecateLatest()
-    return this.asV9090
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingPayoutStartedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.PayoutStarted')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.PayoutStarted')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  The stakers' rewards are getting paid. \[era_index, validator_stash\]
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getEventHash('Staking.PayoutStarted') === '0379562584d6426ccff49705dfa9dba95ad94215b772fd97d0ad0c4ca0001c12'
+    return this._chain.getEventHash('Staking.PayoutStarted') === '0379562584d6426ccff49705dfa9dba95ad94215b772fd97d0ad0c4ca0001c12'
   }
 
   /**
@@ -234,23 +276,21 @@ export class StakingPayoutStartedEvent {
    */
   get asV9090(): [v9090.EraIndex, v9090.AccountId] {
     assert(this.isV9090)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9090
-  }
-
-  get asLatest(): [v9090.EraIndex, v9090.AccountId] {
-    deprecateLatest()
-    return this.asV9090
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingRewardEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.Reward')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.Reward')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
@@ -258,7 +298,7 @@ export class StakingRewardEvent {
    *  from the maximum amount of reward.
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Reward') === 'f7d5bd1431cb954502149f64a8137986d660e0729a3d9731d421496b4298be52'
+    return this._chain.getEventHash('Staking.Reward') === 'f7d5bd1431cb954502149f64a8137986d660e0729a3d9731d421496b4298be52'
   }
 
   /**
@@ -267,14 +307,14 @@ export class StakingRewardEvent {
    */
   get asV1020(): [v1020.Balance, v1020.Balance] {
     assert(this.isV1020)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
+    return this._chain.decodeEvent(this.event)
   }
 
   /**
    *  The staker has been rewarded by this amount. AccountId is controller account.
    */
   get isV1050(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Reward') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    return this._chain.getEventHash('Staking.Reward') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -282,30 +322,28 @@ export class StakingRewardEvent {
    */
   get asV1050(): [v1050.AccountId, v1050.Balance] {
     assert(this.isV1050)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV1050
-  }
-
-  get asLatest(): [v1050.AccountId, v1050.Balance] {
-    deprecateLatest()
-    return this.asV1050
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingRewardedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.Rewarded')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.Rewarded')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  The nominator has been rewarded by this amount. \[stash, amount\]
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Rewarded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    return this._chain.getEventHash('Staking.Rewarded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -313,30 +351,28 @@ export class StakingRewardedEvent {
    */
   get asV9090(): [v9090.AccountId, v9090.Balance] {
     assert(this.isV9090)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9090
-  }
-
-  get asLatest(): [v9090.AccountId, v9090.Balance] {
-    deprecateLatest()
-    return this.asV9090
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingSlashEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.Slash')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.Slash')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  One validator (and its nominators) has been slashed by the given amount.
    */
   get isV1020(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Slash') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    return this._chain.getEventHash('Staking.Slash') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -344,23 +380,21 @@ export class StakingSlashEvent {
    */
   get asV1020(): [v1020.AccountId, v1020.Balance] {
     assert(this.isV1020)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV1020
-  }
-
-  get asLatest(): [v1020.AccountId, v1020.Balance] {
-    deprecateLatest()
-    return this.asV1020
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingSlashedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.Slashed')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.Slashed')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
@@ -368,7 +402,7 @@ export class StakingSlashedEvent {
    *  \[validator, amount\]
    */
   get isV9090(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Slashed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    return this._chain.getEventHash('Staking.Slashed') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -377,30 +411,28 @@ export class StakingSlashedEvent {
    */
   get asV9090(): [v9090.AccountId, v9090.Balance] {
     assert(this.isV9090)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV9090
-  }
-
-  get asLatest(): [v9090.AccountId, v9090.Balance] {
-    deprecateLatest()
-    return this.asV9090
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingUnbondedEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.Unbonded')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.Unbonded')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
    *  An account has unbonded this amount.
    */
   get isV1051(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Unbonded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    return this._chain.getEventHash('Staking.Unbonded') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -408,23 +440,21 @@ export class StakingUnbondedEvent {
    */
   get asV1051(): [v1051.AccountId, v1051.Balance] {
     assert(this.isV1051)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV1051
-  }
-
-  get asLatest(): [v1051.AccountId, v1051.Balance] {
-    deprecateLatest()
-    return this.asV1051
+    return this._chain.decodeEvent(this.event)
   }
 }
 
 export class StakingWithdrawnEvent {
-  constructor(private ctx: EventContext) {
-    assert(this.ctx.event.name === 'Staking.Withdrawn')
+  private readonly _chain: Chain
+  private readonly event: Event
+
+  constructor(ctx: EventContext)
+  constructor(ctx: ChainContext, event: Event)
+  constructor(ctx: EventContext, event?: Event) {
+    event = event || ctx.event
+    assert(event.name === 'Staking.Withdrawn')
+    this._chain = ctx._chain
+    this.event = event
   }
 
   /**
@@ -432,7 +462,7 @@ export class StakingWithdrawnEvent {
    *  from the unlocking queue.
    */
   get isV1051(): boolean {
-    return this.ctx._chain.getEventHash('Staking.Withdrawn') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
+    return this._chain.getEventHash('Staking.Withdrawn') === '23bebce4ca9ed37548947d07d4dc50e772f07401b9a416b6aa2f3e9cb5adcaf4'
   }
 
   /**
@@ -441,16 +471,6 @@ export class StakingWithdrawnEvent {
    */
   get asV1051(): [v1051.AccountId, v1051.Balance] {
     assert(this.isV1051)
-    return this.ctx._chain.decodeEvent(this.ctx.event)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV1051
-  }
-
-  get asLatest(): [v1051.AccountId, v1051.Balance] {
-    deprecateLatest()
-    return this.asV1051
+    return this._chain.decodeEvent(this.event)
   }
 }

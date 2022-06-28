@@ -5,6 +5,9 @@ import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
 import {Staker} from "./staker.model"
+import {RmrkCollection} from "./rmrkCollection.model"
+import {RmrkNFT} from "./rmrkNft.model"
+import {RmrkEvent} from "./rmrkEvent.model"
 
 @Entity_()
 export class Account {
@@ -35,4 +38,13 @@ export class Account {
 
   @Column_("int4", {nullable: false})
   lastUpdateBlock!: number
+
+  @OneToMany_(() => RmrkCollection, e => e.currentOwner)
+  rmrkColections!: RmrkCollection[]
+
+  @OneToMany_(() => RmrkNFT, e => e.currentOwner)
+  rmrkNfts!: RmrkNFT[]
+
+  @OneToMany_(() => RmrkEvent, e => e.caller)
+  rmrkEvents!: RmrkEvent[]
 }

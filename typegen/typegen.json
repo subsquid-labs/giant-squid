@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/generated",
-  "chainVersions": "./versions.json",
+  "specVersions": "./versions.json",
   "typesBundle": "kusama",
   "events": [
     "Staking.EraPaid",
@@ -33,7 +33,8 @@
     "Staking.nominate",
     "Staking.validate",
     "Staking.kick",
-    "Staking.chill"
+    "Staking.chill",
+    "System.remark"
   ],
   "storage": [
     "Crowdloan.Funds",

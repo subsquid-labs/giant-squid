@@ -50,7 +50,7 @@ processor.addCallHandler('Balances.transfer', modules.balances.extrinsics.handle
 processor.addCallHandler('Balances.transfer_keep_alive', modules.balances.extrinsics.handleTransferKeepAlive)
 processor.addCallHandler('Balances.force_transfer', modules.balances.extrinsics.handleForceTransfer)
 processor.addCallHandler('Balances.transfer_all', modules.balances.extrinsics.handleTransferAll)
-
+processor.addCallHandler('System.remark', modules.remark.handleRemark)
 // processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
 //     console.log(ctx.block.height, ctx.items)
 // })

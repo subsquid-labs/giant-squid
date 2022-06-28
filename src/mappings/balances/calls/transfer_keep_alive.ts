@@ -49,7 +49,7 @@ export async function handleTransferKeepAlive(ctx: CallHandlerContext) {
         timestamp: new Date(ctx.block.timestamp),
         blockNumber: ctx.block.height,
         extrinsicHash: ctx.extrinsic.hash,
-        fromId:accountId,
+        fromId: accountId,
         toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
         success: ctx.call.success,
