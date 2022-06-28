@@ -79,10 +79,7 @@ export async function getOrCreateStaker(
         // query ledger to check if the account has already bonded balance
         const prevCtx = createPrevStorageContext(ctx)
         // first we need to know controller id for account
-        const controllerId = type === 'Controller' ? id : await storage.staking.bonded.get(prevCtx, id)
-        // if controllerId is null, it means that this account never staked before and there is an error
-        // so we should return nothing
-        if (!controllerId) return undefined
+        const controllerId = type === 'Controller' ? id : (await storage.staking.bonded.get(prevCtx, id)) || id
 
         // query ledger and then convert it to map from stash ids
         // that are equaled our initial ids and ledgers values
@@ -148,7 +145,7 @@ export async function getOrCreateStakers(
     const controllerIds = type === 'Stash' ? await storage.staking.bonded.getMany(prevCtx, missingIds) : missingIds
     if (!controllerIds) return [...stakersMap.values()]
 
-    const notNullControllerIds = controllerIds.filter((c): c is string => c != null)
+    const notNullControllerIds = controllerIds.map((c, i) => (c != null ? c : missingIds[i]))
 
     const ledgers = await storage.staking.ledger.getMany(prevCtx, notNullControllerIds)
     if (!ledgers) return [...stakersMap.values()]
