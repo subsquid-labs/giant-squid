@@ -2,7 +2,7 @@ import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId, isStorageCorrupted } from '../../common/tools'
 import { CommonHandlerContext } from '../../mappings/types/contexts'
 import { StakingLedgerStorage } from '../../types/generated/storage'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 
 interface StorageData {
     stash: Uint8Array

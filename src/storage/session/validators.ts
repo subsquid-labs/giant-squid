@@ -1,7 +1,7 @@
 import { UnknownVersionError } from '../../common/errors'
 import { encodeId } from '../../common/tools'
 import { SessionValidatorsStorage } from '../../types/generated/storage'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 
 type StorageData = Uint8Array[]
 

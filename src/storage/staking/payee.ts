@@ -1,7 +1,7 @@
 import { decodeId, encodeId } from '../../common/tools'
 import { StakingPayeeStorage } from '../../types/generated/storage'
 import * as v9111 from '../../types/generated/v9111'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 import { UnknownVersionError } from '../../common/errors'
 import assert from 'assert'
 
