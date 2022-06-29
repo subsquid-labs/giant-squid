@@ -65,7 +65,10 @@ export async function saveContribution(ctx: CommonHandlerContext, data: Contribu
     const crowdloan = await getLastCrowdloan(ctx, paraId)
     assert(crowdloan != null, `Missing crowdloan ${paraId}`)
 
-    let contribution = await ctx.store.get(Contribution, `${crowdloan.id}-${account.id}`)
+    let contribution = await ctx.store.get(Contribution, {
+        where: { id: `${crowdloan.id}-${account.id}` },
+        relations: { account: true, crowdloan: true },
+    })
     if (!contribution) {
         contribution = new Contribution({
             id: `${crowdloan.id}-${account.id}`,
