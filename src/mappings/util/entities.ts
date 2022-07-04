@@ -1,4 +1,5 @@
 import { ArrayContains, In, MoreThanOrEqual } from 'typeorm'
+import { splitIntoBatches } from '../../common/tools'
 import {
     Account,
     AccountTransfer,
@@ -126,14 +127,18 @@ export async function getOrCreateStakers(
     type: 'Controller' | 'Stash',
     ids: string[]
 ): Promise<Staker[]> {
-    const query = await ctx.store.find<Staker>(Staker, {
-        where: type === 'Controller' ? { controllerId: In(ids) } : { stashId: In(ids) },
-        relations: {
-            stash: true,
-            controller: true,
-            payee: true,
-        },
-    })
+    const query: Staker[] = []
+    for (const batch of splitIntoBatches(ids, 1000)) {
+        const stakers = await ctx.store.find<Staker>(Staker, {
+            where: type === 'Controller' ? { controllerId: In(batch) } : { stashId: In(batch) },
+            relations: {
+                stash: true,
+                controller: true,
+                payee: true,
+            },
+        })
+        query.push(...stakers)
+    }
 
     const stakersMap: Map<string, Staker> = new Map()
     for (const q of query) stakersMap.set(type === 'Stash' ? q.stashId : q.controllerId, q)
