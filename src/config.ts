@@ -1,11 +1,10 @@
 import { ProcessorConfig } from './types/custom/processorConfig'
-import { lookupArchive } from '@subsquid/archive-registry'
 
 const config: ProcessorConfig = {
     chainName: 'moonriver',
     prefix: 'moonriver',
     dataSource: {
-        archive: lookupArchive('moonriver')[0].url,
+        archive: 'https://moonriver.archive.subsquid.io/graphql',
         chain: 'wss://wss.moonriver.moonbeam.network',
     },
     typesBundle: 'moonriver',

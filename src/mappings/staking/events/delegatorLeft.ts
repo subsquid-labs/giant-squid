@@ -1,9 +1,9 @@
-import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/helpers'
+import { encodeId } from '../../../common/tools'
 import { BondType } from '../../../model'
 import { ParachainStakingDelegatorLeftEvent } from '../../../types/generated/events'
-import { saveBond } from '../utils/savers'
+import { EventContext, EventHandlerContext } from '../../types/contexts'
+import { isDoubleEvent, saveBond } from './utils'
 
 interface EventData {
     account: Uint8Array
@@ -11,7 +11,7 @@ interface EventData {
     newTotal: bigint
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new ParachainStakingDelegatorLeftEvent(ctx)
 
     if (event.isV1001) {
@@ -32,20 +32,19 @@ function getEventData(ctx: EventHandlerContext): EventData {
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export const handleDelegatorLeft: EventHandler = async (ctx) => {
-    if (
-        ctx.block.events.find(
-            (event) =>
-                event.extrinsicId === ctx.event.extrinsic?.id &&
-                event.name === 'parachainStaking.DelegatorLeftCandidate'
-        )
-    )
-        return
-
+export async function handleDelegatorLeft(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
+    const accountId = encodeId(data.account)
+
+    if (await isDoubleEvent(ctx, accountId, data.amount, BondType.Unbond)) return
+
     await saveBond(ctx, {
-        account: encodeId(data.account),
+        id: ctx.event.id,
+        blockNumber: ctx.block.height,
+        timestamp: new Date(ctx.block.timestamp),
+        extrinsicHash: ctx.event.extrinsic?.hash,
+        accountId,
         amount: data.amount,
         type: BondType.Unbond,
         success: true,

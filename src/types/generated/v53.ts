@@ -1,5 +1,9 @@
 import type {Result} from './support'
 
+export type AccountId = Uint8Array
+
+export type BalanceOf = bigint
+
 export type NominatorAdded = NominatorAdded_AddedToBottom | NominatorAdded_AddedToTop
 
 export interface NominatorAdded_AddedToBottom {
@@ -9,23 +13,25 @@ export interface NominatorAdded_AddedToBottom {
 
 export interface NominatorAdded_AddedToTop {
   __kind: 'AddedToTop'
-  value: bigint
+  value: Balance
 }
 
 export interface Collator2 {
-  id: Uint8Array
-  bond: bigint
-  nominators: Uint8Array[]
+  id: AccountId
+  bond: Balance
+  nominators: AccountId[]
   topNominators: Bond[]
   bottomNominators: Bond[]
-  totalCounted: bigint
-  totalBacking: bigint
+  totalCounted: Balance
+  totalBacking: Balance
   state: CollatorStatus
 }
 
+export type Balance = bigint
+
 export interface Bond {
-  owner: Uint8Array
-  amount: bigint
+  owner: AccountId
+  amount: Balance
 }
 
 export type CollatorStatus = CollatorStatus_Active | CollatorStatus_Idle | CollatorStatus_Leaving
@@ -42,5 +48,7 @@ export interface CollatorStatus_Idle {
 
 export interface CollatorStatus_Leaving {
   __kind: 'Leaving'
-  value: number
+  value: RoundIndex
 }
+
+export type RoundIndex = number

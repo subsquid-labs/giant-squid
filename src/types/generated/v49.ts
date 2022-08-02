@@ -1,21 +1,33 @@
 import type {Result} from './support'
 
+export type AccountId = Uint8Array
+
+export type BalanceOf = bigint
+
+export type BlockNumber = number
+
+export type RoundIndex = number
+
+export type LookupSource = Uint8Array
+
 export interface Collator {
-  id: Uint8Array
-  bond: bigint
+  id: AccountId
+  bond: Balance
   nominators: Bond[]
-  total: bigint
+  total: Balance
   state: CollatorStatus
 }
 
 export interface Nominator {
   nominations: Bond[]
-  total: bigint
+  total: Balance
 }
 
+export type Balance = bigint
+
 export interface Bond {
-  owner: Uint8Array
-  amount: bigint
+  owner: AccountId
+  amount: Balance
 }
 
 export type CollatorStatus = CollatorStatus_Active | CollatorStatus_Idle | CollatorStatus_Leaving
@@ -32,5 +44,5 @@ export interface CollatorStatus_Idle {
 
 export interface CollatorStatus_Leaving {
   __kind: 'Leaving'
-  value: number
+  value: RoundIndex
 }

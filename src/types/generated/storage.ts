@@ -1,12 +1,12 @@
 import assert from 'assert'
 import {StorageContext, Result} from './support'
+import * as v49 from './v49'
+import * as v53 from './v53'
+import * as v200 from './v200'
+import * as v900 from './v900'
 import * as v1001 from './v1001'
 import * as v1201 from './v1201'
 import * as v1502 from './v1502'
-import * as v200 from './v200'
-import * as v49 from './v49'
-import * as v53 from './v53'
-import * as v900 from './v900'
 
 export class ParachainStakingBottomDelegationsStorage {
   constructor(private ctx: StorageContext) {}
@@ -114,12 +114,12 @@ export class ParachainStakingCollatorStateStorage {
   /**
    *  Get collator state associated with an account if account is collating else None
    */
-  async getAsV49(key: Uint8Array): Promise<v49.Collator | undefined> {
+  async getAsV49(key: v49.AccountId): Promise<v49.Collator | undefined> {
     assert(this.isV49)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState', key)
   }
 
-  async getManyAsV49(keys: Uint8Array[]): Promise<(v49.Collator | undefined)[]> {
+  async getManyAsV49(keys: v49.AccountId[]): Promise<(v49.Collator | undefined)[]> {
     assert(this.isV49)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState', keys.map(k => [k]))
   }
@@ -145,12 +145,12 @@ export class ParachainStakingCollatorState2Storage {
   /**
    *  Get collator state associated with an account if account is collating else None
    */
-  async getAsV53(key: Uint8Array): Promise<v53.Collator2 | undefined> {
+  async getAsV53(key: v53.AccountId): Promise<v53.Collator2 | undefined> {
     assert(this.isV53)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', key)
   }
 
-  async getManyAsV53(keys: Uint8Array[]): Promise<(v53.Collator2 | undefined)[]> {
+  async getManyAsV53(keys: v53.AccountId[]): Promise<(v53.Collator2 | undefined)[]> {
     assert(this.isV53)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'CollatorState2', keys.map(k => [k]))
   }
@@ -247,12 +247,12 @@ export class ParachainStakingNominatorStateStorage {
   /**
    *  Get nominator state associated with an account if account is nominating else None
    */
-  async getAsV49(key: Uint8Array): Promise<v49.Nominator | undefined> {
+  async getAsV49(key: v49.AccountId): Promise<v49.Nominator | undefined> {
     assert(this.isV49)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState', key)
   }
 
-  async getManyAsV49(keys: Uint8Array[]): Promise<(v49.Nominator | undefined)[]> {
+  async getManyAsV49(keys: v49.AccountId[]): Promise<(v49.Nominator | undefined)[]> {
     assert(this.isV49)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState', keys.map(k => [k]))
   }
@@ -278,12 +278,12 @@ export class ParachainStakingNominatorState2Storage {
   /**
    *  Get nominator state associated with an account if account is nominating else None
    */
-  async getAsV200(key: Uint8Array): Promise<v200.Nominator2 | undefined> {
+  async getAsV200(key: v200.AccountId): Promise<v200.Nominator2 | undefined> {
     assert(this.isV200)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', key)
   }
 
-  async getManyAsV200(keys: Uint8Array[]): Promise<(v200.Nominator2 | undefined)[]> {
+  async getManyAsV200(keys: v200.AccountId[]): Promise<(v200.Nominator2 | undefined)[]> {
     assert(this.isV200)
     return this.ctx._chain.queryStorage(this.ctx.block.hash, 'ParachainStaking', 'NominatorState2', keys.map(k => [k]))
   }
@@ -335,6 +335,32 @@ export class ParachainStakingNominatorState2Storage {
    */
   get isExists(): boolean {
     return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'NominatorState2') != null
+  }
+}
+
+export class ParachainStakingSelectedCandidatesStorage {
+  constructor(private ctx: StorageContext) {}
+
+  /**
+   *  The collator candidates selected for the current round
+   */
+  get isV49() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'SelectedCandidates') === 'd14508def9da76532021b53d553e9048fd079e2e735d2393e6d531e6d1fd29ca'
+  }
+
+  /**
+   *  The collator candidates selected for the current round
+   */
+  async getAsV49(): Promise<v49.AccountId[]> {
+    assert(this.isV49)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'SelectedCandidates')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'SelectedCandidates') != null
   }
 }
 
