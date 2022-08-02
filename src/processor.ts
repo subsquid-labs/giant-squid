@@ -1,10 +1,11 @@
 import config from './config'
 import { SubstrateProcessor } from '@subsquid/substrate-processor'
-import { DEFAULT_BATCH_SIZE, DEFAULT_PORT, EXTRINSIC_SUCCESS } from './common/consts'
+import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
 import * as modules from './mappings'
-import { EXTRINSIC_FAILED } from './common/consts'
+import { TypeormDatabase } from '@subsquid/typeorm-store'
 
-const processor = new SubstrateProcessor(`${config.chainName}-processor`)
+const database = new TypeormDatabase()
+const processor = new SubstrateProcessor(database)
 
 processor.setTypesBundle(config.typesBundle)
 processor.setBatchSize(config.batchSize || DEFAULT_BATCH_SIZE)
@@ -13,57 +14,44 @@ processor.setPrometheusPort(config.port || DEFAULT_PORT)
 processor.setBlockRange(config.blockRange || { from: 0 })
 
 //events handlers
-processor.addEventHandler('staking.Reward', modules.staking.events.handleReward)
-processor.addEventHandler('staking.Rewarded', modules.staking.events.handleRewarded)
-processor.addEventHandler('staking.Slash', modules.staking.events.handleSlash)
-processor.addEventHandler('staking.Slashed', modules.staking.events.handleSlashed)
-processor.addEventHandler('staking.Bonded', modules.staking.events.handleBonded)
-processor.addEventHandler('staking.Unbonded', modules.staking.events.handleUnbonded)
+// processor.addEventHandler('Staking.Rewarded', modules.staking.events.handleRewarded)
+// processor.addEventHandler('Staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
+processor.addEventHandler('Staking.Slashed', modules.staking.events.handleSlashed)
+processor.addEventHandler('Staking.Slash', modules.staking.events.handleSlash) //Old name of Slashed event
 
-processor.addEventHandler('grandpa.NewAuthorities', modules.grandpa.events.handleNewAuthorities)
+processor.addEventHandler('Grandpa.NewAuthorities', modules.grandpa.events.handleNewAuthorities)
 
-//extrinsics handlers
-processor.addExtrinsicHandler('staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
-processor.addExtrinsicHandler(
-    'staking.bond',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
-    modules.staking.extrinsics.handleBond
-)
-processor.addExtrinsicHandler(
-    'staking.bond_extra',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
-    modules.staking.extrinsics.handleBondExtra
-)
-processor.addExtrinsicHandler(
-    'staking.unbond',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
-    modules.staking.extrinsics.handleUnbond
-)
-processor.addExtrinsicHandler('staking.set_controller', modules.staking.extrinsics.handleSetController)
-processor.addExtrinsicHandler('staking.set_payee', modules.staking.extrinsics.handleSetPayee)
-processor.addExtrinsicHandler('staking.nominate', modules.staking.extrinsics.handleNominate)
-processor.addExtrinsicHandler('staking.validate', modules.staking.extrinsics.handleValidate)
-processor.addExtrinsicHandler('staking.chill', modules.staking.extrinsics.handleChill)
+// processor.addCallHandler('Staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
+processor.addCallHandler('Staking.bond', modules.staking.extrinsics.handleBond)
+processor.addCallHandler('Staking.bond_extra', modules.staking.extrinsics.handleBondExtra)
+processor.addCallHandler('Staking.unbond', modules.staking.extrinsics.handleUnbond)
+processor.addCallHandler('Staking.set_controller', modules.staking.extrinsics.handleSetController)
+processor.addCallHandler('Staking.set_payee', modules.staking.extrinsics.handleSetPayee)
+processor.addCallHandler('Staking.nominate', modules.staking.extrinsics.handleNominate)
+processor.addCallHandler('Staking.validate', modules.staking.extrinsics.handleValidate)
+processor.addCallHandler('Staking.chill', modules.staking.extrinsics.handleChill)
 
-processor.addExtrinsicHandler(
-    'balances.transfer',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+processor.addCallHandler(
+    'Balances.transfer',
+    { triggerForFailedCalls: true },
     modules.balances.extrinsics.handleTransfer
 )
-processor.addExtrinsicHandler(
-    'balances.transfer_keep_alive',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+processor.addCallHandler(
+    'Balances.transfer_keep_alive',
+    { triggerForFailedCalls: true },
     modules.balances.extrinsics.handleTransferKeepAlive
 )
-processor.addExtrinsicHandler(
-    'balances.force_transfer',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+processor.addCallHandler(
+    'Balances.force_transfer',
+    { triggerForFailedCalls: true },
     modules.balances.extrinsics.handleForceTransfer
 )
-processor.addExtrinsicHandler(
-    'balances.transfer_all',
-    { triggerEvents: [EXTRINSIC_SUCCESS, EXTRINSIC_FAILED] },
+processor.addCallHandler(
+    'Balances.transfer_all',
+    { triggerForFailedCalls: true },
     modules.balances.extrinsics.handleTransferAll
 )
+
+processor.addPostHook({ data: modules.staking.hooks.rewardsRequest }, modules.staking.hooks.rewardsHook)
 
 processor.run()

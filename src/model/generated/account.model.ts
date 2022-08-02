@@ -1,12 +1,9 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, OneToOne as OneToOne_} from "typeorm"
-import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
-import {EraValidator} from "./eraValidator.model"
-import {EraNominator} from "./eraNominator.model"
-import {StakingInfo} from "./stakingInfo.model"
+import {Staker} from "./staker.model"
 
 @Entity_()
 export class Account {
@@ -16,15 +13,6 @@ export class Account {
 
   @PrimaryColumn_()
   id!: string
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  activeBond!: bigint
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalReward!: bigint
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalSlash!: bigint
 
   @OneToMany_(() => AccountTransfer, e => e.account)
   transfers!: AccountTransfer[]
@@ -38,15 +26,9 @@ export class Account {
   @OneToMany_(() => Bond, e => e.account)
   bonds!: Bond[]
 
-  @OneToMany_(() => EraValidator, e => e.stash)
-  validatorHistory!: EraValidator[]
+  @OneToOne_(() => Staker)
+  stakingInfo!: Staker | undefined | null
 
-  @OneToMany_(() => EraNominator, e => e.stash)
-  nominatorHistory!: EraNominator[]
-
-  @OneToOne_(() => StakingInfo)
-  stakingInfo!: StakingInfo | undefined | null
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  lastUpdateBlock!: bigint
+  @Column_("int4", {nullable: false})
+  lastUpdateBlock!: number
 }

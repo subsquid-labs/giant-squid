@@ -1,16 +1,20 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
+import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId } from '../../../common/helpers'
+import { encodeId, saturatingSumBigInt } from '../../../common/tools'
+import { Slash, Staker } from '../../../model'
 import storage from '../../../storage'
 import { StakingSlashedEvent, StakingSlashEvent } from '../../../types/generated/events'
-import { saveSlash } from '../utils/savers'
+import { EventContext, EventHandlerContext } from '../../types/contexts'
+import { ActionData } from '../../types/data'
+import { getMeta } from '../../util/actions'
+import { getOrCreateStaker } from '../../util/entities'
 
 interface EventData {
     amount: bigint
     account: Uint8Array
 }
 
-function getSlashedEvent(ctx: EventHandlerContext): EventData {
+function getSlashedEvent(ctx: EventContext): EventData {
     const event = new StakingSlashedEvent(ctx)
 
     if (event.isV29) {
@@ -41,12 +45,45 @@ function getSlashEvent(ctx: EventHandlerContext): EventData {
 export async function handleSlashed(ctx: EventHandlerContext, old = false) {
     const data = old ? getSlashEvent(ctx) : getSlashedEvent(ctx)
     await saveSlash(ctx, {
-        account: encodeId(data.account),
+        id: ctx.event.id,
+        timestamp: new Date(ctx.block.timestamp),
+        blockNumber: ctx.block.height,
+        extrinsicHash: ctx.event.extrinsic?.hash,
+        accountId: encodeId(data.account),
         amount: data.amount,
         era: (await storage.staking.getCurrentEra(ctx))?.index || 0,
     })
 }
 
-export const handleSlash = (ctx: EventHandlerContext) => {
+export async function handleSlash(ctx: EventHandlerContext) {
     return handleSlashed(ctx, true)
+}
+
+export interface SlashData extends ActionData {
+    amount: bigint
+    accountId: string
+    era: number
+}
+
+export async function saveSlash(ctx: EventHandlerContext, data: SlashData) {
+    const { accountId, amount } = data
+
+    const staker = await getOrCreateStaker(ctx, 'Stash', accountId)
+    assert(staker != null, `Missing staking info for ${accountId}`)
+
+    const account = staker.stash
+
+    staker.totalSlash += data.amount
+    staker.activeBond = saturatingSumBigInt(staker.activeBond, amount * -1n)
+
+    await ctx.store.save(staker)
+
+    await ctx.store.insert(
+        new Slash({
+            ...getMeta(data),
+            account,
+            amount: data.amount,
+            era: data.era,
+        })
+    )
 }
