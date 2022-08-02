@@ -1,19 +1,13 @@
 # account entity can be used to get info about current account state and absorb account actions 
 type Account @entity {
   id: ID!
-  activeBond: BigInt! # current bond balance
-  totalReward: BigInt!
-  totalSlash: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  crowdloans: [Contributor!] @derivedFrom(field: "account") # crowdloans there account get participation
-  contributions: [Contribution!] @derivedFrom(field: "account")
+  crowdloans: [Contribution!] @derivedFrom(field: "account") # crowdloans there account get participation
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
-  validatorHistory: [EraValidator!] @derivedFrom(field: "stash") # validator history for each era
-  nominatorHistory: [EraNominator!] @derivedFrom(field: "stash") # nominator history for each era
-  stakingInfo: StakingInfo @derivedFrom(field: "stash")
-  lastUpdateBlock: BigInt!
+  stakingInfo: Staker @derivedFrom(field: "stash")
+  lastUpdateBlock: Int!
 }
 
 enum StakingRole {
@@ -31,7 +25,7 @@ enum PayeeType {
 }
 
 # current information about stash, controller, payee and staking role
-type StakingInfo @entity {
+type Staker @entity {
   id: ID! #stash Id
   stashId: ID!
   stash: Account! @unique
@@ -42,6 +36,13 @@ type StakingInfo @entity {
   payeeType: PayeeType!
   role: StakingRole!
   commission: Int
+  activeBond: BigInt! # current bond balance
+  totalReward: BigInt!
+  totalSlash: BigInt!
+  stakerHistory: [EraStaker!] @derivedFrom(field: "staker") # staker history for each era
+  rewards: [Reward!] @derivedFrom(field: "staker")
+  slashes: [Slash!] @derivedFrom(field: "staker")
+  bonds: [Bond!] @derivedFrom(field: "staker")
 }
 
 # information about era, validators and nominators 
@@ -54,38 +55,31 @@ type Era @entity {
   total: BigInt!
   validatorsCount: Int!
   nominatorsCount: Int!
-  validators: [EraValidator] @derivedFrom(field: "era")
-  nominators: [EraNominator] @derivedFrom(field: "era")
+  stakers: [EraStaker] @derivedFrom(field: "era")
 }
 
-type EraStakingPair @entity {
+type EraNomination @entity {
   id: ID! #era + validatorId + nominatorId
   era: Era!
-  nominator: EraNominator
-  validator: EraValidator
+  nominator: EraStaker
+  validator: EraStaker
   vote: BigInt!
 }
 
 # information about validator in era: self/total bond, nominators and their votes
-type EraValidator @entity {
+type EraStaker @entity {
   id: ID! #era + stashId
-  stashId: ID!
-  stash: Account!
+  stakerId: ID!
+  staker: Staker!
   era: Era!
+  role: StakingRole!
   selfBonded: BigInt!
   totalBonded: BigInt!
+  totalReward: BigInt!
+  totalSlash: BigInt!
   commission: Int
-  nominators: [EraStakingPair] @derivedFrom(field: "validator")
-}
-
-# information about nominator in era: bond, validators and votes for them in each era
-type EraNominator @entity {
-  id: ID! #era + stashId
-  stashId: ID!
-  stash: Account!
-  era: Era!
-  bonded: BigInt!
-  validators: [EraStakingPair] @derivedFrom(field: "nominator")
+  nominators: [EraNomination!] @derivedFrom(field: "validator")
+  validators: [EraNomination!] @derivedFrom(field: "nominator")
 }
 
 # information about known parachains and their crowdloans
@@ -96,47 +90,40 @@ type Parachain @entity {
 }
 
 enum CrowdloanStatus {
-  CREATED
-  WON
-  DISSOLVED
+  Created
+  Dissolved
 }
 
 enum TransferDirection {
-  FROM
-  TO
+  From
+  To
 }
 
-type Contributor @entity {
+type Contribution @entity {
   id: ID!
   crowdloan: Crowdloan!
   account: Account!
   amount: BigInt!
-  contributions: [Contribution!] @derivedFrom(field: "contributor")
 }
 
 type Crowdloan @entity {
   id: ID!
   cap: BigInt!
-  firstPeriod: BigInt!
-  lastPeriod: BigInt!
-  end: BigInt!
-  contributors: [Contributor!] @derivedFrom(field: "crowdloan")
+  firstPeriod: Int!
+  lastPeriod: Int!
+  end: Int!
+  contributions: [Contribution!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
   parachainId: ID!
   parachain: Parachain!
-  blockNumber: BigInt @index
+  start: Int @index
   createdAt: DateTime
 }
 
 interface Action {
   timestamp: DateTime
-  blockNumber: BigInt
+  blockNumber: Int
   extrinsicHash: String
-  amount: BigInt
-}
-
-interface HasTotal {
-  total: BigInt
 }
 
 interface HasEra {
@@ -147,31 +134,48 @@ interface CanFail {
   success: Boolean
 }
 
-type Contribution implements Action & CanFail @entity {
+type Transfer implements Action & CanFail @entity {
   id: ID!
-  timestamp: DateTime
-  blockNumber: BigInt @index
-  extrinsicHash: String @index
-  crowdloanId: ID!
-  crowdloan: Crowdloan
-  success: Boolean @index
-  accountId: ID!
-  account: Account!
-  contributor: Contributor!
+  timestamp: DateTime!
+  blockNumber: Int! @index
+  extrinsicHash: String! @index
+  to: TransferLocation
+  from: TransferLocation!
+  asset: TransferAsset!
+  success: Boolean! @index
+  type: TransferType!
+}
+
+union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
+
+type TransferLocationAccount {
+  id: String!
+}
+
+type TransferLocationEvm {
+  address: String!
+}
+
+union TransferAsset = TransferAssetToken | TransferAssetMultiToken
+
+enum TransferType {
+  Native
+  Contribution
+  Xcm
+}
+
+type TransferAssetToken {
+  symbol: String
   amount: BigInt
 }
 
-type Transfer implements Action & CanFail @entity {
-  id: ID!
-  timestamp: DateTime
-  blockNumber: BigInt @index
-  extrinsicHash: String @index
-  toId: ID
-  to: Account
-  fromId: ID!
-  from: Account!
-  amount: BigInt
-  success: Boolean @index
+type TransferAssetMultiToken {
+  tokens: [TransferAssetToken]
+}
+
+type TransferLocationXcm {
+  id: String
+  paraId: Int
 }
 
 # entity for linking account and transfer
@@ -182,29 +186,30 @@ type AccountTransfer @entity {
   direction: TransferDirection
 }
 
-type Reward implements Action & HasTotal & HasEra @entity  {
+type Reward implements Action & HasEra @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
   amount: BigInt
   era: Int
   validator: String
-  total: BigInt
+  staker: Staker
+  callId: ID @index
 }
 
-type Slash implements Action & HasTotal & HasEra @entity  {
+type Slash implements Action & HasEra @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
   amount: BigInt
   era: Int
-  total: BigInt
+  staker: Staker
 }
 
 enum BondType {
@@ -212,15 +217,15 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Action & HasTotal & CanFail @entity  {
+type Bond implements Action & CanFail @entity  {
   id: ID!
   timestamp: DateTime
-  blockNumber: BigInt @index
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
   amount: BigInt
-  total: BigInt
   success: Boolean @index
   type: BondType
+  staker: Staker
 }

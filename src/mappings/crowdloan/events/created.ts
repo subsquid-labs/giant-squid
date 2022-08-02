@@ -1,14 +1,15 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../common/errors'
-import { crowdloanManager } from '../../../managers'
+import { Crowdloan } from '../../../model'
 import storage from '../../../storage'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
+import { EventContext, EventHandlerContext } from '../../types/contexts'
+import { getOrCreateParachain } from '../../util/entities'
 
 interface EventData {
     index: number
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new CrowdloanCreatedEvent(ctx)
 
     if (event.isV9110) {
@@ -26,8 +27,15 @@ export async function handleCreated(ctx: EventHandlerContext) {
     const fundInfo = await storage.crowdloan.getFunds(ctx, data.index)
     if (!fundInfo) return
 
-    await crowdloanManager.create(ctx, {
-        paraId: data.index,
-        ...fundInfo,
-    })
+    const parachain = await getOrCreateParachain(ctx, data.index)
+
+    await ctx.store.insert(
+        new Crowdloan({
+            id: `${data.index}-${fundInfo.trieIndex}`,
+            parachain,
+            start: ctx.block.height,
+            createdAt: new Date(ctx.block.timestamp),
+            ...fundInfo,
+        })
+    )
 }

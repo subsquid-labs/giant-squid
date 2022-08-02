@@ -1,5 +1,19 @@
 import type {Result} from './support'
 
+export type AuthorityId = Uint8Array
+
+export type AuthorityWeight = bigint
+
+export type NextAuthority = [AuthorityId, AuthorityWeight]
+
+export type AuthorityList = NextAuthority[]
+
+export type AccountId = Uint8Array
+
+export type Balance = bigint
+
+export type LookupSource = Uint8Array
+
 export type RewardDestination = RewardDestination_Staked | RewardDestination_Stash | RewardDestination_Controller | RewardDestination_Account | RewardDestination_None
 
 export interface RewardDestination_Staked {
@@ -19,7 +33,7 @@ export interface RewardDestination_Controller {
 
 export interface RewardDestination_Account {
   __kind: 'Account'
-  value: Uint8Array
+  value: AccountId
 }
 
 export interface RewardDestination_None {
@@ -27,13 +41,17 @@ export interface RewardDestination_None {
   value: null
 }
 
-export interface ValidatorPrefsWithCommission {
+export type EraIndex = number
+
+export interface ValidatorPrefs {
   commission: number
 }
 
+export type ValidatorId = Uint8Array
+
 export interface ActiveEraInfo {
-  index: number
-  start: (bigint | undefined)
+  index: EraIndex
+  start: (Moment | undefined)
 }
 
 export interface Exposure {
@@ -43,15 +61,17 @@ export interface Exposure {
 }
 
 export interface StakingLedger {
-  stash: Uint8Array
+  stash: AccountId
   total: bigint
   active: bigint
   unlocking: UnlockChunk[]
-  claimedRewards: number[]
+  claimedRewards: EraIndex[]
 }
 
+export type Moment = bigint
+
 export interface IndividualExposure {
-  who: Uint8Array
+  who: AccountId
   value: bigint
 }
 
