@@ -1,29 +1,5 @@
 import type {Result} from './support'
 
-export type CurrencyId = CurrencyId_Token | CurrencyId_DexShare | CurrencyId_Erc20 | CurrencyId_StableAssetPoolToken
-
-export interface CurrencyId_Token {
-  __kind: 'Token'
-  value: TokenSymbol
-}
-
-export interface CurrencyId_DexShare {
-  __kind: 'DexShare'
-  value: [DexShare, DexShare]
-}
-
-export interface CurrencyId_Erc20 {
-  __kind: 'Erc20'
-  value: H160
-}
-
-export interface CurrencyId_StableAssetPoolToken {
-  __kind: 'StableAssetPoolToken'
-  value: number
-}
-
-export type AccountId32 = Uint8Array
-
 export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
 
 export interface MultiAddress_Id {
@@ -51,6 +27,28 @@ export interface MultiAddress_Address20 {
   value: Uint8Array
 }
 
+export type CurrencyId = CurrencyId_Token | CurrencyId_DexShare | CurrencyId_Erc20 | CurrencyId_StableAssetPoolToken
+
+export interface CurrencyId_Token {
+  __kind: 'Token'
+  value: TokenSymbol
+}
+
+export interface CurrencyId_DexShare {
+  __kind: 'DexShare'
+  value: [DexShare, DexShare]
+}
+
+export interface CurrencyId_Erc20 {
+  __kind: 'Erc20'
+  value: H160
+}
+
+export interface CurrencyId_StableAssetPoolToken {
+  __kind: 'StableAssetPoolToken'
+  value: number
+}
+
 export type VersionedMultiLocation = VersionedMultiLocation_V0 | VersionedMultiLocation_V1
 
 export interface VersionedMultiLocation_V0 {
@@ -74,6 +72,8 @@ export interface VersionedMultiAsset_V1 {
   __kind: 'V1'
   value: V1MultiAsset
 }
+
+export type AccountId32 = Uint8Array
 
 export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_BNC | TokenSymbol_VSKSM
 

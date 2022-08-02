@@ -1,5 +1,32 @@
 import type {Result} from './support'
 
+export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
+
+export interface MultiAddress_Id {
+  __kind: 'Id'
+  value: AccountId32
+}
+
+export interface MultiAddress_Index {
+  __kind: 'Index'
+  value: number
+}
+
+export interface MultiAddress_Raw {
+  __kind: 'Raw'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address32 {
+  __kind: 'Address32'
+  value: Uint8Array
+}
+
+export interface MultiAddress_Address20 {
+  __kind: 'Address20'
+  value: Uint8Array
+}
+
 export type CurrencyId = CurrencyId_Token | CurrencyId_DexShare | CurrencyId_Erc20 | CurrencyId_StableAssetPoolToken | CurrencyId_LiquidCrowdloan | CurrencyId_ForeignAsset
 
 export interface CurrencyId_Token {
@@ -31,8 +58,6 @@ export interface CurrencyId_ForeignAsset {
   __kind: 'ForeignAsset'
   value: number
 }
-
-export type AccountId32 = Uint8Array
 
 export type VersionedMultiLocation = VersionedMultiLocation_V0 | VersionedMultiLocation_V1
 
@@ -74,6 +99,8 @@ export interface AssetMetadata {
   decimals: number
   minimalBalance: bigint
 }
+
+export type AccountId32 = Uint8Array
 
 export type TokenSymbol = TokenSymbol_ACA | TokenSymbol_AUSD | TokenSymbol_DOT | TokenSymbol_LDOT | TokenSymbol_RENBTC | TokenSymbol_CASH | TokenSymbol_KAR | TokenSymbol_KUSD | TokenSymbol_KSM | TokenSymbol_LKSM | TokenSymbol_TAI | TokenSymbol_BNC | TokenSymbol_VSKSM | TokenSymbol_PHA | TokenSymbol_KINT | TokenSymbol_KBTC
 

@@ -1,18 +1,23 @@
+# account entity can be used to get info about current account state and absorb account actions 
 type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  lastUpdateBlock: BigInt!
+  lastUpdateBlock: Int!
 }
 
 enum TransferDirection {
-  FROM
-  TO
+  From
+  To
 }
 
 interface Action {
   timestamp: DateTime
-  blockNumber: BigInt
+  blockNumber: Int
   extrinsicHash: String
+}
+
+interface HasEra {
+  era: Int
 }
 
 interface CanFail {
@@ -21,20 +26,20 @@ interface CanFail {
 
 type Transfer implements Action & CanFail @entity {
   id: ID!
-  timestamp: DateTime
-  blockNumber: BigInt
-  extrinsicHash: String @index
+  timestamp: DateTime!
+  blockNumber: Int! @index
+  extrinsicHash: String! @index
   to: TransferLocation
-  from: TransferLocation
-  asset: TransferAsset
-  success: Boolean @index
-  type: TransferType
+  from: TransferLocation!
+  asset: TransferAsset!
+  success: Boolean! @index
+  type: TransferType!
 }
 
 union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
 
 type TransferLocationAccount {
-  id: String
+  id: String!
 }
 
 type TransferLocationEvm {
@@ -50,9 +55,8 @@ enum TransferType {
 }
 
 type TransferAssetToken {
-  symbol: String
-  decimals: Int
-  amount: BigInt
+  symbol: String!
+  amount: BigInt!
 }
 
 type TransferAssetMultiToken {
@@ -64,20 +68,10 @@ type TransferLocationXcm {
   paraId: Int
 }
 
+# entity for linking account and transfer
 type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
   account: Account!
   direction: TransferDirection
 }
-
-# type XcmTransfer implements CanFail @entity {
-#   id: ID!
-#   timestamp: DateTime
-#   blockNumber: BigInt @index
-#   extrinsicHash: String @index
-#   from: TransferLocation!
-#   to: XcmDestination!
-#   assets: [XcmAsset]!
-#   success: Boolean @index
-# }

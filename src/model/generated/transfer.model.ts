@@ -13,29 +13,30 @@ export class Transfer {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("timestamp with time zone", {nullable: true})
-  timestamp!: Date | undefined | null
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  blockNumber!: bigint | undefined | null
+  @Column_("timestamp with time zone", {nullable: false})
+  timestamp!: Date
 
   @Index_()
-  @Column_("text", {nullable: true})
-  extrinsicHash!: string | undefined | null
+  @Column_("int4", {nullable: false})
+  blockNumber!: number
+
+  @Index_()
+  @Column_("text", {nullable: false})
+  extrinsicHash!: string
 
   @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferLocation(obj)}, nullable: true})
   to!: TransferLocation | undefined | null
 
-  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferLocation(obj)}, nullable: true})
-  from!: TransferLocation | undefined | null
+  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => fromJsonTransferLocation(obj)}, nullable: false})
+  from!: TransferLocation
 
-  @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferAsset(obj)}, nullable: true})
-  asset!: TransferAsset | undefined | null
+  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => fromJsonTransferAsset(obj)}, nullable: false})
+  asset!: TransferAsset
 
   @Index_()
-  @Column_("bool", {nullable: true})
-  success!: boolean | undefined | null
+  @Column_("bool", {nullable: false})
+  success!: boolean
 
-  @Column_("varchar", {length: 8, nullable: true})
-  type!: TransferType | undefined | null
+  @Column_("varchar", {length: 8, nullable: false})
+  type!: TransferType
 }
