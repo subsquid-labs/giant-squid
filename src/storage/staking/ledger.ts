@@ -1,8 +1,8 @@
-import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../common/errors'
-import { decodeId, encodeId } from '../../common/helpers'
+import { decodeId, encodeId, isStorageCorrupted } from '../../common/tools'
+import { CommonHandlerContext } from '../../mappings/types/contexts'
 import { StakingLedgerStorage } from '../../types/generated/storage'
-import { StorageContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 
 interface StorageData {
     stash: Uint8Array
@@ -14,21 +14,25 @@ async function getStorageData(
     ctx: StorageContext,
     account: Uint8Array[]
 ): Promise<(StorageData | undefined)[] | undefined> {
-    //skip corrupted blocks
-    if ((ctx as EventHandlerContext).block.height >= 1375087 && (ctx as EventHandlerContext).block.height <= 1377830)
-        return undefined
-
     const storage = new StakingLedgerStorage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV1020) {
-        return await storage.getManyAsV1020(account)
-    } else if (storage.isV1050) {
-        return await storage.getManyAsV1050(account)
-    } else if (storage.isV1058) {
-        return await storage.getManyAsV1058(account)
-    } else {
-        throw new UnknownVersionError(storage.constructor.name)
+    try {
+        if (storage.isV1020) {
+            return await storage.getManyAsV1020(account)
+        } else if (storage.isV1050) {
+            return await storage.getManyAsV1050(account)
+        } else if (storage.isV1058) {
+            return await storage.getManyAsV1058(account)
+        } else {
+            throw new UnknownVersionError(storage.constructor.name)
+        }
+    } catch (e) {
+        if (isStorageCorrupted(ctx as CommonHandlerContext)) {
+            return undefined
+        } else {
+            throw e
+        }
     }
 }
 

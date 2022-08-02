@@ -1,6 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
 import * as marshal from "./marshal"
-import {Contributor} from "./contributor.model"
+import {Contribution} from "./contribution.model"
 import {Parachain} from "./parachain.model"
 
 @Entity_()
@@ -24,8 +24,8 @@ export class Crowdloan {
   @Column_("int4", {nullable: false})
   end!: number
 
-  @OneToMany_(() => Contributor, e => e.crowdloan)
-  contributors!: Contributor[]
+  @OneToMany_(() => Contribution, e => e.crowdloan)
+  contributions!: Contribution[]
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   raised!: bigint
@@ -39,7 +39,7 @@ export class Crowdloan {
 
   @Index_()
   @Column_("int4", {nullable: true})
-  blockNumber!: number | undefined | null
+  start!: number | undefined | null
 
   @Column_("timestamp with time zone", {nullable: true})
   createdAt!: Date | undefined | null

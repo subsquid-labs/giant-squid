@@ -1,14 +1,13 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, OneToOne as OneToOne_} from "typeorm"
-import * as marshal from "./marshal"
 import {AccountTransfer} from "./accountTransfer.model"
-import {Contributor} from "./contributor.model"
 import {Contribution} from "./contribution.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
-import {EraValidator} from "./eraValidator.model"
-import {EraNominator} from "./eraNominator.model"
-import {StakingInfo} from "./stakingInfo.model"
+import {Staker} from "./staker.model"
+import {RmrkCollection} from "./rmrkCollection.model"
+import {RmrkNFT} from "./rmrkNft.model"
+import {RmrkEvent} from "./rmrkEvent.model"
 
 @Entity_()
 export class Account {
@@ -19,23 +18,11 @@ export class Account {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  activeBond!: bigint
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalReward!: bigint
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalSlash!: bigint
-
   @OneToMany_(() => AccountTransfer, e => e.account)
   transfers!: AccountTransfer[]
 
-  @OneToMany_(() => Contributor, e => e.account)
-  crowdloans!: Contributor[]
-
   @OneToMany_(() => Contribution, e => e.account)
-  contributions!: Contribution[]
+  crowdloans!: Contribution[]
 
   @OneToMany_(() => Reward, e => e.account)
   rewards!: Reward[]
@@ -46,15 +33,18 @@ export class Account {
   @OneToMany_(() => Bond, e => e.account)
   bonds!: Bond[]
 
-  @OneToMany_(() => EraValidator, e => e.stash)
-  validatorHistory!: EraValidator[]
-
-  @OneToMany_(() => EraNominator, e => e.stash)
-  nominatorHistory!: EraNominator[]
-
-  @OneToOne_(() => StakingInfo)
-  stakingInfo!: StakingInfo | undefined | null
+  @OneToOne_(() => Staker)
+  stakingInfo!: Staker | undefined | null
 
   @Column_("int4", {nullable: false})
   lastUpdateBlock!: number
+
+  @OneToMany_(() => RmrkCollection, e => e.currentOwner)
+  rmrkColections!: RmrkCollection[]
+
+  @OneToMany_(() => RmrkNFT, e => e.currentOwner)
+  rmrkNfts!: RmrkNFT[]
+
+  @OneToMany_(() => RmrkEvent, e => e.caller)
+  rmrkEvents!: RmrkEvent[]
 }

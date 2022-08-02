@@ -1,7 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
-import {EraValidator} from "./eraValidator.model"
-import {EraNominator} from "./eraNominator.model"
+import {EraStaker} from "./eraStaker.model"
 
 @Entity_()
 export class Era {
@@ -33,9 +32,6 @@ export class Era {
   @Column_("int4", {nullable: false})
   nominatorsCount!: number
 
-  @OneToMany_(() => EraValidator, e => e.era)
-  validators!: EraValidator[]
-
-  @OneToMany_(() => EraNominator, e => e.era)
-  nominators!: EraNominator[]
+  @OneToMany_(() => EraStaker, e => e.era)
+  stakers!: EraStaker[]
 }

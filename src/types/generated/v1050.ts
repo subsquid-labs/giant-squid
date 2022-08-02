@@ -1,5 +1,11 @@
 import type {Result} from './support'
 
+export type AccountId = Uint8Array
+
+export type Balance = bigint
+
+export type LookupSource = Uint8Array
+
 export type RewardDestination = RewardDestination_Staked | RewardDestination_Stash | RewardDestination_Controller | RewardDestination_Account | RewardDestination_None
 
 export interface RewardDestination_Staked {
@@ -19,7 +25,7 @@ export interface RewardDestination_Controller {
 
 export interface RewardDestination_Account {
   __kind: 'Account'
-  value: Uint8Array
+  value: AccountId
 }
 
 export interface RewardDestination_None {
@@ -28,9 +34,11 @@ export interface RewardDestination_None {
 }
 
 export interface ActiveEraInfo {
-  index: number
-  start: (bigint | undefined)
+  index: EraIndex
+  start: (Moment | undefined)
 }
+
+export type EraIndex = number
 
 export interface Exposure {
   total: bigint
@@ -38,16 +46,18 @@ export interface Exposure {
   others: IndividualExposure[]
 }
 
-export interface StakingLedgerTo240 {
-  stash: Uint8Array
+export interface StakingLedger {
+  stash: AccountId
   total: bigint
   active: bigint
   unlocking: UnlockChunk[]
-  lastReward: (number | undefined)
+  lastReward: (EraIndex | undefined)
 }
 
+export type Moment = bigint
+
 export interface IndividualExposure {
-  who: Uint8Array
+  who: AccountId
   value: bigint
 }
 
