@@ -1,9 +1,9 @@
-import { EventHandler, EventHandlerContext } from '@subsquid/substrate-processor'
 import { UnknownVersionError } from '../../../../common/errors'
-import { encodeId } from '../../../../common/helpers'
+import { encodeId } from '../../../../common/tools'
 import { BondType } from '../../../../model'
 import { ParachainStakingNominationDecreasedEvent } from '../../../../types/generated/events'
-import { saveBond } from '../../utils/savers'
+import { EventContext, EventHandlerContext } from '../../../types/contexts'
+import { saveBond } from '.././utils'
 
 interface EventData {
     account: Uint8Array
@@ -11,7 +11,7 @@ interface EventData {
     candidate: Uint8Array
 }
 
-function getEventData(ctx: EventHandlerContext): EventData {
+function getEventData(ctx: EventContext): EventData {
     const event = new ParachainStakingNominationDecreasedEvent(ctx)
 
     if (event.isV900) {
@@ -25,12 +25,16 @@ function getEventData(ctx: EventHandlerContext): EventData {
     throw new UnknownVersionError(event.constructor.name)
 }
 
-export const handleNominationDecreased: EventHandler = async (ctx) => {
+export async function handleNominationDecreased(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
     await saveBond(ctx, {
-        account: encodeId(data.account),
-        candidate: encodeId(data.candidate),
+        id: ctx.event.id,
+        blockNumber: ctx.block.height,
+        timestamp: new Date(ctx.block.timestamp),
+        extrinsicHash: ctx.event.extrinsic?.hash,
+        accountId: encodeId(data.account),
+        candidateId: encodeId(data.candidate),
         amount: data.amount,
         type: BondType.Unbond,
         success: true,

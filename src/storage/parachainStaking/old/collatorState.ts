@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { decodeId, encodeId } from '../../../common/helpers'
+import { decodeId, encodeId } from '../../../common/tools'
 import { ParachainStakingCollatorState2Storage } from '../../../types/generated/storage'
 import { StorageContext } from '../../../types/generated/support'
 
@@ -15,22 +15,18 @@ interface StorageData {
     }[]
 }
 
-async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<StorageData | undefined> {
+async function getStorageData(
+    ctx: StorageContext,
+    accounts: Uint8Array[]
+): Promise<(StorageData | undefined)[] | undefined> {
     const storage = new ParachainStakingCollatorState2Storage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV900) {
-        return await storage.getAsV900(account)
+        return await storage.getManyAsV900(accounts)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
-}
-
-const storageCache: {
-    hash?: string
-    values: Map<string, CollatorState>
-} = {
-    values: new Map(),
 }
 
 interface CollatorState {
@@ -46,36 +42,44 @@ interface CollatorState {
     }[]
 }
 
-export async function getCollatorState(ctx: StorageContext, account: string): Promise<CollatorState | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
-        storageCache.hash = ctx.block.hash
-        storageCache.values.clear()
+async function queryStorageFunction(
+    ctx: StorageContext,
+    accounts: string[]
+): Promise<(CollatorState | undefined)[] | undefined> {
+    if (accounts.length === 0) return []
+
+    const u8 = accounts.map((a) => decodeId(a))
+
+    const data = await getStorageData(ctx, u8)
+    if (!data) return undefined
+
+    return data.map((d, i) =>
+        d != null
+            ? {
+                  id: accounts[i],
+                  bond: d.bond,
+                  topNominators: d.topNominators.map((delegation) => ({
+                      id: encodeId(delegation.owner),
+                      amount: delegation.amount,
+                  })),
+                  bottomNominators: d.bottomNominators.map((delegation) => ({
+                      id: encodeId(delegation.owner),
+                      amount: delegation.amount,
+                  })),
+              }
+            : undefined
+    )
+}
+
+export async function getCollatorState(ctx: StorageContext, account: string): Promise<CollatorState | undefined>
+export async function getCollatorState(
+    ctx: StorageContext,
+    accounts: string[]
+): Promise<(CollatorState | undefined)[] | undefined>
+export async function getCollatorState(ctx: StorageContext, accountOrAccounts: string | string[]) {
+    if (Array.isArray(accountOrAccounts)) {
+        return await queryStorageFunction(ctx, accountOrAccounts)
+    } else {
+        return (await queryStorageFunction(ctx, [accountOrAccounts]))?.[0]
     }
-
-    const key = account
-    let value = storageCache.values.get(account)
-
-    if (!value) {
-        const u8 = decodeId(account)
-
-        const data = await getStorageData(ctx, u8)
-        if (!data) return undefined
-
-        value = {
-            id: account,
-            bond: data.bond,
-            topNominators: data.topNominators.map((delegation) => ({
-                id: encodeId(delegation.owner),
-                amount: delegation.amount,
-            })),
-            bottomNominators: data.bottomNominators.map((delegation) => ({
-                id: encodeId(delegation.owner),
-                amount: delegation.amount,
-            })),
-        }
-
-        storageCache.values.set(key, value)
-    }
-
-    return value
 }
