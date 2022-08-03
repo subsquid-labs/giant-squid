@@ -2,6 +2,7 @@ import assert from 'assert'
 import {StorageContext, Result} from './support'
 import * as v1001 from './v1001'
 import * as v1201 from './v1201'
+import * as v1502 from './v1502'
 import * as v200 from './v200'
 import * as v49 from './v49'
 import * as v53 from './v53'
@@ -167,6 +168,21 @@ export class ParachainStakingDelegatorStateStorage {
    */
   async getAsV1001(key: v1001.AccountId20): Promise<v1001.Delegator | undefined> {
     assert(this.isV1001)
+    return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'DelegatorState', key)
+  }
+
+  /**
+   *  Get delegator state associated with an account if account is delegating else None
+   */
+  get isV1502() {
+    return this.ctx._chain.getStorageItemTypeHash('ParachainStaking', 'DelegatorState') === '637263cfee3190d24faafd4e41f925a782ec1a9b5d80de08bd6ae287d0f0a10a'
+  }
+
+  /**
+   *  Get delegator state associated with an account if account is delegating else None
+   */
+  async getAsV1502(key: v1502.AccountId20): Promise<v1502.Delegator | undefined> {
+    assert(this.isV1502)
     return this.ctx._chain.getStorage(this.ctx.block.hash, 'ParachainStaking', 'DelegatorState', key)
   }
 

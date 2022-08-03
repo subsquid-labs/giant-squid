@@ -20,6 +20,13 @@ function getEventData(ctx: EventHandlerContext): EventData {
             amount,
             newTotal,
         }
+    } else if (event.isV1001) {
+        const [account, amount, newTotal] = event.asV1001
+        return {
+            account,
+            amount,
+            newTotal,
+        }
     }
     throw new UnknownVersionError(event.constructor.name)
 }
