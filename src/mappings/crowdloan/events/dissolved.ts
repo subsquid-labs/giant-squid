@@ -10,11 +10,12 @@ function getEventData(ctx: EventHandlerContext): DissolvedData {
         return {
             index: event.asV9110,
         }
-    } else {
+    } else if (event.isV9230) {
         return {
-            index: event.asLatest.paraId,
+            index: event.asV9230.paraId,
         }
     }
+    throw Error(CrowdloanDissolvedEvent.name)
 }
 
 export async function dissolveCrowdloan(ctx: EventHandlerContext, data: DissolvedData) {

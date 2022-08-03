@@ -46,7 +46,7 @@ export class AccountManager extends Manager<Account> {
 
             await ctx.store.insert(Account, account)
         }
-        
+
         account.lastUpdateBlock = BigInt(ctx.block.height).valueOf()
 
         return account

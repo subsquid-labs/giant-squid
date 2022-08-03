@@ -61,7 +61,7 @@ export interface ProxyType_Auction {
   __kind: 'Auction'
 }
 
-export type Type_21 = Type_21_System | Type_21_Scheduler | Type_21_Babe | Type_21_Timestamp | Type_21_Indices | Type_21_Balances | Type_21_Authorship | Type_21_Staking | Type_21_Session | Type_21_Grandpa | Type_21_ImOnline | Type_21_Democracy | Type_21_Council | Type_21_TechnicalCommittee | Type_21_ElectionsPhragmen | Type_21_TechnicalMembership | Type_21_Treasury | Type_21_Claims | Type_21_Vesting | Type_21_Utility | Type_21_Identity | Type_21_Proxy | Type_21_Multisig | Type_21_Bounties | Type_21_Tips
+export type Type_21 = Type_21_System | Type_21_Scheduler | Type_21_Babe | Type_21_Timestamp | Type_21_Indices | Type_21_Balances | Type_21_Authorship | Type_21_Staking | Type_21_Offences | Type_21_Session | Type_21_Grandpa | Type_21_ImOnline | Type_21_AuthorityDiscovery | Type_21_Democracy | Type_21_Council | Type_21_TechnicalCommittee | Type_21_ElectionsPhragmen | Type_21_TechnicalMembership | Type_21_Treasury | Type_21_Claims | Type_21_Vesting | Type_21_Utility | Type_21_Identity | Type_21_Proxy | Type_21_Multisig | Type_21_Bounties | Type_21_Tips
 
 export interface Type_21_System {
   __kind: 'System'
@@ -103,6 +103,11 @@ export interface Type_21_Staking {
   value: StakingCall
 }
 
+export interface Type_21_Offences {
+  __kind: 'Offences'
+  value: OffencesCall
+}
+
 export interface Type_21_Session {
   __kind: 'Session'
   value: SessionCall
@@ -116,6 +121,11 @@ export interface Type_21_Grandpa {
 export interface Type_21_ImOnline {
   __kind: 'ImOnline'
   value: ImOnlineCall
+}
+
+export interface Type_21_AuthorityDiscovery {
+  __kind: 'AuthorityDiscovery'
+  value: AuthorityDiscoveryCall
 }
 
 export interface Type_21_Democracy {
@@ -1365,6 +1375,8 @@ export interface StakingCall_kick {
   who: GenericMultiAddress[]
 }
 
+export type OffencesCall = never
+
 export type SessionCall = SessionCall_set_keys | SessionCall_purge_keys
 
 /**
@@ -1471,6 +1483,8 @@ export interface ImOnlineCall_heartbeat {
   heartbeat: Heartbeat
   signature: Uint8Array
 }
+
+export type AuthorityDiscoveryCall = never
 
 export type DemocracyCall = DemocracyCall_propose | DemocracyCall_second | DemocracyCall_vote | DemocracyCall_emergency_cancel | DemocracyCall_external_propose | DemocracyCall_external_propose_majority | DemocracyCall_external_propose_default | DemocracyCall_fast_track | DemocracyCall_veto_external | DemocracyCall_cancel_referendum | DemocracyCall_cancel_queued | DemocracyCall_delegate | DemocracyCall_undelegate | DemocracyCall_clear_public_proposals | DemocracyCall_note_preimage | DemocracyCall_note_preimage_operational | DemocracyCall_note_imminent_preimage | DemocracyCall_note_imminent_preimage_operational | DemocracyCall_reap_preimage | DemocracyCall_unlock | DemocracyCall_remove_vote | DemocracyCall_remove_other_vote | DemocracyCall_enact_proposal | DemocracyCall_blacklist | DemocracyCall_cancel_proposal
 
@@ -1962,7 +1976,7 @@ export interface CouncilCall_set_members {
  */
 export interface CouncilCall_execute {
   __kind: 'execute'
-  proposal: Type_189
+  proposal: Type_191
   lengthBound: number
 }
 
@@ -1998,7 +2012,7 @@ export interface CouncilCall_execute {
 export interface CouncilCall_propose {
   __kind: 'propose'
   threshold: number
-  proposal: Type_189
+  proposal: Type_191
   lengthBound: number
 }
 
@@ -2134,7 +2148,7 @@ export interface TechnicalCommitteeCall_set_members {
  */
 export interface TechnicalCommitteeCall_execute {
   __kind: 'execute'
-  proposal: Type_189
+  proposal: Type_191
   lengthBound: number
 }
 
@@ -2170,7 +2184,7 @@ export interface TechnicalCommitteeCall_execute {
 export interface TechnicalCommitteeCall_propose {
   __kind: 'propose'
   threshold: number
-  proposal: Type_189
+  proposal: Type_191
   lengthBound: number
 }
 
@@ -3983,129 +3997,139 @@ export interface Conviction_Locked6x {
   __kind: 'Locked6x'
 }
 
-export type Type_189 = Type_189_System | Type_189_Scheduler | Type_189_Babe | Type_189_Timestamp | Type_189_Indices | Type_189_Balances | Type_189_Authorship | Type_189_Staking | Type_189_Session | Type_189_Grandpa | Type_189_ImOnline | Type_189_Democracy | Type_189_Council | Type_189_TechnicalCommittee | Type_189_ElectionsPhragmen | Type_189_TechnicalMembership | Type_189_Treasury | Type_189_Claims | Type_189_Vesting | Type_189_Utility | Type_189_Identity | Type_189_Proxy | Type_189_Multisig | Type_189_Bounties | Type_189_Tips
+export type Type_191 = Type_191_System | Type_191_Scheduler | Type_191_Babe | Type_191_Timestamp | Type_191_Indices | Type_191_Balances | Type_191_Authorship | Type_191_Staking | Type_191_Offences | Type_191_Session | Type_191_Grandpa | Type_191_ImOnline | Type_191_AuthorityDiscovery | Type_191_Democracy | Type_191_Council | Type_191_TechnicalCommittee | Type_191_ElectionsPhragmen | Type_191_TechnicalMembership | Type_191_Treasury | Type_191_Claims | Type_191_Vesting | Type_191_Utility | Type_191_Identity | Type_191_Proxy | Type_191_Multisig | Type_191_Bounties | Type_191_Tips
 
-export interface Type_189_System {
+export interface Type_191_System {
   __kind: 'System'
   value: SystemCall
 }
 
-export interface Type_189_Scheduler {
+export interface Type_191_Scheduler {
   __kind: 'Scheduler'
   value: SchedulerCall
 }
 
-export interface Type_189_Babe {
+export interface Type_191_Babe {
   __kind: 'Babe'
   value: BabeCall
 }
 
-export interface Type_189_Timestamp {
+export interface Type_191_Timestamp {
   __kind: 'Timestamp'
   value: TimestampCall
 }
 
-export interface Type_189_Indices {
+export interface Type_191_Indices {
   __kind: 'Indices'
   value: IndicesCall
 }
 
-export interface Type_189_Balances {
+export interface Type_191_Balances {
   __kind: 'Balances'
   value: BalancesCall
 }
 
-export interface Type_189_Authorship {
+export interface Type_191_Authorship {
   __kind: 'Authorship'
   value: AuthorshipCall
 }
 
-export interface Type_189_Staking {
+export interface Type_191_Staking {
   __kind: 'Staking'
   value: StakingCall
 }
 
-export interface Type_189_Session {
+export interface Type_191_Offences {
+  __kind: 'Offences'
+  value: OffencesCall
+}
+
+export interface Type_191_Session {
   __kind: 'Session'
   value: SessionCall
 }
 
-export interface Type_189_Grandpa {
+export interface Type_191_Grandpa {
   __kind: 'Grandpa'
   value: GrandpaCall
 }
 
-export interface Type_189_ImOnline {
+export interface Type_191_ImOnline {
   __kind: 'ImOnline'
   value: ImOnlineCall
 }
 
-export interface Type_189_Democracy {
+export interface Type_191_AuthorityDiscovery {
+  __kind: 'AuthorityDiscovery'
+  value: AuthorityDiscoveryCall
+}
+
+export interface Type_191_Democracy {
   __kind: 'Democracy'
   value: DemocracyCall
 }
 
-export interface Type_189_Council {
+export interface Type_191_Council {
   __kind: 'Council'
   value: CouncilCall
 }
 
-export interface Type_189_TechnicalCommittee {
+export interface Type_191_TechnicalCommittee {
   __kind: 'TechnicalCommittee'
   value: TechnicalCommitteeCall
 }
 
-export interface Type_189_ElectionsPhragmen {
+export interface Type_191_ElectionsPhragmen {
   __kind: 'ElectionsPhragmen'
   value: ElectionsPhragmenCall
 }
 
-export interface Type_189_TechnicalMembership {
+export interface Type_191_TechnicalMembership {
   __kind: 'TechnicalMembership'
   value: TechnicalMembershipCall
 }
 
-export interface Type_189_Treasury {
+export interface Type_191_Treasury {
   __kind: 'Treasury'
   value: TreasuryCall
 }
 
-export interface Type_189_Claims {
+export interface Type_191_Claims {
   __kind: 'Claims'
   value: ClaimsCall
 }
 
-export interface Type_189_Vesting {
+export interface Type_191_Vesting {
   __kind: 'Vesting'
   value: VestingCall
 }
 
-export interface Type_189_Utility {
+export interface Type_191_Utility {
   __kind: 'Utility'
   value: UtilityCall
 }
 
-export interface Type_189_Identity {
+export interface Type_191_Identity {
   __kind: 'Identity'
   value: IdentityCall
 }
 
-export interface Type_189_Proxy {
+export interface Type_191_Proxy {
   __kind: 'Proxy'
   value: ProxyCall
 }
 
-export interface Type_189_Multisig {
+export interface Type_191_Multisig {
   __kind: 'Multisig'
   value: MultisigCall
 }
 
-export interface Type_189_Bounties {
+export interface Type_191_Bounties {
   __kind: 'Bounties'
   value: BountiesCall
 }
 
-export interface Type_189_Tips {
+export interface Type_191_Tips {
   __kind: 'Tips'
   value: TipsCall
 }

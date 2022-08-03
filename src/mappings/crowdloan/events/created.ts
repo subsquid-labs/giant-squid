@@ -6,9 +6,17 @@ import { CrowdloanCreatedEvent } from '../../../types/generated/events'
 function getEventData(ctx: EventHandlerContext): DissolvedData {
     const event = new CrowdloanCreatedEvent(ctx)
 
-    return {
-        index: event.asV9110,
+    if (event.isV9110) {
+        return {
+            index: event.asV9110,
+        }
+    } else if (event.isV9230) {
+        return {
+            index: event.asV9230.paraId,
+        }
     }
+
+    throw Error(CrowdloanCreatedEvent.name)
 }
 
 export async function createCrowdloan(ctx: EventHandlerContext, data: DissolvedData) {
