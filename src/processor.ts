@@ -57,10 +57,11 @@ processor.addCallHandler(
     { triggerForFailedCalls: true },
     modules.balances.extrinsics.handleTransferAll
 )
+
 processor.addCallHandler('System.remark', modules.remark.handleRemark)
-// processor.addPostHook({ data: { includeAllBlocks: false } }, async (ctx) => {
-//     console.log(ctx.block.height, ctx.items)
-// })
+
+processor.addCallHandler('XcmPallet.teleport_assets', modules.xcmPallet.calls.handleTeleportAssets)
+processor.addCallHandler('XcmPallet.reserve_transfer_assets', modules.xcmPallet.calls.handleReserveTransferAssets)
 
 processor.addPostHook({ data: modules.staking.hooks.rewardsRequest }, modules.staking.hooks.rewardsHook)
 

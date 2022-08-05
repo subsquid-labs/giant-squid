@@ -3,9 +3,7 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": [
-    "sonarjs"
-  ],
+  "plugins": [],
   "rules": {
     "max-len": [
       "error",
@@ -15,11 +13,10 @@
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true
       }
-    ]
+    ],
   },
   "extends": [
     "plugin:@typescript-eslint/recommended",
-    "plugin:sonarjs/recommended",
     "plugin:prettier/recommended",
     "prettier"
   ],

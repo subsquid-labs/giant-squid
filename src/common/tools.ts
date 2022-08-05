@@ -37,7 +37,6 @@ export function getOriginAccountId(origin: any) {
     if (!origin) return undefined
     switch (origin.__kind) {
         case 'system':
-            // eslint-disable-next-line sonarjs/no-nested-switch, sonarjs/no-small-switch
             switch (origin.value.__kind) {
                 case 'Signed':
                     return encodeId(decodeHex(origin.value.value))

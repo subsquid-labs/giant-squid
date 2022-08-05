@@ -1,7 +1,6 @@
 {
   "outDir": "../src/types/generated",
-  "specVersions": "./versions.json",
-  "typesBundle": "kusama",
+  "specVersions": "https://kusama.archive.subsquid.io/graphql",
   "events": [
     "Staking.EraPaid",
     "Staking.Rewarded",
@@ -34,7 +33,9 @@
     "Staking.validate",
     "Staking.kick",
     "Staking.chill",
-    "System.remark"
+    "System.remark",
+    "XcmPallet.teleport_assets",
+    "XcmPallet.reserve_transfer_assets"
   ],
   "storage": [
     "Crowdloan.Funds",
