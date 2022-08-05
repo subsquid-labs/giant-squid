@@ -4,6 +4,7 @@ import * as v0 from './v0'
 import * as v28 from './v28'
 import * as v9050 from './v9050'
 import * as v9110 from './v9110'
+import * as v9140 from './v9140'
 
 export class BalancesForceTransferCall {
   private readonly _chain: Chain
@@ -1673,6 +1674,122 @@ export class StakingValidateCall {
    */
   get asV28(): {prefs: v28.ValidatorPrefs} {
     assert(this.isV28)
+    return this._chain.decodeCall(this.call)
+  }
+}
+
+export class XcmPalletReserveTransferAssetsCall {
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'XcmPallet.reserve_transfer_assets')
+    this._chain = ctx._chain
+    this.call = call
+  }
+
+  /**
+   * Transfer some assets from the local chain to the sovereign account of a destination chain and forward
+   * a notification XCM.
+   * 
+   * Fee payment on the destination side is made from the first asset listed in the `assets` vector and
+   * fee-weight is calculated locally and thus remote weights are assumed to be equal to
+   * local weights.
+   * 
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+   *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+   *   an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+   *   `dest` side.
+   * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+   *   fees.
+   */
+  get isV9140(): boolean {
+    return this._chain.getCallHash('XcmPallet.reserve_transfer_assets') === '123b8170fa49ede01f38623e457f4e4d417c90cff5b93ced45a9eb8fe8e6ca2e'
+  }
+
+  /**
+   * Transfer some assets from the local chain to the sovereign account of a destination chain and forward
+   * a notification XCM.
+   * 
+   * Fee payment on the destination side is made from the first asset listed in the `assets` vector and
+   * fee-weight is calculated locally and thus remote weights are assumed to be equal to
+   * local weights.
+   * 
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+   *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+   *   an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. This should include the assets used to pay the fee on the
+   *   `dest` side.
+   * - `fee_asset_item`: The index into `assets` of the item which should be used to pay
+   *   fees.
+   */
+  get asV9140(): {dest: v9140.VersionedMultiLocation, beneficiary: v9140.VersionedMultiLocation, assets: v9140.VersionedMultiAssets, feeAssetItem: number} {
+    assert(this.isV9140)
+    return this._chain.decodeCall(this.call)
+  }
+}
+
+export class XcmPalletTeleportAssetsCall {
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'XcmPallet.teleport_assets')
+    this._chain = ctx._chain
+    this.call = call
+  }
+
+  /**
+   * Teleport some assets from the local chain to some destination chain.
+   * 
+   * Fee payment on the destination side is made from the first asset listed in the `assets` vector and
+   * fee-weight is calculated locally and thus remote weights are assumed to be equal to
+   * local weights.
+   * 
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+   *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+   *   an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+   *   `dest` side. May not be empty.
+   * - `dest_weight`: Equal to the total weight on `dest` of the XCM message
+   *   `Teleport { assets, effects: [ BuyExecution{..}, DepositAsset{..} ] }`.
+   */
+  get isV9140(): boolean {
+    return this._chain.getCallHash('XcmPallet.teleport_assets') === '123b8170fa49ede01f38623e457f4e4d417c90cff5b93ced45a9eb8fe8e6ca2e'
+  }
+
+  /**
+   * Teleport some assets from the local chain to some destination chain.
+   * 
+   * Fee payment on the destination side is made from the first asset listed in the `assets` vector and
+   * fee-weight is calculated locally and thus remote weights are assumed to be equal to
+   * local weights.
+   * 
+   * - `origin`: Must be capable of withdrawing the `assets` and executing XCM.
+   * - `dest`: Destination context for the assets. Will typically be `X2(Parent, Parachain(..))` to send
+   *   from parachain to parachain, or `X1(Parachain(..))` to send from relay to parachain.
+   * - `beneficiary`: A beneficiary location for the assets in the context of `dest`. Will generally be
+   *   an `AccountId32` value.
+   * - `assets`: The assets to be withdrawn. The first item should be the currency used to to pay the fee on the
+   *   `dest` side. May not be empty.
+   * - `dest_weight`: Equal to the total weight on `dest` of the XCM message
+   *   `Teleport { assets, effects: [ BuyExecution{..}, DepositAsset{..} ] }`.
+   */
+  get asV9140(): {dest: v9140.VersionedMultiLocation, beneficiary: v9140.VersionedMultiLocation, assets: v9140.VersionedMultiAssets, feeAssetItem: number} {
+    assert(this.isV9140)
     return this._chain.decodeCall(this.call)
   }
 }

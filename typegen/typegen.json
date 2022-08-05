@@ -1,7 +1,6 @@
 {
   "outDir": "../src/types/generated",
   "specVersions": "https://polkadot.archive.subsquid.io/graphql",
-  "typesBundle": "polkadot",
   "events": [
     "Staking.EraPaid",
     "Staking.Rewarded",
@@ -33,7 +32,9 @@
     "Staking.nominate",
     "Staking.validate",
     "Staking.kick",
-    "Staking.chill"
+    "Staking.chill",
+    "XcmPallet.teleport_assets",
+    "XcmPallet.reserve_transfer_assets"
   ],
   "storage": [
     "Crowdloan.Funds",

@@ -58,6 +58,9 @@ processor.addCallHandler(
     modules.balances.extrinsics.handleTransferAll
 )
 
+processor.addCallHandler('XcmPallet.teleport_assets', modules.xcmPallet.calls.handleTeleportAssets)
+processor.addCallHandler('XcmPallet.reserve_transfer_assets', modules.xcmPallet.calls.handleReserveTransferAssets)
+
 processor.addPostHook({ data: modules.staking.hooks.rewardsRequest }, modules.staking.hooks.rewardsHook)
 
 processor.run()
