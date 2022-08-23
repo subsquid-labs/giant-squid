@@ -9,8 +9,10 @@ async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise
 
     if (storage.isV4) {
         return await storage.getAsV4(account)
-    }
+    } else if (storage.isV12) {
+        return (await storage.getAsV12(account)).locked
 
+    }
     return undefined
 }
 

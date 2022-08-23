@@ -39,15 +39,15 @@ processor.addExtrinsicHandler(
     modules.balances.extrinsics.handleTransferAll
 )
 
-processor.addExtrinsicHandler(
-    'dappsStaking.bond_and_stake',
-    { triggerEvents: [EXTRINSIC_FAILED] },
-    modules.dAppsStaking.extrinsics.handleBond
-)
-processor.addExtrinsicHandler(
-    'dappsStaking.unbond_unstake_and_withdraw',
-    { triggerEvents: [EXTRINSIC_FAILED] },
-    modules.dAppsStaking.extrinsics.handleUnbond
-)
+// processor.addExtrinsicHandler(
+//     'dappsStaking.bond_and_stake',
+//     { triggerEvents: [EXTRINSIC_FAILED] },
+//     modules.dAppsStaking.extrinsics.handleBond
+// )
+// processor.addExtrinsicHandler(
+//     'dappsStaking.unbond_unstake_and_withdraw',
+//     { triggerEvents: [EXTRINSIC_FAILED] },
+//     modules.dAppsStaking.extrinsics.handleUnbond
+// )
 
 processor.run()
