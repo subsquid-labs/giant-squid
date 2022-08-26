@@ -1,9 +1,9 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
+import { getOriginAccountId } from '../../../common/tools'
 import { CrowdloanContributeCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext, CommonHandlerContext } from '../../types/contexts'
-import { Contribution, TransferType } from '../../../model'
-import { getLastCrowdloan, getOrCreateAccount, saveTransfer } from '../../util/entities'
+import { Contribution } from '../../../model'
+import { getLastCrowdloan, getOrCreateAccount } from '../../util/entities'
 import assert from 'assert'
 
 export interface CallData {
@@ -73,7 +73,6 @@ export async function saveContribution(ctx: CommonHandlerContext, data: Contribu
             crowdloan,
             amount: 0n,
         })
-        await ctx.store.insert(contribution)
     }
 
     contribution.amount += BigInt(amount)
