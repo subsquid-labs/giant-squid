@@ -1,26 +1,20 @@
 import type {Result} from './support'
 
-export type AccountId = Uint8Array
-
-export type ParaId = number
-
-export type Balance = bigint
-
 export type MultiSignature = MultiSignature_Ed25519 | MultiSignature_Sr25519 | MultiSignature_Ecdsa
 
 export interface MultiSignature_Ed25519 {
   __kind: 'Ed25519'
-  value: Ed25519Signature
+  value: Uint8Array
 }
 
 export interface MultiSignature_Sr25519 {
   __kind: 'Sr25519'
-  value: Sr25519Signature
+  value: Uint8Array
 }
 
 export interface MultiSignature_Ecdsa {
   __kind: 'Ecdsa'
-  value: EcdsaSignature
+  value: Uint8Array
 }
 
 export type MultiSigner = MultiSigner_Ed25519 | MultiSigner_Sr25519 | MultiSigner_Ecdsa
@@ -153,26 +147,18 @@ export interface MultiAsset_ConcreteNonFungible {
   instance: AssetInstanceV0
 }
 
-export type Weight = bigint
-
 export interface FundInfo {
-  depositor: AccountId
+  depositor: Uint8Array
   verifier: (MultiSigner | undefined)
-  deposit: Balance
-  raised: Balance
-  end: BlockNumber
-  cap: Balance
+  deposit: bigint
+  raised: bigint
+  end: number
+  cap: bigint
   lastContribution: LastContribution
-  firstPeriod: LeasePeriod
-  lastPeriod: LeasePeriod
-  trieIndex: TrieIndex
+  firstPeriod: number
+  lastPeriod: number
+  trieIndex: number
 }
-
-export type Ed25519Signature = Uint8Array
-
-export type Sr25519Signature = Uint8Array
-
-export type EcdsaSignature = Uint8Array
 
 export type JunctionV0 = JunctionV0_Parent | JunctionV0_Parachain | JunctionV0_AccountId32 | JunctionV0_AccountIndex64 | JunctionV0_AccountKey20 | JunctionV0_PalletInstance | JunctionV0_GeneralIndex | JunctionV0_GeneralKey | JunctionV0_OnlyChild | JunctionV0_Plurality
 
@@ -189,7 +175,7 @@ export interface JunctionV0_Parachain {
 export interface JunctionV0_AccountId32 {
   __kind: 'AccountId32'
   network: NetworkId
-  id: AccountId
+  id: Uint8Array
 }
 
 export interface JunctionV0_AccountIndex64 {
@@ -334,8 +320,6 @@ export interface AssetInstanceV0_Blob {
   value: Uint8Array
 }
 
-export type BlockNumber = number
-
 export type LastContribution = LastContribution_Never | LastContribution_PreEnding | LastContribution_Ending
 
 export interface LastContribution_Never {
@@ -350,12 +334,8 @@ export interface LastContribution_PreEnding {
 
 export interface LastContribution_Ending {
   __kind: 'Ending'
-  value: BlockNumber
+  value: number
 }
-
-export type LeasePeriod = number
-
-export type TrieIndex = number
 
 export type NetworkId = NetworkId_Any | NetworkId_Named | NetworkId_Polkadot | NetworkId_Kusama
 

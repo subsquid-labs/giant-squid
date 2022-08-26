@@ -18,11 +18,11 @@ export class EraStaker {
   stakerId!: string
 
   @Index_()
-  @ManyToOne_(() => Staker, {nullable: false})
+  @ManyToOne_(() => Staker, {nullable: true})
   staker!: Staker
 
   @Index_()
-  @ManyToOne_(() => Era, {nullable: false})
+  @ManyToOne_(() => Era, {nullable: true})
   era!: Era
 
   @Column_("varchar", {length: 9, nullable: false})

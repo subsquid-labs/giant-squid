@@ -1,9 +1,7 @@
 import type {Result} from './support'
 
-export type Id = number
-
 export interface FundInfo {
-  depositor: AccountId32
+  depositor: Uint8Array
   verifier: (MultiSigner | undefined)
   deposit: bigint
   raised: bigint
@@ -14,8 +12,6 @@ export interface FundInfo {
   lastPeriod: number
   fundIndex: number
 }
-
-export type AccountId32 = Uint8Array
 
 export type MultiSigner = MultiSigner_Ed25519 | MultiSigner_Sr25519 | MultiSigner_Ecdsa
 

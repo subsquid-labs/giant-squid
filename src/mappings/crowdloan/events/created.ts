@@ -1,8 +1,10 @@
+import {EventHandlerContext} from '@subsquid/substrate-processor'
+import {Store} from '@subsquid/typeorm-store'
 import { UnknownVersionError } from '../../../common/errors'
 import { Crowdloan } from '../../../model'
 import storage from '../../../storage'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
-import { EventContext, EventHandlerContext } from '../../types/contexts'
+import { EventContext } from '../../types/contexts'
 import { getOrCreateParachain } from '../../util/entities'
 
 interface EventData {
@@ -21,7 +23,7 @@ function getEventData(ctx: EventContext): EventData {
     }
 }
 
-export async function handleCreated(ctx: EventHandlerContext) {
+export async function handleCreated(ctx: EventHandlerContext<Store, { event: true }>) {
     const data = getEventData(ctx)
 
     const fundInfo = await storage.crowdloan.getFunds(ctx, data.index)

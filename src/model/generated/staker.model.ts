@@ -29,7 +29,7 @@ export class Staker {
   controllerId!: string
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
+  @ManyToOne_(() => Account, {nullable: true})
   controller!: Account
 
   @Column_("text", {nullable: false})

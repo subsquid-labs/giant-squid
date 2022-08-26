@@ -113,8 +113,6 @@ export interface MultiAsset_ConcreteNonFungible {
   instance: AssetInstanceV0
 }
 
-export type Weight = bigint
-
 export type JunctionV0 = JunctionV0_Parent | JunctionV0_Parachain | JunctionV0_AccountId32 | JunctionV0_AccountIndex64 | JunctionV0_AccountKey20 | JunctionV0_PalletInstance | JunctionV0_GeneralIndex | JunctionV0_GeneralKey | JunctionV0_OnlyChild | JunctionV0_Plurality
 
 export interface JunctionV0_Parent {
@@ -130,7 +128,7 @@ export interface JunctionV0_Parachain {
 export interface JunctionV0_AccountId32 {
   __kind: 'AccountId32'
   network: NetworkId
-  id: AccountId
+  id: Uint8Array
 }
 
 export interface JunctionV0_AccountIndex64 {
@@ -296,8 +294,6 @@ export interface NetworkId_Kusama {
   __kind: 'Kusama'
   value: null
 }
-
-export type AccountId = Uint8Array
 
 export type BodyId = BodyId_Unit | BodyId_Named | BodyId_Index | BodyId_Executive | BodyId_Technical | BodyId_Legislative | BodyId_Judicial
 

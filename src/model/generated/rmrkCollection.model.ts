@@ -16,8 +16,8 @@ export class RmrkCollection {
   @Column_("int4", {nullable: false})
   max!: number
 
-  @Column_("text", {nullable: true})
-  issuer!: string | undefined | null
+  @Column_("text", {nullable: false})
+  issuer!: string
 
   @Column_("text", {nullable: true})
   symbol!: string | undefined | null

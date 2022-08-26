@@ -21,7 +21,7 @@ export class RmrkNFT {
   transferable!: number | undefined | null
 
   @Index_()
-  @ManyToOne_(() => RmrkCollection, {nullable: false})
+  @ManyToOne_(() => RmrkCollection, {nullable: true})
   collection!: RmrkCollection
 
   @Column_("text", {nullable: true})

@@ -4,7 +4,7 @@ export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_R
 
 export interface MultiAddress_Id {
   __kind: 'Id'
-  value: AccountId32
+  value: Uint8Array
 }
 
 export interface MultiAddress_Index {
@@ -43,7 +43,7 @@ export interface RewardDestination_Controller {
 
 export interface RewardDestination_Account {
   __kind: 'Account'
-  value: AccountId32
+  value: Uint8Array
 }
 
 export interface RewardDestination_None {
@@ -71,13 +71,11 @@ export interface VersionedMultiAssets_V0 {
 
 export interface VersionedMultiAssets_V1 {
   __kind: 'V1'
-  value: V1MultiAssets
+  value: V1MultiAsset[]
 }
 
-export type Id = number
-
 export interface FundInfo {
-  depositor: AccountId32
+  depositor: Uint8Array
   verifier: (MultiSigner | undefined)
   deposit: bigint
   raised: bigint
@@ -88,8 +86,6 @@ export interface FundInfo {
   lastPeriod: number
   trieIndex: number
 }
-
-export type AccountId32 = Uint8Array
 
 export type V0MultiLocation = V0MultiLocation_Null | V0MultiLocation_X1 | V0MultiLocation_X2 | V0MultiLocation_X3 | V0MultiLocation_X4 | V0MultiLocation_X5 | V0MultiLocation_X6 | V0MultiLocation_X7 | V0MultiLocation_X8
 
@@ -208,8 +204,6 @@ export interface V1MultiAsset {
   id: V1AssetId
   fun: V1Fungibility
 }
-
-export type V1MultiAssets = V1MultiAsset[]
 
 export type MultiSigner = MultiSigner_Ed25519 | MultiSigner_Sr25519 | MultiSigner_Ecdsa
 

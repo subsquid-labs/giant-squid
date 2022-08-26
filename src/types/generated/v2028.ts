@@ -4,7 +4,7 @@ export type LookupSource = LookupSource_Id | LookupSource_Index | LookupSource_R
 
 export interface LookupSource_Id {
   __kind: 'Id'
-  value: AccountId
+  value: Uint8Array
 }
 
 export interface LookupSource_Index {
@@ -19,12 +19,12 @@ export interface LookupSource_Raw {
 
 export interface LookupSource_Address32 {
   __kind: 'Address32'
-  value: H256
+  value: Uint8Array
 }
 
 export interface LookupSource_Address20 {
   __kind: 'Address20'
-  value: H160
+  value: Uint8Array
 }
 
 export type RewardDestination = RewardDestination_Staked | RewardDestination_Stash | RewardDestination_Controller | RewardDestination_Account | RewardDestination_None
@@ -46,7 +46,7 @@ export interface RewardDestination_Controller {
 
 export interface RewardDestination_Account {
   __kind: 'Account'
-  value: AccountId
+  value: Uint8Array
 }
 
 export interface RewardDestination_None {
@@ -58,9 +58,3 @@ export interface ValidatorPrefs {
   commission: number
   blocked: boolean
 }
-
-export type AccountId = Uint8Array
-
-export type H256 = Uint8Array
-
-export type H160 = Uint8Array

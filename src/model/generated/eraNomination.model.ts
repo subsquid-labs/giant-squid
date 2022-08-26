@@ -13,7 +13,7 @@ export class EraNomination {
   id!: string
 
   @Index_()
-  @ManyToOne_(() => Era, {nullable: false})
+  @ManyToOne_(() => Era, {nullable: true})
   era!: Era
 
   @Index_()

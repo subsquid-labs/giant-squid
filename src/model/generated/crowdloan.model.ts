@@ -34,7 +34,7 @@ export class Crowdloan {
   parachainId!: string
 
   @Index_()
-  @ManyToOne_(() => Parachain, {nullable: false})
+  @ManyToOne_(() => Parachain, {nullable: true})
   parachain!: Parachain
 
   @Index_()

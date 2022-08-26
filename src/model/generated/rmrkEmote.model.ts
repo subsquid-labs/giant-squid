@@ -12,11 +12,11 @@ export class RmrkEmote {
   id!: string
 
   @Index_()
-  @ManyToOne_(() => RmrkNFT, {nullable: false})
+  @ManyToOne_(() => RmrkNFT, {nullable: true})
   nft!: RmrkNFT
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
+  @ManyToOne_(() => Account, {nullable: true})
   caller!: Account
 
   @Column_("text", {nullable: false})

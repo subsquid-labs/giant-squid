@@ -26,15 +26,13 @@ export interface VersionedMultiAssets_V0 {
 
 export interface VersionedMultiAssets_V1 {
   __kind: 'V1'
-  value: MultiAssetsV1
+  value: MultiAssetV1[]
 }
 
 export interface VersionedMultiAssets_V2 {
   __kind: 'V2'
-  value: MultiAssetsV2
+  value: MultiAssetV1[]
 }
-
-export type Weight = bigint
 
 export type MultiLocationV0 = MultiLocationV0_Here | MultiLocationV0_X1 | MultiLocationV0_X2 | MultiLocationV0_X3 | MultiLocationV0_X4 | MultiLocationV0_X5 | MultiLocationV0_X6 | MultiLocationV0_X7 | MultiLocationV0_X8
 
@@ -164,10 +162,6 @@ export interface MultiAssetV1 {
   fungibility: FungibilityV1
 }
 
-export type MultiAssetsV1 = MultiAssetV1[]
-
-export type MultiAssetsV2 = MultiAssetV1[]
-
 export type JunctionV0 = JunctionV0_Parent | JunctionV0_Parachain | JunctionV0_AccountId32 | JunctionV0_AccountIndex64 | JunctionV0_AccountKey20 | JunctionV0_PalletInstance | JunctionV0_GeneralIndex | JunctionV0_GeneralKey | JunctionV0_OnlyChild | JunctionV0_Plurality
 
 export interface JunctionV0_Parent {
@@ -183,7 +177,7 @@ export interface JunctionV0_Parachain {
 export interface JunctionV0_AccountId32 {
   __kind: 'AccountId32'
   network: NetworkId
-  id: AccountId
+  id: Uint8Array
 }
 
 export interface JunctionV0_AccountIndex64 {
@@ -374,8 +368,6 @@ export interface NetworkId_Kusama {
   value: null
 }
 
-export type AccountId = Uint8Array
-
 export type BodyId = BodyId_Unit | BodyId_Named | BodyId_Index | BodyId_Executive | BodyId_Technical | BodyId_Legislative | BodyId_Judicial
 
 export interface BodyId_Unit {
@@ -453,7 +445,7 @@ export interface JunctionV1_Parachain {
 export interface JunctionV1_AccountId32 {
   __kind: 'AccountId32'
   network: NetworkId
-  id: AccountId
+  id: Uint8Array
 }
 
 export interface JunctionV1_AccountIndex64 {
