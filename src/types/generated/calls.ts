@@ -1,7 +1,6 @@
 import assert from 'assert'
 import {Chain, ChainContext, CallContext, Call, Result} from './support'
 import * as v0 from './v0'
-import * as v5 from './v5'
 import * as v28 from './v28'
 import * as v9050 from './v9050'
 import * as v9110 from './v9110'
@@ -39,7 +38,7 @@ export class BalancesForceTransferCall {
    *    not assumed to be in the overlay.
    *  # </weight>
    */
-  get asV0(): {source: v0.LookupSource, dest: v0.LookupSource, value: bigint} {
+  get asV0(): {source: Uint8Array, dest: Uint8Array, value: bigint} {
     assert(this.isV0)
     return this._chain.decodeCall(this.call)
   }
@@ -66,56 +65,6 @@ export class BalancesForceTransferCall {
    */
   get asV28(): {source: v28.LookupSource, dest: v28.LookupSource, value: bigint} {
     assert(this.isV28)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Exactly as `transfer`, except the origin must be root and the source account may be
-   *  specified.
-   *  # <weight>
-   *  - Same as transfer, but additional read and write because the source account is
-   *    not assumed to be in the overlay.
-   *  # </weight>
-   */
-  get isV5(): boolean {
-    return this._chain.getCallHash('Balances.force_transfer') === '2fe8348cf811b833de74f02f6eeab668dbfad8a5d53274dd89837666ed3eb6fe'
-  }
-
-  /**
-   *  Exactly as `transfer`, except the origin must be root and the source account may be
-   *  specified.
-   *  # <weight>
-   *  - Same as transfer, but additional read and write because the source account is
-   *    not assumed to be in the overlay.
-   *  # </weight>
-   */
-  get asV5(): {source: v5.LookupSource, dest: v5.LookupSource, value: bigint} {
-    assert(this.isV5)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Exactly as `transfer`, except the origin must be root and the source account may be
-   *  specified.
-   *  # <weight>
-   *  - Same as transfer, but additional read and write because the source account is
-   *    not assumed to be in the overlay.
-   *  # </weight>
-   */
-  get isV9050(): boolean {
-    return this._chain.getCallHash('Balances.force_transfer') === '906df11f4f65ebd03a2b87ba248e1fba11c3a0bca42c892bee828bac3ec80348'
-  }
-
-  /**
-   *  Exactly as `transfer`, except the origin must be root and the source account may be
-   *  specified.
-   *  # <weight>
-   *  - Same as transfer, but additional read and write because the source account is
-   *    not assumed to be in the overlay.
-   *  # </weight>
-   */
-  get asV9050(): {source: v9050.LookupSource, dest: v9050.LookupSource, value: bigint} {
-    assert(this.isV9050)
     return this._chain.decodeCall(this.call)
   }
 
@@ -220,7 +169,7 @@ export class BalancesTransferCall {
    *  - Origin account is already in memory, so no DB operations for them.
    *  # </weight>
    */
-  get asV0(): {dest: v0.LookupSource, value: bigint} {
+  get asV0(): {dest: Uint8Array, value: bigint} {
     assert(this.isV0)
     return this._chain.decodeCall(this.call)
   }
@@ -289,140 +238,6 @@ export class BalancesTransferCall {
    */
   get asV28(): {dest: v28.LookupSource, value: bigint} {
     assert(this.isV28)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Transfer some liquid free balance to another account.
-   * 
-   *  `transfer` will set the `FreeBalance` of the sender and receiver.
-   *  It will decrease the total issuance of the system by the `TransferFee`.
-   *  If the sender's account is below the existential deposit as a result
-   *  of the transfer, the account will be reaped.
-   * 
-   *  The dispatch origin for this call must be `Signed` by the transactor.
-   * 
-   *  # <weight>
-   *  - Dependent on arguments but not critical, given proper implementations for
-   *    input config types. See related functions below.
-   *  - It contains a limited number of reads and writes internally and no complex computation.
-   * 
-   *  Related functions:
-   * 
-   *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-   *    - Transferring balances to accounts that did not exist before will cause
-   *       `T::OnNewAccount::on_new_account` to be called.
-   *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-   *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
-   *      check that the transfer will not kill the origin account.
-   *  ---------------------------------
-   *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-   *  - DB Weight: 1 Read and 1 Write to destination account
-   *  - Origin account is already in memory, so no DB operations for them.
-   *  # </weight>
-   */
-  get isV5(): boolean {
-    return this._chain.getCallHash('Balances.transfer') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
-  }
-
-  /**
-   *  Transfer some liquid free balance to another account.
-   * 
-   *  `transfer` will set the `FreeBalance` of the sender and receiver.
-   *  It will decrease the total issuance of the system by the `TransferFee`.
-   *  If the sender's account is below the existential deposit as a result
-   *  of the transfer, the account will be reaped.
-   * 
-   *  The dispatch origin for this call must be `Signed` by the transactor.
-   * 
-   *  # <weight>
-   *  - Dependent on arguments but not critical, given proper implementations for
-   *    input config types. See related functions below.
-   *  - It contains a limited number of reads and writes internally and no complex computation.
-   * 
-   *  Related functions:
-   * 
-   *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-   *    - Transferring balances to accounts that did not exist before will cause
-   *       `T::OnNewAccount::on_new_account` to be called.
-   *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-   *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
-   *      check that the transfer will not kill the origin account.
-   *  ---------------------------------
-   *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-   *  - DB Weight: 1 Read and 1 Write to destination account
-   *  - Origin account is already in memory, so no DB operations for them.
-   *  # </weight>
-   */
-  get asV5(): {dest: v5.LookupSource, value: bigint} {
-    assert(this.isV5)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Transfer some liquid free balance to another account.
-   * 
-   *  `transfer` will set the `FreeBalance` of the sender and receiver.
-   *  It will decrease the total issuance of the system by the `TransferFee`.
-   *  If the sender's account is below the existential deposit as a result
-   *  of the transfer, the account will be reaped.
-   * 
-   *  The dispatch origin for this call must be `Signed` by the transactor.
-   * 
-   *  # <weight>
-   *  - Dependent on arguments but not critical, given proper implementations for
-   *    input config types. See related functions below.
-   *  - It contains a limited number of reads and writes internally and no complex computation.
-   * 
-   *  Related functions:
-   * 
-   *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-   *    - Transferring balances to accounts that did not exist before will cause
-   *       `T::OnNewAccount::on_new_account` to be called.
-   *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-   *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
-   *      check that the transfer will not kill the origin account.
-   *  ---------------------------------
-   *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-   *  - DB Weight: 1 Read and 1 Write to destination account
-   *  - Origin account is already in memory, so no DB operations for them.
-   *  # </weight>
-   */
-  get isV9050(): boolean {
-    return this._chain.getCallHash('Balances.transfer') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
-  }
-
-  /**
-   *  Transfer some liquid free balance to another account.
-   * 
-   *  `transfer` will set the `FreeBalance` of the sender and receiver.
-   *  It will decrease the total issuance of the system by the `TransferFee`.
-   *  If the sender's account is below the existential deposit as a result
-   *  of the transfer, the account will be reaped.
-   * 
-   *  The dispatch origin for this call must be `Signed` by the transactor.
-   * 
-   *  # <weight>
-   *  - Dependent on arguments but not critical, given proper implementations for
-   *    input config types. See related functions below.
-   *  - It contains a limited number of reads and writes internally and no complex computation.
-   * 
-   *  Related functions:
-   * 
-   *    - `ensure_can_withdraw` is always called internally but has a bounded complexity.
-   *    - Transferring balances to accounts that did not exist before will cause
-   *       `T::OnNewAccount::on_new_account` to be called.
-   *    - Removing enough funds from an account will trigger `T::DustRemoval::on_unbalanced`.
-   *    - `transfer_keep_alive` works the same way as `transfer`, but has an additional
-   *      check that the transfer will not kill the origin account.
-   *  ---------------------------------
-   *  - Base Weight: 73.64 µs, worst case scenario (account created, account removed)
-   *  - DB Weight: 1 Read and 1 Write to destination account
-   *  - Origin account is already in memory, so no DB operations for them.
-   *  # </weight>
-   */
-  get asV9050(): {dest: v9050.LookupSource, value: bigint} {
-    assert(this.isV9050)
     return this._chain.decodeCall(this.call)
   }
 
@@ -649,7 +464,7 @@ export class BalancesTransferKeepAliveCall {
    *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    *  #</weight>
    */
-  get asV0(): {dest: v0.LookupSource, value: bigint} {
+  get asV0(): {dest: Uint8Array, value: bigint} {
     assert(this.isV0)
     return this._chain.decodeCall(this.call)
   }
@@ -686,76 +501,6 @@ export class BalancesTransferKeepAliveCall {
    */
   get asV28(): {dest: v28.LookupSource, value: bigint} {
     assert(this.isV28)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
-   *  origin account.
-   * 
-   *  99% of the time you want [`transfer`] instead.
-   * 
-   *  [`transfer`]: struct.Module.html#method.transfer
-   *  # <weight>
-   *  - Cheaper than transfer because account cannot be killed.
-   *  - Base Weight: 51.4 µs
-   *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-   *  #</weight>
-   */
-  get isV5(): boolean {
-    return this._chain.getCallHash('Balances.transfer_keep_alive') === 'cf5bb376709277883598390b3462e93b0f3c383df391c0649728c965e8da82fd'
-  }
-
-  /**
-   *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
-   *  origin account.
-   * 
-   *  99% of the time you want [`transfer`] instead.
-   * 
-   *  [`transfer`]: struct.Module.html#method.transfer
-   *  # <weight>
-   *  - Cheaper than transfer because account cannot be killed.
-   *  - Base Weight: 51.4 µs
-   *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-   *  #</weight>
-   */
-  get asV5(): {dest: v5.LookupSource, value: bigint} {
-    assert(this.isV5)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
-   *  origin account.
-   * 
-   *  99% of the time you want [`transfer`] instead.
-   * 
-   *  [`transfer`]: struct.Pallet.html#method.transfer
-   *  # <weight>
-   *  - Cheaper than transfer because account cannot be killed.
-   *  - Base Weight: 51.4 µs
-   *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-   *  #</weight>
-   */
-  get isV9050(): boolean {
-    return this._chain.getCallHash('Balances.transfer_keep_alive') === 'c3f0f475940fc4bef49b298f76ba345680f20fc48d5899b4678314a07e2ce090'
-  }
-
-  /**
-   *  Same as the [`transfer`] call, but with a check that the transfer will not kill the
-   *  origin account.
-   * 
-   *  99% of the time you want [`transfer`] instead.
-   * 
-   *  [`transfer`]: struct.Pallet.html#method.transfer
-   *  # <weight>
-   *  - Cheaper than transfer because account cannot be killed.
-   *  - Base Weight: 51.4 µs
-   *  - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
-   *  #</weight>
-   */
-  get asV9050(): {dest: v9050.LookupSource, value: bigint} {
-    assert(this.isV9050)
     return this._chain.decodeCall(this.call)
   }
 
@@ -926,7 +671,7 @@ export class StakingBondCall {
    *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
    *  # </weight>
    */
-  get asV0(): {controller: v0.LookupSource, value: bigint, payee: v0.RewardDestination} {
+  get asV0(): {controller: Uint8Array, value: bigint, payee: v0.RewardDestination} {
     assert(this.isV0)
     return this._chain.decodeCall(this.call)
   }
@@ -985,120 +730,6 @@ export class StakingBondCall {
    */
   get asV28(): {controller: v28.LookupSource, value: bigint, payee: v28.RewardDestination} {
     assert(this.isV28)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
-   *  be the account that controls it.
-   * 
-   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash account.
-   * 
-   *  Emits `Bonded`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Moderate complexity.
-   *  - O(1).
-   *  - Three extra DB entries.
-   * 
-   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
-   *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
-   *  ------------------
-   *  Base Weight: 67.87 µs
-   *  DB Weight:
-   *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
-   *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
-   *  # </weight>
-   */
-  get isV5(): boolean {
-    return this._chain.getCallHash('Staking.bond') === '20db399e4963916b83c2636d8d5e414b30d79d868ca62d05181259e5d0c02e7e'
-  }
-
-  /**
-   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
-   *  be the account that controls it.
-   * 
-   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash account.
-   * 
-   *  Emits `Bonded`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Moderate complexity.
-   *  - O(1).
-   *  - Three extra DB entries.
-   * 
-   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
-   *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
-   *  ------------------
-   *  Base Weight: 67.87 µs
-   *  DB Weight:
-   *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
-   *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
-   *  # </weight>
-   */
-  get asV5(): {controller: v5.LookupSource, value: bigint, payee: v5.RewardDestination} {
-    assert(this.isV5)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
-   *  be the account that controls it.
-   * 
-   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash account.
-   * 
-   *  Emits `Bonded`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Moderate complexity.
-   *  - O(1).
-   *  - Three extra DB entries.
-   * 
-   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
-   *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
-   *  ------------------
-   *  Weight: O(1)
-   *  DB Weight:
-   *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
-   *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
-   *  # </weight>
-   */
-  get isV9050(): boolean {
-    return this._chain.getCallHash('Staking.bond') === '6c5de9285e9c4ba450dfa1ed6ebededa6083cc2b06cee317e92c1f89751818c6'
-  }
-
-  /**
-   *  Take the origin account as a stash and lock up `value` of its balance. `controller` will
-   *  be the account that controls it.
-   * 
-   *  `value` must be more than the `minimum_balance` specified by `T::Currency`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash account.
-   * 
-   *  Emits `Bonded`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Moderate complexity.
-   *  - O(1).
-   *  - Three extra DB entries.
-   * 
-   *  NOTE: Two of the storage writes (`Self::bonded`, `Self::payee`) are _never_ cleaned
-   *  unless the `origin` falls below _existential deposit_ and gets removed as dust.
-   *  ------------------
-   *  Weight: O(1)
-   *  DB Weight:
-   *  - Read: Bonded, Ledger, [Origin Account], Current Era, History Depth, Locks
-   *  - Write: Bonded, Payee, [Origin Account], Locks, Ledger
-   *  # </weight>
-   */
-  get asV9050(): {controller: v9050.LookupSource, value: bigint, payee: v9050.RewardDestination} {
-    assert(this.isV9050)
     return this._chain.decodeCall(this.call)
   }
 
@@ -1429,7 +1060,7 @@ export class StakingNominateCall {
    *  - Writes: Validators, Nominators
    *  # </weight>
    */
-  get asV0(): {targets: v0.LookupSource[]} {
+  get asV0(): {targets: Uint8Array[]} {
     assert(this.isV0)
     return this._chain.decodeCall(this.call)
   }
@@ -1482,108 +1113,6 @@ export class StakingNominateCall {
    */
   get asV28(): {targets: v28.LookupSource[]} {
     assert(this.isV28)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Declare the desire to nominate `targets` for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era. This can only be called when
-   *  [`EraElectionStatus`] is `Closed`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - The transaction's complexity is proportional to the size of `targets` (N)
-   *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
-   *  - Both the reads and writes follow a similar pattern.
-   *  ---------
-   *  Base Weight: 22.34 + .36 * N µs
-   *  where N is the number of targets
-   *  DB Weight:
-   *  - Reads: Era Election Status, Ledger, Current Era
-   *  - Writes: Validators, Nominators
-   *  # </weight>
-   */
-  get isV5(): boolean {
-    return this._chain.getCallHash('Staking.nominate') === '730fc5a4090c1c566ea6d11126ba7258c98a461b0c6bfca8bf9e17e42f8801de'
-  }
-
-  /**
-   *  Declare the desire to nominate `targets` for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era. This can only be called when
-   *  [`EraElectionStatus`] is `Closed`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - The transaction's complexity is proportional to the size of `targets` (N)
-   *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
-   *  - Both the reads and writes follow a similar pattern.
-   *  ---------
-   *  Base Weight: 22.34 + .36 * N µs
-   *  where N is the number of targets
-   *  DB Weight:
-   *  - Reads: Era Election Status, Ledger, Current Era
-   *  - Writes: Validators, Nominators
-   *  # </weight>
-   */
-  get asV5(): {targets: v5.LookupSource[]} {
-    assert(this.isV5)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Declare the desire to nominate `targets` for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era. This can only be called when
-   *  [`EraElectionStatus`] is `Closed`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - The transaction's complexity is proportional to the size of `targets` (N)
-   *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
-   *  - Both the reads and writes follow a similar pattern.
-   *  ---------
-   *  Weight: O(N)
-   *  where N is the number of targets
-   *  DB Weight:
-   *  - Reads: Era Election Status, Ledger, Current Era
-   *  - Writes: Validators, Nominators
-   *  # </weight>
-   */
-  get isV9050(): boolean {
-    return this._chain.getCallHash('Staking.nominate') === 'a653cde167810e73479047a5ef0738fdd0dc4e9afa5b310a19c8335e4378f706'
-  }
-
-  /**
-   *  Declare the desire to nominate `targets` for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era. This can only be called when
-   *  [`EraElectionStatus`] is `Closed`.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - The transaction's complexity is proportional to the size of `targets` (N)
-   *  which is capped at CompactAssignments::LIMIT (MAX_NOMINATIONS).
-   *  - Both the reads and writes follow a similar pattern.
-   *  ---------
-   *  Weight: O(N)
-   *  where N is the number of targets
-   *  DB Weight:
-   *  - Reads: Era Election Status, Ledger, Current Era
-   *  - Writes: Validators, Nominators
-   *  # </weight>
-   */
-  get asV9050(): {targets: v9050.LookupSource[]} {
-    assert(this.isV9050)
     return this._chain.decodeCall(this.call)
   }
 
@@ -1690,7 +1219,7 @@ export class StakingPayoutStakersCall {
    *  - Write Each: System Account, Locks, Ledger (3 items)
    *  # </weight>
    */
-  get asV0(): {validatorStash: v0.AccountId, era: v0.EraIndex} {
+  get asV0(): {validatorStash: Uint8Array, era: number} {
     assert(this.isV0)
     return this._chain.decodeCall(this.call)
   }
@@ -1749,7 +1278,7 @@ export class StakingSetControllerCall {
    *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
    *  # </weight>
    */
-  get asV0(): {controller: v0.LookupSource} {
+  get asV0(): {controller: Uint8Array} {
     assert(this.isV0)
     return this._chain.decodeCall(this.call)
   }
@@ -1796,96 +1325,6 @@ export class StakingSetControllerCall {
    */
   get asV28(): {controller: v28.LookupSource} {
     assert(this.isV28)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  (Re-)set the controller of a stash.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  ----------
-   *  Base Weight: 25.22 µs
-   *  DB Weight:
-   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
-   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
-   *  # </weight>
-   */
-  get isV5(): boolean {
-    return this._chain.getCallHash('Staking.set_controller') === 'bbdd03dc244a9d87deceeb91d015d7ef52746b99580b1474586c8699a77574e1'
-  }
-
-  /**
-   *  (Re-)set the controller of a stash.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  ----------
-   *  Base Weight: 25.22 µs
-   *  DB Weight:
-   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
-   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
-   *  # </weight>
-   */
-  get asV5(): {controller: v5.LookupSource} {
-    assert(this.isV5)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  (Re-)set the controller of a stash.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  ----------
-   *  Weight: O(1)
-   *  DB Weight:
-   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
-   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
-   *  # </weight>
-   */
-  get isV9050(): boolean {
-    return this._chain.getCallHash('Staking.set_controller') === '61b4041aa7366e679d366d2062deb643451b64015c330746395765e6865e5af2'
-  }
-
-  /**
-   *  (Re-)set the controller of a stash.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the stash, not the controller.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  ----------
-   *  Weight: O(1)
-   *  DB Weight:
-   *  - Read: Bonded, Ledger New Controller, Ledger Old Controller
-   *  - Write: Bonded, Ledger New Controller, Ledger Old Controller
-   *  # </weight>
-   */
-  get asV9050(): {controller: v9050.LookupSource} {
-    assert(this.isV9050)
     return this._chain.decodeCall(this.call)
   }
 
@@ -2234,100 +1673,6 @@ export class StakingValidateCall {
    */
   get asV28(): {prefs: v28.ValidatorPrefs} {
     assert(this.isV28)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Declare the desire to validate for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  -----------
-   *  Base Weight: 17.13 µs
-   *  DB Weight:
-   *  - Read: Era Election Status, Ledger
-   *  - Write: Nominators, Validators
-   *  # </weight>
-   */
-  get isV5(): boolean {
-    return this._chain.getCallHash('Staking.validate') === 'a03cfe73ae98f87de904386556fc6e78943abbd5d595884756c4155f8694e080'
-  }
-
-  /**
-   *  Declare the desire to validate for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  -----------
-   *  Base Weight: 17.13 µs
-   *  DB Weight:
-   *  - Read: Era Election Status, Ledger
-   *  - Write: Nominators, Validators
-   *  # </weight>
-   */
-  get asV5(): {prefs: v5.ValidatorPrefs} {
-    assert(this.isV5)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   *  Declare the desire to validate for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  -----------
-   *  Weight: O(1)
-   *  DB Weight:
-   *  - Read: Era Election Status, Ledger
-   *  - Write: Nominators, Validators
-   *  # </weight>
-   */
-  get isV9050(): boolean {
-    return this._chain.getCallHash('Staking.validate') === '2a662df491d449985438edd4d2e6899fd06beebbaa59e759713811ade38308bf'
-  }
-
-  /**
-   *  Declare the desire to validate for the origin controller.
-   * 
-   *  Effects will be felt at the beginning of the next era.
-   * 
-   *  The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   *  And, it can be only called when [`EraElectionStatus`] is `Closed`.
-   * 
-   *  # <weight>
-   *  - Independent of the arguments. Insignificant complexity.
-   *  - Contains a limited number of reads.
-   *  - Writes are limited to the `origin` account key.
-   *  -----------
-   *  Weight: O(1)
-   *  DB Weight:
-   *  - Read: Era Election Status, Ledger
-   *  - Write: Nominators, Validators
-   *  # </weight>
-   */
-  get asV9050(): {prefs: v9050.ValidatorPrefs} {
-    assert(this.isV9050)
     return this._chain.decodeCall(this.call)
   }
 }

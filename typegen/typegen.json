@@ -1,6 +1,6 @@
 {
   "outDir": "../src/types/generated",
-  "specVersions": "./versions.jsonl",
+  "specVersions": "https://polkadot.archive.subsquid.io/graphql",
   "typesBundle": "polkadot",
   "events": [
     "Staking.EraPaid",

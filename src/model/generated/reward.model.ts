@@ -27,7 +27,7 @@ export class Reward {
   accountId!: string
 
   @Index_()
-  @ManyToOne_(() => Account, {nullable: false})
+  @ManyToOne_(() => Account, {nullable: true})
   account!: Account
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})

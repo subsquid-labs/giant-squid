@@ -1,9 +1,5 @@
 import assert from 'assert'
 import {Chain, ChainContext, EventContext, Event, Result} from './support'
-import * as v0 from './v0'
-import * as v9090 from './v9090'
-import * as v9110 from './v9110'
-import * as v9230 from './v9230'
 
 export class CrowdloanContributedEvent {
   private readonly _chain: Chain
@@ -28,7 +24,7 @@ export class CrowdloanContributedEvent {
   /**
    * Contributed to a crowd sale. `[who, fund_index, amount]`
    */
-  get asV9110(): [v9110.AccountId32, v9110.Id, bigint] {
+  get asV9110(): [Uint8Array, number, bigint] {
     assert(this.isV9110)
     return this._chain.decodeEvent(this.event)
   }
@@ -43,7 +39,7 @@ export class CrowdloanContributedEvent {
   /**
    * Contributed to a crowd sale.
    */
-  get asV9230(): {who: v9230.AccountId32, fundIndex: v9230.Id, amount: bigint} {
+  get asV9230(): {who: Uint8Array, fundIndex: number, amount: bigint} {
     assert(this.isV9230)
     return this._chain.decodeEvent(this.event)
   }
@@ -72,7 +68,7 @@ export class CrowdloanCreatedEvent {
   /**
    * Create a new crowdloaning campaign. `[fund_index]`
    */
-  get asV9110(): v9110.Id {
+  get asV9110(): number {
     assert(this.isV9110)
     return this._chain.decodeEvent(this.event)
   }
@@ -87,7 +83,7 @@ export class CrowdloanCreatedEvent {
   /**
    * Create a new crowdloaning campaign.
    */
-  get asV9230(): {paraId: v9230.Id} {
+  get asV9230(): {paraId: number} {
     assert(this.isV9230)
     return this._chain.decodeEvent(this.event)
   }
@@ -116,7 +112,7 @@ export class CrowdloanDissolvedEvent {
   /**
    * Fund is dissolved. `[fund_index]`
    */
-  get asV9110(): v9110.Id {
+  get asV9110(): number {
     assert(this.isV9110)
     return this._chain.decodeEvent(this.event)
   }
@@ -131,7 +127,7 @@ export class CrowdloanDissolvedEvent {
   /**
    * Fund is dissolved.
    */
-  get asV9230(): {paraId: v9230.Id} {
+  get asV9230(): {paraId: number} {
     assert(this.isV9230)
     return this._chain.decodeEvent(this.event)
   }
@@ -160,7 +156,7 @@ export class GrandpaNewAuthoritiesEvent {
   /**
    *  New authority set has been applied.
    */
-  get asV0(): v0.AuthorityList {
+  get asV0(): [Uint8Array, bigint][] {
     assert(this.isV0)
     return this._chain.decodeEvent(this.event)
   }
@@ -210,7 +206,7 @@ export class StakingBondedEvent {
    *  NOTE: This event is only emitted when funds are bonded via a dispatchable. Notably,
    *  it will not be emitted for staking rewards when they are added to stake.
    */
-  get asV0(): [v0.AccountId, v0.Balance] {
+  get asV0(): [Uint8Array, bigint] {
     assert(this.isV0)
     return this._chain.decodeEvent(this.event)
   }
@@ -243,7 +239,7 @@ export class StakingEraPaidEvent {
    *  the remainder from the maximum amount of reward.
    *  \[era_index, validator_payout, remainder\]
    */
-  get asV9090(): [v9090.EraIndex, v9090.Balance, v9090.Balance] {
+  get asV9090(): [number, bigint, bigint] {
     assert(this.isV9090)
     return this._chain.decodeEvent(this.event)
   }
@@ -272,7 +268,7 @@ export class StakingPayoutStartedEvent {
   /**
    *  The stakers' rewards are getting paid. \[era_index, validator_stash\]
    */
-  get asV9090(): [v9090.EraIndex, v9090.AccountId] {
+  get asV9090(): [number, Uint8Array] {
     assert(this.isV9090)
     return this._chain.decodeEvent(this.event)
   }
@@ -301,7 +297,7 @@ export class StakingRewardEvent {
   /**
    *  The staker has been rewarded by this amount. `AccountId` is the stash account.
    */
-  get asV0(): [v0.AccountId, v0.Balance] {
+  get asV0(): [Uint8Array, bigint] {
     assert(this.isV0)
     return this._chain.decodeEvent(this.event)
   }
@@ -330,7 +326,7 @@ export class StakingRewardedEvent {
   /**
    *  The nominator has been rewarded by this amount. \[stash, amount\]
    */
-  get asV9090(): [v9090.AccountId, v9090.Balance] {
+  get asV9090(): [Uint8Array, bigint] {
     assert(this.isV9090)
     return this._chain.decodeEvent(this.event)
   }
@@ -359,7 +355,7 @@ export class StakingSlashEvent {
   /**
    *  One validator (and its nominators) has been slashed by the given amount.
    */
-  get asV0(): [v0.AccountId, v0.Balance] {
+  get asV0(): [Uint8Array, bigint] {
     assert(this.isV0)
     return this._chain.decodeEvent(this.event)
   }
@@ -390,7 +386,7 @@ export class StakingSlashedEvent {
    *  One validator (and its nominators) has been slashed by the given amount.
    *  \[validator, amount\]
    */
-  get asV9090(): [v9090.AccountId, v9090.Balance] {
+  get asV9090(): [Uint8Array, bigint] {
     assert(this.isV9090)
     return this._chain.decodeEvent(this.event)
   }
@@ -419,7 +415,7 @@ export class StakingUnbondedEvent {
   /**
    *  An account has unbonded this amount.
    */
-  get asV0(): [v0.AccountId, v0.Balance] {
+  get asV0(): [Uint8Array, bigint] {
     assert(this.isV0)
     return this._chain.decodeEvent(this.event)
   }
@@ -450,7 +446,7 @@ export class StakingWithdrawnEvent {
    *  An account has called `withdraw_unbonded` and removed unbonding chunks worth `Balance`
    *  from the unlocking queue.
    */
-  get asV0(): [v0.AccountId, v0.Balance] {
+  get asV0(): [Uint8Array, bigint] {
     assert(this.isV0)
     return this._chain.decodeEvent(this.event)
   }

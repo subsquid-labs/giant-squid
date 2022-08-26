@@ -1,14 +1,10 @@
 import type {Result} from './support'
 
-export type AccountId32 = Uint8Array
-
-export type Id = number
-
 export type MultiAddress = MultiAddress_Id | MultiAddress_Index | MultiAddress_Raw | MultiAddress_Address32 | MultiAddress_Address20
 
 export interface MultiAddress_Id {
   __kind: 'Id'
-  value: AccountId32
+  value: Uint8Array
 }
 
 export interface MultiAddress_Index {
@@ -81,7 +77,7 @@ export interface RewardDestination_Controller {
 
 export interface RewardDestination_Account {
   __kind: 'Account'
-  value: AccountId32
+  value: Uint8Array
 }
 
 export interface RewardDestination_None {
@@ -89,7 +85,7 @@ export interface RewardDestination_None {
 }
 
 export interface FundInfo {
-  depositor: AccountId32
+  depositor: Uint8Array
   verifier: (MultiSigner | undefined)
   deposit: bigint
   raised: bigint
