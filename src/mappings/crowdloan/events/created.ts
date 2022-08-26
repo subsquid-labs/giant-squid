@@ -1,5 +1,5 @@
-import {EventHandlerContext} from '@subsquid/substrate-processor'
-import {Store} from '@subsquid/typeorm-store'
+import { EventHandlerContext } from '@subsquid/substrate-processor'
+import { Store } from '@subsquid/typeorm-store'
 import { UnknownVersionError } from '../../../common/errors'
 import { Crowdloan } from '../../../model'
 import storage from '../../../storage'
@@ -17,6 +17,10 @@ function getEventData(ctx: EventContext): EventData {
     if (event.isV9010) {
         return {
             index: event.asV9010,
+        }
+    } else if (event.isV9230) {
+        return {
+            index: event.asV9230.paraId,
         }
     } else {
         throw new UnknownVersionError(event.constructor.name)
