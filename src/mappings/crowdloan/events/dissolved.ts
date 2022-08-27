@@ -13,6 +13,10 @@ function getEventData(ctx: EventContext): EventData {
         return {
             index: event.asV9110,
         }
+    } else if (event.isV9230) {
+        return {
+            index: event.asV9230.paraId,
+        }
     } else {
         throw new UnknownVersionError(event.constructor.name)
     }
