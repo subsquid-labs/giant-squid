@@ -3,19 +3,14 @@ import config from '../config'
 import { decodeHex } from '@subsquid/util-internal-hex'
 import { CommonHandlerContext } from '@subsquid/substrate-processor'
 
+const ss58codec = ss58.codec(config.prefix)
+
 export function encodeId(id: Uint8Array) {
-    return ss58.codec(config.prefix).encode(id)
+    return ss58codec.encode(typeof id === 'string' ? decodeHex(id) : id)
 }
 
 export function decodeId(id: string) {
-    return ss58.codec(config.prefix).decode(id)
-}
-
-export interface ItemBase {
-    id: string
-    timestamp: Date | null | undefined
-    blockNumber: bigint | null | undefined
-    extrinsicHash: string | null | undefined
+    return ss58codec.decode(id)
 }
 
 export function isAdressSS58(address: Uint8Array) {
@@ -32,19 +27,16 @@ export function isAdressSS58(address: Uint8Array) {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getOriginAccountId(origin: any) {
-    if (!origin) return undefined
-    switch (origin.__kind) {
-        case 'system':
-            switch (origin.value.__kind) {
-                case 'Signed':
-                    return encodeId(decodeHex(origin.value.value))
-                default:
-                    return undefined
-            }
-        default:
-            return undefined
+export function getOriginAccountId(origin: any): string | undefined {
+    if (origin && origin.__kind === 'system' && origin.value.__kind === 'Signed') {
+        const id = origin.value.value
+        if (id.__kind === 'Id') {
+            return encodeId(id.value)
+        } else {
+            return encodeId(id)
+        }
+    } else {
+        return undefined
     }
 }
 
