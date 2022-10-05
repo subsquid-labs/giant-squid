@@ -1,0 +1,51 @@
+{
+  "outDir": "../src/types/kusama",
+  "specVersions": "https://kusama.archive.subsquid.io/graphql",
+  "events": [
+    "Staking.EraPaid",
+    "Staking.Rewarded",
+    "Staking.Reward",
+    "Staking.Slashed",
+    "Staking.Slash",
+    "Staking.Bonded",
+    "Staking.Unbonded",
+    "Staking.Withdrawn",
+    "Staking.PayoutStarted",
+    "Crowdloan.Contributed",
+    "Crowdloan.Dissolved",
+    "Crowdloan.Created",
+    "Grandpa.NewAuthorities"
+  ],
+  "calls": [
+    "Crowdloan.create",
+    "Crowdloan.contribute",
+    "Balances.transfer",
+    "Balances.force_transfer",
+    "Balances.transfer_keep_alive",
+    "Balances.transfer_all",
+    "Staking.payout_stakers",
+    "Staking.bond",
+    "Staking.bond_extra",
+    "Staking.unbond",
+    "Staking.set_payee",
+    "Staking.set_controller",
+    "Staking.nominate",
+    "Staking.validate",
+    "Staking.kick",
+    "Staking.chill",
+    "System.remark",
+    "XcmPallet.teleport_assets",
+    "XcmPallet.reserve_transfer_assets"
+  ],
+  "storage": [
+    "Crowdloan.Funds",
+    "Staking.Bonded",
+    "Staking.Payee",
+    "Staking.CurrentEra",
+    "Staking.ActiveEra",
+    "Staking.Ledger",
+    "Staking.ErasStakers",
+    "Staking.Stakers",
+    "Session.Validators"
+  ]
+}

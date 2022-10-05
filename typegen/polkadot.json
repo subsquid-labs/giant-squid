@@ -1,6 +1,6 @@
 {
-  "outDir": "../src/types/generated",
-  "specVersions": "https://kusama.archive.subsquid.io/graphql",
+  "outDir": "../src/types/polkadot",
+  "specVersions": "https://polkadot.archive.subsquid.io/graphql",
   "events": [
     "Staking.EraPaid",
     "Staking.Rewarded",
@@ -33,7 +33,6 @@
     "Staking.validate",
     "Staking.kick",
     "Staking.chill",
-    "System.remark",
     "XcmPallet.teleport_assets",
     "XcmPallet.reserve_transfer_assets"
   ],
@@ -45,7 +44,6 @@
     "Staking.ActiveEra",
     "Staking.Ledger",
     "Staking.ErasStakers",
-    "Staking.Stakers",
     "Session.Validators"
   ]
 }

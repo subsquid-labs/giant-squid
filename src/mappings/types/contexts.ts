@@ -17,4 +17,4 @@ export type CallHandlerContext<T extends CallDataRequest = { call: true; extrins
 >
 export type CommonHandlerContext = PrCommonHandlerContext<Store>
 
-export { CallContext, EventContext } from '../../types/generated/support'
+export { CallContext, EventContext, BlockContext } from '../../types/kusama/support'

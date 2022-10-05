@@ -1,7 +1,7 @@
 import { Field, ObjectType, Query, Resolver } from 'type-graphql'
 import 'reflect-metadata'
 import chains from '../../chains'
-import config from '../../config'
+import config from '../../configs/kusama'
 import assert from 'assert'
 
 @ObjectType()

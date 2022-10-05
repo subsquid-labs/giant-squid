@@ -1,5 +1,5 @@
 {
-  "name": "kusama-transfers",
+  "name": "giant-squid",
   "private": true,
   "engines": {
     "node": ">=16"
@@ -16,7 +16,7 @@
     "@subsquid/ss58": "0.1.2",
     "@subsquid/substrate-processor": "1.9.1",
     "@subsquid/typeorm-migration": "0.1.2",
-    "@subsquid/typeorm-store": "0.1.4",
+    "@subsquid/typeorm-store": "^0.1.4",
     "dotenv": "^10.0.0",
     "pg": "8.8.0",
     "type-graphql": "^1.2.0-rc.1",

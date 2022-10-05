@@ -1,5 +1,5 @@
 import * as ss58 from '@subsquid/ss58'
-import config from '../config'
+import config from '../configs/kusama'
 import { decodeHex } from '@subsquid/util-internal-hex'
 import { CommonHandlerContext } from '@subsquid/substrate-processor'
 

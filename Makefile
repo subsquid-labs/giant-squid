@@ -23,7 +23,7 @@ codegen:
 
 
 typegen:
-	@npx squid-substrate-typegen ./typegen/typegen.json
+	@bash ./scripts/typegen.sh
 
 explore:
 	@npx squid-substrate-metadata-explorer --chain wss://kusama-rpc.polkadot.io --archive https://kusama.archive.subsquid.io/graphql --out ./typegen/versions.json

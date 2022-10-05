@@ -1,68 +1,93 @@
-import config from './config'
-import { SubstrateProcessor } from '@subsquid/substrate-processor'
+import {
+    BatchContext,
+    BatchProcessorItem,
+    SubstrateBatchProcessor,
+    SubstrateBlock,
+    SubstrateProcessor,
+} from '@subsquid/substrate-processor'
 import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
 import * as modules from './mappings'
-import { TypeormDatabase } from '@subsquid/typeorm-store'
+import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
+import { getConfig } from './configs'
+import { Bond, Reward } from './model'
 
+const config = getConfig()
 const database = new TypeormDatabase()
-const processor = new SubstrateProcessor(database)
+const processor = new SubstrateBatchProcessor()
+    .setTypesBundle(config.typesBundle)
+    .setBatchSize(config.batchSize || DEFAULT_BATCH_SIZE)
+    .setDataSource(config.dataSource)
+    .setPrometheusPort(config.port || DEFAULT_PORT)
+    .setBlockRange(config.blockRange || { from: 0 })
 
-processor.setTypesBundle(config.typesBundle)
-processor.setBatchSize(config.batchSize || DEFAULT_BATCH_SIZE)
-processor.setDataSource(config.dataSource)
-processor.setPrometheusPort(config.port || DEFAULT_PORT)
-processor.setBlockRange(config.blockRange || { from: 0 })
+    .addEvent('Staking.Slashed')
+    .addEvent('Staking.Slash') //Old name of Slashed event
+    .addEvent('Staking.Rewarded', {
+        data: {
+            event: {
+                args: true,
+                call: { args: true },
+                extrinsic: { hash: true },
+            },
+        } as const,
+    })
+    .addEvent('Staking.Reward', {
+        data: {
+            event: {
+                args: true,
+                call: { args: true },
+                extrinsic: { hash: true },
+            },
+        },
+    }) //Old name of Rewarded event
+    .addCall('Staking.bond')
+    .addCall('Staking.bond_extra')
+    .addCall('Staking.unbond')
+    .addCall('Staking.set_controller')
+    .addCall('Staking.set_payee')
+    .addCall('Staking.nominate')
+    .addCall('Staking.validate')
+    .addCall('Staking.chill')
+    .addEvent('Grandpa.NewAuthorities')
 
-//events handlers
-// processor.addEventHandler('Staking.Rewarded', modules.staking.events.handleRewarded)
-// processor.addEventHandler('Staking.Reward', modules.staking.events.handleReward) //Old name of Rewarded event
-processor.addEventHandler('Staking.Slashed', modules.staking.events.handleSlashed)
-processor.addEventHandler('Staking.Slash', modules.staking.events.handleSlash) //Old name of Slashed event
+    .addEvent('Crowdloan.Created')
+    .addCall('Crowdloan.contribute')
 
-// processor.addEventHandler('crowdloan.Dissolved', modules.crowdloan.events.handleDissolved)
-processor.addEventHandler('Crowdloan.Created', modules.crowdloan.events.handleCreated)
+    .addEvent('Balances.Transfer')
 
-processor.addEventHandler('Grandpa.NewAuthorities', modules.grandpa.events.handleNewAuthorities)
+    .addCall('System.remark')
 
-//extrinsics handlers
-processor.addCallHandler('Crowdloan.contribute', modules.crowdloan.extrinsics.handleContribute)
+    .addCall('XcmPallet.teleport_assets')
+    .addCall('XcmPallet.reserve_transfer_assets')
 
-// processor.addCallHandler('Staking.payout_stakers', modules.staking.extrinsics.handlePauoutStakers)
-processor.addCallHandler('Staking.bond', modules.staking.extrinsics.handleBond)
-processor.addCallHandler('Staking.bond_extra', modules.staking.extrinsics.handleBondExtra)
-processor.addCallHandler('Staking.unbond', modules.staking.extrinsics.handleUnbond)
-processor.addCallHandler('Staking.set_controller', modules.staking.extrinsics.handleSetController)
-processor.addCallHandler('Staking.set_payee', modules.staking.extrinsics.handleSetPayee)
-processor.addCallHandler('Staking.nominate', modules.staking.extrinsics.handleNominate)
-processor.addCallHandler('Staking.validate', modules.staking.extrinsics.handleValidate)
-processor.addCallHandler('Staking.chill', modules.staking.extrinsics.handleChill)
+type Item = BatchProcessorItem<typeof processor>
+type Context = BatchContext<Store, Item>
 
-processor.addCallHandler(
-    'Balances.transfer',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleTransfer
-)
-processor.addCallHandler(
-    'Balances.transfer_keep_alive',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleTransferKeepAlive
-)
-processor.addCallHandler(
-    'Balances.force_transfer',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleForceTransfer
-)
-processor.addCallHandler(
-    'Balances.transfer_all',
-    { triggerForFailedCalls: true },
-    modules.balances.extrinsics.handleTransferAll
-)
+processor.run(database, async (ctx) => {})
 
-processor.addCallHandler('System.remark', modules.remark.handleRemark)
+async function processStaking(ctx: Context) {
+    const accountsIds = new Set<string>()
+    const stakersIds = new Set<string>()
 
-processor.addCallHandler('XcmPallet.teleport_assets', modules.xcmPallet.calls.handleTeleportAssets)
-processor.addCallHandler('XcmPallet.reserve_transfer_assets', modules.xcmPallet.calls.handleReserveTransferAssets)
+    const rewards = new Map<number, Reward>()
+    const bonds = new Map<number, Bond>()
 
-processor.addPostHook({ data: modules.staking.hooks.rewardsRequest }, modules.staking.hooks.rewardsHook)
+    processItem(ctx, (block, item) => {
+        if (item.kind === 'event') {
+            switch (item.name) {
+                case 'Staking.Reward':
+                case 'Staking.Rewarded':
+                    const reward = modules.staking.events.handleRewarded({ ...ctx, block, event: item.event }) // HERE
+                    break
+            }
+        }
+    })
+}
 
-processor.run()
+function processItem<I>(ctx: BatchContext<any, I>, fn: (block: SubstrateBlock, item: I) => void) {
+    for (let block of ctx.blocks) {
+        for (let item of block.items) {
+            fn(block.header, item)
+        }
+    }
+}

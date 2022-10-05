@@ -68,14 +68,13 @@ type RmrkEvent @entity {
   id: ID!
   blockNumber: Int!
   timestamp: DateTime!
-  caller: Account
+  account: Account
   info: BigInt # If list or buy
   interaction: RmrkInteraction!
   nft: RmrkNFT # if nft interaction
   collection: RmrkCollection # if collection interaction
   emotion: RmrkEmote # if emote
 }
-
 
 type RmrkEmote @entity {
   id: ID!
@@ -287,9 +286,9 @@ type Reward implements Action & HasEra @entity  {
   account: Account!
   amount: BigInt
   era: Int
-  validator: String
-  staker: Staker
-  callId: ID @index
+  validatorId: ID
+  stakerId: ID!
+  staker: Staker!
 }
 
 type Slash implements Action & HasEra @entity  {
@@ -301,6 +300,7 @@ type Slash implements Action & HasEra @entity  {
   account: Account!
   amount: BigInt
   era: Int
+  stakerId: ID!
   staker: Staker
 }
 
@@ -319,5 +319,6 @@ type Bond implements Action & CanFail @entity  {
   amount: BigInt
   success: Boolean @index
   type: BondType
+  stakerId: ID!
   staker: Staker
 }

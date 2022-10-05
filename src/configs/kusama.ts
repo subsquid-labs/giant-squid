@@ -1,5 +1,4 @@
-/* eslint-disable sonarjs/no-duplicate-string */
-import { ProcessorConfig } from './types/custom/processorConfig'
+import { ProcessorConfig } from './processorConfig'
 
 const config: ProcessorConfig = {
     chainName: 'kusama',
