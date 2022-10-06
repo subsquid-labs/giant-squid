@@ -8,7 +8,7 @@ const config: ProcessorConfig = {
         chain: 'wss://kusama-rpc.polkadot.io',
     },
     typesBundle: 'kusama',
-    batchSize: 200,
+    batchSize: 400,
     blockRange: {
         from: 100000,
     },
