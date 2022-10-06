@@ -30,11 +30,14 @@ export class Slash {
   @ManyToOne_(() => Account, {nullable: true})
   account!: Account
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  amount!: bigint | undefined | null
+  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+  amount!: bigint
 
   @Column_("int4", {nullable: true})
   era!: number | undefined | null
+
+  @Column_("text", {nullable: false})
+  stakerId!: string
 
   @Index_()
   @ManyToOne_(() => Staker, {nullable: true})

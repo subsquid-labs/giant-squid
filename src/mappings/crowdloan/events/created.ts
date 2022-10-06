@@ -3,7 +3,7 @@ import { Store } from '@subsquid/typeorm-store'
 import { UnknownVersionError } from '../../../common/errors'
 import { Crowdloan } from '../../../model'
 import storage from '../../../storage'
-import { CrowdloanCreatedEvent } from '../../../types/generated/events'
+import { CrowdloanCreatedEvent } from '../../../types/kusama/events'
 import { EventContext } from '../../types/contexts'
 import { getOrCreateParachain } from '../../util/entities'
 

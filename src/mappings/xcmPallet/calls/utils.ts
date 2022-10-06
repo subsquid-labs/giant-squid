@@ -206,16 +206,16 @@ export async function saveXcmTransfer(ctx: CommonHandlerContext, data: XcmTransf
 
     const transfer = new Transfer({
         ...getMeta(data),
-        from: new TransferLocationAccount({
-            id: fromId,
-        }),
-        to: new TransferLocationXcm(to),
-        asset:
-            assets.length > 1
-                ? new TransferAssetMultiToken({ tokens: assets.map((a) => new TransferAssetToken(a)) })
-                : new TransferAssetToken(assets[0]),
-        type: TransferType.Xcm,
-        success: true,
+        // from: new TransferLocationAccount({
+        //     id: fromId,
+        // }),
+        // to: new TransferLocationXcm(to),
+        // asset:
+        //     assets.length > 1
+        //         ? new TransferAssetMultiToken({ tokens: assets.map((a) => new TransferAssetToken(a)) })
+        //         : new TransferAssetToken(assets[0]),
+        // type: TransferType.Xcm,
+        // success: true,
     })
 
     await ctx.store.insert(transfer)

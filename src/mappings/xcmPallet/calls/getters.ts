@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { XcmPalletTeleportAssetsCall, XcmPalletReserveTransferAssetsCall } from '../../../types/generated/calls'
+import { XcmPalletTeleportAssetsCall, XcmPalletReserveTransferAssetsCall } from '../../../types/kusama/calls'
 import { CallHandlerContext } from '../../types/contexts'
 
 export function getXcmTeleportAssets(ctx: CallHandlerContext) {

@@ -1,7 +1,7 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, getOriginAccountId, isStorageCorrupted } from '../../../common/tools'
-import { StakingSetControllerCall } from '../../../types/generated/calls'
+import { StakingSetControllerCall } from '../../../types/kusama/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { getOrCreateAccount, getOrCreateStaker } from '../../util/entities'
 

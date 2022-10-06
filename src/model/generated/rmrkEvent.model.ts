@@ -23,7 +23,7 @@ export class RmrkEvent {
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: true})
-  caller!: Account | undefined | null
+  account!: Account | undefined | null
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   info!: bigint | undefined | null

@@ -12,7 +12,7 @@ export async function buy(rmrkObject: Array<string>, ctx: CallHandlerContext): P
         relations: { currentOwner: true, collection: true },
     })
     assert(nft)
-    const reciever = eventBase.caller!
+    const reciever = eventBase.account!
     const prevPrice = nft.price
     nft.price = 0n
     nft.currentOwner = reciever

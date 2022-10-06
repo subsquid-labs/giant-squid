@@ -1,84 +1,47 @@
-import { decodeId, encodeId } from '../../common/tools'
-import { StakingPayeeStorage } from '../../types/generated/storage'
-import * as v9111 from '../../types/generated/v9111'
-import { BlockContext as StorageContext } from '../../types/generated/support'
+import { StakingPayeeStorage } from '../../types/kusama/storage'
+import { BlockContext as StorageContext } from '../../types/kusama/support'
 import { UnknownVersionError } from '../../common/errors'
-import assert from 'assert'
+import { decodeId, encodeId } from '../../common/tools'
 
 export interface StorageData {
-    payee: 'Account' | 'Staked' | 'Stash' | 'Controller' | 'None'
-    account: Uint8Array | undefined
+    dest: 'Account' | 'Staked' | 'Stash' | 'Controller' | 'None'
+    accountId?: string
 }
 
-async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<StorageData | undefined> {
+async function getStorageData(ctx: StorageContext, ids: string[]): Promise<StorageData[] | undefined> {
     const storage = new StakingPayeeStorage(ctx)
     if (!storage.isExists) return undefined
 
+    const normalizedIds = ids.map((id) => decodeId(id))
     if (storage.isV1020) {
-        const { __kind, value } = await storage.getAsV1020(account)
-        return {
-            payee: __kind,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            account: value!,
-        }
+        return await storage.getManyAsV1020(normalizedIds).then((data) =>
+            data?.map((p) => ({
+                dest: p.__kind,
+                accountId: p.value ? encodeId(p.value) : undefined,
+            }))
+        )
     } else if (storage.isV9111) {
-        const data = await storage.getAsV9111(account)
-        return {
-            payee: data.__kind,
-            account: (data as v9111.RewardDestination_Account).value,
-        }
+        await storage.getManyAsV1020(normalizedIds).then((data) =>
+            data?.map((p) => ({
+                dest: p.__kind,
+                accountId: p.value ? encodeId(p.value) : undefined,
+            }))
+        )
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
 }
 
-const storageCache: {
-    hash?: string
-    values: Map<string, Payee>
-} = {
-    values: new Map(),
+export interface Payee {
+    dest: 'Staked' | 'Stash' | 'Controller' | 'None' | 'Account'
+    accountId?: string
 }
 
-export type Payee = PayeeCommon | PayeeAccount
-export interface PayeeCommon {
-    payee: 'Staked' | 'Stash' | 'Controller' | 'None'
-}
-
-export interface PayeeAccount {
-    payee: 'Account'
-    account: string
-}
-
-export async function getPayee(ctx: StorageContext, account: string): Promise<Payee | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
-        storageCache.hash = ctx.block.hash
-        storageCache.values.clear()
-    }
-
-    const key = account
-    let value = storageCache.values.get(key)
-
-    if (!value) {
-        const u8 = decodeId(account)
-        if (!u8) return undefined
-
-        const data = await getStorageData(ctx, u8)
+export const payee = {
+    async getMany(ctx: StorageContext, stashIds: string[]): Promise<Payee[] | undefined> {
+        const data = await getStorageData(ctx, stashIds)
         if (!data) return undefined
 
-        if (data.payee === 'Account') {
-            assert(data.account != null)
-            value = {
-                payee: data.payee,
-                account: encodeId(data.account),
-            }
-        } else {
-            value = {
-                payee: data.payee,
-            }
-        }
-
-        storageCache.values.set(key, value)
-    }
-
-    return value
+        return data
+    },
 }

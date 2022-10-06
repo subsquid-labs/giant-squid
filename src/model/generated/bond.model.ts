@@ -34,12 +34,11 @@ export class Bond {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
   amount!: bigint | undefined | null
 
-  @Index_()
-  @Column_("bool", {nullable: true})
-  success!: boolean | undefined | null
-
   @Column_("varchar", {length: 6, nullable: true})
   type!: BondType | undefined | null
+
+  @Column_("text", {nullable: false})
+  stakerId!: string
 
   @Index_()
   @ManyToOne_(() => Staker, {nullable: true})

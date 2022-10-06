@@ -10,6 +10,6 @@ export async function getEventBase(ctx: CallHandlerContext): Promise<RmrkEvent> 
         id: ctx.call.id,
         blockNumber: ctx.block.height,
         timestamp: new Date(ctx.block.timestamp),
-        caller: caller,
+        account: caller,
     })
 }

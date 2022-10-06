@@ -2,7 +2,7 @@ import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
 import { getOriginAccountId, isStorageCorrupted } from '../../../common/tools'
 import { StakingRole } from '../../../model'
-import { StakingNominateCall } from '../../../types/generated/calls'
+import { StakingNominateCall } from '../../../types/kusama/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { getOrCreateStaker } from '../../util/entities'
 

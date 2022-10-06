@@ -1,4 +1,4 @@
-import { BalancesTransferAllCall } from '../../../types/generated/calls'
+import { BalancesTransferAllCall } from '../../../types/kusama/calls'
 import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
 import { UnknownVersionError } from '../../../common/errors'
 import { CallContext, CallHandlerContext } from '../../types/contexts'

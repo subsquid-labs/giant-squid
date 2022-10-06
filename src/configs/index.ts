@@ -1,12 +1,13 @@
+import config from './kusama'
 import { ProcessorConfig } from './processorConfig'
 
 export function getConfig(): ProcessorConfig {
-    switch (process.env.CHAIN) {
-        case 'kusama':
-            return require('./kusama')
-        case 'polkadot':
-            return require('./polkadot')
-        default:
-            throw new Error()
-    }
+    // switch (process.env.CHAIN) {
+    //     case 'kusama':
+            return config
+        // case 'polkadot':
+        //     return require('./polkadot')
+        // default:
+        //     throw new Error()
+    // }
 }

@@ -1,6 +1,6 @@
 import { UnknownVersionError } from '../../common/errors'
-import { CrowdloanFundsStorage } from '../../types/generated/storage'
-import { BlockContext as StorageContext } from '../../types/generated/support'
+import { CrowdloanFundsStorage } from '../../types/kusama/storage'
+import { BlockContext as StorageContext } from '../../types/kusama/support'
 
 interface StorageData {
     raised: bigint

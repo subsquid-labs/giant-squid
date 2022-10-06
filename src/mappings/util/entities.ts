@@ -23,7 +23,7 @@ export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string):
     if (!account) {
         account = new Account({
             id,
-            lastUpdateBlock: ctx.block.height - 1,
+            updatedAt: ctx.block.height - 1,
         })
         await ctx.store.insert(account)
     }
@@ -43,7 +43,7 @@ export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string
 
         const account = new Account({
             id,
-            lastUpdateBlock: ctx.block.height - 1,
+            updatedAt: ctx.block.height - 1,
         })
         newAccounts.add(account)
     }
@@ -92,21 +92,21 @@ export async function getOrCreateStaker(
         const stashId = type === 'Stash' ? id : ledger?.stash
         if (!stashId) return undefined
 
-        const payeeInfo = await storage.staking.getPayee(ctx, stashId)
+        const payeeInfo = (await storage.staking.payee.getMany(ctx, [stashId]))?.[0]
         if (!payeeInfo) return undefined
 
         staker = await createStaker(ctx, {
             stashId,
             controllerId,
             payeeId:
-                payeeInfo.payee === 'Account'
-                    ? payeeInfo.account
-                    : payeeInfo.payee === 'Controller'
+                payeeInfo.dest === 'Account'
+                    ? payeeInfo.accountId!
+                    : payeeInfo.dest === 'Controller'
                     ? controllerId
-                    : payeeInfo.payee === 'Staked' || payeeInfo.payee === 'Stash'
+                    : payeeInfo.dest === 'Staked' || payeeInfo.dest === 'Stash'
                     ? stashId
                     : null,
-            payeeType: payeeInfo.payee as PayeeType,
+            payeeType: payeeInfo.dest as PayeeType,
             activeBond: ledger?.active || 0n,
         })
     }
@@ -136,7 +136,7 @@ export async function getOrCreateStakers(
     })
 
     const stakersMap: Map<string, Staker> = new Map()
-    for (const q of query) stakersMap.set(type === 'Stash' ? q.stashId : q.controllerId, q)
+    for (const q of query) stakersMap.set(type === 'Stash' ? q.stashId! : q.controllerId!, q)
 
     const missingIds = ids.filter((id) => !stakersMap.has(id))
 
@@ -156,29 +156,29 @@ export async function getOrCreateStakers(
     for (let i = 0; i < ledgers.length; i++) {
         if (!ledgers[i]) continue
 
-        const payeeInfo = await storage.staking.getPayee(ctx, ledgers[i]?.stash as string)
+        const payeeInfo = await storage.staking.payee.getMany(ctx, [ledgers[i]?.stash as string])
         if (!payeeInfo) continue
 
         const stashId = ledgers[i]?.stash as string
         const controllerId = notNullControllerIds[i]
 
-        newStakers.set(
-            stashId,
-            await createStaker(ctx, {
-                stashId,
-                controllerId: notNullControllerIds[i],
-                payeeId:
-                    payeeInfo.payee === 'Account'
-                        ? payeeInfo.account
-                        : payeeInfo.payee === 'Controller'
-                        ? controllerId
-                        : payeeInfo.payee === 'Staked' || payeeInfo.payee === 'Stash'
-                        ? stashId
-                        : null,
-                payeeType: payeeInfo.payee as PayeeType,
-                activeBond: ledgers[i]?.active as bigint,
-            })
-        )
+        // newStakers.set(
+        //     stashId,
+        //     await createStaker(ctx, {
+        //         stashId,
+        //         controllerId: notNullControllerIds[i],
+        //         payeeId:
+        //             payeeInfo.payee === 'Account'
+        //                 ? payeeInfo.account
+        //                 : payeeInfo.payee === 'Controller'
+        //                 ? controllerId
+        //                 : payeeInfo.payee === 'Staked' || payeeInfo.payee === 'Stash'
+        //                 ? stashId
+        //                 : null,
+        //         payeeType: payeeInfo.payee as PayeeType,
+        //         activeBond: ledgers[i]?.active as bigint,
+        //     })
+        // )
     }
 
     return [...stakersMap.values(), ...newStakers.values()]
@@ -270,20 +270,20 @@ export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData
 
     const transfer = new Transfer({
         ...getMeta(data),
-        from: new TransferLocationAccount({
-            id: fromId,
-        }),
-        to: toId
-            ? new TransferLocationAccount({
-                  id: toId,
-              })
-            : null,
-        asset: new TransferAssetToken({
-            symbol: 'KSM',
-            amount,
-        }),
-        success,
-        type,
+        // from: new TransferLocationAccount({
+        //     id: fromId,
+        // }),
+        // to: toId
+        //     ? new TransferLocationAccount({
+        //           id: toId,
+        //       })
+        //     : null,
+        // asset: new TransferAssetToken({
+        //     symbol: 'KSM',
+        //     amount,
+        // }),
+        // // success,
+        // type,
     })
 
     await ctx.store.insert(transfer)

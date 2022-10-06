@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { CrowdloanDissolvedEvent } from '../../../types/generated/events'
+import { CrowdloanDissolvedEvent } from '../../../types/kusama/events'
 import { EventContext, EventHandlerContext } from '../../types/contexts'
 
 export interface EventData {

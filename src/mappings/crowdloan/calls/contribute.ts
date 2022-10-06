@@ -1,6 +1,6 @@
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
-import { CrowdloanContributeCall } from '../../../types/generated/calls'
+import { CrowdloanContributeCall } from '../../../types/kusama/calls'
 import { CallContext, CallHandlerContext, CommonHandlerContext } from '../../types/contexts'
 import { Contribution, TransferType } from '../../../model'
 import { getLastCrowdloan, getOrCreateAccount, saveTransfer } from '../../util/entities'

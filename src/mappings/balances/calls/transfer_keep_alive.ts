@@ -1,7 +1,7 @@
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
 import { TransferType } from '../../../model'
-import { BalancesTransferKeepAliveCall } from '../../../types/generated/calls'
+import { BalancesTransferKeepAliveCall } from '../../../types/kusama/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { saveTransfer } from '../../util/entities'
 

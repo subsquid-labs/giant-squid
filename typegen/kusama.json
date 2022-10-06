@@ -14,7 +14,8 @@
     "Crowdloan.Contributed",
     "Crowdloan.Dissolved",
     "Crowdloan.Created",
-    "Grandpa.NewAuthorities"
+    "Grandpa.NewAuthorities",
+    "Balances.Transfer"
   ],
   "calls": [
     "Crowdloan.create",

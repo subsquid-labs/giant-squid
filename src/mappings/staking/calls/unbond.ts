@@ -1,7 +1,7 @@
 import { UnknownVersionError } from '../../../common/errors'
 import { getOriginAccountId } from '../../../common/tools'
 import { BondType } from '../../../model'
-import { StakingUnbondCall } from '../../../types/generated/calls'
+import { StakingUnbondCall } from '../../../types/kusama/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { saveBond } from './utils'
 

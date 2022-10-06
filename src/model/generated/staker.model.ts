@@ -25,25 +25,25 @@ export class Staker {
   @JoinColumn_()
   stash!: Account
 
-  @Column_("text", {nullable: false})
-  controllerId!: string
+  @Column_("text", {nullable: true})
+  controllerId!: string | undefined | null
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: true})
-  controller!: Account
+  controller!: Account | undefined | null
 
-  @Column_("text", {nullable: false})
-  payeeId!: string
+  @Column_("text", {nullable: true})
+  payeeId!: string | undefined | null
 
   @Index_()
   @ManyToOne_(() => Account, {nullable: true})
   payee!: Account | undefined | null
 
-  @Column_("varchar", {length: 10, nullable: false})
-  payeeType!: PayeeType
+  @Column_("varchar", {length: 10, nullable: true})
+  payeeType!: PayeeType | undefined | null
 
-  @Column_("varchar", {length: 9, nullable: false})
-  role!: StakingRole
+  @Column_("varchar", {length: 9, nullable: true})
+  role!: StakingRole | undefined | null
 
   @Column_("int4", {nullable: true})
   commission!: number | undefined | null
@@ -68,4 +68,7 @@ export class Staker {
 
   @OneToMany_(() => Bond, e => e.staker)
   bonds!: Bond[]
+
+  @Column_("int4", {nullable: false})
+  updatedAt!: number
 }

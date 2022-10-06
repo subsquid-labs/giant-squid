@@ -22,7 +22,7 @@ export async function emote(rmrkObject: Array<string>, ctx: CallHandlerContext):
         emotion = new RmrkEmote({
             id: id,
             nft: nft,
-            caller: eventBase.caller!,
+            caller: eventBase.account!,
             value: emotionSym,
             active: true,
             count: 1,

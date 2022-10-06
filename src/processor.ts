@@ -1,15 +1,9 @@
-import {
-    BatchContext,
-    BatchProcessorItem,
-    SubstrateBatchProcessor,
-    SubstrateBlock,
-    SubstrateProcessor,
-} from '@subsquid/substrate-processor'
+import { SubstrateBatchProcessor } from '@subsquid/substrate-processor'
 import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
-import * as modules from './mappings'
-import { Store, TypeormDatabase } from '@subsquid/typeorm-store'
+import { TypeormDatabase } from '@subsquid/typeorm-store'
 import { getConfig } from './configs'
-import { Bond, Reward } from './model'
+import { processStaking } from './mappings/staking'
+import { processBalances } from './mappings/balances'
 
 const config = getConfig()
 const database = new TypeormDatabase()
@@ -20,8 +14,31 @@ const processor = new SubstrateBatchProcessor()
     .setPrometheusPort(config.port || DEFAULT_PORT)
     .setBlockRange(config.blockRange || { from: 0 })
 
-    .addEvent('Staking.Slashed')
-    .addEvent('Staking.Slash') //Old name of Slashed event
+    .addEvent('Balances.Transfer', {
+        data: {
+            event: {
+                args: true,
+                extrinsic: { hash: true },
+            },
+        } as const,
+    })
+    .addEvent('Staking.Slashed', {
+        data: {
+            event: {
+                args: true,
+                extrinsic: { hash: true },
+            },
+        } as const,
+    })
+    //Old name of Slashed event
+    .addEvent('Staking.Slash', {
+        data: {
+            event: {
+                args: true,
+                extrinsic: { hash: true },
+            },
+        } as const,
+    })
     .addEvent('Staking.Rewarded', {
         data: {
             event: {
@@ -31,6 +48,7 @@ const processor = new SubstrateBatchProcessor()
             },
         } as const,
     })
+    //Old name of Rewarded event
     .addEvent('Staking.Reward', {
         data: {
             event: {
@@ -39,55 +57,44 @@ const processor = new SubstrateBatchProcessor()
                 extrinsic: { hash: true },
             },
         },
-    }) //Old name of Rewarded event
-    .addCall('Staking.bond')
-    .addCall('Staking.bond_extra')
-    .addCall('Staking.unbond')
-    .addCall('Staking.set_controller')
-    .addCall('Staking.set_payee')
-    .addCall('Staking.nominate')
-    .addCall('Staking.validate')
-    .addCall('Staking.chill')
-    .addEvent('Grandpa.NewAuthorities')
-
-    .addEvent('Crowdloan.Created')
-    .addCall('Crowdloan.contribute')
-
-    .addEvent('Balances.Transfer')
-
-    .addCall('System.remark')
-
-    .addCall('XcmPallet.teleport_assets')
-    .addCall('XcmPallet.reserve_transfer_assets')
-
-type Item = BatchProcessorItem<typeof processor>
-type Context = BatchContext<Store, Item>
-
-processor.run(database, async (ctx) => {})
-
-async function processStaking(ctx: Context) {
-    const accountsIds = new Set<string>()
-    const stakersIds = new Set<string>()
-
-    const rewards = new Map<number, Reward>()
-    const bonds = new Map<number, Bond>()
-
-    processItem(ctx, (block, item) => {
-        if (item.kind === 'event') {
-            switch (item.name) {
-                case 'Staking.Reward':
-                case 'Staking.Rewarded':
-                    const reward = modules.staking.events.handleRewarded({ ...ctx, block, event: item.event }) // HERE
-                    break
-            }
-        }
     })
-}
+    .addEvent('Staking.Bonded', {
+        data: {
+            event: {
+                args: true,
+                extrinsic: { hash: true },
+            },
+        } as const,
+    })
+    .addEvent('Staking.Unbonded', {
+        data: {
+            event: {
+                args: true,
+                extrinsic: { hash: true },
+            },
+        } as const,
+    })
+// .addCall('Staking.bond')
+// .addCall('Staking.bond_extra')
+// .addCall('Staking.unbond')
+// .addCall('Staking.set_controller')
+// .addCall('Staking.set_payee')
+// .addCall('Staking.nominate')
+// .addCall('Staking.validate')
+// .addCall('Staking.chill')
+// .addEvent('Grandpa.NewAuthorities')
 
-function processItem<I>(ctx: BatchContext<any, I>, fn: (block: SubstrateBlock, item: I) => void) {
-    for (let block of ctx.blocks) {
-        for (let item of block.items) {
-            fn(block.header, item)
-        }
-    }
-}
+// .addEvent('Crowdloan.Created')
+// .addCall('Crowdloan.contribute')
+
+// .addEvent('Balances.Transfer')
+
+// .addCall('System.remark')
+
+// .addCall('XcmPallet.teleport_assets')
+// .addCall('XcmPallet.reserve_transfer_assets')
+
+processor.run(database, async (ctx) => {
+    await processBalances(ctx as any)
+    await processStaking(ctx as any)
+})

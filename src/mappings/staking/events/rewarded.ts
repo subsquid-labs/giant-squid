@@ -1,6 +1,6 @@
 import { EventHandlerContext, toHex } from '@subsquid/substrate-processor'
-import { Store } from '@subsquid/typeorm-store'
 import { UnknownVersionError } from '../../../common/errors'
+import { encodeId } from '../../../common/tools'
 import { StakingPayoutStakersCall } from '../../../types/kusama/calls'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/kusama/events'
 import { Call, Event } from '../../../types/kusama/support'
@@ -18,7 +18,7 @@ function getRewardedEventData(ctx: BlockContext, event: Call): EventData {
     if (data.isV9090) {
         const [account, amount] = data.asV9090
         return {
-            accountId: toHex(account),
+            accountId: encodeId(account),
             amount,
         }
     } else {
@@ -34,7 +34,7 @@ function getRewardEventData(ctx: EventContext, event: Event): EventData | undefi
     } else if (data.isV1050) {
         const [account, amount] = data.asV1050
         return {
-            accountId: toHex(account),
+            accountId: encodeId(account),
             amount,
         }
     } else {
@@ -53,7 +53,7 @@ function getCallData(ctx: BlockContext, call: Call): CallData {
     if (data.isV1058) {
         const { validatorStash, era } = data.asV1058
         return {
-            validatorId: toHex(validatorStash),
+            validatorId: encodeId(validatorStash),
             era,
         }
     } else {
@@ -61,9 +61,9 @@ function getCallData(ctx: BlockContext, call: Call): CallData {
     }
 }
 
-export function handleRewarded(
+export function processRewarded(
     ctx: EventHandlerContext<
-        any,
+        unknown,
         {
             event: {
                 args: true

@@ -1,6 +1,6 @@
 import { UnknownVersionError } from '../../common/errors'
-import { StakingCurrentEraStorage } from '../../types/generated/storage'
-import { BlockContext as StorageContext } from '../../types/generated/support'
+import { StakingCurrentEraStorage } from '../../types/kusama/storage'
+import { BlockContext as StorageContext } from '../../types/kusama/support'
 
 interface StorageData {
     index: number | undefined

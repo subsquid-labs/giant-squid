@@ -1,5 +1,5 @@
 import { CallHandlerContext } from '../types/contexts'
-import { SystemRemarkCall } from '../../types/generated/calls'
+import { SystemRemarkCall } from '../../types/kusama/calls'
 import { RmrkInteraction } from '../../model/generated/_rmrkInteraction'
 import consts from './utils/consts'
 import * as InteractionsMaps from './interactions'

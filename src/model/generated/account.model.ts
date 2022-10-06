@@ -36,15 +36,15 @@ export class Account {
   @OneToOne_(() => Staker)
   stakingInfo!: Staker | undefined | null
 
-  @Column_("int4", {nullable: false})
-  lastUpdateBlock!: number
-
   @OneToMany_(() => RmrkCollection, e => e.currentOwner)
   rmrkColections!: RmrkCollection[]
 
   @OneToMany_(() => RmrkNFT, e => e.currentOwner)
   rmrkNfts!: RmrkNFT[]
 
-  @OneToMany_(() => RmrkEvent, e => e.caller)
+  @OneToMany_(() => RmrkEvent, e => e.account)
   rmrkEvents!: RmrkEvent[]
+
+  @Column_("int4", {nullable: false})
+  updatedAt!: number
 }
