@@ -21,8 +21,8 @@ async function getStorageData(ctx: StorageContext, ids: string[]): Promise<Stora
             }))
         )
     } else if (storage.isV9111) {
-        await storage.getManyAsV1020(normalizedIds).then((data) =>
-            data?.map((p) => ({
+        await storage.getManyAsV9111(normalizedIds).then((data) =>
+            data?.map((p: any) => ({
                 dest: p.__kind,
                 accountId: p.value ? encodeId(p.value) : undefined,
             }))
