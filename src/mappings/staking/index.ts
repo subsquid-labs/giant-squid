@@ -25,6 +25,9 @@ export async function processStaking(ctx: BatchContext<Store, Item>) {
     const slashesData = new Map<SubstrateBlock, SlashData[]>()
     const bondsData = new Array<BondData | UnbondData>()
 
+    const controllerUpdates = new Map<SubstrateBlock, string[]>()
+    const payeeUpdates = new Map<SubstrateBlock, string[]>()
+
     const controllersId = new Set<string>()
 
     processItem(ctx, (block, item) => {
@@ -67,7 +70,16 @@ export async function processStaking(ctx: BatchContext<Store, Item>) {
             }
             case 'Staking.set_controller': {
                 const id = getOriginAccountId(item.call.origin)
-                if (id) stakersIds.add(id)
+                if (!id) return
+
+                stakersIds.add(id)
+                let blockUpdates = controllerUpdates.get(block)
+                if (!blockUpdates) {
+                    blockUpdates = []
+                    controllerUpdates.set(block, blockUpdates)
+                }
+                blockUpdates.push(id)
+
                 return
             }
             case 'Staking.set_payee':
@@ -75,14 +87,30 @@ export async function processStaking(ctx: BatchContext<Store, Item>) {
             case 'Staking.validate':
             case 'Staking.chill': {
                 const id = getOriginAccountId(item.call.origin)
-                if (id) controllersId.add(id)
+                if (!id) return
+
+                controllersId.add(id)
+                let blockUpdates = payeeUpdates.get(block)
+                if (!blockUpdates) {
+                    blockUpdates = []
+                    payeeUpdates.set(block, blockUpdates)
+                }
+                blockUpdates.push(id)
+
                 return
             }
         }
     })
 
+    const optimizedRewardsData = optimize(
+        rewardsData,
+        new Set([
+            ...[...controllerUpdates.keys()].map((block) => block.height),
+            ...[...payeeUpdates.keys()].map((block) => block.height),
+        ])
+    )
     const rewards: Reward[] = []
-    for (const [block, blockRewardData] of rewardsData) {
+    for (const [block, blockRewardData] of optimizedRewardsData) {
         await processRewards({ ...ctx, block }, blockRewardData).then((r) => {
             rewards.push(...r)
         })
@@ -287,6 +315,23 @@ async function updateAccounts(ctx: CommonHandlerContext<Store>, accountsList: Ac
     const accounts = accountsList.filter((s) => s.updatedAt < ctx.block.height)
 
     accounts.forEach((s) => (s.updatedAt = ctx.block.height))
+}
+
+function optimize<T>(items: Map<SubstrateBlock, T[]>, blocks: Set<number>): Map<SubstrateBlock, T[]> {
+    const itemsList = [...items.entries()].sort((a, b) => a[0].height - b[0].height)
+    const newItems = new Map<SubstrateBlock, T[]>()
+
+    let cache: T[] = []
+    for (let i = 0; i < itemsList.length; i++) {
+        const [block, item] = itemsList[i]
+        cache.push(...item)
+        if (blocks.has(block.height) || i == itemsList.length - 1) {
+            newItems.set(block, cache)
+            cache = []
+        }
+    }
+
+    return newItems
 }
 
 type Item =
