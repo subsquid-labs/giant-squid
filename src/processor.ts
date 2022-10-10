@@ -2,8 +2,8 @@ import { SubstrateBatchProcessor } from '@subsquid/substrate-processor'
 import { DEFAULT_BATCH_SIZE, DEFAULT_PORT } from './common/consts'
 import { TypeormDatabase } from '@subsquid/typeorm-store'
 import { getConfig } from './configs'
-import { processStaking } from './mappings/staking'
-import { processBalances } from './mappings/balances'
+import { StakingProcessor } from './mappings/staking'
+import { BalancesProcessor, processBalances } from './mappings/balances'
 
 const config = getConfig()
 const database = new TypeormDatabase()
@@ -74,14 +74,14 @@ const processor = new SubstrateBatchProcessor()
             },
         } as const,
     })
-// .addCall('Staking.bond')
-// .addCall('Staking.bond_extra')
-// .addCall('Staking.unbond')
-// .addCall('Staking.set_controller')
-// .addCall('Staking.set_payee')
-// .addCall('Staking.nominate')
-// .addCall('Staking.validate')
-// .addCall('Staking.chill')
+    // .addCall('Staking.bond')
+    // .addCall('Staking.bond_extra')
+    // .addCall('Staking.unbond')
+    .addCall('Staking.set_controller')
+    .addCall('Staking.set_payee')
+    .addCall('Staking.nominate')
+    .addCall('Staking.validate')
+    .addCall('Staking.chill')
 // .addEvent('Grandpa.NewAuthorities')
 
 // .addEvent('Crowdloan.Created')
@@ -95,6 +95,6 @@ const processor = new SubstrateBatchProcessor()
 // .addCall('XcmPallet.reserve_transfer_assets')
 
 processor.run(database, async (ctx) => {
-    await processBalances(ctx as any)
-    await processStaking(ctx as any)
+    await new BalancesProcessor(ctx).run(ctx.blocks as any)
+    await new StakingProcessor(ctx).run(ctx.blocks as any)
 })

@@ -1,7 +1,9 @@
-import { BatchContext, CommonHandlerContext } from '@subsquid/substrate-processor'
+import { BatchBlock, BatchContext, CommonHandlerContext } from '@subsquid/substrate-processor'
 import { EventItem } from '@subsquid/substrate-processor/lib/interfaces/dataSelection'
 import { Store } from '@subsquid/typeorm-store'
 import { In } from 'typeorm'
+import { BlockMap } from '../../common/blockMap'
+import { MappingProcessor } from '../../common/mappingProcessor'
 import { createEntityMap, last, processItem } from '../../common/tools'
 import { Account, AccountTransfer, Transfer, TransferDirection } from '../../model'
 import { getMeta } from '../util/actions'
@@ -12,58 +14,82 @@ export default {
     extrinsics,
 }
 
-export async function processBalances(ctx: BatchContext<Store, Item>) {
-    let transfersData = new Array<TransferData>()
+export class BalancesProcessor extends MappingProcessor<Item> {
+    async run(blocks: BatchBlock<Item>[]) {
+        const { transfersData } = this.processItems(blocks)
 
-    processItem(ctx, (block, item) => {
-        if (item.name == 'Balances.Transfer') {
-            const transfer = processTransfer({ ...ctx, block, event: item.event as any })
-            transfersData.push(transfer)
+        let transfers = await this.processTransfers(transfersData)
+        let accountTransfers = transfers
+            .map((transfer) => {
+                return [
+                    new AccountTransfer({
+                        id: transfer.id + '-to',
+                        transfer,
+                        accountId: transfer.toId,
+                        direction: TransferDirection.To,
+                    }),
+                    new AccountTransfer({
+                        id: transfer.id + '-from',
+                        transfer,
+                        accountId: transfer.fromId,
+                        direction: TransferDirection.From,
+                    }),
+                ]
+            })
+            .flat()
+
+        let accountIds = new Set<string>()
+        for (const transfer of transfers) {
+            accountIds.add(transfer.fromId)
+            accountIds.add(transfer.toId)
         }
-    })
 
-    let accountIds = new Set<string>()
+        const lastBlock = last(blocks).header
 
-    let transfers: Transfer[] = []
-    let accountTransfers: AccountTransfer[] = []
-    for (let t of transfersData) {
-        const transfer = new Transfer({
-            ...getMeta(t),
-            fromId: t.from,
-            toId: t.to,
-            amount: t.amount,
+        let accounts = await this.ctx.store.findBy(Account, { id: In([...accountIds]) }).then(createEntityMap)
+        for (const id of accountIds) {
+            if (accounts.has(id)) continue
+            accounts.set(id, createAccount(id))
+        }
+        await updateAccounts(this.createContext(lastBlock), [...accounts.values()])
+
+        await this.ctx.store.save([...accounts.values()])
+        await this.ctx.store.insert(transfers)
+        await this.ctx.store.insert(accountTransfers)
+    }
+
+    private processItems(blocks: BatchBlock<Item>[]) {
+        let transfersData = new BlockMap<TransferData>()
+
+        processItem(blocks, (block, item) => {
+            switch (item.name) {
+                case 'Balances.Transfer':
+                    const transfer = processTransfer({ ...this.ctx, block, event: item.event as any })
+                    if (transfer) transfersData.push(block, transfer)
+                    return
+            }
         })
-        transfers.push(transfer)
-        accountTransfers.push(
-            new AccountTransfer({
-                id: t.id + '-from',
-                transfer,
-                accountId: t.from,
-                direction: TransferDirection.From,
-            })
-        )
-        accountTransfers.push(
-            new AccountTransfer({
-                id: t.id + '-to',
-                transfer,
-                accountId: t.to,
-                direction: TransferDirection.To,
-            })
-        )
-        accountIds.add(t.from)
-        accountIds.add(t.to)
+
+        return {
+            transfersData,
+        }
     }
 
-    let accounts = await ctx.store.findBy(Account, { id: In([...accountIds]) }).then(createEntityMap)
-    for (const id of accountIds) {
-        if (accounts.has(id)) continue
-        accounts.set(id, createAccount(id))
+    private async processTransfers(transfersData: BlockMap<TransferData>) {
+        return Promise.all(
+            transfersData.entriesArray().map(async ([, blockTransfersData]) => {
+                return blockTransfersData.map((transferData) => {
+                    const { from, to, amount } = transferData
+                    return new Transfer({
+                        ...getMeta(transferData),
+                        fromId: from,
+                        toId: to,
+                        amount,
+                    })
+                })
+            })
+        ).then((data) => data.flat())
     }
-    await updateAccounts({ ...ctx, block: last(ctx.blocks).header }, [...accounts.values()])
-
-    await ctx.store.save([...accounts.values()])
-    await ctx.store.insert(transfers)
-    await ctx.store.insert(accountTransfers)
 }
 
 function createAccount(id: string) {

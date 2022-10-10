@@ -47,6 +47,8 @@
     "Staking.Ledger",
     "Staking.ErasStakers",
     "Staking.Stakers",
-    "Session.Validators"
+    "Session.Validators",
+    "Staking.Nominators",
+    "Staking.Validators"
   ]
 }

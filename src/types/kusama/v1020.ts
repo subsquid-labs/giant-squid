@@ -1016,6 +1016,12 @@ export interface StakingLedger {
   unlocking: UnlockChunk[]
 }
 
+export interface Nominations {
+  targets: Uint8Array[]
+  submittedIn: number
+  suppressed: boolean
+}
+
 export interface Exposure {
   total: bigint
   own: bigint

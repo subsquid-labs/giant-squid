@@ -3,6 +3,7 @@ import {Block, Chain, ChainContext, BlockContext, Result} from './support'
 import * as v1020 from './v1020'
 import * as v1050 from './v1050'
 import * as v1058 from './v1058'
+import * as v2028 from './v2028'
 import * as v9010 from './v9010'
 import * as v9111 from './v9111'
 import * as v9180 from './v9180'
@@ -429,6 +430,57 @@ export class StakingLedgerStorage {
   }
 }
 
+export class StakingNominatorsStorage {
+  private readonly _chain: Chain
+  private readonly blockHash: string
+
+  constructor(ctx: BlockContext)
+  constructor(ctx: ChainContext, block: Block)
+  constructor(ctx: BlockContext, block?: Block) {
+    block = block || ctx.block
+    this.blockHash = block.hash
+    this._chain = ctx._chain
+  }
+
+  /**
+   *  The map from nominator stash key to the set of stash keys of all validators to nominate.
+   * 
+   *  NOTE: is private so that we can ensure upgraded before all typical accesses.
+   *  Direct storage APIs can still bypass this protection.
+   */
+  get isV1020() {
+    return this._chain.getStorageItemTypeHash('Staking', 'Nominators') === 'a72d3e17e59f46bbd05fb0efd27052437fe2b1c41b0c89fe950edfb3b79e3c78'
+  }
+
+  /**
+   *  The map from nominator stash key to the set of stash keys of all validators to nominate.
+   * 
+   *  NOTE: is private so that we can ensure upgraded before all typical accesses.
+   *  Direct storage APIs can still bypass this protection.
+   */
+  async getAsV1020(key: Uint8Array): Promise<v1020.Nominations | undefined> {
+    assert(this.isV1020)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'Nominators', key)
+  }
+
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.Nominations | undefined)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Nominators', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(v1020.Nominations)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Nominators')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this._chain.getStorageItemTypeHash('Staking', 'Nominators') != null
+  }
+}
+
 export class StakingPayeeStorage {
   private readonly _chain: Chain
   private readonly blockHash: string
@@ -547,5 +599,75 @@ export class StakingStakersStorage {
    */
   get isExists(): boolean {
     return this._chain.getStorageItemTypeHash('Staking', 'Stakers') != null
+  }
+}
+
+export class StakingValidatorsStorage {
+  private readonly _chain: Chain
+  private readonly blockHash: string
+
+  constructor(ctx: BlockContext)
+  constructor(ctx: ChainContext, block: Block)
+  constructor(ctx: BlockContext, block?: Block) {
+    block = block || ctx.block
+    this.blockHash = block.hash
+    this._chain = ctx._chain
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  get isV1020() {
+    return this._chain.getStorageItemTypeHash('Staking', 'Validators') === '3f9d4868d833266bf0b4658a23fbe9b816c5eafdf27cd8520d058526e27af4c5'
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  async getAsV1020(key: Uint8Array): Promise<v1020.ValidatorPrefs> {
+    assert(this.isV1020)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'Validators', key)
+  }
+
+  async getManyAsV1020(keys: Uint8Array[]): Promise<(v1020.ValidatorPrefs)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators', keys.map(k => [k]))
+  }
+
+  async getAllAsV1020(): Promise<(v1020.ValidatorPrefs)[]> {
+    assert(this.isV1020)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators')
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  get isV2028() {
+    return this._chain.getStorageItemTypeHash('Staking', 'Validators') === 'fa08b7a9cd071c2833987f5924d940cf66842072b85af5ecfc3afcf9fbb2ebd0'
+  }
+
+  /**
+   *  The map from (wannabe) validator stash key to the preferences of that validator.
+   */
+  async getAsV2028(key: Uint8Array): Promise<v2028.ValidatorPrefs> {
+    assert(this.isV2028)
+    return this._chain.getStorage(this.blockHash, 'Staking', 'Validators', key)
+  }
+
+  async getManyAsV2028(keys: Uint8Array[]): Promise<(v2028.ValidatorPrefs)[]> {
+    assert(this.isV2028)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators', keys.map(k => [k]))
+  }
+
+  async getAllAsV2028(): Promise<(v2028.ValidatorPrefs)[]> {
+    assert(this.isV2028)
+    return this._chain.queryStorage(this.blockHash, 'Staking', 'Validators')
+  }
+
+  /**
+   * Checks whether the storage item is defined for the current chain version.
+   */
+  get isExists(): boolean {
+    return this._chain.getStorageItemTypeHash('Staking', 'Validators') != null
   }
 }

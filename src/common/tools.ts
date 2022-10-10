@@ -1,7 +1,7 @@
 import * as ss58 from '@subsquid/ss58'
 import config from '../configs/kusama'
 import { decodeHex } from '@subsquid/util-internal-hex'
-import { BatchContext, CommonHandlerContext, SubstrateBlock, toHex } from '@subsquid/substrate-processor'
+import { BatchBlock, BatchContext, CommonHandlerContext, SubstrateBlock, toHex } from '@subsquid/substrate-processor'
 import assert from 'assert'
 
 const ss58codec = ss58.codec(config.prefix)
@@ -65,8 +65,8 @@ export function isStorageCorrupted(ctx: CommonHandlerContext<unknown>) {
     return ctx.block.height >= 1375087 && ctx.block.height <= 1600000
 }
 
-export function processItem<I>(ctx: BatchContext<any, I>, fn: (block: SubstrateBlock, item: I) => void) {
-    for (let block of ctx.blocks) {
+export function processItem<I>(blocks: BatchBlock<I>[], fn: (block: SubstrateBlock, item: I) => void) {
+    for (let block of blocks) {
         for (let item of block.items) {
             fn(block.header, item)
         }

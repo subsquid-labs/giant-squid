@@ -1,8 +1,8 @@
 import * as events from './events'
 import * as extrinsics from './calls'
-import { BatchContext, CommonHandlerContext, SubstrateBlock } from '@subsquid/substrate-processor'
+import { BatchBlock, BatchContext, CommonHandlerContext, SubstrateBlock } from '@subsquid/substrate-processor'
 import { Store } from '@subsquid/typeorm-store'
-import { Account, Bond, PayeeType, Reward, Slash, Staker } from '../../model'
+import { Account, Bond, PayeeType, Reward, Slash, Staker, StakingRole } from '../../model'
 import { processRewarded, processSlashed, RewardData, SlashData } from './events'
 import { createEntityMap, getOriginAccountId, last, processItem } from '../../common/tools'
 import { In } from 'typeorm'
@@ -11,238 +11,275 @@ import storage from '../../storage'
 import { CallItem, EventItem } from '@subsquid/substrate-processor/lib/interfaces/dataSelection'
 import { BondData, processBond } from './events/bond'
 import { processUnbond, UnbondData } from './events/unbond'
+import { BlockMap } from '../../common/blockMap'
+import { MappingProcessor } from '../../common/mappingProcessor'
 
 export default {
     events,
     extrinsics,
 }
 
-export async function processStaking(ctx: BatchContext<Store, Item>) {
-    const accountsIds = new Set<string>()
-    const stakersIds = new Set<string>()
+type RoleUpdateData = { controllerId: string; role: 'validator' | 'nominator' | 'idle' }
 
-    const rewardsData = new Map<SubstrateBlock, RewardData[]>()
-    const slashesData = new Map<SubstrateBlock, SlashData[]>()
-    const bondsData = new Array<BondData | UnbondData>()
+export class StakingProcessor extends MappingProcessor<Item> {
+    async run(blocks: BatchBlock<Item>[]) {
+        const { rewardsData, slashesData, bondsData, setControllersData, setPayeesData, roleUpdateData } =
+            this.processItems(blocks)
 
-    const controllerUpdates = new Map<SubstrateBlock, string[]>()
-    const payeeUpdates = new Map<SubstrateBlock, string[]>()
-
-    const controllersId = new Set<string>()
-
-    processItem(ctx, (block, item) => {
-        switch (item.name) {
-            case 'Staking.Reward':
-            case 'Staking.Rewarded': {
-                const reward = processRewarded({ ...ctx, block, event: item.event as any })
-                if (!reward) return
-
-                let blockRewards = rewardsData.get(block)
-                if (!blockRewards) {
-                    blockRewards = []
-                    rewardsData.set(block, blockRewards)
-                }
-                blockRewards.push(reward)
-                return
-            }
-            case 'Staking.Slash':
-            case 'Staking.Slashed': {
-                const slash = processSlashed({ ...ctx, block, event: item.event as any })
-                if (!slash) return
-
-                let blockSlashes = slashesData.get(block)
-                if (!blockSlashes) {
-                    blockSlashes = []
-                    slashesData.set(block, blockSlashes)
-                }
-                blockSlashes.push(slash)
-                return
-            }
-            case 'Staking.Bonded': {
-                const bond = processBond({ ...ctx, block, event: item.event as any })
-                if (bond) bondsData.push(bond)
-                return
-            }
-            case 'Staking.Unbonded': {
-                const bond = processUnbond({ ...ctx, block, event: item.event as any })
-                if (bond) bondsData.push(bond)
-                return
-            }
-            case 'Staking.set_controller': {
-                const id = getOriginAccountId(item.call.origin)
-                if (!id) return
-
-                stakersIds.add(id)
-                let blockUpdates = controllerUpdates.get(block)
-                if (!blockUpdates) {
-                    blockUpdates = []
-                    controllerUpdates.set(block, blockUpdates)
-                }
-                blockUpdates.push(id)
-
-                return
-            }
-            case 'Staking.set_payee':
-            case 'Staking.nominate':
-            case 'Staking.validate':
-            case 'Staking.chill': {
-                const id = getOriginAccountId(item.call.origin)
-                if (!id) return
-
-                controllersId.add(id)
-                let blockUpdates = payeeUpdates.get(block)
-                if (!blockUpdates) {
-                    blockUpdates = []
-                    payeeUpdates.set(block, blockUpdates)
-                }
-                blockUpdates.push(id)
-
-                return
-            }
-        }
-    })
-
-    const optimizedRewardsData = optimize(
-        rewardsData,
-        new Set([
-            ...[...controllerUpdates.keys()].map((block) => block.height),
-            ...[...payeeUpdates.keys()].map((block) => block.height),
+        const [rewards, slashes, bonds, roleUpdates] = await Promise.all([
+            this.processRewards(
+                rewardsData.optimize((block, items) => {
+                    if (setControllersData.has(block)) {
+                        const stashesIds: string[] = setControllersData.get(block)?.map((data) => data.stashId) || []
+                        return items.some((item) => stashesIds.includes(item.stashId))
+                    } else {
+                        return setPayeesData.has(block)
+                    }
+                })
+            ),
+            this.processSlashes(slashesData),
+            this.processBonds(bondsData),
+            this.processRoleUpdates(roleUpdateData),
         ])
-    )
-    const rewards: Reward[] = []
-    for (const [block, blockRewardData] of optimizedRewardsData) {
-        await processRewards({ ...ctx, block }, blockRewardData).then((r) => {
-            rewards.push(...r)
+
+        const accountsIds = new Set<string>()
+        const stakersIds = new Set<string>()
+        rewards.forEach((reward) => {
+            if (reward.accountId) accountsIds.add(reward.accountId)
+            stakersIds.add(reward.stakerId)
         })
-    }
-    rewards.forEach((reward) => {
-        reward.accountId && accountsIds.add(reward.accountId)
-        stakersIds.add(reward.stakerId)
-    })
+        slashes.forEach((slash) => {
+            accountsIds.add(slash.accountId)
+            stakersIds.add(slash.stakerId)
+        })
+        bonds.forEach((bond) => {
+            accountsIds.add(bond.accountId)
+            stakersIds.add(bond.stakerId)
+        })
+        roleUpdates.forEach((roleUpdate) => {
+            if (roleUpdate.stakerId) stakersIds.add(roleUpdate.stakerId)
+        })
 
-    const slashes: Slash[] = []
-    for (const [block, blockSlashData] of slashesData) {
-        await processSlashes({ ...ctx, block }, blockSlashData).then((s) => slashes.push(...s))
-    }
-    slashes.forEach((slash) => {
-        accountsIds.add(slash.accountId)
-        stakersIds.add(slash.stakerId)
-    })
+        const lastBlock = last(blocks).header
 
-    const bonds: Bond[] = []
-    await processBonds({ ...ctx, block: last(ctx.blocks).header }, bondsData).then((s) => bonds.push(...s))
-    bonds.forEach((bond) => {
-        accountsIds.add(bond.accountId)
-        stakersIds.add(bond.stakerId)
-    })
-
-    await storage.staking.bonded
-        .getMany({ ...ctx, block: last(ctx.blocks).header }, [...controllersId])
-        .then((ids) => ids?.forEach((id) => id && stakersIds.add(id)))
-
-    const stakers = await ctx.store.findBy(Staker, { id: In([...stakersIds]) }).then(createEntityMap)
-    for (const id of stakersIds) {
-        if (stakers.has(id)) continue
-        stakers.set(id, createStaker(id))
-    }
-    await updateStakers({ ...ctx, block: last(ctx.blocks).header }, [...stakers.values()]).then((updatedStakers) =>
-        updatedStakers.forEach((staker) => {
+        const stakers = await this.ctx.store.findBy(Staker, { id: In([...stakersIds]) }).then(createEntityMap)
+        for (const id of stakersIds) {
+            if (stakers.has(id)) continue
+            stakers.set(id, createStaker(id))
+        }
+        slashes.forEach((slash) => {
+            const staker = stakers.get(slash.stakerId)
+            if (staker) staker.totalSlash += slash.amount
+        })
+        rewards.forEach((reward) => {
+            const staker = stakers.get(reward.stakerId)
+            if (staker) staker.totalReward += reward.amount
+        })
+        roleUpdates.forEach((roleUpdate) => {
+            const staker = stakers.get(roleUpdate.stakerId)
+            if (staker) staker.role = roleUpdate.role
+        })
+        await syncStakers({ ...this.ctx, block: lastBlock }, [...stakers.values()])
+        stakers.forEach((staker) => {
             accountsIds.add(staker.stashId)
-            staker.controllerId && accountsIds.add(staker.controllerId)
-            staker.payeeId && accountsIds.add(staker.payeeId)
+            if (staker.controllerId) accountsIds.add(staker.controllerId)
+            if (staker.payeeId) accountsIds.add(staker.payeeId)
         })
-    )
-    slashes.forEach((slash) => {
-        const staker = stakers.get(slash.stakerId)
-        if (staker) staker.totalSlash += slash.amount
-    })
-    rewards.forEach((reward) => {
-        const staker = stakers.get(reward.stakerId)
-        if (staker) staker.totalReward += reward.amount
-    })
 
-    const accounts = await ctx.store.findBy(Account, { id: In([...accountsIds]) }).then(createEntityMap)
-    for (const id of accountsIds) {
-        if (accounts.has(id)) continue
-        accounts.set(id, createAccount(id))
-    }
-    await updateAccounts({ ...ctx, block: last(ctx.blocks).header }, [...accounts.values()])
+        const accounts = await this.ctx.store.findBy(Account, { id: In([...accountsIds]) }).then(createEntityMap)
+        for (const id of accountsIds) {
+            if (accounts.has(id)) continue
+            accounts.set(id, createAccount(id))
+        }
+        await syncAccounts({ ...this.ctx, block: lastBlock }, [...accounts.values()])
 
-    await ctx.store.save([...accounts.values()])
-    await ctx.store.save([...stakers.values()])
-    await ctx.store.insert(rewards)
-    await ctx.store.insert(slashes)
-    await ctx.store.insert(bonds)
-}
-
-async function processRewards(ctx: CommonHandlerContext<Store>, rewardsData: RewardData[]) {
-    const stakersIdsSet = new Set<string>()
-
-    for (const rewardData of rewardsData) {
-        stakersIdsSet.add(rewardData.stashId)
+        await this.ctx.store.save([...accounts.values()])
+        await this.ctx.store.save([...stakers.values()])
+        await this.ctx.store.insert(rewards)
+        await this.ctx.store.insert(slashes)
+        await this.ctx.store.insert(bonds)
     }
 
-    const stakersIds = [...stakersIdsSet]
-    const payeeIds = new Map<string, string>()
-
-    const controllerPayees: string[] = []
-    await storage.staking.payee.getMany(ctx, stakersIds).then((payees) =>
-        payees?.forEach((payee, i) => {
-            payee.dest === 'Account'
-                ? payeeIds.set(stakersIds[i], payee.accountId!)
-                : payee.dest === 'Controller'
-                ? controllerPayees.push(stakersIds[i])
-                : payee.dest === 'Staked' || payee.dest === 'Stash'
-                ? payeeIds.set(stakersIds[i], stakersIds[i])
-                : null
+    private processItems(blocks: BatchBlock<Item>[]) {
+        const rewardsData = new BlockMap<RewardData>()
+        const slashesData = new BlockMap<SlashData>()
+        const bondsData = new BlockMap<BondData | UnbondData>()
+        const setControllersData = new BlockMap<{ stashId: string }>()
+        const setPayeesData = new BlockMap<{ controllerId: string }>()
+        const roleUpdateData = new BlockMap<RoleUpdateData>()
+        processItem(blocks, (block, item) => {
+            switch (item.name) {
+                case 'Staking.Reward':
+                case 'Staking.Rewarded': {
+                    const reward = processRewarded({ ...this.ctx, block, event: item.event as any })
+                    if (reward) rewardsData.push(block, reward)
+                    return
+                }
+                case 'Staking.Slash':
+                case 'Staking.Slashed': {
+                    const slash = processSlashed({ ...this.ctx, block, event: item.event as any })
+                    if (slash) rewardsData.push(block, slash)
+                    return
+                }
+                case 'Staking.Bonded': {
+                    const bond = processBond({ ...this.ctx, block, event: item.event as any })
+                    if (bond) bondsData.push(block, bond)
+                    return
+                }
+                case 'Staking.Unbonded': {
+                    const bond = processUnbond({ ...this.ctx, block, event: item.event as any })
+                    if (bond) bondsData.push(block, bond)
+                    return
+                }
+                case 'Staking.set_controller': {
+                    const stashId = getOriginAccountId(item.call.origin)
+                    if (stashId) setControllersData.push(block, { stashId })
+                    return
+                }
+                case 'Staking.set_payee': {
+                    const controllerId = getOriginAccountId(item.call.origin)
+                    if (controllerId) setPayeesData.push(block, { controllerId })
+                    return
+                }
+                case 'Staking.nominate': {
+                    const controllerId = getOriginAccountId(item.call.origin)
+                    if (controllerId) roleUpdateData.push(block, { controllerId, role: 'nominator' })
+                    return
+                }
+                case 'Staking.validate': {
+                    const controllerId = getOriginAccountId(item.call.origin)
+                    if (controllerId) roleUpdateData.push(block, { controllerId, role: 'validator' })
+                    return
+                }
+                case 'Staking.chill': {
+                    const controllerId = getOriginAccountId(item.call.origin)
+                    if (controllerId) roleUpdateData.push(block, { controllerId, role: 'idle' })
+                    return
+                }
+            }
         })
-    )
-    await storage.staking.bonded
-        .getMany(ctx, controllerPayees)
-        .then((ids) => ids?.forEach((id, i) => payeeIds.set(controllerPayees[i], id!)))
 
-    return rewardsData.map((rewardData) => {
-        const { stashId, validatorId, era, amount } = rewardData
-        const payeeId = payeeIds.get(rewardData.stashId)
-        return new Reward({
-            ...getMeta(rewardData),
-            stakerId: stashId,
-            accountId: payeeId,
-            validatorId: validatorId,
-            amount,
-            era,
-        })
-    })
-}
+        return {
+            rewardsData,
+            slashesData,
+            bondsData,
+            setControllersData,
+            setPayeesData,
+            roleUpdateData,
+        }
+    }
 
-async function processSlashes(ctx: CommonHandlerContext<Store>, slashesData: SlashData[]) {
-    const era =
-        (await storage.staking.getActiveEra(ctx).then((d) => d?.index)) ??
-        (await storage.staking.getCurrentEra(ctx).then((d) => d?.index))
+    private async processRewards(rewardsData: BlockMap<RewardData>): Promise<Reward[]> {
+        return Promise.all(
+            rewardsData.entriesArray().map(async ([block, blockRewardsData]) => {
+                const blockCtx = { ...this.ctx, block }
 
-    return slashesData.map((slashData) => {
-        const { stashId, amount } = slashData
-        return new Slash({
-            ...getMeta(slashData),
-            stakerId: stashId,
-            accountId: stashId,
-            amount,
-            era,
-        })
-    })
-}
+                const stakersIdsSet = new Set<string>()
 
-async function processBonds(ctx: CommonHandlerContext<Store>, bondsData: (BondData | UnbondData)[]) {
-    return bondsData.map((bondData) => {
-        const { type, amount, stashId } = bondData
-        return new Bond({
-            ...getMeta(bondData),
-            stakerId: stashId,
-            accountId: stashId,
-            amount,
-            type,
-        })
-    })
+                for (const rewardData of blockRewardsData) {
+                    stakersIdsSet.add(rewardData.stashId)
+                }
+
+                const stakersIds = [...stakersIdsSet]
+                const payeeIds = new Map<string, string>()
+
+                const controllerPayees: string[] = []
+                await storage.staking.payee.getMany(blockCtx, stakersIds).then((payees) =>
+                    payees?.forEach((payee, i) => {
+                        payee.dest === 'Account'
+                            ? payeeIds.set(stakersIds[i], payee.accountId!)
+                            : payee.dest === 'Controller'
+                            ? controllerPayees.push(stakersIds[i])
+                            : payee.dest === 'Staked' || payee.dest === 'Stash'
+                            ? payeeIds.set(stakersIds[i], stakersIds[i])
+                            : null
+                    })
+                )
+                await storage.staking.bonded
+                    .getMany(blockCtx, controllerPayees)
+                    .then((ids) => ids?.forEach((id, i) => payeeIds.set(controllerPayees[i], id!)))
+
+                return blockRewardsData.map((rewardData) => {
+                    const { stashId, validatorId, era, amount } = rewardData
+                    const payeeId = payeeIds.get(rewardData.stashId)
+                    return new Reward({
+                        ...getMeta(rewardData),
+                        stakerId: stashId,
+                        accountId: payeeId,
+                        validatorId: validatorId,
+                        amount,
+                        era,
+                    })
+                })
+            })
+        ).then((data) => data.flat())
+    }
+
+    private async processSlashes(slashesData: BlockMap<SlashData>) {
+        return Promise.all(
+            slashesData.entriesArray().map(async ([block, blockSlashData]) => {
+                const blockCtx = { ...this.ctx, block }
+
+                const era =
+                    (await storage.staking.getActiveEra(blockCtx).then((d) => d?.index)) ??
+                    (await storage.staking.getCurrentEra(blockCtx).then((d) => d?.index))
+
+                return blockSlashData.map((slashData) => {
+                    const { stashId, amount } = slashData
+                    return new Slash({
+                        ...getMeta(slashData),
+                        stakerId: stashId,
+                        accountId: stashId,
+                        amount,
+                        era,
+                    })
+                })
+            })
+        ).then((data) => data.flat())
+    }
+
+    private async processBonds(bondsData: BlockMap<BondData | UnbondData>) {
+        return Promise.all(
+            bondsData.entriesArray().map(async ([, blockBondsData]) => {
+                return blockBondsData.map((bondData) => {
+                    const { type, amount, stashId } = bondData
+                    return new Bond({
+                        ...getMeta(bondData),
+                        stakerId: stashId,
+                        accountId: stashId,
+                        amount,
+                        type,
+                    })
+                })
+            })
+        ).then((data) => data.flat())
+    }
+
+    private async processRoleUpdates(roleUpdatesData: BlockMap<RoleUpdateData>) {
+        return Promise.all(
+            roleUpdatesData.entriesArray().map(async ([block, blockRoleUpdatesData]) => {
+                const blockCtx = this.createContext(block)
+                const controllerIds = blockRoleUpdatesData.map((roleUpdateData) => roleUpdateData.controllerId)
+                const stashesIds = (await storage.staking.bonded.getMany(blockCtx, controllerIds)) || []
+
+                const data: { stakerId: string; role: StakingRole }[] = []
+                for (let i = 0; i < stashesIds.length; i++) {
+                    const stashId = stashesIds[i]
+                    if (stashId)
+                        data.push({
+                            stakerId: stashId,
+                            role:
+                                blockRoleUpdatesData[i].role === 'validator'
+                                    ? StakingRole.Validator
+                                    : blockRoleUpdatesData[i].role === 'nominator'
+                                    ? StakingRole.Nominator
+                                    : StakingRole.Idle,
+                        })
+                }
+                return data
+            })
+        ).then((data) => data.flat())
+    }
 }
 
 function createStaker(id: string) {
@@ -252,6 +289,7 @@ function createStaker(id: string) {
         activeBond: 0n,
         totalReward: 0n,
         totalSlash: 0n,
+        role: null,
 
         updatedAt: -1,
     })
@@ -264,7 +302,7 @@ function createAccount(id: string) {
     })
 }
 
-async function updateStakers(ctx: CommonHandlerContext<Store>, stakersList: Staker[]) {
+async function syncStakers(ctx: CommonHandlerContext<Store>, stakersList: Staker[]) {
     const stakers = stakersList.filter((s) => s.updatedAt < ctx.block.height)
 
     await storage.staking.bonded
@@ -311,27 +349,12 @@ async function updateStakers(ctx: CommonHandlerContext<Store>, stakersList: Stak
     return stakers
 }
 
-async function updateAccounts(ctx: CommonHandlerContext<Store>, accountsList: Account[]) {
+async function syncAccounts(ctx: CommonHandlerContext<Store>, accountsList: Account[]) {
     const accounts = accountsList.filter((s) => s.updatedAt < ctx.block.height)
 
     accounts.forEach((s) => (s.updatedAt = ctx.block.height))
-}
 
-function optimize<T>(items: Map<SubstrateBlock, T[]>, blocks: Set<number>): Map<SubstrateBlock, T[]> {
-    const itemsList = [...items.entries()].sort((a, b) => a[0].height - b[0].height)
-    const newItems = new Map<SubstrateBlock, T[]>()
-
-    let cache: T[] = []
-    for (let i = 0; i < itemsList.length; i++) {
-        const [block, item] = itemsList[i]
-        cache.push(...item)
-        if (blocks.has(block.height) || i == itemsList.length - 1) {
-            newItems.set(block, cache)
-            cache = []
-        }
-    }
-
-    return newItems
+    return accounts
 }
 
 type Item =
