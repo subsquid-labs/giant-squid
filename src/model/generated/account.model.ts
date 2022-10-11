@@ -1,6 +1,6 @@
 import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, OneToOne as OneToOne_} from "typeorm"
 import {AccountTransfer} from "./accountTransfer.model"
-import {Contribution} from "./contribution.model"
+import {Contributor} from "./contributor.model"
 import {Reward} from "./reward.model"
 import {Slash} from "./slash.model"
 import {Bond} from "./bond.model"
@@ -21,8 +21,8 @@ export class Account {
   @OneToMany_(() => AccountTransfer, e => e.account)
   transfers!: AccountTransfer[]
 
-  @OneToMany_(() => Contribution, e => e.account)
-  crowdloans!: Contribution[]
+  @OneToMany_(() => Contributor, e => e.account)
+  crowdloans!: Contributor[]
 
   @OneToMany_(() => Reward, e => e.account)
   rewards!: Reward[]
@@ -46,5 +46,5 @@ export class Account {
   rmrkEvents!: RmrkEvent[]
 
   @Column_("int4", {nullable: false})
-  updatedAt!: number
+  syncedAt!: number
 }

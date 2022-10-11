@@ -95,14 +95,14 @@ export class BalancesProcessor extends MappingProcessor<Item> {
 function createAccount(id: string) {
     return new Account({
         id: id,
-        updatedAt: -1,
+        syncedAt: -1,
     })
 }
 
 async function updateAccounts(ctx: CommonHandlerContext<Store>, accountsList: Account[]) {
-    const accounts = accountsList.filter((s) => s.updatedAt < ctx.block.height)
+    const accounts = accountsList.filter((s) => s.syncedAt < ctx.block.height)
 
-    accounts.forEach((s) => (s.updatedAt = ctx.block.height))
+    accounts.forEach((s) => (s.syncedAt = ctx.block.height))
 }
 
 type Item = EventItem<

@@ -291,19 +291,19 @@ function createStaker(id: string) {
         totalSlash: 0n,
         role: null,
 
-        updatedAt: -1,
+        syncedAt: -1,
     })
 }
 
 function createAccount(id: string) {
     return new Account({
         id: id,
-        updatedAt: -1,
+        syncedAt: -1,
     })
 }
 
 async function syncStakers(ctx: CommonHandlerContext<Store>, stakersList: Staker[]) {
-    const stakers = stakersList.filter((s) => s.updatedAt < ctx.block.height)
+    const stakers = stakersList.filter((s) => s.syncedAt < ctx.block.height)
 
     await storage.staking.bonded
         .getMany(
@@ -345,14 +345,14 @@ async function syncStakers(ctx: CommonHandlerContext<Store>, stakersList: Staker
             })
         )
 
-    stakers.forEach((s) => (s.updatedAt = ctx.block.height))
+    stakers.forEach((s) => (s.syncedAt = ctx.block.height))
     return stakers
 }
 
 async function syncAccounts(ctx: CommonHandlerContext<Store>, accountsList: Account[]) {
-    const accounts = accountsList.filter((s) => s.updatedAt < ctx.block.height)
+    const accounts = accountsList.filter((s) => s.syncedAt < ctx.block.height)
 
-    accounts.forEach((s) => (s.updatedAt = ctx.block.height))
+    accounts.forEach((s) => (s.syncedAt = ctx.block.height))
 
     return accounts
 }

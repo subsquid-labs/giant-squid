@@ -10,9 +10,6 @@ export class Parachain {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("int4", {nullable: true})
-  paraId!: number | undefined | null
-
   @OneToMany_(() => Crowdloan, e => e.parachain)
   crowdloans!: Crowdloan[]
 }

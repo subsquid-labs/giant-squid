@@ -2,7 +2,7 @@
 type Account @entity {
   id: ID!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  crowdloans: [Contribution!] @derivedFrom(field: "account") # crowdloans there account get participation
+  crowdloans: [Contributor!] @derivedFrom(field: "account") # crowdloans there account get participation
   rewards: [Reward!] @derivedFrom(field: "account")
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
@@ -12,7 +12,7 @@ type Account @entity {
   rmrkNfts: [RmrkNFT!] @derivedFrom(field: "currentOwner")
   rmrkEvents: [RmrkEvent!] @derivedFrom(field: "account")
 
-  updatedAt: Int!
+  syncedAt: Int!
 }
 ### RMRK1 NFTs ###
 
@@ -136,7 +136,7 @@ type Staker @entity {
   slashes: [Slash!] @derivedFrom(field: "staker")
   bonds: [Bond!] @derivedFrom(field: "staker")
 
-  updatedAt: Int!
+  syncedAt: Int!
 }
 
 # information about era, validators and nominators 
@@ -179,12 +179,12 @@ type EraStaker @entity {
 # information about known parachains and their crowdloans
 type Parachain @entity {
   id: ID! #paraId
-  paraId: Int
   crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
 }
 
 enum CrowdloanStatus {
-  Created
+  Started
+  Ended
   Dissolved
 }
 
@@ -193,11 +193,25 @@ enum TransferDirection {
   To
 }
 
-type Contribution @entity {
+type Contributor @entity {
   id: ID!
-  crowdloan: Crowdloan!
+  crowdloanId: ID
+  crowdloan: Crowdloan
+  accountId: ID!
   account: Account!
   amount: BigInt!
+  contributions: [Contribution] @derivedFrom(field: "contributor")
+}
+
+type Contribution @entity {
+  id: ID!
+  crowdloanId: ID
+  crowdloan: Crowdloan
+  accountId: ID!
+  account: Account!
+  amount: BigInt!
+  contributorId: ID
+  contributor: Contributor
 }
 
 type Crowdloan @entity {
@@ -205,27 +219,22 @@ type Crowdloan @entity {
   cap: BigInt!
   firstPeriod: Int!
   lastPeriod: Int!
-  end: Int!
-  contributions: [Contribution!] @derivedFrom(field: "crowdloan")
+  createdAt: Int
+  createdAtTimestamp: DateTime
+  endedAt: Int @index
+  endedAtTimestamp: DateTime
+  contributors: [Contributor!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
-  parachainId: ID!
-  parachain: Parachain!
-  start: Int @index
-  createdAt: DateTime
+  parachainId: ID
+  parachain: Parachain
+  status: CrowdloanStatus!
+  syncedAt: Int!
 }
 
 interface Action {
   timestamp: DateTime
   blockNumber: Int
   extrinsicHash: String
-}
-
-interface HasEra {
-  era: Int
-}
-
-interface CanFail {
-  success: Boolean
 }
 
 type Transfer @entity {

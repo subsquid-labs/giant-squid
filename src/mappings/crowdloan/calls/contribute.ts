@@ -2,7 +2,7 @@ import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
 import { CrowdloanContributeCall } from '../../../types/kusama/calls'
 import { CallContext, CallHandlerContext, CommonHandlerContext } from '../../types/contexts'
-import { Contribution, TransferType } from '../../../model'
+import { Contributor, TransferType } from '../../../model'
 import { getLastCrowdloan, getOrCreateAccount, saveTransfer } from '../../util/entities'
 import assert from 'assert'
 
@@ -31,7 +31,7 @@ export async function handleContribute(ctx: CallHandlerContext) {
     if (!accountId) return
 
     if (ctx.call.success) {
-        await saveContribution(ctx, {
+        await saveContributor(ctx, {
             accountId,
             amount: data.amount,
             paraId: data.paraId,
@@ -47,17 +47,17 @@ export async function handleContribute(ctx: CallHandlerContext) {
     //     toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
     //     amount: data.amount,
     //     success: ctx.call.success,
-    //     type: TransferType.Contribution,
+    //     type: TransferType.Contributor,
     // })
 }
 
-export interface ContributionData {
+export interface ContributorData {
     paraId: number
     amount: bigint
     accountId: string
 }
 
-export async function saveContribution(ctx: CommonHandlerContext, data: ContributionData) {
+export async function saveContributor(ctx: CommonHandlerContext, data: ContributorData) {
     const { accountId, paraId, amount } = data
 
     const account = await getOrCreateAccount(ctx, accountId)
@@ -65,12 +65,9 @@ export async function saveContribution(ctx: CommonHandlerContext, data: Contribu
     const crowdloan = await getLastCrowdloan(ctx, paraId)
     assert(crowdloan != null, `Missing crowdloan ${paraId}`)
 
-    let contribution = await ctx.store.get(Contribution, {
-        where: { id: `${crowdloan.id}-${account.id}` },
-        relations: { account: true, crowdloan: true },
-    })
+    let contribution = await ctx.store.get(Contributor, { where: { id: `${crowdloan.id}-${account.id}` } })
     if (!contribution) {
-        contribution = new Contribution({
+        contribution = new Contributor({
             id: `${crowdloan.id}-${account.id}`,
             account,
             crowdloan,

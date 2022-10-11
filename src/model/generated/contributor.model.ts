@@ -1,12 +1,12 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Crowdloan} from "./crowdloan.model"
 import {Account} from "./account.model"
-import {Contributor} from "./contributor.model"
+import {Contribution} from "./contribution.model"
 
 @Entity_()
-export class Contribution {
-  constructor(props?: Partial<Contribution>) {
+export class Contributor {
+  constructor(props?: Partial<Contributor>) {
     Object.assign(this, props)
   }
 
@@ -30,10 +30,6 @@ export class Contribution {
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   amount!: bigint
 
-  @Column_("text", {nullable: true})
-  contributorId!: string | undefined | null
-
-  @Index_()
-  @ManyToOne_(() => Contributor, {nullable: true})
-  contributor!: Contributor | undefined | null
+  @OneToMany_(() => Contribution, e => e.contributor)
+  contributions!: Contribution[]
 }

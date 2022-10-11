@@ -70,5 +70,5 @@ export class Staker {
   bonds!: Bond[]
 
   @Column_("int4", {nullable: false})
-  updatedAt!: number
+  syncedAt!: number
 }

@@ -23,7 +23,7 @@ export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string):
     if (!account) {
         account = new Account({
             id,
-            updatedAt: ctx.block.height - 1,
+            syncedAt: ctx.block.height - 1,
         })
         await ctx.store.insert(account)
     }
@@ -43,7 +43,7 @@ export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string
 
         const account = new Account({
             id,
-            updatedAt: ctx.block.height - 1,
+            syncedAt: ctx.block.height - 1,
         })
         newAccounts.add(account)
     }
@@ -231,7 +231,6 @@ export async function getOrCreateParachain(ctx: CommonHandlerContext, paraId: nu
     if (!parachain) {
         parachain = new Parachain({
             id: paraId.toString(),
-            paraId,
         })
         await ctx.store.insert(parachain)
     }
@@ -241,15 +240,15 @@ export async function getOrCreateParachain(ctx: CommonHandlerContext, paraId: nu
 
 export async function getLastCrowdloan(ctx: CommonHandlerContext, paraId: number): Promise<Crowdloan | undefined> {
     return await ctx.store.get(Crowdloan, {
-        where: {
-            parachain: {
-                paraId,
-            },
-            end: MoreThanOrEqual(ctx.block.height),
-        },
-        order: {
-            start: 'DESC',
-        },
+        // where: {
+        //     parachain: {
+        //         paraId,
+        //     },
+        //     end: MoreThanOrEqual(ctx.block.height),
+        // },
+        // order: {
+        //     start: 'DESC',
+        // },
         relations: { parachain: true },
     })
 }
