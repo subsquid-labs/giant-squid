@@ -1,10 +1,17 @@
 import assert from 'assert'
-import {CallContext, Result, deprecateLatest} from './support'
-import * as v900 from './v900'
+import {Chain, ChainContext, CallContext, Call, Result, Option} from './support'
 
 export class BalancesForceTransferCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.force_transfer')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.force_transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -16,7 +23,7 @@ export class BalancesForceTransferCall {
    * # </weight>
    */
   get isV900(): boolean {
-    return this.ctx._chain.getCallHash('Balances.force_transfer') === '5943ae1ef3513ee6550de75db5107994b40b854e8b6882c4a9016266af9e639b'
+    return this._chain.getCallHash('Balances.force_transfer') === '5943ae1ef3513ee6550de75db5107994b40b854e8b6882c4a9016266af9e639b'
   }
 
   /**
@@ -27,25 +34,23 @@ export class BalancesForceTransferCall {
    *   assumed to be in the overlay.
    * # </weight>
    */
-  get asV900(): {source: v900.H160, dest: v900.H160, value: bigint} {
+  get asV900(): {source: Uint8Array, dest: Uint8Array, value: bigint} {
     assert(this.isV900)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV900
-  }
-
-  get asLatest(): {source: v900.H160, dest: v900.H160, value: bigint} {
-    deprecateLatest()
-    return this.asV900
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.transfer')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -79,7 +84,7 @@ export class BalancesTransferCall {
    * # </weight>
    */
   get isV900(): boolean {
-    return this.ctx._chain.getCallHash('Balances.transfer') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
+    return this._chain.getCallHash('Balances.transfer') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
   }
 
   /**
@@ -112,25 +117,23 @@ export class BalancesTransferCall {
    * - Origin account is already in memory, so no DB operations for them.
    * # </weight>
    */
-  get asV900(): {dest: v900.H160, value: bigint} {
+  get asV900(): {dest: Uint8Array, value: bigint} {
     assert(this.isV900)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV900
-  }
-
-  get asLatest(): {dest: v900.H160, value: bigint} {
-    deprecateLatest()
-    return this.asV900
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferAllCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.transfer_all')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer_all')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -153,7 +156,7 @@ export class BalancesTransferAllCall {
    *   #</weight>
    */
   get isV900(): boolean {
-    return this.ctx._chain.getCallHash('Balances.transfer_all') === 'f8ce8e577c7dd91d99648a56e9a48561995bf0be3a680c01895f87fb1c0f92e6'
+    return this._chain.getCallHash('Balances.transfer_all') === 'f8ce8e577c7dd91d99648a56e9a48561995bf0be3a680c01895f87fb1c0f92e6'
   }
 
   /**
@@ -175,25 +178,23 @@ export class BalancesTransferAllCall {
    * - O(1). Just like transfer, but reading the user's transferable balance first.
    *   #</weight>
    */
-  get asV900(): {dest: v900.H160, keepAlive: boolean} {
+  get asV900(): {dest: Uint8Array, keepAlive: boolean} {
     assert(this.isV900)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV900
-  }
-
-  get asLatest(): {dest: v900.H160, keepAlive: boolean} {
-    deprecateLatest()
-    return this.asV900
+    return this._chain.decodeCall(this.call)
   }
 }
 
 export class BalancesTransferKeepAliveCall {
-  constructor(private ctx: CallContext) {
-    assert(this.ctx.call.name === 'Balances.transfer_keep_alive')
+  private readonly _chain: Chain
+  private readonly call: Call
+
+  constructor(ctx: CallContext)
+  constructor(ctx: ChainContext, call: Call)
+  constructor(ctx: CallContext, call?: Call) {
+    call = call || ctx.call
+    assert(call.name === 'Balances.transfer_keep_alive')
+    this._chain = ctx._chain
+    this.call = call
   }
 
   /**
@@ -210,7 +211,7 @@ export class BalancesTransferKeepAliveCall {
    * #</weight>
    */
   get isV900(): boolean {
-    return this.ctx._chain.getCallHash('Balances.transfer_keep_alive') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
+    return this._chain.getCallHash('Balances.transfer_keep_alive') === '467dee5087ba2ba771d4bb4c0c9afaa6fa202df3114b49c8db6e165b679e2c4f'
   }
 
   /**
@@ -226,18 +227,8 @@ export class BalancesTransferKeepAliveCall {
    * - DB Weight: 1 Read and 1 Write to dest (sender is in overlay already)
    * #</weight>
    */
-  get asV900(): {dest: v900.H160, value: bigint} {
+  get asV900(): {dest: Uint8Array, value: bigint} {
     assert(this.isV900)
-    return this.ctx._chain.decodeCall(this.ctx.call)
-  }
-
-  get isLatest(): boolean {
-    deprecateLatest()
-    return this.isV900
-  }
-
-  get asLatest(): {dest: v900.H160, value: bigint} {
-    deprecateLatest()
-    return this.asV900
+    return this._chain.decodeCall(this.call)
   }
 }

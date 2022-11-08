@@ -1,9 +1,7 @@
-import type {Result} from './support'
-
-export type AccountId20 = Uint8Array
+import type {Result, Option} from './support'
 
 export interface Delegator {
-  id: AccountId20
+  id: Uint8Array
   delegations: Bond[]
   total: bigint
   lessTotal: bigint
@@ -11,7 +9,7 @@ export interface Delegator {
 }
 
 export interface Bond {
-  owner: AccountId20
+  owner: Uint8Array
   amount: bigint
 }
 

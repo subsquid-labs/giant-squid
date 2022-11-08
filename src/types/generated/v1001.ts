@@ -1,6 +1,4 @@
-import type {Result} from './support'
-
-export type AccountId20 = Uint8Array
+import type {Result, Option} from './support'
 
 export type DelegatorAdded = DelegatorAdded_AddedToTop | DelegatorAdded_AddedToBottom
 
@@ -14,9 +12,9 @@ export interface DelegatorAdded_AddedToBottom {
 }
 
 export interface CollatorCandidate {
-  id: AccountId20
+  id: Uint8Array
   bond: bigint
-  delegators: AccountId20[]
+  delegators: Uint8Array[]
   topDelegations: Bond[]
   bottomDelegations: Bond[]
   totalCounted: bigint
@@ -26,7 +24,7 @@ export interface CollatorCandidate {
 }
 
 export interface Delegator {
-  id: AccountId20
+  id: Uint8Array
   delegations: Bond[]
   total: bigint
   requests: PendingDelegationRequests
@@ -35,7 +33,7 @@ export interface Delegator {
 
 export interface Nominator2 {
   delegations: Bond[]
-  revocations: AccountId20[]
+  revocations: Uint8Array[]
   total: bigint
   scheduledRevocationsCount: number
   scheduledRevocationsTotal: bigint
@@ -43,7 +41,7 @@ export interface Nominator2 {
 }
 
 export interface Bond {
-  owner: AccountId20
+  owner: Uint8Array
   amount: bigint
 }
 
@@ -69,7 +67,7 @@ export interface CollatorStatus_Leaving {
 
 export interface PendingDelegationRequests {
   revocationsCount: number
-  requests: [AccountId20, DelegationRequest][]
+  requests: [Uint8Array, DelegationRequest][]
   lessTotal: bigint
 }
 
@@ -85,7 +83,7 @@ export interface DelegatorStatus_Leaving {
 }
 
 export interface DelegationRequest {
-  collator: AccountId20
+  collator: Uint8Array
   amount: bigint
   whenExecutable: number
   action: DelegationChange

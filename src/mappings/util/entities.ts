@@ -10,7 +10,7 @@ import {
     TransferType,
 } from '../../model'
 import { CommonHandlerContext } from '../types/contexts'
-import { createPrevStorageContext, getMeta } from './actions'
+import { createPrevBlockContext, getMeta } from './actions'
 import { In } from 'typeorm'
 import { getCollatorsData, getNominatorsData } from './stakers'
 import { DefaultCollatorCommission } from './consts'
@@ -58,7 +58,7 @@ export async function getOrCreateStaker(ctx: CommonHandlerContext, id: string): 
         relations: { stash: true },
     })
     if (!staker) {
-        const prevCtx = createPrevStorageContext(ctx)
+        const prevCtx = createPrevBlockContext(ctx)
 
         const collatorData = (await getCollatorsData(prevCtx, [id]))?.[0]
         if (collatorData != null) {
@@ -98,7 +98,7 @@ export async function getOrCreateStakers(ctx: CommonHandlerContext, ids: string[
 
     // const newStakers: Set<Staker> = new Set()
     if (missingIds.length === 0) return [...stakersMap.values()]
-    const prevCtx = createPrevStorageContext(ctx)
+    const prevCtx = createPrevBlockContext(ctx)
 
     const collatorsData = await getCollatorsData(prevCtx, missingIds)
 

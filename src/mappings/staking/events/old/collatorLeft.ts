@@ -4,7 +4,7 @@ import { Bond, BondType } from '../../../../model'
 import storage from '../../../../storage'
 import { ParachainStakingCollatorLeftEvent } from '../../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../../types/contexts'
-import { createPrevStorageContext } from '../../../util/actions'
+import { createPrevBlockContext } from '../../../util/actions'
 import { getOrCreateAccount, getOrCreateStakers } from '../../../util/entities'
 import { saveBond } from '.././utils'
 
@@ -42,7 +42,7 @@ export async function handleCollatorLeft(ctx: EventHandlerContext) {
         success: true,
     })
 
-    const prevCtx = createPrevStorageContext(ctx)
+    const prevCtx = createPrevBlockContext(ctx)
     const candidateId = encodeId(data.account)
     const candidate = await getOrCreateAccount(ctx, candidateId)
 

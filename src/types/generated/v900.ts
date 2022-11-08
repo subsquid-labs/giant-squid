@@ -1,6 +1,4 @@
-import type {Result} from './support'
-
-export type H160 = Uint8Array
+import type {Result, Option} from './support'
 
 export type NominatorAdded = NominatorAdded_AddedToTop | NominatorAdded_AddedToBottom
 
@@ -14,9 +12,9 @@ export interface NominatorAdded_AddedToBottom {
 }
 
 export interface Collator2 {
-  id: H160
+  id: Uint8Array
   bond: bigint
-  nominators: H160[]
+  nominators: Uint8Array[]
   topNominators: Bond[]
   bottomNominators: Bond[]
   totalCounted: bigint
@@ -26,7 +24,7 @@ export interface Collator2 {
 
 export interface Nominator2 {
   nominations: Bond[]
-  revocations: H160[]
+  revocations: Uint8Array[]
   total: bigint
   scheduledRevocationsCount: number
   scheduledRevocationsTotal: bigint
@@ -34,7 +32,7 @@ export interface Nominator2 {
 }
 
 export interface Bond {
-  owner: H160
+  owner: Uint8Array
   amount: bigint
 }
 
