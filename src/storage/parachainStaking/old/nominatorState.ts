@@ -4,7 +4,7 @@ import {
     ParachainStakingNominatorState2Storage,
     ParachainStakingNominatorStateStorage,
 } from '../../../types/generated/storage'
-import { StorageContext } from '../../../types/generated/support'
+import { BlockContext } from '../../../types/generated/support'
 
 interface StorageData {
     nominations: {
@@ -15,7 +15,7 @@ interface StorageData {
 }
 
 async function getOldStorageData(
-    ctx: StorageContext,
+    ctx: BlockContext,
     accounts: Uint8Array[]
 ): Promise<(StorageData | undefined)[] | undefined> {
     const storage = new ParachainStakingNominatorStateStorage(ctx)
@@ -29,15 +29,13 @@ async function getOldStorageData(
 }
 
 async function getStorageData(
-    ctx: StorageContext,
+    ctx: BlockContext,
     accounts: Uint8Array[]
 ): Promise<(StorageData | undefined)[] | undefined> {
     const storage = new ParachainStakingNominatorState2Storage(ctx)
     if (!storage.isExists) return undefined
 
-    if (storage.isV900) {
-        return await storage.getManyAsV900(accounts)
-    } else if (storage.isV200) {
+    if (storage.isV200) {
         return await storage.getManyAsV200(accounts)
     } else if (storage.isV1001) {
         const data = await storage.getManyAsV1001(accounts)
@@ -66,7 +64,7 @@ interface NominatorState {
 }
 
 async function queryStorageFunction(
-    ctx: StorageContext,
+    ctx: BlockContext,
     accounts: string[]
 ): Promise<(NominatorState | undefined)[] | undefined> {
     if (accounts.length === 0) return []
@@ -90,12 +88,12 @@ async function queryStorageFunction(
     )
 }
 
-export async function getNominatorState(ctx: StorageContext, account: string): Promise<NominatorState | undefined>
+export async function getNominatorState(ctx: BlockContext, account: string): Promise<NominatorState | undefined>
 export async function getNominatorState(
-    ctx: StorageContext,
+    ctx: BlockContext,
     accounts: string[]
 ): Promise<(NominatorState | undefined)[] | undefined>
-export async function getNominatorState(ctx: StorageContext, accountOrAccounts: string | string[]) {
+export async function getNominatorState(ctx: BlockContext, accountOrAccounts: string | string[]) {
     if (Array.isArray(accountOrAccounts)) {
         return await queryStorageFunction(ctx, accountOrAccounts)
     } else {

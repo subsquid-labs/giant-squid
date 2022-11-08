@@ -1,7 +1,6 @@
 {
   "outDir": "../src/types/generated",
-  "chainVersions": "./versions.json",
-  "typesBundle": "moonriver",
+  "specVersions": "https://moonriver.archive.subsquid.io/graphql",
   "events": [
     "ParachainStaking.NewRound",
     "ParachainStaking.Rewarded",

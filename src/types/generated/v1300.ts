@@ -1,6 +1,4 @@
-import type {Result} from './support'
-
-export type AccountId20 = Uint8Array
+import type {Result, Option} from './support'
 
 export type DelegatorAdded = DelegatorAdded_AddedToTop | DelegatorAdded_AddedToBottom
 

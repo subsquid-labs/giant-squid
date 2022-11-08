@@ -11,7 +11,7 @@ export function getMeta(data: ActionData) {
     }
 }
 
-export function createPrevStorageContext(ctx: CommonHandlerContext) {
+export function createPrevBlockContext(ctx: CommonHandlerContext) {
     return {
         _chain: ctx._chain,
         block: {

@@ -7,7 +7,7 @@ import storage from '../../../storage'
 import { getCollatorsData } from '../../util/stakers'
 import { getOrCreateStakers } from '../../util/entities'
 import { DefaultCollatorCommission } from '../../util/consts'
-import { createPrevStorageContext } from '../../util/actions'
+import { createPrevBlockContext } from '../../util/actions'
 
 export interface EventData {
     startingBlock: number
@@ -46,7 +46,7 @@ export async function handleNewRound(ctx: EventHandlerContext) {
     const collatorIds = await storage.parachainStaking.getSelectedCandidates(ctx)
     if (!collatorIds) return
 
-    const prevCtx = createPrevStorageContext(ctx)
+    const prevCtx = createPrevBlockContext(ctx)
 
     const collatorsData = await getCollatorsData(prevCtx, collatorIds)
     if (!collatorsData) return

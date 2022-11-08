@@ -1,33 +1,26 @@
-import type {Result} from './support'
-
-export type AccountId = Uint8Array
+import type {Result, Option} from './support'
 
 export interface Nominator2 {
   nominations: Bond[]
-  revocations: AccountId[]
-  total: Balance
+  revocations: Uint8Array[]
+  total: bigint
   scheduledRevocationsCount: number
-  scheduledRevocationsTotal: Balance
+  scheduledRevocationsTotal: bigint
   status: NominatorStatus
 }
 
 export interface Bond {
-  owner: AccountId
-  amount: Balance
+  owner: Uint8Array
+  amount: bigint
 }
-
-export type Balance = bigint
 
 export type NominatorStatus = NominatorStatus_Active | NominatorStatus_Leaving
 
 export interface NominatorStatus_Active {
   __kind: 'Active'
-  value: null
 }
 
 export interface NominatorStatus_Leaving {
   __kind: 'Leaving'
-  value: RoundIndex
+  value: number
 }
-
-export type RoundIndex = number
