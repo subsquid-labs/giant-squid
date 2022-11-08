@@ -1,5 +1,5 @@
 import assert from 'assert'
-import {Chain, ChainContext, CallContext, Call, Result} from './support'
+import {Chain, ChainContext, CallContext, Call, Result, Option} from './support'
 import * as v0 from './v0'
 import * as v28 from './v28'
 import * as v9050 from './v9050'
@@ -645,7 +645,7 @@ export class StakingBondCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this._chain.getCallHash('Staking.bond') === '20db399e4963916b83c2636d8d5e414b30d79d868ca62d05181259e5d0c02e7e'
+    return this._chain.getCallHash('Staking.bond') === 'bb948688bed1a70b8b0ff155f0a4555536a3bab1f35f7432580a502b100ae8e4'
   }
 
   /**
@@ -702,7 +702,7 @@ export class StakingBondCall {
    *  # </weight>
    */
   get isV28(): boolean {
-    return this._chain.getCallHash('Staking.bond') === '6c5de9285e9c4ba450dfa1ed6ebededa6083cc2b06cee317e92c1f89751818c6'
+    return this._chain.getCallHash('Staking.bond') === '336aace4bca839311d4cecb842a12241ffdc1cb7c84e81b2b6ab6a2b818777f0'
   }
 
   /**
@@ -1407,7 +1407,7 @@ export class StakingSetPayeeCall {
    *  # </weight>
    */
   get isV0(): boolean {
-    return this._chain.getCallHash('Staking.set_payee') === 'e3e8a6a5ee204c56e926f714a3d580d47fe315d3b243872e40cc8959db768aa8'
+    return this._chain.getCallHash('Staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
   }
 
   /**
@@ -1430,51 +1430,6 @@ export class StakingSetPayeeCall {
    */
   get asV0(): {payee: v0.RewardDestination} {
     assert(this.isV0)
-    return this._chain.decodeCall(this.call)
-  }
-
-  /**
-   * (Re-)set the payment target for a controller.
-   * 
-   * Effects will be felt at the beginning of the next era.
-   * 
-   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   * 
-   * # <weight>
-   * - Independent of the arguments. Insignificant complexity.
-   * - Contains a limited number of reads.
-   * - Writes are limited to the `origin` account key.
-   * ---------
-   * - Weight: O(1)
-   * - DB Weight:
-   *     - Read: Ledger
-   *     - Write: Payee
-   * # </weight>
-   */
-  get isV9110(): boolean {
-    return this._chain.getCallHash('Staking.set_payee') === 'e882138b8d0371da862d058ac00f1def3ca0f71ab72eda3fbfb7d75b5fa16515'
-  }
-
-  /**
-   * (Re-)set the payment target for a controller.
-   * 
-   * Effects will be felt at the beginning of the next era.
-   * 
-   * The dispatch origin for this call must be _Signed_ by the controller, not the stash.
-   * 
-   * # <weight>
-   * - Independent of the arguments. Insignificant complexity.
-   * - Contains a limited number of reads.
-   * - Writes are limited to the `origin` account key.
-   * ---------
-   * - Weight: O(1)
-   * - DB Weight:
-   *     - Read: Ledger
-   *     - Write: Payee
-   * # </weight>
-   */
-  get asV9110(): {payee: v9110.RewardDestination} {
-    assert(this.isV9110)
     return this._chain.decodeCall(this.call)
   }
 }

@@ -1,5 +1,5 @@
 import assert from 'assert'
-import {Block, Chain, ChainContext, BlockContext, Result} from './support'
+import {Block, Chain, ChainContext, BlockContext, Result, Option} from './support'
 import * as v0 from './v0'
 import * as v9110 from './v9110'
 import * as v9180 from './v9180'
@@ -352,7 +352,7 @@ export class StakingPayeeStorage {
    *  Where the reward payment should be made. Keyed by stash.
    */
   get isV0() {
-    return this._chain.getStorageItemTypeHash('Staking', 'Payee') === '3d88af4306e38ea477ff9098e5cfc51177c77c5023d8403a57071d4f2a0cf0be'
+    return this._chain.getStorageItemTypeHash('Staking', 'Payee') === '997acadf80b79903fb4386b933d481dff61dad22612d657f19f39b937ea8d992'
   }
 
   /**
@@ -370,31 +370,6 @@ export class StakingPayeeStorage {
 
   async getAllAsV0(): Promise<(v0.RewardDestination)[]> {
     assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee')
-  }
-
-  /**
-   *  Where the reward payment should be made. Keyed by stash.
-   */
-  get isV9110() {
-    return this._chain.getStorageItemTypeHash('Staking', 'Payee') === '997acadf80b79903fb4386b933d481dff61dad22612d657f19f39b937ea8d992'
-  }
-
-  /**
-   *  Where the reward payment should be made. Keyed by stash.
-   */
-  async getAsV9110(key: Uint8Array): Promise<v9110.RewardDestination> {
-    assert(this.isV9110)
-    return this._chain.getStorage(this.blockHash, 'Staking', 'Payee', key)
-  }
-
-  async getManyAsV9110(keys: Uint8Array[]): Promise<(v9110.RewardDestination)[]> {
-    assert(this.isV9110)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee', keys.map(k => [k]))
-  }
-
-  async getAllAsV9110(): Promise<(v9110.RewardDestination)[]> {
-    assert(this.isV9110)
     return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee')
   }
 

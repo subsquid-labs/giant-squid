@@ -19,12 +19,6 @@ function getCallData(ctx: CallContext): CallData {
             payee: payee.__kind,
             account: (payee as { value: Uint8Array }).value,
         }
-    } else if (call.isV9110) {
-        const { payee } = call.asV9110
-        return {
-            payee: payee.__kind,
-            account: (payee as { value: Uint8Array }).value,
-        }
     } else {
         throw new UnknownVersionError(call.constructor.name)
     }
