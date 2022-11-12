@@ -3,8 +3,8 @@ import { Store } from '@subsquid/typeorm-store'
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeEvm, encodeId } from '../../../common/helpers'
-import { Bond, BondType, DAppContract } from '../../../model'
-import { DappsStakingBondAndStakeEvent } from '../../../types/events'
+import { BondType, DAppContract } from '../../../model'
+import { DappsStakingUnbondAndUnstakeEvent, DappsStakingUnbondUnstakeAndWithdrawEvent } from '../../../types/events'
 import { processStakeChange } from '../utils/actions'
 import { getOrCreateStaker, getOrCreateStakeState } from '../../util/entities'
 
@@ -15,10 +15,10 @@ interface EventData {
 }
 
 function getEventData(ctx: EventHandlerContext<Store>): EventData {
-    const event = new DappsStakingBondAndStakeEvent(ctx)
+    const event = new DappsStakingUnbondAndUnstakeEvent(ctx)
 
-    if (event.isV4) {
-        const [account, smartContract, amount] = event.asV4
+    if (event.isV12) {
+        const [account, smartContract, amount] = event.asV12
         return {
             account,
             amount,
@@ -38,7 +38,14 @@ function getEventData(ctx: EventHandlerContext<Store>): EventData {
     }
 }
 
-export async function handleBond(ctx: EventHandlerContext<Store>) {
+export async function handleUnbondAndUnstake(ctx: EventHandlerContext<Store>) {
     const data = getEventData(ctx)
-    await processStakeChange(ctx, encodeId(data.account), encodeEvm(data.smartContract), BondType.Bond, data.amount)
+    await processStakeChange(
+        ctx,
+        encodeId(data.account),
+        encodeEvm(data.smartContract),
+        BondType.Unbond,
+        data.amount,
+        true
+    )
 }

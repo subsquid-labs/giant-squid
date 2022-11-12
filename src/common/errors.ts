@@ -3,3 +3,4 @@ export class UnknownVersionError extends Error {
         super(`There is no relevant version for ${name}`)
     }
 }
+

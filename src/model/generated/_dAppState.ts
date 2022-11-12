@@ -1,0 +1,4 @@
+export enum DAppState {
+  REGISTERED = "REGISTERED",
+  UNREGISTERED = "UNREGISTERED",
+}

@@ -1,8 +1,10 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
-import * as marshal from "./marshal"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, OneToOne as OneToOne_} from "typeorm"
 import {AccountTransfer} from "./accountTransfer.model"
-import {Bond} from "./bond.model"
 import {Reward} from "./reward.model"
+import {Bond} from "./bond.model"
+import {Withdrawal} from "./withdrawal.model"
+import {Staker} from "./staker.model"
+import {DAppContract} from "./dAppContract.model"
 
 @Entity_()
 export class Account {
@@ -13,20 +15,23 @@ export class Account {
   @PrimaryColumn_()
   id!: string
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  activeBond!: bigint
-
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalReward!: bigint
-
   @OneToMany_(() => AccountTransfer, e => e.account)
   transfers!: AccountTransfer[]
+
+  @OneToMany_(() => Reward, e => e.account)
+  rewards!: Reward[]
 
   @OneToMany_(() => Bond, e => e.account)
   bonds!: Bond[]
 
-  @OneToMany_(() => Reward, e => e.account)
-  rewards!: Reward[]
+  @OneToMany_(() => Withdrawal, e => e.account)
+  stakeWithdrawals!: Withdrawal[]
+
+  @OneToOne_(() => Staker)
+  stakingInfo!: Staker | undefined | null
+
+  @OneToMany_(() => DAppContract, e => e.developer)
+  ownedDApps!: DAppContract[]
 
   @Column_("int4", {nullable: false})
   lastUpdateBlock!: number

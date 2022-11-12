@@ -1,42 +1,37 @@
 process: migrate
 	@node -r dotenv/config lib/processor.js
 
-
-serve:
-	@npx squid-graphql-server
-
-
-migrate:
-	@npx sqd db:migrate
-
-
-migration:
-	@npx sqd db:create-migration
-
-
 build:
 	@npm run build
 
+build-processor-image:
+	@docker build . --target processor -t squid-processor
+
+build-query-node-image:
+	@docker build . --target query-node -t query-node
+
+build-images: build-processor-image build-query-node-image
+
+serve:
+	@npx squid-graphql-server --subscriptions
+
+migrate:
+	@npx squid-typeorm-migration apply
+
+migration:
+	@npx squid-typeorm-migration generate
 
 codegen:
-	@npx sqd codegen
+	@npx squid-typeorm-codegen
 
 
 typegen:
-	@make explore
-	@npx squid-substrate-typegen ./typegen/typegen.json
-
-
-explore:
-	@npx squid-substrate-metadata-explorer --chain wss://rpc.astar.network --archive https://astar-beta.indexer.gc.subsquid.io/v4/graphql --out ./typegen/versions.json
-
+	@npx squid-substrate-typegen typegen.json
 
 up:
 	@docker-compose up -d
 
-
 down:
 	@docker-compose down
 
-
-.PHONY: process serve start codegen migration migrate up down typegen
+.PHONY: build serve process migrate migration codegen typegen up down

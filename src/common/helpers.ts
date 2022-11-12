@@ -1,9 +1,9 @@
 import * as ss58 from '@subsquid/ss58'
 import { getAddress } from '@ethersproject/address'
-import { EventHandlerContext, ExtrinsicHandlerContext, toHex } from '@subsquid/substrate-processor'
+import { EventHandlerContext, CallHandlerContext, toHex } from '@subsquid/substrate-processor'
 import config from '../config'
-import { StorageContext } from '../types/generated/support'
 import { EXTRINSIC_SUCCESS } from './consts'
+import { Store } from '@subsquid/typeorm-store'
 
 export function encodeId(id: Uint8Array) {
     return ss58.codec(config.prefix).encode(id)
@@ -20,19 +20,8 @@ export interface ItemBase {
     extrinsicHash: string | null | undefined
 }
 
-export function isExtrinsicSuccess(ctx: ExtrinsicHandlerContext) {
+export function isExtrinsicSuccess(ctx: EventHandlerContext<Store>) {
     return ctx.event.name === EXTRINSIC_SUCCESS
-}
-
-export function createPrevStorageContext(ctx: StorageContext & { block: { parentHash: string; height: number } }) {
-    return {
-        _chain: ctx._chain,
-        block: {
-            ...ctx.block,
-            hash: ctx.block.parentHash,
-            height: ctx.block.height,
-        },
-    }
 }
 
 export function saturatingSumBigInt(
@@ -50,9 +39,9 @@ export function saturatingSumBigInt(
     }
 }
 
-export function getMeta(ctx: EventHandlerContext) {
+export function getMeta(ctx: EventHandlerContext<Store, { event: { extrinsic: { hash: true } } }>) {
     return {
-        extrinsicHash: ctx.extrinsic?.hash,
+        extrinsicHash: ctx.event.extrinsic?.hash,
         blockNumber: ctx.block.height,
         timestamp: new Date(ctx.block.timestamp),
     }
@@ -75,3 +64,17 @@ export function isAdressSS58(address: Uint8Array) {
 export function encodeEvm(id: Uint8Array): string {
     return getAddress(toHex(id))
 }
+
+export function getOriginAccountId(origin: any): string | undefined {
+    if (origin && origin.__kind === 'system' && origin.value.__kind === 'Signed') {
+        const id = origin.value.value
+        if (id.__kind === 'Id') {
+            return encodeId(id.value)
+        } else {
+            return encodeId(id)
+        }
+    } else {
+        return undefined
+    }
+}
+

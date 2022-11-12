@@ -1,36 +1,31 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Store } from '@subsquid/typeorm-store'
-import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeEvm, encodeId } from '../../../common/helpers'
-import { Bond, BondType, DAppContract } from '../../../model'
-import { DappsStakingBondAndStakeEvent } from '../../../types/events'
-import { processStakeChange } from '../utils/actions'
-import { getOrCreateStaker, getOrCreateStakeState } from '../../util/entities'
+import { DAppContract, DAppState } from '../../../model'
+import { DappsStakingNewContractEvent } from '../../../types/events'
+import { getOrCreateAccount, getOrCreateStaker } from '../../util/entities'
 
 interface EventData {
-    amount: bigint
     account: Uint8Array
     smartContract: Uint8Array
 }
 
 function getEventData(ctx: EventHandlerContext<Store>): EventData {
-    const event = new DappsStakingBondAndStakeEvent(ctx)
+    const event = new DappsStakingNewContractEvent(ctx)
 
     if (event.isV4) {
-        const [account, smartContract, amount] = event.asV4
+        const [account, smartContract] = event.asV4
         return {
             account,
-            amount,
             smartContract: smartContract.value,
         }
     }
     ctx.log.warn('USING UNSAFE GETTER! PLS UPDATE TYPES!')
     try {
-        const [account, smartContract, amount] = ctx._chain.decodeEvent(ctx.event)
+        const [account, smartContract] = ctx._chain.decodeEvent(ctx.event)
         return {
             account,
-            amount,
             smartContract: smartContract.value,
         }
     } catch {
@@ -38,7 +33,13 @@ function getEventData(ctx: EventHandlerContext<Store>): EventData {
     }
 }
 
-export async function handleBond(ctx: EventHandlerContext<Store>) {
+export async function handlerNewContract(ctx: EventHandlerContext<Store>) {
     const data = getEventData(ctx)
-    await processStakeChange(ctx, encodeId(data.account), encodeEvm(data.smartContract), BondType.Bond, data.amount)
+    const contract = new DAppContract({
+        id: encodeEvm(data.smartContract),
+        developer: await getOrCreateAccount(ctx, encodeId(data.account)),
+        activeStake: 0n,
+        state: DAppState.REGISTERED,
+    })
+    await ctx.store.save(contract)
 }

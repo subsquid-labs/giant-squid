@@ -1,33 +1,73 @@
 type Account @entity {
   id: ID!
-  activeBond: BigInt!
-  totalReward: BigInt!
   transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  bonds: [Bond!] @derivedFrom(field: "account")
   rewards: [Reward!] @derivedFrom(field: "account")
+  bonds: [Bond!] @derivedFrom(field: "account")
+  stakeWithdrawals: [Withdrawal!] @derivedFrom(field: "account")
+  stakingInfo: Staker @derivedFrom(field: "stash")
+  ownedDApps: [DAppContract!] @derivedFrom(field: "developer")
   lastUpdateBlock: Int!
 }
 
+# TRANSFERS 
+
 enum TransferDirection {
-  FROM
-  TO
+  From
+  To
+}
+
+interface Action {
+  timestamp: DateTime
+  blockNumber: Int
+  extrinsicHash: String
 }
 
 interface CanFail {
   success: Boolean
 }
 
-type Transfer implements CanFail @entity {
+type Transfer implements Action & CanFail @entity {
   id: ID!
-  timestamp: DateTime
-  blockNumber: Int
-  extrinsicHash: String @index
-  toId: ID
-  to: Account
-  fromId: ID
-  from: Account
+  timestamp: DateTime!
+  blockNumber: Int! @index
+  extrinsicHash: String! @index
+  to: TransferLocation
+  from: TransferLocation!
+  asset: TransferAsset!
+  success: Boolean! @index
+  type: TransferType!
+}
+
+union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
+
+type TransferLocationAccount {
+  id: String!
+}
+
+type TransferLocationEvm {
+  address: String!
+}
+
+union TransferAsset = TransferAssetToken | TransferAssetMultiToken
+
+enum TransferType {
+  Native
+  Contribution
+  Xcm
+}
+
+type TransferAssetToken {
+  symbol: String
   amount: BigInt
-  success: Boolean @index
+}
+
+type TransferAssetMultiToken {
+  tokens: [TransferAssetToken]
+}
+
+type TransferLocationXcm {
+  id: String
+  paraId: Int
 }
 
 type AccountTransfer @entity {
@@ -37,21 +77,59 @@ type AccountTransfer @entity {
   direction: TransferDirection
 }
 
-interface HasTotal {
-  total: BigInt
+# DAPPSTAKING
+
+type Staker @entity {
+  id: ID! #stash Id
+  stash: Account! @unique
+  activeBond: BigInt! # only staked
+  unbondindVolume: BigInt! # unstaked but not yet withdrawn
+  totalReward: BigInt!
+  stakeStates: [DAppStakeState!] @derivedFrom(field:"staker")
+  rewards: [Reward!] @derivedFrom(field: "staker")
+  bonds: [Bond!] @derivedFrom(field: "staker")
+  activeStakedApps: [DAppStakeState!] @derivedFrom(field: "staker")
 }
 
-type Reward implements HasTotal @entity  {
+interface HasEra {
+  era: Era!
+}
+
+
+enum RewardReciever {
+  DAPP
+  STAKER
+}
+
+type Reward implements Action & HasEra @entity  {
+  id: ID!
+  timestamp: DateTime!
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  accountId: ID!
+  account: Account!
+  amount: BigInt!
+  era: Era!
+  staker: Staker!
+  recieverType: RewardReciever!
+}
+
+type Withdrawal implements Action @entity {
   id: ID!
   timestamp: DateTime
-  blockNumber: Int
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
   amount: BigInt
-  era: Int
-  smartContract: String
-  total: BigInt
+}
+
+
+type DAppStakeState @entity {
+  id: ID!
+  staker: Staker!
+  contract: DAppContract!
+  stakeVolume: BigInt!
 }
 
 enum BondType {
@@ -59,16 +137,39 @@ enum BondType {
   Unbond
 }
 
-type Bond implements HasTotal & CanFail @entity  {
+type Bond implements Action @entity  {
   id: ID!
-  timestamp: DateTime
-  blockNumber: Int
+  timestamp: DateTime!
+  blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
-  amount: BigInt
-  total: BigInt
-  smartContract: String
-  success: Boolean
-  type: BondType
+  amount: BigInt!
+  type: BondType!
+  staker: Staker!
+  contract: DAppContract!
+}
+
+type Era @entity {
+  id: ID!
+  index: Int!
+  timestamp: DateTime!
+  startedAt: Int!
+  totalStakerRewardsRecieved: BigInt!
+  totalAppsRewardsRecieved: BigInt!
+  rewards: [Reward!] @derivedFrom(field: "era")
+}
+
+enum DAppState {
+  REGISTERED
+  UNREGISTERED
+}
+
+type DAppContract @entity {
+  id: ID!
+  developer: Account!
+  bondHistory: [Bond!] @derivedFrom(field: "contract")
+  activeStake: BigInt!
+  stakers: [DAppStakeState!] @derivedFrom(field: "contract")
+  state: DAppState!
 }
