@@ -1,4 +1,4 @@
-export enum RewardReciever {
+export enum RewardReceiver {
   DAPP = "DAPP",
   STAKER = "STAKER",
 }

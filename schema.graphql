@@ -4,7 +4,7 @@ type Account @entity {
   rewards: [Reward!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
   stakeWithdrawals: [Withdrawal!] @derivedFrom(field: "account")
-  stakingInfo: Staker @derivedFrom(field: "stash")
+  #stakingInfo: Staker @derivedFrom(field: "stash")
   ownedDApps: [DAppContract!] @derivedFrom(field: "developer")
   lastUpdateBlock: Int!
 }
@@ -81,7 +81,8 @@ type AccountTransfer @entity {
 
 type Staker @entity {
   id: ID! #stash Id
-  stash: Account! @unique
+  stashId : ID!
+  stash: Account! # @unique
   activeBond: BigInt! # only staked
   unbondindVolume: BigInt! # unstaked but not yet withdrawn
   totalReward: BigInt!
@@ -96,7 +97,7 @@ interface HasEra {
 }
 
 
-enum RewardReciever {
+enum RewardReceiver {
   DAPP
   STAKER
 }
@@ -110,8 +111,10 @@ type Reward implements Action & HasEra @entity  {
   account: Account!
   amount: BigInt!
   era: Era!
+  stakerId: ID!
   staker: Staker!
-  recieverType: RewardReciever!
+  receiverType: RewardReceiver!
+  contract: DAppContract!
 }
 
 type Withdrawal implements Action @entity {
@@ -146,6 +149,7 @@ type Bond implements Action @entity  {
   account: Account!
   amount: BigInt!
   type: BondType!
+  stakerId: ID!
   staker: Staker!
   contract: DAppContract!
 }
@@ -155,8 +159,8 @@ type Era @entity {
   index: Int!
   timestamp: DateTime!
   startedAt: Int!
-  totalStakerRewardsRecieved: BigInt!
-  totalAppsRewardsRecieved: BigInt!
+  totalStakerRewardsReceived: BigInt!
+  totalAppsRewardsReceived: BigInt!
   rewards: [Reward!] @derivedFrom(field: "era")
 }
 
@@ -167,6 +171,7 @@ enum DAppState {
 
 type DAppContract @entity {
   id: ID!
+  developerId: ID!
   developer: Account!
   bondHistory: [Bond!] @derivedFrom(field: "contract")
   activeStake: BigInt!

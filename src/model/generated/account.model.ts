@@ -1,9 +1,8 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_, OneToOne as OneToOne_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToMany as OneToMany_} from "typeorm"
 import {AccountTransfer} from "./accountTransfer.model"
 import {Reward} from "./reward.model"
 import {Bond} from "./bond.model"
 import {Withdrawal} from "./withdrawal.model"
-import {Staker} from "./staker.model"
 import {DAppContract} from "./dAppContract.model"
 
 @Entity_()
@@ -26,9 +25,6 @@ export class Account {
 
   @OneToMany_(() => Withdrawal, e => e.account)
   stakeWithdrawals!: Withdrawal[]
-
-  @OneToOne_(() => Staker)
-  stakingInfo!: Staker | undefined | null
 
   @OneToMany_(() => DAppContract, e => e.developer)
   ownedDApps!: DAppContract[]

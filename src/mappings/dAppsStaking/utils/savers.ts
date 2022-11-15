@@ -9,17 +9,17 @@ export async function saveBond(
     type: BondType,
     amount: bigint
 ) {
-    await ctx.store.save(
-        new Bond({
-            id: ctx.event.id,
-            timestamp: new Date(ctx.block.timestamp),
-            blockNumber: ctx.block.height,
-            extrinsicHash: ctx.event.extrinsic?.hash,
-            staker: staker,
-            account: staker.stash,
-            amount,
-            type,
-            contract,
-        })
-    )
+    const bond = new Bond({
+        id: ctx.event.id,
+        timestamp: new Date(ctx.block.timestamp),
+        blockNumber: ctx.block.height,
+        extrinsicHash: ctx.event.extrinsic?.hash,
+        staker: staker,
+        account: staker.stash,
+        amount,
+        type,
+        contract,
+    })
+    ctx.log.debug(`[BOND] ${bond.id} ${bond.account.id} ${contract.id} ${amount}`)
+    await ctx.store.save(bond)
 }

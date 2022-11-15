@@ -1,4 +1,4 @@
-import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, OneToOne as OneToOne_, Index as Index_, JoinColumn as JoinColumn_, OneToMany as OneToMany_} from "typeorm"
+import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_, ManyToOne as ManyToOne_, Index as Index_, OneToMany as OneToMany_} from "typeorm"
 import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {DAppStakeState} from "./dAppStakeState.model"
@@ -14,9 +14,11 @@ export class Staker {
   @PrimaryColumn_()
   id!: string
 
-  @Index_({unique: true})
-  @OneToOne_(() => Account, {nullable: false})
-  @JoinColumn_()
+  @Column_("text", {nullable: false})
+  stashId!: string
+
+  @Index_()
+  @ManyToOne_(() => Account, {nullable: true})
   stash!: Account
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})

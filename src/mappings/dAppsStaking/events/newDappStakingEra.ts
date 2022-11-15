@@ -35,8 +35,8 @@ export async function handleNewEra(ctx: EventHandlerContext<Store>) {
         index,
         timestamp: new Date(ctx.block.timestamp),
         startedAt: ctx.block.height,
-        totalAppsRewardsRecieved: 0n,
-        totalStakerRewardsRecieved: 0n,
+        totalAppsRewardsReceived: 0n,
+        totalStakerRewardsReceived: 0n,
     })
     await ctx.store.insert(era)
 }

@@ -38,6 +38,9 @@ export class Bond {
   @Column_("varchar", {length: 6, nullable: false})
   type!: BondType
 
+  @Column_("text", {nullable: false})
+  stakerId!: string
+
   @Index_()
   @ManyToOne_(() => Staker, {nullable: true})
   staker!: Staker

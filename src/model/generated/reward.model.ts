@@ -3,7 +3,8 @@ import * as marshal from "./marshal"
 import {Account} from "./account.model"
 import {Era} from "./era.model"
 import {Staker} from "./staker.model"
-import {RewardReciever} from "./_rewardReciever"
+import {RewardReceiver} from "./_rewardReceiver"
+import {DAppContract} from "./dAppContract.model"
 
 @Entity_()
 export class Reward {
@@ -39,10 +40,17 @@ export class Reward {
   @ManyToOne_(() => Era, {nullable: true})
   era!: Era
 
+  @Column_("text", {nullable: false})
+  stakerId!: string
+
   @Index_()
   @ManyToOne_(() => Staker, {nullable: true})
   staker!: Staker
 
   @Column_("varchar", {length: 6, nullable: false})
-  recieverType!: RewardReciever
+  receiverType!: RewardReceiver
+
+  @Index_()
+  @ManyToOne_(() => DAppContract, {nullable: true})
+  contract!: DAppContract
 }

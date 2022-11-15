@@ -35,11 +35,14 @@ function getEventData(ctx: EventHandlerContext<Store>): EventData {
 
 export async function handlerNewContract(ctx: EventHandlerContext<Store>) {
     const data = getEventData(ctx)
+    const developer = await getOrCreateAccount(ctx, encodeId(data.account))
     const contract = new DAppContract({
         id: encodeEvm(data.smartContract),
-        developer: await getOrCreateAccount(ctx, encodeId(data.account)),
+        developer,
         activeStake: 0n,
         state: DAppState.REGISTERED,
     })
+    developer.lastUpdateBlock = ctx.block.height
+    await ctx.store.save(developer)
     await ctx.store.save(contract)
 }

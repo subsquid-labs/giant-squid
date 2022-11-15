@@ -27,10 +27,10 @@ processor.addEvent('DappsStaking.Withdrawn')
 processor.addEvent('DappsStaking.NominationTransfer')
 processor.addEvent('DappsStaking.WithdrawFromUnregistered')
 
-processor.addCall('Balances.transfer')
-processor.addCall('Balances.force_transfer')
-processor.addCall('Balances.transfer_keep_alive')
-processor.addCall('Balances.transfer_all')
+// processor.addCall('Balances.transfer')
+// processor.addCall('Balances.force_transfer')
+// processor.addCall('Balances.transfer_keep_alive')
+// processor.addCall('Balances.transfer_all')
 
 processor.run(new TypeormDatabase(), async (ctx) => {
     for (const block of ctx.blocks) {
@@ -59,6 +59,7 @@ processor.run(new TypeormDatabase(), async (ctx) => {
 })
 
 async function processEventItems(ctx: EventHandlerContext<Store>) {
+    ctx.log.debug(`!DEBGUG EVENT! ${ctx.event.id} ${ctx.event.name} ${ctx.event.args.toString()}`)
     switch (ctx.event.name) {
         case 'DappsStaking.Reward': {
             await mappings.dAppsStaking.events.handleReward(ctx)

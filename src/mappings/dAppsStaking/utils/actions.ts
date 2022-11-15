@@ -28,6 +28,8 @@ export async function processStakeChange(
 
     if (addToUnbonding) staker.unbondindVolume += amount
 
+    staker.stash.lastUpdateBlock = ctx.block.height
+    await ctx.store.save(staker.stash)
     await ctx.store.save(staker)
     await ctx.store.save(contract)
     await ctx.store.save(stakeState)

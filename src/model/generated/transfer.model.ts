@@ -27,10 +27,10 @@ export class Transfer {
   @Column_("jsonb", {transformer: {to: obj => obj == null ? undefined : obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferLocation(obj)}, nullable: true})
   to!: TransferLocation | undefined | null
 
-  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => fromJsonTransferLocation(obj)}, nullable: false})
+  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferLocation(obj)}, nullable: false})
   from!: TransferLocation
 
-  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => fromJsonTransferAsset(obj)}, nullable: false})
+  @Column_("jsonb", {transformer: {to: obj => obj.toJSON(), from: obj => obj == null ? undefined : fromJsonTransferAsset(obj)}, nullable: false})
   asset!: TransferAsset
 
   @Index_()

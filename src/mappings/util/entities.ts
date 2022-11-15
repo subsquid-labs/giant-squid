@@ -23,13 +23,15 @@ export async function getOrCreateAccount(ctx: CommonHandlerContext<Store>, id: s
             id,
             lastUpdateBlock: ctx.block.height - 1,
         })
+        ctx.log.debug('CREATED')
         await ctx.store.insert(account)
     }
+    ctx.log.debug(account)
     return account
 }
 
 export async function getOrCreateStaker(ctx: CommonHandlerContext<Store>, id: string): Promise<Staker> {
-    let staker = await ctx.store.get(Staker, id)
+    let staker = await ctx.store.get(Staker, { where: { id }, relations: { stash: true } })
     if (!staker) {
         staker = new Staker({
             id,
@@ -38,8 +40,10 @@ export async function getOrCreateStaker(ctx: CommonHandlerContext<Store>, id: st
             totalReward: 0n,
             unbondindVolume: 0n,
         })
+        ctx.log.debug('CREATED')
         await ctx.store.insert(staker)
     }
+    ctx.log.debug(staker)
     return staker
 }
 

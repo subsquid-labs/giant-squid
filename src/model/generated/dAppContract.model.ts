@@ -14,6 +14,9 @@ export class DAppContract {
   @PrimaryColumn_()
   id!: string
 
+  @Column_("text", {nullable: false})
+  developerId!: string
+
   @Index_()
   @ManyToOne_(() => Account, {nullable: true})
   developer!: Account

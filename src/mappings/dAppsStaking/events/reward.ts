@@ -2,7 +2,7 @@ import { assertNotNull, EventHandlerContext, toHex } from '@subsquid/substrate-p
 import { Store } from '@subsquid/typeorm-store'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeEvm, encodeId } from '../../../common/helpers'
-import { Era, Reward, RewardReciever } from '../../../model'
+import { DAppContract, Era, Reward, RewardReceiver } from '../../../model'
 import { DappsStakingRewardEvent } from '../../../types/events'
 import { getOrCreateStaker } from '../../util/entities'
 
@@ -39,23 +39,23 @@ function getEventData(ctx: EventHandlerContext<Store>): EventData {
 }
 
 export async function handleReward(ctx: EventHandlerContext<Store>) {
+    ctx.log.debug(`REWARD CALL ${ctx.event.call?.name}`)
     const data = getEventData(ctx as EventHandlerContext<Store>)
 
     const era = assertNotNull(await ctx.store.get(Era, data.era.toString()))
     const staker = await getOrCreateStaker(ctx, encodeId(data.account))
+    const contract = assertNotNull(await ctx.store.get(DAppContract, encodeEvm(data.smartContract)))
 
-    let recieverType: RewardReciever
-    switch (ctx.event.call?.name) {
-        case 'claim_staker':
-            era.totalStakerRewardsRecieved += data.amount
-            recieverType = RewardReciever.STAKER
-            break
-        case 'claim_dapp':
-            era.totalAppsRewardsRecieved += data.amount
-            recieverType = RewardReciever.DAPP
-        default:
-            throw new Error('Wrong call')
+    let receiverType: RewardReceiver
+
+    if (contract.developerId === staker.id) {
+        era.totalAppsRewardsReceived += data.amount
+        receiverType = RewardReceiver.DAPP
+    } else {
+        era.totalStakerRewardsReceived += data.amount
+        receiverType = RewardReceiver.STAKER
     }
+
     staker.totalReward += data.amount
 
     const reward = new Reward({
@@ -67,8 +67,15 @@ export async function handleReward(ctx: EventHandlerContext<Store>) {
         amount: data.amount,
         era,
         staker,
-        recieverType,
+        receiverType,
+        contract,
     })
 
+    ctx.log.debug(`[REWARD] ${reward.id} ${staker.id} ${reward.contract} ${reward.amount}`)
+
+    staker.stash.lastUpdateBlock = ctx.block.height
+    await ctx.store.save(staker.stash)
+    await ctx.store.save(staker)
+    await ctx.store.save(era)
     await ctx.store.save(reward)
 }

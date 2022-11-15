@@ -21,10 +21,10 @@ export class Era {
   startedAt!: number
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalStakerRewardsRecieved!: bigint
+  totalStakerRewardsReceived!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalAppsRewardsRecieved!: bigint
+  totalAppsRewardsReceived!: bigint
 
   @OneToMany_(() => Reward, e => e.era)
   rewards!: Reward[]
