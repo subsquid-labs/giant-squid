@@ -38,5 +38,5 @@ export async function handleNewEra(ctx: EventHandlerContext<Store>) {
         totalAppsRewardsReceived: 0n,
         totalStakerRewardsReceived: 0n,
     })
-    await ctx.store.insert(era)
+    await ctx.store.save(era)
 }
