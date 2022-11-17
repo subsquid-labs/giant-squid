@@ -35,7 +35,7 @@ function getEventData(ctx: EventHandlerContext<Store>): EventData {
 export async function handleWithdrawn(ctx: EventHandlerContext<Store>) {
     const data = getEventData(ctx)
     const staker = await getOrCreateStaker(ctx, encodeId(data.account))
-    staker.unbondindVolume -= data.amount
+    staker.unbondingVolume -= data.amount
     staker.stash.lastUpdateBlock = ctx.block.height
     await ctx.store.save(staker.stash)
     await ctx.store.save(staker)

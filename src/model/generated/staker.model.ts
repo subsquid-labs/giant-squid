@@ -25,7 +25,7 @@ export class Staker {
   activeBond!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  unbondindVolume!: bigint
+  unbondingVolume!: bigint
 
   @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
   totalReward!: bigint

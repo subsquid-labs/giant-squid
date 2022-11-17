@@ -84,7 +84,7 @@ type Staker @entity {
   stashId : ID!
   stash: Account! # @unique
   activeBond: BigInt! # only staked
-  unbondindVolume: BigInt! # unstaked but not yet withdrawn
+  unbondingVolume: BigInt! # unstaked but not yet withdrawn
   totalReward: BigInt!
   stakeStates: [DAppStakeState!] @derivedFrom(field:"staker")
   rewards: [Reward!] @derivedFrom(field: "staker")

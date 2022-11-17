@@ -38,7 +38,7 @@ export async function getOrCreateStaker(ctx: CommonHandlerContext<Store>, id: st
             stash: await getOrCreateAccount(ctx, id),
             activeBond: 0n,
             totalReward: 0n,
-            unbondindVolume: 0n,
+            unbondingVolume: 0n,
         })
         ctx.log.debug('CREATED')
         await ctx.store.insert(staker)
