@@ -22,6 +22,12 @@ function getRewardedEventData(ctx: EventContext): EventData {
             account,
             amount,
         }
+    } else if (event.isV9300) {
+        const { stash, amount } = event.asV9300
+        return {
+            account: stash,
+            amount,
+        }
     } else {
         throw new UnknownVersionError(event.constructor.name)
     }

@@ -25,6 +25,12 @@ function getRewardedEventData(ctx: ChainContext, event: Event): EventData {
             account,
             amount,
         }
+    } else if (data.isV9300) {
+        const { stash, amount } = data.asV9300
+        return {
+            account: stash,
+            amount,
+        }
     } else {
         throw new UnknownVersionError(data.constructor.name)
     }
