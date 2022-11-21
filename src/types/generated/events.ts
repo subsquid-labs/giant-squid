@@ -3,6 +3,7 @@ import {Chain, ChainContext, EventContext, Event, Result, Option} from './suppor
 import * as v900 from './v900'
 import * as v1001 from './v1001'
 import * as v1300 from './v1300'
+import * as v1901 from './v1901'
 
 export class ParachainStakingCandidateBondedLessEvent {
   private readonly _chain: Chain
@@ -263,6 +264,21 @@ export class ParachainStakingDelegationEvent {
    */
   get asV1300(): {delegator: Uint8Array, lockedAmount: bigint, candidate: Uint8Array, delegatorPosition: v1300.DelegatorAdded} {
     assert(this.isV1300)
+    return this._chain.decodeEvent(this.event)
+  }
+
+  /**
+   * New delegation (increase of the existing one).
+   */
+  get isV1901(): boolean {
+    return this._chain.getEventHash('ParachainStaking.Delegation') === 'b79250d65573f20264ea546d6964696800161f34e3e18c9e5f5cc68ab741883d'
+  }
+
+  /**
+   * New delegation (increase of the existing one).
+   */
+  get asV1901(): {delegator: Uint8Array, lockedAmount: bigint, candidate: Uint8Array, delegatorPosition: v1901.DelegatorAdded, autoCompound: number} {
+    assert(this.isV1901)
     return this._chain.decodeEvent(this.event)
   }
 }

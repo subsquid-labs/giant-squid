@@ -29,8 +29,16 @@ function getEventData(ctx: EventContext): EventData {
             amount,
             candidate,
         }
+    } else if (event.isV1901) {
+        const { delegator: account, lockedAmount: amount, candidate } = event.asV1901
+        return {
+            account,
+            amount,
+            candidate,
+        }
+    } else {
+        throw new UnknownVersionError(event.constructor.name)
     }
-    throw new UnknownVersionError(event.constructor.name)
 }
 
 export async function handleDelegation(ctx: EventHandlerContext) {
