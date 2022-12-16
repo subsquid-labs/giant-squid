@@ -19,7 +19,19 @@ async function getStorageData(
     if (!storage.isExists) return undefined
 
     if (storage.isV900) {
-        return await storage.getManyAsV900(accounts)
+        return await storage.asV900.getMany(accounts)
+    } else if (storage.isV1001) {
+        const data = await storage.asV1001.getMany(accounts)
+        return data
+            ? data.map((d) =>
+                  d
+                      ? {
+                            nominations: d.delegations,
+                            total: d?.total,
+                        }
+                      : undefined
+              )
+            : undefined
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }

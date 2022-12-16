@@ -1,4 +1,5 @@
 export * from './rewarded'
+export * from './compounded'
 export * from './bondedMore'
 export * from './bondedLess'
 export * from './newRound'

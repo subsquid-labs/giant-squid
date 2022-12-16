@@ -23,7 +23,7 @@ async function getStorageData(
     if (!storage.isExists) return undefined
 
     if (storage.isV900) {
-        return await storage.getManyAsV900(accounts)
+        return await storage.asV900.getMany(accounts)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }

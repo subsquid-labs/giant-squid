@@ -24,7 +24,7 @@ async function getStorageData(
     if (!storage.isExists) return undefined
 
     if (storage.isV1001) {
-        return await storage.getManyAsV1001(accounts)
+        return await storage.asV1001.getMany(accounts)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }

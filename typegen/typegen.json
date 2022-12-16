@@ -4,6 +4,7 @@
   "events": [
     "ParachainStaking.NewRound",
     "ParachainStaking.Rewarded",
+    "ParachainStaking.Compounded",
     "ParachainStaking.CandidateBondedMore",
     "ParachainStaking.CandidateBondedLess",
     "ParachainStaking.DelegationIncreased",

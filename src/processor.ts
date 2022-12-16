@@ -16,6 +16,7 @@ processor.setBlockRange(config.blockRange || { from: 0 })
 //events handlers
 processor.addEventHandler('ParachainStaking.NewRound', modules.staking.events.handleNewRound)
 processor.addEventHandler('ParachainStaking.Rewarded', modules.staking.events.handleRewarded)
+processor.addEventHandler('ParachainStaking.Compounded', modules.staking.events.handleCompounded)
 processor.addEventHandler('ParachainStaking.CandidateBondedMore', modules.staking.events.handleBondedMore)
 processor.addEventHandler('ParachainStaking.CandidateBondedLess', modules.staking.events.handleBondedLess)
 processor.addEventHandler('ParachainStaking.Delegation', modules.staking.events.handleDelegation)
