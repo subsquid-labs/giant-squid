@@ -22,7 +22,7 @@ async function getOldStorageData(
     if (!storage.isExists) return undefined
 
     if (storage.isV49) {
-        return await storage.getManyAsV49(accounts)
+        return await storage.asV49.getMany(accounts)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -36,9 +36,9 @@ async function getStorageData(
     if (!storage.isExists) return undefined
 
     if (storage.isV200) {
-        return await storage.getManyAsV200(accounts)
+        return await storage.asV200.getMany(accounts)
     } else if (storage.isV1001) {
-        const data = await storage.getManyAsV1001(accounts)
+        const data = await storage.asV1001.getMany(accounts)
         if (!data) return
 
         return data.map((d) =>

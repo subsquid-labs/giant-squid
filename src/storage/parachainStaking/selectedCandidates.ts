@@ -10,7 +10,7 @@ async function getStorageData(ctx: BlockContext): Promise<StorageData | undefine
     if (!storage.isExists) return undefined
 
     if (storage.isV49) {
-        return await storage.getAsV49()
+        return await storage.asV49.get()
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
