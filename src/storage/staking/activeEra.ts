@@ -12,7 +12,7 @@ async function getStorageData(ctx: StorageContext): Promise<StorageData | undefi
     if (!storage.isExists) return undefined
 
     if (storage.isV1050) {
-        const data = await storage.getAsV1050()
+        const data = await storage.asV1050.get()
         if (!data) return undefined
         return {
             index: data.index,

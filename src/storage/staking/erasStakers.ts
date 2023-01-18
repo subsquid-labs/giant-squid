@@ -14,7 +14,7 @@ async function getStakersData(ctx: StorageContext, keys: Uint8Array[]): Promise<
     if (!storage.isExists) return undefined
 
     if (storage.isV1020) {
-        return await storage.getManyAsV1020(keys)
+        return await storage.asV1020.getMany(keys)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -28,7 +28,7 @@ async function getErasStakersData(
     if (!storage.isExists) return undefined
 
     if (storage.isV1050) {
-        return await storage.getManyAsV1050(keys)
+        return await storage.asV1050.getMany(keys)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }

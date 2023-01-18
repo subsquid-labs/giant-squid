@@ -11,29 +11,30 @@ interface StorageData {
     fundIndex: number
 }
 
-async function getStorageData(ctx: StorageContext, paraId: number): Promise<StorageData | undefined> {
+async function getStorageData(
+    ctx: StorageContext,
+    paraIds: number[]
+): Promise<(StorageData | undefined)[] | undefined> {
     const storage = new CrowdloanFundsStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV9010) {
-        const data = await storage.getAsV9010(paraId)
-        if (!data) return undefined
-        return {
-            fundIndex: data.trieIndex,
-            ...data,
-        }
+        const data = await storage.asV9010.getMany(paraIds)
+
+        return data.map(
+            (fund) =>
+                fund && {
+                    fundIndex: fund.trieIndex,
+                    ...fund,
+                }
+        )
     } else if (storage.isV9180) {
-        return storage.getAsV9180(paraId)
+        const data = await storage.asV9180.getMany(paraIds)
+        if (!data) return undefined
+        return data
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
-}
-
-const storageCache: {
-    hash?: string
-    values: Map<string, FundInfo>
-} = {
-    values: new Map(),
 }
 
 export interface FundInfo {
@@ -45,22 +46,14 @@ export interface FundInfo {
     fundIndex: number
 }
 
-export async function getFunds(ctx: StorageContext, paraId: number): Promise<FundInfo | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
-        storageCache.hash = ctx.block.hash
-        storageCache.values.clear()
-    }
-
-    const key = paraId.toString()
-    let value = storageCache.values.get(key)
-
-    if (!value) {
-        const data = await getStorageData(ctx, paraId)
+export const funds = {
+    async get(ctx: StorageContext, paraId: number) {
+        return await this.getMany(ctx, [paraId]).then((data) => data?.[0])
+    },
+    async getMany(ctx: StorageContext, paraIds: number[]): Promise<(FundInfo | undefined)[] | undefined> {
+        const data = await getStorageData(ctx, paraIds)
         if (!data) return undefined
 
-        value = data
-        storageCache.values.set(key, value)
-    }
-
-    return value
+        return data
+    },
 }

@@ -1,3 +1,4 @@
+import { assertNotNull } from '@subsquid/substrate-processor'
 import { ArrayContains, In, MoreThanOrEqual } from 'typeorm'
 import {
     Account,
@@ -92,21 +93,21 @@ export async function getOrCreateStaker(
         const stashId = type === 'Stash' ? id : ledger?.stash
         if (!stashId) return undefined
 
-        const payeeInfo = await storage.staking.getPayee(ctx, stashId)
+        const payeeInfo = await storage.staking.payee.get(ctx, stashId)
         if (!payeeInfo) return undefined
 
         staker = await createStaker(ctx, {
             stashId,
             controllerId,
             payeeId:
-                payeeInfo.payee === 'Account'
-                    ? payeeInfo.account
-                    : payeeInfo.payee === 'Controller'
+                payeeInfo.dest === 'Account'
+                    ? assertNotNull(payeeInfo.accountId)
+                    : payeeInfo.dest === 'Controller'
                     ? controllerId
-                    : payeeInfo.payee === 'Staked' || payeeInfo.payee === 'Stash'
+                    : payeeInfo.dest === 'Staked' || payeeInfo.dest === 'Stash'
                     ? stashId
                     : null,
-            payeeType: payeeInfo.payee as PayeeType,
+            payeeType: payeeInfo.dest as PayeeType,
             activeBond: ledger?.active || 0n,
         })
     }
@@ -156,7 +157,7 @@ export async function getOrCreateStakers(
     for (let i = 0; i < ledgers.length; i++) {
         if (!ledgers[i]) continue
 
-        const payeeInfo = await storage.staking.getPayee(ctx, ledgers[i]?.stash as string)
+        const payeeInfo = await storage.staking.payee.get(ctx, ledgers[i]?.stash as string)
         if (!payeeInfo) continue
 
         const stashId = ledgers[i]?.stash as string
@@ -168,15 +169,15 @@ export async function getOrCreateStakers(
                 stashId,
                 controllerId: notNullControllerIds[i],
                 payeeId:
-                    payeeInfo.payee === 'Account'
-                        ? payeeInfo.account
-                        : payeeInfo.payee === 'Controller'
+                    payeeInfo.dest === 'Account'
+                        ? assertNotNull(payeeInfo.accountId)
+                        : payeeInfo.dest === 'Controller'
                         ? controllerId
-                        : payeeInfo.payee === 'Staked' || payeeInfo.payee === 'Stash'
+                        : payeeInfo.dest === 'Staked' || payeeInfo.dest === 'Stash'
                         ? stashId
                         : null,
-                payeeType: payeeInfo.payee as PayeeType,
-                activeBond: ledgers[i]?.active as bigint,
+                payeeType: payeeInfo.dest as PayeeType,
+                activeBond: ledgers[i]?.active || 0n,
             })
         )
     }

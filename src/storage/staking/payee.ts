@@ -1,77 +1,46 @@
-import { decodeId, encodeId } from '../../common/tools'
 import { StakingPayeeStorage } from '../../types/generated/storage'
-import * as v9111 from '../../types/generated/v9111'
 import { BlockContext as StorageContext } from '../../types/generated/support'
 import { UnknownVersionError } from '../../common/errors'
-import assert from 'assert'
+import { decodeId, encodeId } from '../../common/tools'
 
 export interface StorageData {
-    payee: 'Account' | 'Staked' | 'Stash' | 'Controller' | 'None'
-    account: Uint8Array | undefined
+    dest: 'Account' | 'Staked' | 'Stash' | 'Controller' | 'None'
+    accountId?: string
 }
 
-async function getStorageData(ctx: StorageContext, account: Uint8Array): Promise<StorageData | undefined> {
+async function getStorageData(ctx: StorageContext, ids: string[]): Promise<StorageData[] | undefined> {
     const storage = new StakingPayeeStorage(ctx)
     if (!storage.isExists) return undefined
 
+    const normalizedIds = ids.map((id) => decodeId(id))
     if (storage.isV1020) {
-        const data = await storage.getAsV1020(account)
-        return {
-            payee: data.__kind,
-            account: data.__kind === 'Account' ? data.value : undefined,
-        }
+        return await storage.asV1020.getMany(normalizedIds).then((data) =>
+            data?.map((p) => ({
+                dest: p.__kind,
+                accountId: p.__kind === 'Account' ? encodeId(p.value) : undefined,
+            }))
+        )
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
 }
 
-const storageCache: {
-    hash?: string
-    values: Map<string, Payee>
-} = {
-    values: new Map(),
+export interface Payee {
+    dest: 'Staked' | 'Stash' | 'Controller' | 'None' | 'Account'
+    accountId?: string
 }
 
-export type Payee = PayeeCommon | PayeeAccount
-export interface PayeeCommon {
-    payee: 'Staked' | 'Stash' | 'Controller' | 'None'
-}
-
-export interface PayeeAccount {
-    payee: 'Account'
-    account: string
-}
-
-export async function getPayee(ctx: StorageContext, account: string): Promise<Payee | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
-        storageCache.hash = ctx.block.hash
-        storageCache.values.clear()
-    }
-
-    const key = account
-    let value = storageCache.values.get(key)
-
-    if (!value) {
-        const u8 = decodeId(account)
-        if (!u8) return undefined
-
-        const data = await getStorageData(ctx, u8)
+export const payee = {
+    async get(ctx: StorageContext, stashId: string): Promise<Payee | undefined> {
+        const data = await getStorageData(ctx, [stashId])
         if (!data) return undefined
 
-        if (data.payee === 'Account') {
-            assert(data.account != null)
-            value = {
-                payee: data.payee,
-                account: encodeId(data.account),
-            }
-        } else {
-            value = {
-                payee: data.payee,
-            }
-        }
+        return data[0]
+    },
+    async getMany(ctx: StorageContext, stashIds: string[]): Promise<Payee[] | undefined> {
+        const data = await getStorageData(ctx, stashIds)
+        if (!data) return undefined
 
-        storageCache.values.set(key, value)
-    }
-
-    return value
+        return data
+    },
 }

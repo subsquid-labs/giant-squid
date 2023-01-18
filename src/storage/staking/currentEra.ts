@@ -11,9 +11,9 @@ async function getStorageData(ctx: StorageContext): Promise<StorageData | undefi
     if (!storage.isExists) return undefined
 
     if (storage.isV1020) {
-        return { index: await storage.getAsV1020() }
+        return { index: await storage.asV1020.get() }
     } else if (storage.isV1050) {
-        return { index: await storage.getAsV1050() }
+        return { index: await storage.asV1050.get() }
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }

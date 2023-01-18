@@ -30,7 +30,7 @@ function getEventData(ctx: EventContext): EventData {
 export async function handleCreated(ctx: EventHandlerContext<Store, { event: true }>) {
     const data = getEventData(ctx)
 
-    const fundInfo = await storage.crowdloan.getFunds(ctx, data.index)
+    const fundInfo = await storage.crowdloan.funds.get(ctx, data.index)
     if (!fundInfo) return
 
     const parachain = await getOrCreateParachain(ctx, data.index)
