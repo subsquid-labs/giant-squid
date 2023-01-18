@@ -100,22 +100,6 @@ export async function handleBond(ctx: CallHandlerContext) {
     const accountId = getOriginAccountId(ctx.call.origin)
     if (!accountId) return
 
-    const controllerId = encodeId(data.controller)
-
-    await createStaker(ctx, {
-        stashId: accountId,
-        controllerId,
-        payeeId:
-            data.payee.destination === 'Stash' || data.payee.destination === 'Staked'
-                ? accountId
-                : data.payee.destination === 'Controller'
-                ? controllerId
-                : data.payee.destination === 'Account'
-                ? encodeId(data.payee.account)
-                : null,
-        payeeType: data.payee.destination as PayeeType,
-    })
-
     await saveBond(ctx, {
         id: ctx.call.id,
         timestamp: new Date(ctx.block.timestamp),

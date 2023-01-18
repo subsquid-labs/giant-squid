@@ -34,8 +34,7 @@ export async function handleSetController(ctx: CallHandlerContext) {
     const stashId = getOriginAccountId(ctx.call.origin)
     if (!stashId) return
 
-    const staker = await getOrCreateStaker(ctx, 'Stash', stashId)
-    if (!staker && isStorageCorrupted(ctx)) return
+    const staker = await getOrCreateStaker(ctx, stashId)
     assert(staker != null, `Missing staking info for ${stashId}`)
 
     staker.controller = await getOrCreateAccount(ctx, encodeId(data.controller))

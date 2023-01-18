@@ -143,7 +143,7 @@ export async function rewardsHook(ctx: BlockHandlerContext<typeof rewardsRequest
         }
     }
 
-    const stakers = new Map((await getOrCreateStakers(ctx, 'Stash', [...stakersSet.values()])).map((s) => [s.id, s]))
+    const stakers = new Map((await getOrCreateStakers(ctx, [...stakersSet.values()])).map((s) => [s.id, s]))
     const rewards: Reward[] = []
 
     for (const [callId, callRewardsData] of rewardsData) {
@@ -156,7 +156,7 @@ export async function rewardsHook(ctx: BlockHandlerContext<typeof rewardsRequest
             assert(staker != null, `Missing staking info for ${accountId}`)
 
             const account = staker.payee
-            assert(account != null, `Payee is null for staker ${staker.id}`)
+            // assert(account != null, `Payee is null for staker ${staker.id}`)
 
             staker.totalReward = saturatingSumBigInt(staker.totalReward, amount)
             if (staker.payeeType === PayeeType.Staked)

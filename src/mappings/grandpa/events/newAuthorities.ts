@@ -68,7 +68,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         return ctx.log.warn(`Missing info for validators in era ${era}`)
     }
 
-    const validatorStakers = new Map((await getOrCreateStakers(ctx, 'Stash', validatorIds)).map((s) => [s.id, s]))
+    const validatorStakers = new Map((await getOrCreateStakers(ctx, validatorIds)).map((s) => [s.id, s]))
     const nominatorIds: string[] = []
     const nominationsData: PairData[] = []
 
@@ -111,7 +111,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
     }
 
-    const nominatorStakers = new Map((await getOrCreateStakers(ctx, 'Stash', nominatorIds)).map((s) => [s.id, s]))
+    const nominatorStakers = new Map((await getOrCreateStakers(ctx, nominatorIds)).map((s) => [s.id, s]))
     const nominators: Map<string, EraStaker> = new Map()
 
     for (const nominatorId of nominatorIds) {
@@ -148,7 +148,7 @@ async function getStakingData(ctx: EventHandlerContext, era: Era) {
         }
         assert(validator != null && nominator != null)
 
-        const id = `${era.index}-${validator.stakerId}-${nominator.stakerId}`
+        const id = `${era.index}-${validator.staker.id}-${nominator.staker.id}`
         nominations.set(
             id,
             new EraNomination({

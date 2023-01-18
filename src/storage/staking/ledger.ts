@@ -42,6 +42,7 @@ async function getStorageData(
         }
     } catch (e) {
         if (isStorageCorrupted(ctx as CommonHandlerContext)) {
+            console.log(e)
             return undefined
         } else {
             throw e

@@ -17,23 +17,14 @@ export class Staker {
     @PrimaryColumn_()
     id!: string
 
-    @Column_("text", {nullable: false})
-    stashId!: string
-
     @Index_({unique: true})
     @OneToOne_(() => Account, {nullable: false})
     @JoinColumn_()
     stash!: Account
 
-    @Column_("text", {nullable: false})
-    controllerId!: string
-
     @Index_()
     @ManyToOne_(() => Account, {nullable: true})
-    controller!: Account
-
-    @Column_("text", {nullable: true})
-    payeeId!: string | undefined | null
+    controller!: Account | undefined | null
 
     @Index_()
     @ManyToOne_(() => Account, {nullable: true})

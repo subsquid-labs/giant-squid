@@ -24,9 +24,6 @@ export class Bond {
     @Column_("text", {nullable: true})
     extrinsicHash!: string | undefined | null
 
-    @Column_("text", {nullable: false})
-    accountId!: string
-
     @Index_()
     @ManyToOne_(() => Account, {nullable: true})
     account!: Account
@@ -36,9 +33,6 @@ export class Bond {
 
     @Column_("varchar", {length: 6, nullable: true})
     type!: BondType | undefined | null
-
-    @Column_("text", {nullable: false})
-    stakerId!: string
 
     @Index_()
     @ManyToOne_(() => Staker, {nullable: true})
