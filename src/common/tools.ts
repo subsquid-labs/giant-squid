@@ -57,7 +57,7 @@ export function saturatingSumBigInt(
 }
 
 export function isStorageCorrupted(ctx: CommonHandlerContext<unknown>) {
-    return ctx.block.height >= 1375087 && ctx.block.height <= 1600000
+    return ctx.block.height >= 1375087 && ctx.block.height <= 1600304
 }
 
 export function logCall(ctx: CallHandlerContext) {
