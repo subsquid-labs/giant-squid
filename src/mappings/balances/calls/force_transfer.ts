@@ -46,7 +46,7 @@ export async function handleForceTransfer(ctx: CallHandlerContext) {
     if (!data) return
 
     await saveTransfer(ctx, {
-        id: ctx.call.id,
+        id: ctx.call.id + '-c',
         timestamp: new Date(ctx.block.timestamp),
         blockNumber: ctx.block.height,
         extrinsicHash: ctx.extrinsic.hash,
