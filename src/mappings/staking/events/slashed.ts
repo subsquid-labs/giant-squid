@@ -24,7 +24,7 @@ function getSlashedEvent(ctx: EventContext): EventData {
             amount,
         }
     } else if (event.isV9300) {
-        const {staker: account, amount} = event.asV9300
+        const { staker: account, amount } = event.asV9300
         return {
             account,
             amount,
@@ -93,6 +93,7 @@ export async function saveSlash(ctx: EventHandlerContext, data: SlashData) {
             account,
             amount: data.amount,
             era: data.era,
+            staker,
         })
     )
 }
