@@ -1,7 +1,7 @@
 import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Store } from '@subsquid/typeorm-store'
 import { UnknownVersionError } from '../../../common/errors'
-import {logEvent} from '../../../common/tools'
+import { logEvent } from '../../../common/tools'
 import { Crowdloan } from '../../../model'
 import storage from '../../../storage'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
@@ -30,7 +30,7 @@ function getEventData(ctx: EventContext): EventData {
 
 export async function handleCreated(ctx: EventHandlerContext<Store, { event: true }>) {
     logEvent(ctx)
-    
+
     const data = getEventData(ctx)
 
     const fundInfo = await storage.crowdloan.funds.get(ctx, data.index)
@@ -44,6 +44,7 @@ export async function handleCreated(ctx: EventHandlerContext<Store, { event: tru
             parachain,
             createdAt: ctx.block.height,
             createdAtTimestamp: new Date(ctx.block.timestamp),
+            endedAt: fundInfo.end,
             ...fundInfo,
         })
     )
