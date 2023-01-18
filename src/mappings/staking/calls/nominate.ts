@@ -42,7 +42,6 @@ export async function handleNominate(ctx: CallHandlerContext) {
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Nominator
-    staker.commission = null
 
     await ctx.store.save(staker)
 }

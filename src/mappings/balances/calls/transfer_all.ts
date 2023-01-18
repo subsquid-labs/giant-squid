@@ -3,7 +3,6 @@ import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tool
 import { UnknownVersionError } from '../../../common/errors'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { saveTransfer } from '../../util/entities'
-import { TransferType } from '../../../model'
 
 interface EventData {
     to: Uint8Array
@@ -28,6 +27,8 @@ function getCallData(ctx: CallContext): EventData {
 }
 
 export async function handleTransferAll(ctx: CallHandlerContext) {
+    if (ctx.call.success) return
+    
     const data = getCallData(ctx)
 
     const accountId = getOriginAccountId(ctx.call.origin)
@@ -42,6 +43,5 @@ export async function handleTransferAll(ctx: CallHandlerContext) {
         toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: 0n,
         success: ctx.call.success,
-        type: TransferType.Native,
     })
 }

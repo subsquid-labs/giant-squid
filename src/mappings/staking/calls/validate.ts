@@ -40,7 +40,6 @@ export async function handleValidate(ctx: CallHandlerContext) {
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Validator
-    staker.commission = data?.commission
 
     await ctx.store.save(staker)
 }

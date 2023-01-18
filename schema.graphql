@@ -7,8 +7,11 @@ type Account @entity {
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
   stakingInfo: Staker @derivedFrom(field: "stash")
-  lastUpdateBlock: Int!
+
+  syncedAt: Int!
 }
+
+### STAKING ###
 
 enum StakingRole {
   Validator
@@ -31,11 +34,10 @@ type Staker @entity {
   stash: Account! @unique
   controllerId: ID!
   controller: Account!
-  payeeId: ID!
+  payeeId: ID
   payee: Account
   payeeType: PayeeType!
   role: StakingRole!
-  commission: Int
   activeBond: BigInt! # current bond balance
   totalReward: BigInt!
   totalSlash: BigInt!
@@ -85,12 +87,12 @@ type EraStaker @entity {
 # information about known parachains and their crowdloans
 type Parachain @entity {
   id: ID! #paraId
-  paraId: Int
   crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
 }
 
 enum CrowdloanStatus {
-  Created
+  Started
+  Ended
   Dissolved
 }
 
@@ -101,7 +103,9 @@ enum TransferDirection {
 
 type Contribution @entity {
   id: ID!
-  crowdloan: Crowdloan!
+  crowdloanId: ID
+  crowdloan: Crowdloan
+  accountId: ID!
   account: Account!
   amount: BigInt!
 }
@@ -111,13 +115,15 @@ type Crowdloan @entity {
   cap: BigInt!
   firstPeriod: Int!
   lastPeriod: Int!
-  end: Int!
+  createdAt: Int
+  createdAtTimestamp: DateTime
+  endedAt: Int @index
+  endedAtTimestamp: DateTime
   contributions: [Contribution!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
-  parachainId: ID!
-  parachain: Parachain!
-  start: Int @index
-  createdAt: DateTime
+  parachainId: ID
+  parachain: Parachain
+  status: CrowdloanStatus!
 }
 
 interface Action {
@@ -126,89 +132,52 @@ interface Action {
   extrinsicHash: String
 }
 
-interface HasEra {
-  era: Int
-}
-
-interface CanFail {
-  success: Boolean
-}
-
-type Transfer implements Action & CanFail @entity {
+type Transfer @entity {
   id: ID!
-  timestamp: DateTime!
   blockNumber: Int! @index
-  extrinsicHash: String! @index
-  to: TransferLocation
-  from: TransferLocation!
-  asset: TransferAsset!
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  fromId: ID!
+  from: Account!
+  toId: ID
+  to: Account
+  amount: BigInt! @index
   success: Boolean! @index
-  type: TransferType!
-}
-
-union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
-
-type TransferLocationAccount {
-  id: String!
-}
-
-type TransferLocationEvm {
-  address: String!
-}
-
-union TransferAsset = TransferAssetToken | TransferAssetMultiToken
-
-enum TransferType {
-  Native
-  Contribution
-  Xcm
-}
-
-type TransferAssetToken {
-  symbol: String
-  amount: BigInt
-}
-
-type TransferAssetMultiToken {
-  tokens: [TransferAssetToken]
-}
-
-type TransferLocationXcm {
-  id: String
-  paraId: Int
 }
 
 # entity for linking account and transfer
 type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
+  accountId: ID!
   account: Account!
   direction: TransferDirection
 }
 
-type Reward implements Action & HasEra @entity  {
+type Reward @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
-  accountId: ID!
-  account: Account!
-  amount: BigInt
+  accountId: ID
+  account: Account
+  amount: BigInt!
   era: Int
-  validator: String
-  staker: Staker
-  callId: ID @index
+  validatorId: ID
+  stakerId: ID!
+  staker: Staker!
 }
 
-type Slash implements Action & HasEra @entity  {
+type Slash @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
-  amount: BigInt
+  amount: BigInt!
   era: Int
+  stakerId: ID!
   staker: Staker
 }
 
@@ -217,7 +186,7 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Action & CanFail @entity  {
+type Bond @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
@@ -225,7 +194,7 @@ type Bond implements Action & CanFail @entity  {
   accountId: ID!
   account: Account!
   amount: BigInt
-  success: Boolean @index
   type: BondType
+  stakerId: ID!
   staker: Staker
 }

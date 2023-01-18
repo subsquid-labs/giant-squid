@@ -37,8 +37,9 @@ export async function handleCreated(ctx: EventHandlerContext) {
         new Crowdloan({
             id: `${data.index}-${fundInfo.fundIndex}`,
             parachain,
-            start: ctx.block.height,
-            createdAt: new Date(ctx.block.timestamp),
+            createdAt: ctx.block.height,
+            createdAtTimestamp: new Date(ctx.block.timestamp),
+            endedAt: fundInfo.end,
             ...fundInfo,
         })
     )

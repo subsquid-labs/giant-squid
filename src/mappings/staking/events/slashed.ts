@@ -84,6 +84,7 @@ export async function saveSlash(ctx: EventHandlerContext, data: SlashData) {
             account,
             amount: data.amount,
             era: data.era,
+            staker,
         })
     )
 }

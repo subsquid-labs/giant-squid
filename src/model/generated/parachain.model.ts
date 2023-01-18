@@ -3,16 +3,13 @@ import {Crowdloan} from "./crowdloan.model"
 
 @Entity_()
 export class Parachain {
-  constructor(props?: Partial<Parachain>) {
-    Object.assign(this, props)
-  }
+    constructor(props?: Partial<Parachain>) {
+        Object.assign(this, props)
+    }
 
-  @PrimaryColumn_()
-  id!: string
+    @PrimaryColumn_()
+    id!: string
 
-  @Column_("int4", {nullable: true})
-  paraId!: number | undefined | null
-
-  @OneToMany_(() => Crowdloan, e => e.parachain)
-  crowdloans!: Crowdloan[]
+    @OneToMany_(() => Crowdloan, e => e.parachain)
+    crowdloans!: Crowdloan[]
 }

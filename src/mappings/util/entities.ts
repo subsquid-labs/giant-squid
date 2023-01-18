@@ -10,10 +10,7 @@ import {
     Staker,
     StakingRole,
     Transfer,
-    TransferAssetToken,
     TransferDirection,
-    TransferLocationAccount,
-    TransferType,
 } from '../../model'
 import storage from '../../storage'
 import { CommonHandlerContext } from '../types/contexts'
@@ -25,7 +22,7 @@ export async function getOrCreateAccount(ctx: CommonHandlerContext, id: string):
     if (!account) {
         account = new Account({
             id,
-            lastUpdateBlock: ctx.block.height - 1,
+            syncedAt: ctx.block.height - 1,
         })
         await ctx.store.insert(account)
     }
@@ -45,7 +42,7 @@ export async function getOrCreateAccounts(ctx: CommonHandlerContext, ids: string
 
         const account = new Account({
             id,
-            lastUpdateBlock: ctx.block.height - 1,
+            syncedAt: ctx.block.height - 1,
         })
         newAccounts.add(account)
     }
@@ -237,7 +234,6 @@ export async function getOrCreateParachain(ctx: CommonHandlerContext, paraId: nu
     if (!parachain) {
         parachain = new Parachain({
             id: paraId.toString(),
-            paraId,
         })
         await ctx.store.insert(parachain)
     }
@@ -249,12 +245,12 @@ export async function getLastCrowdloan(ctx: CommonHandlerContext, paraId: number
     return await ctx.store.get(Crowdloan, {
         where: {
             parachain: {
-                paraId,
+                id: paraId.toString(),
             },
-            end: MoreThanOrEqual(ctx.block.height),
+            endedAt: MoreThanOrEqual(ctx.block.height),
         },
         order: {
-            start: 'DESC',
+            createdAt: 'DESC',
         },
         relations: { parachain: true },
     })
@@ -265,31 +261,20 @@ export interface TransferData extends ActionData {
     toId: string | null
     amount: bigint
     success: boolean
-    type: TransferType
 }
 
 export async function saveTransfer(ctx: CommonHandlerContext, data: TransferData) {
-    const { fromId, toId, amount, success, type } = data
+    const { fromId, toId, amount, success } = data
 
     const from = await getOrCreateAccount(ctx, fromId)
     const to = toId ? await getOrCreateAccount(ctx, toId) : null
 
     const transfer = new Transfer({
         ...getMeta(data),
-        from: new TransferLocationAccount({
-            id: fromId,
-        }),
-        to: toId
-            ? new TransferLocationAccount({
-                  id: toId,
-              })
-            : null,
-        asset: new TransferAssetToken({
-            symbol: 'KSM',
-            amount,
-        }),
+        from,
+        to,
+        amount,
         success,
-        type,
     })
 
     await ctx.store.insert(transfer)

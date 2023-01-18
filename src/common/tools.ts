@@ -1,6 +1,7 @@
 import * as ss58 from '@subsquid/ss58'
 import config from '../config'
 import { decodeHex } from '@subsquid/util-internal-hex'
+import { CallHandlerContext, EventHandlerContext } from '../mappings/types/contexts'
 
 export function encodeId(id: Uint8Array) {
     return ss58.codec(config.prefix).encode(typeof id === 'string' ? decodeHex(id) : id)
@@ -70,4 +71,12 @@ export function* splitIntoBatches<T>(list: T[], maxBatchSize: number): Generator
         }
         yield list.slice(offset)
     }
+}
+
+export function logCall(ctx: CallHandlerContext) {
+    ctx.log.debug(`Handle call "${ctx.call.name}" at block ${ctx.block.height}`)
+}
+
+export function logEvent(ctx: EventHandlerContext) {
+    ctx.log.debug(`Handle event "${ctx.event.name}" at block ${ctx.block.height}`)
 }

@@ -14,7 +14,6 @@ export async function handleChill(ctx: CallHandlerContext) {
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Idle
-    staker.commission = null
 
     await ctx.store.save(staker)
 }

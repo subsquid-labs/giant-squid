@@ -10,62 +10,59 @@ import {Bond} from "./bond.model"
 
 @Entity_()
 export class Staker {
-  constructor(props?: Partial<Staker>) {
-    Object.assign(this, props)
-  }
+    constructor(props?: Partial<Staker>) {
+        Object.assign(this, props)
+    }
 
-  @PrimaryColumn_()
-  id!: string
+    @PrimaryColumn_()
+    id!: string
 
-  @Column_("text", {nullable: false})
-  stashId!: string
+    @Column_("text", {nullable: false})
+    stashId!: string
 
-  @Index_({unique: true})
-  @OneToOne_(() => Account, {nullable: false})
-  @JoinColumn_()
-  stash!: Account
+    @Index_({unique: true})
+    @OneToOne_(() => Account, {nullable: false})
+    @JoinColumn_()
+    stash!: Account
 
-  @Column_("text", {nullable: false})
-  controllerId!: string
+    @Column_("text", {nullable: false})
+    controllerId!: string
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  controller!: Account
+    @Index_()
+    @ManyToOne_(() => Account, {nullable: true})
+    controller!: Account
 
-  @Column_("text", {nullable: false})
-  payeeId!: string
+    @Column_("text", {nullable: true})
+    payeeId!: string | undefined | null
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  payee!: Account | undefined | null
+    @Index_()
+    @ManyToOne_(() => Account, {nullable: true})
+    payee!: Account | undefined | null
 
-  @Column_("varchar", {length: 10, nullable: false})
-  payeeType!: PayeeType
+    @Column_("varchar", {length: 10, nullable: false})
+    payeeType!: PayeeType
 
-  @Column_("varchar", {length: 9, nullable: false})
-  role!: StakingRole
+    @Column_("varchar", {length: 9, nullable: false})
+    role!: StakingRole
 
-  @Column_("int4", {nullable: true})
-  commission!: number | undefined | null
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    activeBond!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  activeBond!: bigint
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    totalReward!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalReward!: bigint
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
+    totalSlash!: bigint
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: false})
-  totalSlash!: bigint
+    @OneToMany_(() => EraStaker, e => e.staker)
+    stakerHistory!: EraStaker[]
 
-  @OneToMany_(() => EraStaker, e => e.staker)
-  stakerHistory!: EraStaker[]
+    @OneToMany_(() => Reward, e => e.staker)
+    rewards!: Reward[]
 
-  @OneToMany_(() => Reward, e => e.staker)
-  rewards!: Reward[]
+    @OneToMany_(() => Slash, e => e.staker)
+    slashes!: Slash[]
 
-  @OneToMany_(() => Slash, e => e.staker)
-  slashes!: Slash[]
-
-  @OneToMany_(() => Bond, e => e.staker)
-  bonds!: Bond[]
+    @OneToMany_(() => Bond, e => e.staker)
+    bonds!: Bond[]
 }
