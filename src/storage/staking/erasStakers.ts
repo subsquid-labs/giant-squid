@@ -1,7 +1,7 @@
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/tools'
 import { StakingErasStakersStorage } from '../../types/generated/storage'
-import { BlockContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 
 interface StorageData {
     total: bigint
@@ -10,14 +10,14 @@ interface StorageData {
 }
 
 async function getErasStakersData(
-    ctx: BlockContext,
+    ctx: StorageContext,
     keys: [era: number, account: Uint8Array][]
 ): Promise<StorageData[] | undefined> {
     const storage = new StakingErasStakersStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV0) {
-        return await storage.getManyAsV0(keys)
+        return await storage.asV0.getMany(keys)
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -32,7 +32,7 @@ interface EraStaker {
 type ErasStakersArgs = [account: string, era?: number]
 
 async function queryStorageFunction(
-    ctx: BlockContext,
+    ctx: StorageContext,
     keys: ErasStakersArgs[]
 ): Promise<(EraStaker | undefined)[] | undefined> {
     if (keys.length === 0) return []
@@ -53,12 +53,12 @@ async function queryStorageFunction(
     }))
 }
 
-export async function getEraStakersData(ctx: BlockContext, ...args: ErasStakersArgs): Promise<EraStaker | undefined>
+export async function getEraStakersData(ctx: StorageContext, ...args: ErasStakersArgs): Promise<EraStaker | undefined>
 export async function getEraStakersData(
-    ctx: BlockContext,
+    ctx: StorageContext,
     keys: ErasStakersArgs[]
 ): Promise<(EraStaker | undefined)[] | undefined>
-export async function getEraStakersData(ctx: BlockContext, keys: ErasStakersArgs[] | string, era?: number) {
+export async function getEraStakersData(ctx: StorageContext, keys: ErasStakersArgs[] | string, era?: number) {
     if (typeof keys === 'string') {
         return (await queryStorageFunction(ctx, [[keys, era]]))?.[0]
     } else {

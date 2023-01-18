@@ -1,18 +1,18 @@
 import { UnknownVersionError } from '../../common/errors'
 import { StakingActiveEraStorage } from '../../types/generated/storage'
-import { BlockContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 
 interface StorageData {
     index: number
     timestamp: bigint | undefined
 }
 
-async function getStorageData(ctx: BlockContext): Promise<StorageData | undefined> {
+async function getStorageData(ctx: StorageContext): Promise<StorageData | undefined> {
     const storage = new StakingActiveEraStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV0) {
-        const data = await storage.getAsV0()
+        const data = await storage.asV0.get()
         if (!data) return undefined
         return {
             index: data.index,
@@ -33,7 +33,7 @@ interface ActiveEra {
     timestamp: number | undefined
 }
 
-export async function getActiveEra(ctx: BlockContext): Promise<ActiveEra | undefined> {
+export async function getActiveEra(ctx: StorageContext): Promise<ActiveEra | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
         delete storageCache.value

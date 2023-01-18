@@ -1,382 +1,380 @@
 import assert from 'assert'
-import {Block, Chain, ChainContext, BlockContext, Result, Option} from './support'
+import {Block, BlockContext, Chain, ChainContext, Option, Result, StorageBase} from './support'
 import * as v0 from './v0'
 import * as v9110 from './v9110'
 import * as v9180 from './v9180'
 
-export class CrowdloanFundsStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
+export class CrowdloanFundsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Crowdloan'
+    }
 
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
+    protected getName() {
+        return 'Funds'
+    }
 
-  /**
-   *  Info on all of the funds.
-   */
-  get isV9110() {
-    return this._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === '12ab1ac19ae156d5acf61b3bdb7d29a147b5793947baca0144497ee7e32553c2'
-  }
+    /**
+     *  Info on all of the funds.
+     */
+    get isV9110(): boolean {
+        return this.getTypeHash() === '12ab1ac19ae156d5acf61b3bdb7d29a147b5793947baca0144497ee7e32553c2'
+    }
 
-  /**
-   *  Info on all of the funds.
-   */
-  async getAsV9110(key: number): Promise<v9110.FundInfo | undefined> {
-    assert(this.isV9110)
-    return this._chain.getStorage(this.blockHash, 'Crowdloan', 'Funds', key)
-  }
+    /**
+     *  Info on all of the funds.
+     */
+    get asV9110(): CrowdloanFundsStorageV9110 {
+        assert(this.isV9110)
+        return this as any
+    }
 
-  async getManyAsV9110(keys: number[]): Promise<(v9110.FundInfo | undefined)[]> {
-    assert(this.isV9110)
-    return this._chain.queryStorage(this.blockHash, 'Crowdloan', 'Funds', keys.map(k => [k]))
-  }
+    /**
+     *  Info on all of the funds.
+     */
+    get isV9180(): boolean {
+        return this.getTypeHash() === 'e837aa8c7af80bff126d455e0237189b2b62b5bf6586a1f2e67a22edfaf5a596'
+    }
 
-  async getAllAsV9110(): Promise<(v9110.FundInfo)[]> {
-    assert(this.isV9110)
-    return this._chain.queryStorage(this.blockHash, 'Crowdloan', 'Funds')
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  get isV9180() {
-    return this._chain.getStorageItemTypeHash('Crowdloan', 'Funds') === 'e837aa8c7af80bff126d455e0237189b2b62b5bf6586a1f2e67a22edfaf5a596'
-  }
-
-  /**
-   *  Info on all of the funds.
-   */
-  async getAsV9180(key: number): Promise<v9180.FundInfo | undefined> {
-    assert(this.isV9180)
-    return this._chain.getStorage(this.blockHash, 'Crowdloan', 'Funds', key)
-  }
-
-  async getManyAsV9180(keys: number[]): Promise<(v9180.FundInfo | undefined)[]> {
-    assert(this.isV9180)
-    return this._chain.queryStorage(this.blockHash, 'Crowdloan', 'Funds', keys.map(k => [k]))
-  }
-
-  async getAllAsV9180(): Promise<(v9180.FundInfo)[]> {
-    assert(this.isV9180)
-    return this._chain.queryStorage(this.blockHash, 'Crowdloan', 'Funds')
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Crowdloan', 'Funds') != null
-  }
+    /**
+     *  Info on all of the funds.
+     */
+    get asV9180(): CrowdloanFundsStorageV9180 {
+        assert(this.isV9180)
+        return this as any
+    }
 }
 
-export class SessionValidatorsStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
-
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
-
-  /**
-   *  The current set of validators.
-   */
-  get isV0() {
-    return this._chain.getStorageItemTypeHash('Session', 'Validators') === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
-  }
-
-  /**
-   *  The current set of validators.
-   */
-  async getAsV0(): Promise<Uint8Array[]> {
-    assert(this.isV0)
-    return this._chain.getStorage(this.blockHash, 'Session', 'Validators')
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Session', 'Validators') != null
-  }
+/**
+ *  Info on all of the funds.
+ */
+export interface CrowdloanFundsStorageV9110 {
+    get(key: number): Promise<(v9110.FundInfo | undefined)>
+    getAll(): Promise<v9110.FundInfo[]>
+    getMany(keys: number[]): Promise<(v9110.FundInfo | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v9110.FundInfo][]>
+    getPairs(key: number): Promise<[k: number, v: v9110.FundInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v9110.FundInfo][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v9110.FundInfo][]>
 }
 
-export class StakingActiveEraStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
-
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
-
-  /**
-   *  The active era information, it holds index and start.
-   * 
-   *  The active era is the era currently rewarded.
-   *  Validator set of this era must be equal to `SessionInterface::validators`.
-   */
-  get isV0() {
-    return this._chain.getStorageItemTypeHash('Staking', 'ActiveEra') === '2bb946dd9c19de9f4332897005d1255528c610172f7418fae165b5dafd3cfbfe'
-  }
-
-  /**
-   *  The active era information, it holds index and start.
-   * 
-   *  The active era is the era currently rewarded.
-   *  Validator set of this era must be equal to `SessionInterface::validators`.
-   */
-  async getAsV0(): Promise<v0.ActiveEraInfo | undefined> {
-    assert(this.isV0)
-    return this._chain.getStorage(this.blockHash, 'Staking', 'ActiveEra')
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Staking', 'ActiveEra') != null
-  }
+/**
+ *  Info on all of the funds.
+ */
+export interface CrowdloanFundsStorageV9180 {
+    get(key: number): Promise<(v9180.FundInfo | undefined)>
+    getAll(): Promise<v9180.FundInfo[]>
+    getMany(keys: number[]): Promise<(v9180.FundInfo | undefined)[]>
+    getKeys(): Promise<number[]>
+    getKeys(key: number): Promise<number[]>
+    getKeysPaged(pageSize: number): AsyncIterable<number[]>
+    getKeysPaged(pageSize: number, key: number): AsyncIterable<number[]>
+    getPairs(): Promise<[k: number, v: v9180.FundInfo][]>
+    getPairs(key: number): Promise<[k: number, v: v9180.FundInfo][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: number, v: v9180.FundInfo][]>
+    getPairsPaged(pageSize: number, key: number): AsyncIterable<[k: number, v: v9180.FundInfo][]>
 }
 
-export class StakingBondedStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
+export class SessionValidatorsStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Session'
+    }
 
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
+    protected getName() {
+        return 'Validators'
+    }
 
-  /**
-   *  Map from all locked "stash" accounts to the controller account.
-   */
-  get isV0() {
-    return this._chain.getStorageItemTypeHash('Staking', 'Bonded') === 'de3ac6d702494f77c04d74bab1d59ac44113746a3722fe8b7306730fb0fc740c'
-  }
+    /**
+     *  The current set of validators.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'f5df25eadcdffaa0d2a68b199d671d3921ca36a7b70d22d57506dca52b4b5895'
+    }
 
-  /**
-   *  Map from all locked "stash" accounts to the controller account.
-   */
-  async getAsV0(key: Uint8Array): Promise<Uint8Array | undefined> {
-    assert(this.isV0)
-    return this._chain.getStorage(this.blockHash, 'Staking', 'Bonded', key)
-  }
-
-  async getManyAsV0(keys: Uint8Array[]): Promise<(Uint8Array | undefined)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Bonded', keys.map(k => [k]))
-  }
-
-  async getAllAsV0(): Promise<(Uint8Array)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Bonded')
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Staking', 'Bonded') != null
-  }
+    /**
+     *  The current set of validators.
+     */
+    get asV0(): SessionValidatorsStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
 }
 
-export class StakingCurrentEraStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
-
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
-
-  /**
-   *  The current era index.
-   * 
-   *  This is the latest planned era, depending on how the Session pallet queues the validator
-   *  set, it might be active or not.
-   */
-  get isV0() {
-    return this._chain.getStorageItemTypeHash('Staking', 'CurrentEra') === 'a926ad48d1a07d1162c5fdb99f3f6cef39c7c5a115a92ff9ccf0357bae4bf2ed'
-  }
-
-  /**
-   *  The current era index.
-   * 
-   *  This is the latest planned era, depending on how the Session pallet queues the validator
-   *  set, it might be active or not.
-   */
-  async getAsV0(): Promise<number | undefined> {
-    assert(this.isV0)
-    return this._chain.getStorage(this.blockHash, 'Staking', 'CurrentEra')
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Staking', 'CurrentEra') != null
-  }
+/**
+ *  The current set of validators.
+ */
+export interface SessionValidatorsStorageV0 {
+    get(): Promise<Uint8Array[]>
 }
 
-export class StakingErasStakersStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
+export class StakingActiveEraStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Staking'
+    }
 
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
+    protected getName() {
+        return 'ActiveEra'
+    }
 
-  /**
-   *  Exposure of validator at era.
-   * 
-   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
-   * 
-   *  Is it removed after `HISTORY_DEPTH` eras.
-   *  If stakers hasn't been set or has been removed then empty exposure is returned.
-   */
-  get isV0() {
-    return this._chain.getStorageItemTypeHash('Staking', 'ErasStakers') === 'f3f726cc814cef290657008054cd10667b250a01d2842ff3bbbcca24c98abf5b'
-  }
+    /**
+     *  The active era information, it holds index and start.
+     * 
+     *  The active era is the era currently rewarded.
+     *  Validator set of this era must be equal to `SessionInterface::validators`.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '2bb946dd9c19de9f4332897005d1255528c610172f7418fae165b5dafd3cfbfe'
+    }
 
-  /**
-   *  Exposure of validator at era.
-   * 
-   *  This is keyed first by the era index to allow bulk deletion and then the stash account.
-   * 
-   *  Is it removed after `HISTORY_DEPTH` eras.
-   *  If stakers hasn't been set or has been removed then empty exposure is returned.
-   */
-  async getAsV0(key1: number, key2: Uint8Array): Promise<v0.Exposure> {
-    assert(this.isV0)
-    return this._chain.getStorage(this.blockHash, 'Staking', 'ErasStakers', key1, key2)
-  }
-
-  async getManyAsV0(keys: [number, Uint8Array][]): Promise<(v0.Exposure)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasStakers', keys)
-  }
-
-  async getAllAsV0(): Promise<(v0.Exposure)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'ErasStakers')
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Staking', 'ErasStakers') != null
-  }
+    /**
+     *  The active era information, it holds index and start.
+     * 
+     *  The active era is the era currently rewarded.
+     *  Validator set of this era must be equal to `SessionInterface::validators`.
+     */
+    get asV0(): StakingActiveEraStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
 }
 
-export class StakingLedgerStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
-
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
-
-  /**
-   *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
-   */
-  get isV0() {
-    return this._chain.getStorageItemTypeHash('Staking', 'Ledger') === '838ac827cb2532f983c68467cfa97afcccf6147fb96e61e136394060880b64a4'
-  }
-
-  /**
-   *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
-   */
-  async getAsV0(key: Uint8Array): Promise<v0.StakingLedger | undefined> {
-    assert(this.isV0)
-    return this._chain.getStorage(this.blockHash, 'Staking', 'Ledger', key)
-  }
-
-  async getManyAsV0(keys: Uint8Array[]): Promise<(v0.StakingLedger | undefined)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger', keys.map(k => [k]))
-  }
-
-  async getAllAsV0(): Promise<(v0.StakingLedger)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Ledger')
-  }
-
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Staking', 'Ledger') != null
-  }
+/**
+ *  The active era information, it holds index and start.
+ * 
+ *  The active era is the era currently rewarded.
+ *  Validator set of this era must be equal to `SessionInterface::validators`.
+ */
+export interface StakingActiveEraStorageV0 {
+    get(): Promise<(v0.ActiveEraInfo | undefined)>
 }
 
-export class StakingPayeeStorage {
-  private readonly _chain: Chain
-  private readonly blockHash: string
+export class StakingBondedStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Staking'
+    }
 
-  constructor(ctx: BlockContext)
-  constructor(ctx: ChainContext, block: Block)
-  constructor(ctx: BlockContext, block?: Block) {
-    block = block || ctx.block
-    this.blockHash = block.hash
-    this._chain = ctx._chain
-  }
+    protected getName() {
+        return 'Bonded'
+    }
 
-  /**
-   *  Where the reward payment should be made. Keyed by stash.
-   */
-  get isV0() {
-    return this._chain.getStorageItemTypeHash('Staking', 'Payee') === '997acadf80b79903fb4386b933d481dff61dad22612d657f19f39b937ea8d992'
-  }
+    /**
+     *  Map from all locked "stash" accounts to the controller account.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'de3ac6d702494f77c04d74bab1d59ac44113746a3722fe8b7306730fb0fc740c'
+    }
 
-  /**
-   *  Where the reward payment should be made. Keyed by stash.
-   */
-  async getAsV0(key: Uint8Array): Promise<v0.RewardDestination> {
-    assert(this.isV0)
-    return this._chain.getStorage(this.blockHash, 'Staking', 'Payee', key)
-  }
+    /**
+     *  Map from all locked "stash" accounts to the controller account.
+     */
+    get asV0(): StakingBondedStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
 
-  async getManyAsV0(keys: Uint8Array[]): Promise<(v0.RewardDestination)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee', keys.map(k => [k]))
-  }
+/**
+ *  Map from all locked "stash" accounts to the controller account.
+ */
+export interface StakingBondedStorageV0 {
+    get(key: Uint8Array): Promise<(Uint8Array | undefined)>
+    getAll(): Promise<Uint8Array[]>
+    getMany(keys: Uint8Array[]): Promise<(Uint8Array | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: Uint8Array][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: Uint8Array][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: Uint8Array][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: Uint8Array][]>
+}
 
-  async getAllAsV0(): Promise<(v0.RewardDestination)[]> {
-    assert(this.isV0)
-    return this._chain.queryStorage(this.blockHash, 'Staking', 'Payee')
-  }
+export class StakingCurrentEraStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Staking'
+    }
 
-  /**
-   * Checks whether the storage item is defined for the current chain version.
-   */
-  get isExists(): boolean {
-    return this._chain.getStorageItemTypeHash('Staking', 'Payee') != null
-  }
+    protected getName() {
+        return 'CurrentEra'
+    }
+
+    /**
+     *  The current era index.
+     * 
+     *  This is the latest planned era, depending on how the Session pallet queues the validator
+     *  set, it might be active or not.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'a926ad48d1a07d1162c5fdb99f3f6cef39c7c5a115a92ff9ccf0357bae4bf2ed'
+    }
+
+    /**
+     *  The current era index.
+     * 
+     *  This is the latest planned era, depending on how the Session pallet queues the validator
+     *  set, it might be active or not.
+     */
+    get asV0(): StakingCurrentEraStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  The current era index.
+ * 
+ *  This is the latest planned era, depending on how the Session pallet queues the validator
+ *  set, it might be active or not.
+ */
+export interface StakingCurrentEraStorageV0 {
+    get(): Promise<(number | undefined)>
+}
+
+export class StakingErasStakersStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Staking'
+    }
+
+    protected getName() {
+        return 'ErasStakers'
+    }
+
+    /**
+     *  Exposure of validator at era.
+     * 
+     *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+     * 
+     *  Is it removed after `HISTORY_DEPTH` eras.
+     *  If stakers hasn't been set or has been removed then empty exposure is returned.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === 'f3f726cc814cef290657008054cd10667b250a01d2842ff3bbbcca24c98abf5b'
+    }
+
+    /**
+     *  Exposure of validator at era.
+     * 
+     *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+     * 
+     *  Is it removed after `HISTORY_DEPTH` eras.
+     *  If stakers hasn't been set or has been removed then empty exposure is returned.
+     */
+    get asV0(): StakingErasStakersStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  Exposure of validator at era.
+ * 
+ *  This is keyed first by the era index to allow bulk deletion and then the stash account.
+ * 
+ *  Is it removed after `HISTORY_DEPTH` eras.
+ *  If stakers hasn't been set or has been removed then empty exposure is returned.
+ */
+export interface StakingErasStakersStorageV0 {
+    get(key1: number, key2: Uint8Array): Promise<v0.Exposure>
+    getAll(): Promise<v0.Exposure[]>
+    getMany(keys: [number, Uint8Array][]): Promise<v0.Exposure[]>
+    getKeys(): Promise<[number, Uint8Array][]>
+    getKeys(key1: number): Promise<[number, Uint8Array][]>
+    getKeys(key1: number, key2: Uint8Array): Promise<[number, Uint8Array][]>
+    getKeysPaged(pageSize: number): AsyncIterable<[number, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: number): AsyncIterable<[number, Uint8Array][]>
+    getKeysPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[number, Uint8Array][]>
+    getPairs(): Promise<[k: [number, Uint8Array], v: v0.Exposure][]>
+    getPairs(key1: number): Promise<[k: [number, Uint8Array], v: v0.Exposure][]>
+    getPairs(key1: number, key2: Uint8Array): Promise<[k: [number, Uint8Array], v: v0.Exposure][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: [number, Uint8Array], v: v0.Exposure][]>
+    getPairsPaged(pageSize: number, key1: number): AsyncIterable<[k: [number, Uint8Array], v: v0.Exposure][]>
+    getPairsPaged(pageSize: number, key1: number, key2: Uint8Array): AsyncIterable<[k: [number, Uint8Array], v: v0.Exposure][]>
+}
+
+export class StakingLedgerStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Staking'
+    }
+
+    protected getName() {
+        return 'Ledger'
+    }
+
+    /**
+     *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '838ac827cb2532f983c68467cfa97afcccf6147fb96e61e136394060880b64a4'
+    }
+
+    /**
+     *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
+     */
+    get asV0(): StakingLedgerStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  Map from all (unlocked) "controller" accounts to the info regarding the staking.
+ */
+export interface StakingLedgerStorageV0 {
+    get(key: Uint8Array): Promise<(v0.StakingLedger | undefined)>
+    getAll(): Promise<v0.StakingLedger[]>
+    getMany(keys: Uint8Array[]): Promise<(v0.StakingLedger | undefined)[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v0.StakingLedger][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v0.StakingLedger][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v0.StakingLedger][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v0.StakingLedger][]>
+}
+
+export class StakingPayeeStorage extends StorageBase {
+    protected getPrefix() {
+        return 'Staking'
+    }
+
+    protected getName() {
+        return 'Payee'
+    }
+
+    /**
+     *  Where the reward payment should be made. Keyed by stash.
+     */
+    get isV0(): boolean {
+        return this.getTypeHash() === '997acadf80b79903fb4386b933d481dff61dad22612d657f19f39b937ea8d992'
+    }
+
+    /**
+     *  Where the reward payment should be made. Keyed by stash.
+     */
+    get asV0(): StakingPayeeStorageV0 {
+        assert(this.isV0)
+        return this as any
+    }
+}
+
+/**
+ *  Where the reward payment should be made. Keyed by stash.
+ */
+export interface StakingPayeeStorageV0 {
+    get(key: Uint8Array): Promise<v0.RewardDestination>
+    getAll(): Promise<v0.RewardDestination[]>
+    getMany(keys: Uint8Array[]): Promise<v0.RewardDestination[]>
+    getKeys(): Promise<Uint8Array[]>
+    getKeys(key: Uint8Array): Promise<Uint8Array[]>
+    getKeysPaged(pageSize: number): AsyncIterable<Uint8Array[]>
+    getKeysPaged(pageSize: number, key: Uint8Array): AsyncIterable<Uint8Array[]>
+    getPairs(): Promise<[k: Uint8Array, v: v0.RewardDestination][]>
+    getPairs(key: Uint8Array): Promise<[k: Uint8Array, v: v0.RewardDestination][]>
+    getPairsPaged(pageSize: number): AsyncIterable<[k: Uint8Array, v: v0.RewardDestination][]>
+    getPairsPaged(pageSize: number, key: Uint8Array): AsyncIterable<[k: Uint8Array, v: v0.RewardDestination][]>
 }

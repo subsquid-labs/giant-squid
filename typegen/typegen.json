@@ -2,6 +2,7 @@
   "outDir": "../src/types/generated",
   "specVersions": "https://polkadot.archive.subsquid.io/graphql",
   "events": [
+    "Balances.Transfer",
     "Staking.EraPaid",
     "Staking.Rewarded",
     "Staking.Reward",

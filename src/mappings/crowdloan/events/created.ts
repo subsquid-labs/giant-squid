@@ -28,14 +28,14 @@ function getEventData(ctx: EventContext): EventData {
 export async function handleCreated(ctx: EventHandlerContext) {
     const data = getEventData(ctx)
 
-    const fundInfo = await storage.crowdloan.getFunds(ctx, data.index)
+    const fundInfo = await storage.crowdloan.funds.get(ctx, data.index)
     if (!fundInfo) return
 
     const parachain = await getOrCreateParachain(ctx, data.index)
 
     await ctx.store.insert(
         new Crowdloan({
-            id: `${data.index}-${fundInfo.trieIndex}`,
+            id: `${data.index}-${fundInfo.fundIndex}`,
             parachain,
             start: ctx.block.height,
             createdAt: new Date(ctx.block.timestamp),

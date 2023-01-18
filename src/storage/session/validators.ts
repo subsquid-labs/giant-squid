@@ -1,16 +1,16 @@
 import { UnknownVersionError } from '../../common/errors'
 import { encodeId } from '../../common/tools'
 import { SessionValidatorsStorage } from '../../types/generated/storage'
-import { BlockContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 
 type StorageData = Uint8Array[]
 
-async function getStorageData(ctx: BlockContext): Promise<StorageData | undefined> {
+async function getStorageData(ctx: StorageContext): Promise<StorageData | undefined> {
     const storage = new SessionValidatorsStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV0) {
-        return await storage.getAsV0()
+        return await storage.asV0.get()
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
@@ -23,7 +23,7 @@ const storageCache: {
 
 type Validators = string[]
 
-export async function getValidators(ctx: BlockContext): Promise<Validators | undefined> {
+export async function getValidators(ctx: StorageContext): Promise<Validators | undefined> {
     if (storageCache.hash !== ctx.block.hash) {
         storageCache.hash = ctx.block.hash
         delete storageCache.value

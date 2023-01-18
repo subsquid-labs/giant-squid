@@ -1,5 +1,6 @@
 import { UnknownVersionError } from '../../common/errors'
 import { decodeId, encodeId } from '../../common/tools'
+import { CommonHandlerContext } from '../../mappings/types/contexts'
 import { StakingLedgerStorage } from '../../types/generated/storage'
 import { BlockContext as StorageContext } from '../../types/generated/support'
 

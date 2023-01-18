@@ -1,30 +1,40 @@
 import { UnknownVersionError } from '../../common/errors'
 import { CrowdloanFundsStorage } from '../../types/generated/storage'
-import { BlockContext } from '../../types/generated/support'
+import { BlockContext as StorageContext } from '../../types/generated/support'
 
-async function getStorageData(ctx: BlockContext, paraId: number): Promise<FundInfo | undefined> {
+interface StorageData {
+    raised: bigint
+    end: number
+    cap: bigint
+    firstPeriod: number
+    lastPeriod: number
+    fundIndex: number
+}
+
+async function getStorageData(
+    ctx: StorageContext,
+    paraIds: number[]
+): Promise<(StorageData | undefined)[] | undefined> {
     const storage = new CrowdloanFundsStorage(ctx)
     if (!storage.isExists) return undefined
 
     if (storage.isV9110) {
-        return await storage.getAsV9110(paraId)
+        const data = await storage.asV9110.getMany(paraIds)
+
+        return data.map(
+            (fund) =>
+                fund && {
+                    fundIndex: fund.trieIndex,
+                    ...fund,
+                }
+        )
     } else if (storage.isV9180) {
-        const data = await storage.getAsV9180(paraId)
+        const data = await storage.asV9180.getMany(paraIds)
         if (!data) return undefined
-        return {
-            ...data,
-            trieIndex: data.fundIndex,
-        }
+        return data
     } else {
         throw new UnknownVersionError(storage.constructor.name)
     }
-}
-
-const storageCache: {
-    hash?: string
-    values: Map<string, FundInfo>
-} = {
-    values: new Map(),
 }
 
 export interface FundInfo {
@@ -33,25 +43,17 @@ export interface FundInfo {
     cap: bigint
     firstPeriod: number
     lastPeriod: number
-    trieIndex: number
+    fundIndex: number
 }
 
-export async function getFunds(ctx: BlockContext, paraId: number): Promise<FundInfo | undefined> {
-    if (storageCache.hash !== ctx.block.hash) {
-        storageCache.hash = ctx.block.hash
-        storageCache.values.clear()
-    }
-
-    const key = paraId.toString()
-    let value = storageCache.values.get(key)
-
-    if (!value) {
-        const data = await getStorageData(ctx, paraId)
+export const funds = {
+    async get(ctx: StorageContext, paraId: number) {
+        return await this.getMany(ctx, [paraId]).then((data) => data?.[0])
+    },
+    async getMany(ctx: StorageContext, paraIds: number[]): Promise<(FundInfo | undefined)[] | undefined> {
+        const data = await getStorageData(ctx, paraIds)
         if (!data) return undefined
 
-        value = data
-        storageCache.values.set(key, value)
-    }
-
-    return value
+        return data
+    },
 }
