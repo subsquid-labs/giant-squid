@@ -7,97 +7,97 @@ type Account @entity {
   slashes: [Slash!] @derivedFrom(field: "account")
   bonds: [Bond!] @derivedFrom(field: "account")
   stakingInfo: Staker @derivedFrom(field: "stash")
-  lastUpdateBlock: Int!
     #RMRK nfts
-  rmrkColections: [RmrkCollection!] @derivedFrom(field: "currentOwner")
-  rmrkNfts: [RmrkNFT!] @derivedFrom(field: "currentOwner")
-  rmrkEvents: [RmrkEvent!] @derivedFrom(field: "caller")
+  # rmrkColections: [RmrkCollection!] @derivedFrom(field: "currentOwner")
+  # rmrkNfts: [RmrkNFT!] @derivedFrom(field: "currentOwner")
+  # rmrkEvents: [RmrkEvent!] @derivedFrom(field: "account")
+
+  syncedAt: Int!
 }
 ### RMRK1 NFTs ###
 
-type RmrkCollection @entity {
-  name: String
-  max: Int!
-  issuer: String!
-  symbol: String
-  id: ID!
-  metadata: String
-  currentOwner: Account
-  nfts: [RmrkNFT!] @derivedFrom(field: "collection")
-  events: [RmrkEvent!] @derivedFrom(field: "collection")
-  blockNumber: BigInt
-  createdAt: DateTime!
-}
+# type RmrkCollection @entity {
+#   name: String
+#   max: Int!
+#   issuer: String!
+#   symbol: String
+#   id: ID!
+#   metadata: String
+#   currentOwner: Account
+#   nfts: [RmrkNFT!] @derivedFrom(field: "collection")
+#   events: [RmrkEvent!] @derivedFrom(field: "collection")
+#   blockNumber: BigInt
+#   createdAt: DateTime!
+# }
 
-type RmrkNFT @entity {
-  name: String
-  instance: String
-  transferable: Int
-  collection: RmrkCollection!
-  issuer: String
-  sn: String
-  id: ID!
-  metadata: String
-  currentOwner: Account
-  price: BigInt!
-  burned: Boolean!
-  blockNumber: Int!
-  events: [RmrkEvent!] @derivedFrom(field: "nft")
-  emotes: [RmrkEmote!] @derivedFrom(field: "nft")
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
+# type RmrkNFT @entity {
+#   name: String
+#   instance: String
+#   transferable: Int
+#   collection: RmrkCollection!
+#   issuer: String
+#   sn: String
+#   id: ID!
+#   metadata: String
+#   currentOwner: Account
+#   price: BigInt!
+#   burned: Boolean!
+#   blockNumber: Int!
+#   events: [RmrkEvent!] @derivedFrom(field: "nft")
+#   emotes: [RmrkEmote!] @derivedFrom(field: "nft")
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+# }
 
-type RmrkMetadata @entity {
-  id: ID!
-  name: String
-  description: String
-  image: String
-  attributes: [RmrkAttribute!]
-  animationUrl: String
-  type: String
-}
+# type RmrkMetadata @entity {
+#   id: ID!
+#   name: String
+#   description: String
+#   image: String
+#   attributes: [RmrkAttribute!]
+#   animationUrl: String
+#   type: String
+# }
 
-type RmrkAttribute @jsonField {
-  display: String
-  trait: String
-  value: String!
-}
+# type RmrkAttribute @jsonField {
+#   display: String
+#   trait: String
+#   value: String!
+# }
 
-type RmrkEvent @entity {
-  id: ID!
-  blockNumber: Int!
-  timestamp: DateTime!
-  caller: Account
-  info: BigInt # If list or buy
-  interaction: RmrkInteraction!
-  nft: RmrkNFT # if nft interaction
-  collection: RmrkCollection # if collection interaction
-  emotion: RmrkEmote # if emote
-}
+# type RmrkEvent @entity {
+#   id: ID!
+#   blockNumber: Int!
+#   timestamp: DateTime!
+#   account: Account
+#   info: BigInt # If list or buy
+#   interaction: RmrkInteraction!
+#   nft: RmrkNFT # if nft interaction
+#   collection: RmrkCollection # if collection interaction
+#   emotion: RmrkEmote # if emote
+# }
 
+# type RmrkEmote @entity {
+#   id: ID!
+#   nft: RmrkNFT!
+#   caller: Account!
+#   value: String!
+#   lastEmotion: DateTime!
+#   count: Int!
+#   active: Boolean!
+# }
 
-type RmrkEmote @entity {
-  id: ID!
-  nft: RmrkNFT!
-  caller: Account!
-  value: String!
-  lastEmotion: DateTime!
-  count: Int!
-  active: Boolean!
-}
-
-enum RmrkInteraction {
-  MINT
-  MINTNFT
-  LIST
-  UNLIST
-  BUY
-  SEND
-  CONSUME
-  CHANGEISSUER
-  EMOTE
-}
+# enum RmrkInteraction {
+#   MINT
+#   MINTNFT
+#   LIST
+#   UNLIST
+#   BUY
+#   SEND
+#   CONSUME
+#   CHANGEISSUER
+#   EMOTE
+# }
 
 
 ### STAKING ###
@@ -123,11 +123,10 @@ type Staker @entity {
   stash: Account! @unique
   controllerId: ID!
   controller: Account!
-  payeeId: ID!
+  payeeId: ID
   payee: Account
   payeeType: PayeeType!
   role: StakingRole!
-  commission: Int
   activeBond: BigInt! # current bond balance
   totalReward: BigInt!
   totalSlash: BigInt!
@@ -177,12 +176,12 @@ type EraStaker @entity {
 # information about known parachains and their crowdloans
 type Parachain @entity {
   id: ID! #paraId
-  paraId: Int
   crowdloans: [Crowdloan!] @derivedFrom(field: "parachain")
 }
 
 enum CrowdloanStatus {
-  Created
+  Started
+  Ended
   Dissolved
 }
 
@@ -193,7 +192,9 @@ enum TransferDirection {
 
 type Contribution @entity {
   id: ID!
-  crowdloan: Crowdloan!
+  crowdloanId: ID
+  crowdloan: Crowdloan
+  accountId: ID!
   account: Account!
   amount: BigInt!
 }
@@ -203,13 +204,15 @@ type Crowdloan @entity {
   cap: BigInt!
   firstPeriod: Int!
   lastPeriod: Int!
-  end: Int!
+  createdAt: Int
+  createdAtTimestamp: DateTime
+  endedAt: Int @index
+  endedAtTimestamp: DateTime
   contributions: [Contribution!] @derivedFrom(field: "crowdloan")
   raised: BigInt!
-  parachainId: ID!
-  parachain: Parachain!
-  start: Int @index
-  createdAt: DateTime
+  parachainId: ID
+  parachain: Parachain
+  status: CrowdloanStatus!
 }
 
 interface Action {
@@ -218,89 +221,52 @@ interface Action {
   extrinsicHash: String
 }
 
-interface HasEra {
-  era: Int
-}
-
-interface CanFail {
-  success: Boolean
-}
-
-type Transfer implements Action & CanFail @entity {
+type Transfer @entity {
   id: ID!
-  timestamp: DateTime!
   blockNumber: Int! @index
-  extrinsicHash: String! @index
-  to: TransferLocation
-  from: TransferLocation!
-  asset: TransferAsset!
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  fromId: ID!
+  from: Account!
+  toId: ID
+  to: Account
+  amount: BigInt! @index
   success: Boolean! @index
-  type: TransferType!
-}
-
-union TransferLocation = TransferLocationAccount | TransferLocationEvm | TransferLocationXcm
-
-type TransferLocationAccount {
-  id: String!
-}
-
-type TransferLocationEvm {
-  address: String!
-}
-
-union TransferAsset = TransferAssetToken | TransferAssetMultiToken
-
-enum TransferType {
-  Native
-  Contribution
-  Xcm
-}
-
-type TransferAssetToken {
-  symbol: String
-  amount: BigInt
-}
-
-type TransferAssetMultiToken {
-  tokens: [TransferAssetToken]
-}
-
-type TransferLocationXcm {
-  id: String
-  paraId: Int
 }
 
 # entity for linking account and transfer
 type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
+  accountId: ID!
   account: Account!
   direction: TransferDirection
 }
 
-type Reward implements Action & HasEra @entity  {
+type Reward @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
-  accountId: ID!
-  account: Account!
-  amount: BigInt
+  accountId: ID
+  account: Account
+  amount: BigInt!
   era: Int
-  validator: String
-  staker: Staker
-  callId: ID @index
+  validatorId: ID
+  stakerId: ID!
+  staker: Staker!
 }
 
-type Slash implements Action & HasEra @entity  {
+type Slash @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
   accountId: ID!
   account: Account!
-  amount: BigInt
+  amount: BigInt!
   era: Int
+  stakerId: ID!
   staker: Staker
 }
 
@@ -309,7 +275,7 @@ enum BondType {
   Unbond
 }
 
-type Bond implements Action & CanFail @entity  {
+type Bond @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
@@ -317,7 +283,7 @@ type Bond implements Action & CanFail @entity  {
   accountId: ID!
   account: Account!
   amount: BigInt
-  success: Boolean @index
   type: BondType
+  stakerId: ID!
   staker: Staker
 }

@@ -37,7 +37,6 @@ export async function saveBond(ctx: CommonHandlerContext, data: BondData) {
             account,
             type,
             amount,
-            success,
             staker,
         })
     )

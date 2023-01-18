@@ -1,9 +1,8 @@
 import { BalancesForceTransferCall } from '../../../types/generated/calls'
-import { encodeId, isAdressSS58 } from '../../../common/tools'
+import { encodeId, isAdressSS58, logCall } from '../../../common/tools'
 import { UnknownVersionError } from '../../../common/errors'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { saveTransfer } from '../../util/entities'
-import { TransferType } from '../../../model'
 
 interface EventData {
     from: Uint8Array
@@ -42,6 +41,9 @@ function getCallData(ctx: CallContext): EventData | undefined {
 }
 
 export async function handleForceTransfer(ctx: CallHandlerContext) {
+    if (ctx.call.success) return
+    logCall(ctx)
+
     const data = getCallData(ctx)
     if (!data) return
 
@@ -54,6 +56,5 @@ export async function handleForceTransfer(ctx: CallHandlerContext) {
         toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
         success: ctx.call.success,
-        type: TransferType.Native,
     })
 }

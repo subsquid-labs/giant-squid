@@ -1,5 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId } from '../../../common/tools'
+import { encodeId, getOriginAccountId, logCall } from '../../../common/tools'
 import { BondType, PayeeType } from '../../../model'
 import { StakingBondCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
@@ -91,6 +91,8 @@ function getCallData(ctx: CallContext): CallData {
 }
 
 export async function handleBond(ctx: CallHandlerContext) {
+    logCall(ctx)
+    
     if (!ctx.call.success) return
 
     const data = getCallData(ctx)

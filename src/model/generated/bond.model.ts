@@ -6,42 +6,41 @@ import {Staker} from "./staker.model"
 
 @Entity_()
 export class Bond {
-  constructor(props?: Partial<Bond>) {
-    Object.assign(this, props)
-  }
+    constructor(props?: Partial<Bond>) {
+        Object.assign(this, props)
+    }
 
-  @PrimaryColumn_()
-  id!: string
+    @PrimaryColumn_()
+    id!: string
 
-  @Column_("timestamp with time zone", {nullable: true})
-  timestamp!: Date | undefined | null
+    @Column_("timestamp with time zone", {nullable: true})
+    timestamp!: Date | undefined | null
 
-  @Index_()
-  @Column_("int4", {nullable: true})
-  blockNumber!: number | undefined | null
+    @Index_()
+    @Column_("int4", {nullable: true})
+    blockNumber!: number | undefined | null
 
-  @Index_()
-  @Column_("text", {nullable: true})
-  extrinsicHash!: string | undefined | null
+    @Index_()
+    @Column_("text", {nullable: true})
+    extrinsicHash!: string | undefined | null
 
-  @Column_("text", {nullable: false})
-  accountId!: string
+    @Column_("text", {nullable: false})
+    accountId!: string
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  account!: Account
+    @Index_()
+    @ManyToOne_(() => Account, {nullable: true})
+    account!: Account
 
-  @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
-  amount!: bigint | undefined | null
+    @Column_("numeric", {transformer: marshal.bigintTransformer, nullable: true})
+    amount!: bigint | undefined | null
 
-  @Index_()
-  @Column_("bool", {nullable: true})
-  success!: boolean | undefined | null
+    @Column_("varchar", {length: 6, nullable: true})
+    type!: BondType | undefined | null
 
-  @Column_("varchar", {length: 6, nullable: true})
-  type!: BondType | undefined | null
+    @Column_("text", {nullable: false})
+    stakerId!: string
 
-  @Index_()
-  @ManyToOne_(() => Staker, {nullable: true})
-  staker!: Staker | undefined | null
+    @Index_()
+    @ManyToOne_(() => Staker, {nullable: true})
+    staker!: Staker | undefined | null
 }

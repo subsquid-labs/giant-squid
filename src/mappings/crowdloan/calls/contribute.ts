@@ -1,8 +1,8 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
+import { getOriginAccountId, logCall } from '../../../common/tools'
 import { CrowdloanContributeCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext, CommonHandlerContext } from '../../types/contexts'
-import { Contribution, TransferType } from '../../../model'
+import { Contribution } from '../../../model'
 import { getLastCrowdloan, getOrCreateAccount, saveTransfer } from '../../util/entities'
 import assert from 'assert'
 
@@ -25,6 +25,8 @@ function getCallData(ctx: CallContext): CallData {
 }
 
 export async function handleContribute(ctx: CallHandlerContext) {
+    logCall(ctx)
+
     const data = getCallData(ctx)
 
     const accountId = getOriginAccountId(ctx.call.origin)
@@ -37,18 +39,6 @@ export async function handleContribute(ctx: CallHandlerContext) {
             paraId: data.paraId,
         })
     }
-
-    // await saveTransfer(ctx, {
-    //     id: ctx.call.id,
-    //     timestamp: new Date(ctx.block.timestamp),
-    //     blockNumber: ctx.block.height,
-    //     extrinsicHash: ctx.extrinsic.hash,
-    //     fromId: getOriginAccountId(ctx.call.origin),
-    //     toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
-    //     amount: data.amount,
-    //     success: ctx.call.success,
-    //     type: TransferType.Contribution,
-    // })
 }
 
 export interface ContributionData {

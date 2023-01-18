@@ -2,6 +2,7 @@ import * as ss58 from '@subsquid/ss58'
 import config from '../config'
 import { decodeHex } from '@subsquid/util-internal-hex'
 import { CommonHandlerContext } from '@subsquid/substrate-processor'
+import { CallHandlerContext, EventHandlerContext } from '../mappings/types/contexts'
 
 const ss58codec = ss58.codec(config.prefix)
 
@@ -57,4 +58,12 @@ export function saturatingSumBigInt(
 
 export function isStorageCorrupted(ctx: CommonHandlerContext<unknown>) {
     return ctx.block.height >= 1375087 && ctx.block.height <= 1600000
+}
+
+export function logCall(ctx: CallHandlerContext) {
+    ctx.log.debug(`Handle call "${ctx.call.name}" at block ${ctx.block.height}`)
+}
+
+export function logEvent(ctx: EventHandlerContext) {
+    ctx.log.debug(`Handle event "${ctx.event.name}" at block ${ctx.block.height}`)
 }

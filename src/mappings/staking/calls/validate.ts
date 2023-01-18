@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { getOriginAccountId, isStorageCorrupted } from '../../../common/tools'
+import { getOriginAccountId, isStorageCorrupted, logCall } from '../../../common/tools'
 import { StakingRole } from '../../../model'
 import { StakingValidateCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
@@ -29,6 +29,8 @@ function getCallData(ctx: CallContext): CallData {
 }
 
 export async function handleValidate(ctx: CallHandlerContext) {
+    logCall(ctx)
+
     if (!ctx.call.success) return
 
     const data = getCallData(ctx)
@@ -41,7 +43,6 @@ export async function handleValidate(ctx: CallHandlerContext) {
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Validator
-    staker.commission = data?.commission
 
     await ctx.store.save(staker)
 }

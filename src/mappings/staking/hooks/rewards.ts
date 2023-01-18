@@ -7,9 +7,9 @@ import { StakingPayoutStakersCall } from '../../../types/generated/calls'
 import { StakingRewardedEvent, StakingRewardEvent } from '../../../types/generated/events'
 import { Call, ChainContext, Event } from '../../../types/generated/support'
 import { EventContext, CallContext, EventHandlerContext, BlockHandlerContext } from '../../types/contexts'
+import { ActionData } from '../../types/data'
 import { getMeta } from '../../util/actions'
 import { getOrCreateStakers } from '../../util/entities'
-import { RewardData } from '../events'
 
 interface EventData {
     amount: bigint
@@ -83,7 +83,14 @@ export const rewardsRequest = {
     },
 } as const
 
+export interface RewardData extends ActionData {
+    amount: bigint
+    accountId: string
+}
+
 export async function rewardsHook(ctx: BlockHandlerContext<typeof rewardsRequest>) {
+    ctx.log.debug(`Hanle rewards at block ${ctx.block.height}`)
+
     const rewardsData = new Map<string, RewardData[]>()
     const payoutsData = new Map<string, { validator: string; era: number }>()
     const stakersSet = new Set<string>()
@@ -161,7 +168,7 @@ export async function rewardsHook(ctx: BlockHandlerContext<typeof rewardsRequest
                     account,
                     amount,
                     staker,
-                    validator: payoutData?.validator,
+                    validatorId: payoutData?.validator,
                     era: payoutData?.era,
                 })
             )

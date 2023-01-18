@@ -1,5 +1,5 @@
 import assert from 'assert'
-import { isStorageCorrupted } from '../../../common/tools'
+import { isStorageCorrupted, logEvent } from '../../../common/tools'
 import { Era, EraNomination, EraStaker, StakingRole } from '../../../model'
 import storage from '../../../storage'
 import { EventHandlerContext } from '../../types/contexts'
@@ -13,6 +13,8 @@ interface PairData {
 }
 
 export async function handleNewAuthorities(ctx: EventHandlerContext) {
+    logEvent(ctx)
+
     const activeEraData = await storage.staking.getActiveEra(ctx)
     const currentEraData = await storage.staking.getCurrentEra(ctx)
     //prefered to use ActiveEra because CurrentEra can return next planed era

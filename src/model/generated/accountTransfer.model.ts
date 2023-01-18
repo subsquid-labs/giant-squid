@@ -5,21 +5,24 @@ import {TransferDirection} from "./_transferDirection"
 
 @Entity_()
 export class AccountTransfer {
-  constructor(props?: Partial<AccountTransfer>) {
-    Object.assign(this, props)
-  }
+    constructor(props?: Partial<AccountTransfer>) {
+        Object.assign(this, props)
+    }
 
-  @PrimaryColumn_()
-  id!: string
+    @PrimaryColumn_()
+    id!: string
 
-  @Index_()
-  @ManyToOne_(() => Transfer, {nullable: true})
-  transfer!: Transfer | undefined | null
+    @Index_()
+    @ManyToOne_(() => Transfer, {nullable: true})
+    transfer!: Transfer | undefined | null
 
-  @Index_()
-  @ManyToOne_(() => Account, {nullable: true})
-  account!: Account
+    @Column_("text", {nullable: false})
+    accountId!: string
 
-  @Column_("varchar", {length: 4, nullable: true})
-  direction!: TransferDirection | undefined | null
+    @Index_()
+    @ManyToOne_(() => Account, {nullable: true})
+    account!: Account
+
+    @Column_("varchar", {length: 4, nullable: true})
+    direction!: TransferDirection | undefined | null
 }

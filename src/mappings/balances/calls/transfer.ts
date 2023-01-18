@@ -1,6 +1,5 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId, isAdressSS58 } from '../../../common/tools'
-import { TransferType } from '../../../model'
+import { encodeId, getOriginAccountId, isAdressSS58, logCall } from '../../../common/tools'
 import { BalancesTransferCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { saveTransfer } from '../../util/entities'
@@ -38,6 +37,9 @@ function getCallData(ctx: CallContext): EventData | undefined {
 }
 
 export async function handleTransfer(ctx: CallHandlerContext) {
+    if (ctx.call.success) return
+    logCall(ctx)
+
     const data = getCallData(ctx)
     if (!data) return
 
@@ -53,6 +55,5 @@ export async function handleTransfer(ctx: CallHandlerContext) {
         toId: isAdressSS58(data.to) ? encodeId(data.to) : null,
         amount: data.amount,
         success: ctx.call.success,
-        type: TransferType.Native,
     })
 }

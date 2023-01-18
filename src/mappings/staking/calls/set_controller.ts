@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId, isStorageCorrupted } from '../../../common/tools'
+import { encodeId, getOriginAccountId, isStorageCorrupted, logCall } from '../../../common/tools'
 import { StakingSetControllerCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { getOrCreateAccount, getOrCreateStaker } from '../../util/entities'
@@ -24,6 +24,8 @@ function getCallData(ctx: CallContext): { controller: Uint8Array } | undefined {
 }
 
 export async function handleSetController(ctx: CallHandlerContext) {
+    logCall(ctx)
+
     if (!ctx.call.success) return
 
     const data = getCallData(ctx)

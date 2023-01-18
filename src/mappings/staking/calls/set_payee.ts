@@ -1,6 +1,6 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId, isStorageCorrupted } from '../../../common/tools'
+import { encodeId, getOriginAccountId, isStorageCorrupted, logCall } from '../../../common/tools'
 import { PayeeType } from '../../../model'
 import { StakingSetPayeeCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
@@ -26,6 +26,8 @@ function getCallData(ctx: CallContext): CallData {
 }
 
 export async function handleSetPayee(ctx: CallHandlerContext) {
+    logCall(ctx)
+
     if (!ctx.call.success) return
 
     const data = getCallData(ctx)
