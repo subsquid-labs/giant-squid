@@ -47,7 +47,7 @@ export async function handleTransferKeepAlive(ctx: CallHandlerContext) {
     if (!accountId) return
 
     await saveTransfer(ctx, {
-        id: ctx.call.id,
+        id: ctx.call.id + '-c',
         timestamp: new Date(ctx.block.timestamp),
         blockNumber: ctx.block.height,
         extrinsicHash: ctx.extrinsic.hash,
