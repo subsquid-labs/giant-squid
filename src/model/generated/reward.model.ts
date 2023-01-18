@@ -23,9 +23,6 @@ export class Reward {
     @Column_("text", {nullable: true})
     extrinsicHash!: string | undefined | null
 
-    @Column_("text", {nullable: true})
-    accountId!: string | undefined | null
-
     @Index_()
     @ManyToOne_(() => Account, {nullable: true})
     account!: Account | undefined | null
@@ -38,9 +35,6 @@ export class Reward {
 
     @Column_("text", {nullable: true})
     validatorId!: string | undefined | null
-
-    @Column_("text", {nullable: false})
-    stakerId!: string
 
     @Index_()
     @ManyToOne_(() => Staker, {nullable: true})

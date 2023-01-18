@@ -1,6 +1,8 @@
+import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
 import { encodeId, getOriginAccountId } from '../../../common/tools'
 import { PayeeType } from '../../../model'
+import storage from '../../../storage'
 import { StakingSetPayeeCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { getOrCreateAccount, getOrCreateStaker } from '../../util/entities'
@@ -32,8 +34,11 @@ export async function handleSetPayee(ctx: CallHandlerContext) {
     const controllerId = getOriginAccountId(ctx.call.origin)
     if (!controllerId) return
 
-    const staker = await getOrCreateStaker(ctx, 'Controller', controllerId)
-    if (!staker) throw new Error(`Missing staking info for ${controllerId}`)
+    let stashId = await storage.staking.ledger.get(ctx, controllerId)
+    if (!stashId) return
+
+    const staker = await getOrCreateStaker(ctx, controllerId)
+    assert(staker != null, `Missing staking info for ${controllerId}`)
 
     const payee = data.account ? encodeId(data.account) : null
 

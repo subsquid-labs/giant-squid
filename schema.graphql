@@ -30,11 +30,8 @@ enum PayeeType {
 # current information about stash, controller, payee and staking role
 type Staker @entity {
   id: ID! #stash Id
-  stashId: ID!
   stash: Account! @unique
-  controllerId: ID!
-  controller: Account!
-  payeeId: ID
+  controller: Account
   payee: Account
   payeeType: PayeeType!
   role: StakingRole!
@@ -71,7 +68,6 @@ type EraNomination @entity {
 # information about validator in era: self/total bond, nominators and their votes
 type EraStaker @entity {
   id: ID! #era + stashId
-  stakerId: ID!
   staker: Staker!
   era: Era!
   role: StakingRole!
@@ -137,9 +133,7 @@ type Transfer @entity {
   blockNumber: Int! @index
   timestamp: DateTime! @index
   extrinsicHash: String @index
-  fromId: ID!
   from: Account!
-  toId: ID
   to: Account
   amount: BigInt! @index
   success: Boolean! @index
@@ -149,7 +143,6 @@ type Transfer @entity {
 type AccountTransfer @entity {
   id: ID!
   transfer: Transfer
-  accountId: ID!
   account: Account!
   direction: TransferDirection
 }
@@ -159,12 +152,10 @@ type Reward @entity  {
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
-  accountId: ID
   account: Account
   amount: BigInt!
   era: Int
   validatorId: ID
-  stakerId: ID!
   staker: Staker!
 }
 
@@ -173,11 +164,9 @@ type Slash @entity  {
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
-  accountId: ID!
   account: Account!
   amount: BigInt!
   era: Int
-  stakerId: ID!
   staker: Staker
 }
 
@@ -191,10 +180,8 @@ type Bond @entity  {
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
-  accountId: ID!
   account: Account!
   amount: BigInt
   type: BondType
-  stakerId: ID!
   staker: Staker
 }

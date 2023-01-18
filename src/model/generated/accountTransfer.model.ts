@@ -16,9 +16,6 @@ export class AccountTransfer {
     @ManyToOne_(() => Transfer, {nullable: true})
     transfer!: Transfer | undefined | null
 
-    @Column_("text", {nullable: false})
-    accountId!: string
-
     @Index_()
     @ManyToOne_(() => Account, {nullable: true})
     account!: Account

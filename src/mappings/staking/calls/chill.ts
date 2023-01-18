@@ -1,6 +1,7 @@
 import assert from 'assert'
 import { getOriginAccountId } from '../../../common/tools'
 import { Staker, StakingRole } from '../../../model'
+import storage from '../../../storage'
 import { CallHandlerContext } from '../../types/contexts'
 import { getOrCreateStaker } from '../../util/entities'
 
@@ -10,7 +11,10 @@ export async function handleChill(ctx: CallHandlerContext) {
     const controllerId = getOriginAccountId(ctx.call.origin)
     if (!controllerId) return
 
-    const staker = await getOrCreateStaker(ctx, 'Controller', controllerId)
+    let stashId = await storage.staking.ledger.get(ctx, controllerId)
+    if (!stashId) return
+
+    const staker = await getOrCreateStaker(ctx, controllerId)
     assert(staker != null, `Missing staking info for ${controllerId}`)
 
     staker.role = StakingRole.Idle

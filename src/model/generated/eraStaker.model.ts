@@ -14,9 +14,6 @@ export class EraStaker {
     @PrimaryColumn_()
     id!: string
 
-    @Column_("text", {nullable: false})
-    stakerId!: string
-
     @Index_()
     @ManyToOne_(() => Staker, {nullable: true})
     staker!: Staker

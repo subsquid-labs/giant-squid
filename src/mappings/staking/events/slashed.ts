@@ -68,7 +68,7 @@ export interface SlashData extends ActionData {
 export async function saveSlash(ctx: EventHandlerContext, data: SlashData) {
     const { accountId, amount } = data
 
-    const staker = await getOrCreateStaker(ctx, 'Stash', accountId)
+    const staker = await getOrCreateStaker(ctx, accountId)
     assert(staker != null, `Missing staking info for ${accountId}`)
 
     const account = staker.stash

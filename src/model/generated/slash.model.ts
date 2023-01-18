@@ -23,9 +23,6 @@ export class Slash {
     @Column_("text", {nullable: true})
     extrinsicHash!: string | undefined | null
 
-    @Column_("text", {nullable: false})
-    accountId!: string
-
     @Index_()
     @ManyToOne_(() => Account, {nullable: true})
     account!: Account
@@ -35,9 +32,6 @@ export class Slash {
 
     @Column_("int4", {nullable: true})
     era!: number | undefined | null
-
-    @Column_("text", {nullable: false})
-    stakerId!: string
 
     @Index_()
     @ManyToOne_(() => Staker, {nullable: true})
