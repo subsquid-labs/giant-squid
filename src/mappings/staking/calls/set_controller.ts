@@ -1,6 +1,7 @@
 import assert from 'assert'
 import { UnknownVersionError } from '../../../common/errors'
-import { encodeId, getOriginAccountId } from '../../../common/tools'
+import { encodeId, getOriginAccountId, logCall } from '../../../common/tools'
+import {PayeeType} from '../../../model'
 import { StakingSetControllerCall } from '../../../types/generated/calls'
 import { CallContext, CallHandlerContext } from '../../types/contexts'
 import { getOrCreateAccount, getOrCreateStaker } from '../../util/entities'
@@ -34,6 +35,9 @@ export async function handleSetController(ctx: CallHandlerContext) {
     assert(staker != null, `Missing staking info for ${stashId}`)
 
     staker.controller = await getOrCreateAccount(ctx, encodeId(data.controller))
+    if (staker.payeeType === PayeeType.Controller) {
+        staker.payee = staker.controller
+    }
 
     await ctx.store.save(staker)
 }
