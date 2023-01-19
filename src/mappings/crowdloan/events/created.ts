@@ -2,7 +2,7 @@ import { EventHandlerContext } from '@subsquid/substrate-processor'
 import { Store } from '@subsquid/typeorm-store'
 import { UnknownVersionError } from '../../../common/errors'
 import { logEvent } from '../../../common/tools'
-import { Crowdloan } from '../../../model'
+import { Crowdloan, CrowdloanStatus } from '../../../model'
 import storage from '../../../storage'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
 import { EventContext } from '../../types/contexts'
@@ -46,6 +46,7 @@ export async function handleCreated(ctx: EventHandlerContext<Store, { event: tru
             createdAtTimestamp: new Date(ctx.block.timestamp),
             endedAt: fundInfo.end,
             ...fundInfo,
+            status: CrowdloanStatus.Started
         })
     )
 }
