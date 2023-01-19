@@ -74,7 +74,7 @@ export async function getOrCreateStakers(ctx: CommonHandlerContext, stashIds: st
     const stakersMap: Map<string, Staker> = new Map()
     for (const q of query) stakersMap.set(q.id, q)
 
-    const missingIds = stashIds.filter((id) => !stakersMap.has(id))
+    const missingIds = new Set(stashIds.filter((id) => !stakersMap.has(id)))
     let newStakers: Staker[] = []
     for (let id of missingIds) {
         newStakers.push(await createStaker(ctx, id))
