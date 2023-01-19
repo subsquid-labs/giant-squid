@@ -1,5 +1,6 @@
 import { UnknownVersionError } from '../../../common/errors'
-import { Crowdloan } from '../../../model'
+import { logEvent } from '../../../common/tools'
+import { Crowdloan, CrowdloanStatus } from '../../../model'
 import storage from '../../../storage'
 import { CrowdloanCreatedEvent } from '../../../types/generated/events'
 import { EventContext, EventHandlerContext } from '../../types/contexts'
@@ -41,6 +42,7 @@ export async function handleCreated(ctx: EventHandlerContext) {
             createdAtTimestamp: new Date(ctx.block.timestamp),
             endedAt: fundInfo.end,
             ...fundInfo,
+            status: CrowdloanStatus.Started
         })
     )
 }
