@@ -1,5 +1,6 @@
 import { assertNotNull } from '@subsquid/substrate-processor'
 import { ArrayContains, In, MoreThanOrEqual } from 'typeorm'
+import { splitIntoBatches } from '../../common/tools'
 import {
     Account,
     AccountTransfer,
@@ -62,14 +63,18 @@ export async function getOrCreateStaker(ctx: CommonHandlerContext, stashId: stri
 }
 
 export async function getOrCreateStakers(ctx: CommonHandlerContext, stashIds: string[]): Promise<Staker[]> {
-    const query = await ctx.store.find<Staker>(Staker, {
-        where: { id: In(stashIds) },
-        relations: {
-            stash: true,
-            controller: true,
-            payee: true,
-        },
-    })
+    const query: Staker[] = []
+    for (let batch of splitIntoBatches(stashIds, 1000)) {
+        let stakers = await ctx.store.find<Staker>(Staker, {
+            where: { id: In(batch) },
+            relations: {
+                stash: true,
+                controller: true,
+                payee: true,
+            },
+        })
+        query.push(...stakers)
+    }
 
     const stakersMap: Map<string, Staker> = new Map()
     for (const q of query) stakersMap.set(q.id, q)
