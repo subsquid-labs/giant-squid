@@ -1,6 +1,6 @@
 {
-  "outDir": "../src/types/kusama",
-  "specVersions": "https://kusama.archive.subsquid.io/graphql",
+  "outDir": "../src/types/test",
+  "specVersions": "https://moonriver.archive.subsquid.io/graphql",
   "events": [
     "Staking.EraPaid",
     "Staking.Rewarded",

@@ -419,3 +419,5 @@ type Item =
     | CallItem<'Staking.nominate', { call: { origin: true } }>
     | CallItem<'Staking.validate', { call: { origin: true } }>
     | CallItem<'Staking.chill', { call: { origin: true } }>
+
+    def 

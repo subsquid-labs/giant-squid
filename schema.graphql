@@ -1,22 +1,158 @@
 # account entity can be used to get info about current account state and absorb account actions 
+
 type Account @entity {
   id: ID!
-  transfers: [AccountTransfer!] @derivedFrom(field: "account")
-  crowdloans: [Contributor!] @derivedFrom(field: "account") # crowdloans there account get participation
-  rewards: [Reward!] @derivedFrom(field: "account")
-  slashes: [Slash!] @derivedFrom(field: "account")
-  bonds: [Bond!] @derivedFrom(field: "account")
-  stakingInfo: Staker @derivedFrom(field: "stash")
-    #RMRK nfts
-  rmrkColections: [RmrkCollection!] @derivedFrom(field: "currentOwner")
-  rmrkNfts: [RmrkNFT!] @derivedFrom(field: "currentOwner")
-  rmrkEvents: [RmrkEvent!] @derivedFrom(field: "account")
+  publicKey: String!
+  lastUpdateBlock: Int!
+  
+  actions: [IAction!] @derivedFrom(field: "account")
+  bonds: [IBond!] @derivedFrom(field: "account") 
+  rewards: [IReward!] @derivedFrom(field: "account")
+  slashes: [ISlash!] @derivedFrom(field: "account")
 
-  syncedAt: Int!
+
+  stakingTotalBonded: BigInt!
+  stakingTotalRewarded: BigInt!
+  stakingBonds: [StakingBond!] @derivedFrom(field: "account") 
+  stakingRewards: [StakingReward!] @derivedFrom(field: "account")
+  stakingSlashes: [StakingSlash!] @derivedFrom(field: "account")
+
+  paraStakingTotalBonded: BigInt!
+  paraStakingTotalRewarded: BigInt!
+  paraStakingbonds: [ParaStakingBond!] @derivedFrom(field: "account") 
+  paraStakingrewards: [ParaStakingReward!] @derivedFrom(field: "account")
+  paraStakingslashes: [ParaStakingSlash!] @derivedFrom(field: "account")
+
+  dappStakingTotalBonded: BigInt!
+  dappStakingTotalRewarded: BigInt!
+  dappStakingbonds: [DappStakingBond!] @derivedFrom(field: "account") 
+  dappStakingreward: [DappStakingReward!] @derivedFrom(field: "account")
+
+  ownedNfts: [INFTBalance!] @derivedFrom(field: "owner")
+  ownedCollections: [ICollection!] @derivedFrom(field: "owner")
+
+  uniqueClasses: [UniqueClass!] @derivedFrom(field: "owner")
+  uniquesNFTs: [UniqueInstanceBallance!] @derivedFrom(field: "owner")
+
+  rmrkCollections: [RmrkCollection!] @derivedFrom(field: "owner")
+  rmrkNFTs: [RmrkNFT!] @derivedFrom(field: "owner")
+  rmrkEmotions: [RmrkNFT!] @derivedFrom(field: "from")
 }
+
+type Account @entity {
+  id: ID!
+  publicKey: String!
+  lastUpdateBlock: Int!
+  actions: [IAction!] @derivedFrom(field: "account")
+  bonds: [IBond!] @derivedFrom(field: "account") 
+  rewards: [IReward!] @derivedFrom(field: "account")
+  slashes: [ISlash!] @derivedFrom(field: "account")
+  ownedNfts: [INFTBalance!] @derivedFrom(field: "owner")
+  ownedCollections: [ICollection!] @derivedFrom(field: "owner")
+
+  stakingData: AccountStakingData! @derivedFrom(field: "account")
+  paraStakingData: AccountParaStakingData! @derivedFrom(field: "account")
+}
+
+type AccountStakingData @entity {
+  account: Account!
+  totalBonded: BigInt!
+  totalRewarded: BigInt!
+  bonds: [StakingBond!] @derivedFrom(field: "account") 
+  rewards: [StakingReward!] @derivedFrom(field: "account")
+  slashes: [StakingSlash!] @derivedFrom(field: "account")
+}
+
+type AccountParaStakingData @entity {
+  account: Account!
+  totalBonded: BigInt!
+  totalRewarded: BigInt!
+  bonds: [StakingBond!] @derivedFrom(field: "account") 
+  rewards: [StakingReward!] @derivedFrom(field: "account")
+  slashes: [StakingSlash!] @derivedFrom(field: "account")
+}
+
+type AccountRmrkData @entity {
+  account: Account!
+  rmrkCollections: [RmrkCollection!] @derivedFrom(field: "owner")
+  rmrkNFTs: [RmrkNFT!] @derivedFrom(field: "owner")
+  rmrkEmotions: [RmrkNFT!] @derivedFrom(field: "from")
+}
+
+
+type Account @entity {
+  id: ID!
+  publicKey: String!
+  lastUpdateBlock: Int!
+}
+
+  actions: [IAction!] @derivedFrom(field: "account")
+  bonds: [IBond!] @derivedFrom(field: "account") 
+  rewards: [IReward!] @derivedFrom(field: "account")
+  slashes: [ISlash!] @derivedFrom(field: "account")
+}
+
+
+
+interface IAction {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: Int
+  extrinsicHash: String
+  account: Account
+}
+
+interface IBond implements IAction {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: Int
+  extrinsicHash: String
+  account: Account
+  amount: BigInt!
+  type: BondType!
+}
+
+type DappStakingBond implements IBond & IAction @entity  {
+  id: ID!
+  timestamp: DateTime!
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  account: Account!
+  amount: BigInt!
+  type: BondType!
+  contract: DAppContract!
+}
+
+type StakingBond implements IBond & IAction @entity  {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  account: Account!
+  amount: BigInt
+  type: BondType
+}
+
+
 ### RMRK1 NFTs ###
+"""
+NFT type
+"""
+type ParaStaking
+
+type ParaStaking
+
+type DappStaking
+
+type UnquesCollection
+
+type UniquesNFT
+
 
 type RmrkCollection @entity {
+  """
+  nft name
+  """
   name: String
   max: Int!
   issuer: String!
@@ -139,6 +275,8 @@ type Staker @entity {
   syncedAt: Int!
 }
 
+
+
 # information about era, validators and nominators 
 type Era @entity {
   id: ID!
@@ -237,17 +375,21 @@ interface Action {
   extrinsicHash: String
 }
 
-type Transfer @entity {
+type NativeTransfer implements IAction & ITransfer @entity {
   id: ID!
   blockNumber: Int! @index
   timestamp: DateTime! @index
   extrinsicHash: String @index
-  fromId: ID!
   from: Account!
-  toId: ID!
   to: Account!
   amount: BigInt! @index
 }
+
+
+
+type AssetTransfer
+
+type EVMTransfer
 
 type XcmTransfer @entity {
   id: ID!
@@ -301,18 +443,16 @@ type AccountTransfer @entity {
   direction: TransferDirection
 }
 
-type Reward @entity  {
+type StakingReward implements IReward @entity  {
   id: ID!
   timestamp: DateTime
   blockNumber: Int @index
   extrinsicHash: String @index
-  accountId: ID
   account: Account
+  stakingAccount: StakingInfo!
   amount: BigInt!
-  era: Int
+  era: StakingEra!
   validatorId: ID
-  stakerId: ID!
-  staker: Staker!
 }
 
 type Slash @entity  {
@@ -344,4 +484,556 @@ type Bond @entity  {
   type: BondType
   stakerId: ID!
   staker: Staker
+}
+
+### PARACHAIN STAKING ###
+
+
+type Reward implements Action & HasRound @entity  {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  accountId: ID!
+  account: Account!
+  amount: BigInt
+  round: Int
+  staker: Staker
+}
+
+enum BondType {
+  Bond
+  Unbond
+}
+
+type Bond implements Action & CanFail @entity  {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  accountId: ID!
+  account: Account!
+  amount: BigInt
+  success: Boolean @index
+  type: BondType
+  candidate: String
+  staker: Staker
+}
+
+type Round @entity {
+  id: ID!
+  index: Int!
+  timestamp: DateTime!
+  startedAt: Int!
+  endedAt: Int
+  collatorsCount: Int!
+  collators: [RoundCollator] @derivedFrom(field: "round")
+  nominators: [RoundNominator] @derivedFrom(field: "round")
+  total: BigInt!
+}
+
+type RoundCollator @entity {
+  id: ID!
+  round: Round!
+  selfBond: BigInt!
+  totalBond: BigInt!
+  commission: Float!
+  nominators: [RoundNomination!] @derivedFrom(field: "collator")
+  nominatorsCount: Int!
+  stakerId: ID!
+  staker: Staker!
+}
+
+type RoundNominator @entity {
+  id: ID!
+  round: Round!
+  bond: BigInt!
+  collators: [RoundNomination!] @derivedFrom(field: "nominator")
+  collatorsCount: Int!
+  stakerId: ID!
+  staker: Staker!
+}
+
+type RoundNomination @entity {
+  id: ID!
+  round: Round!
+  collator: RoundCollator!
+  nominator: RoundNominator!
+  vote: BigInt!
+}
+
+### Dapp STAKING
+
+type Staker @entity {
+  id: ID! #stash Id
+  stashId : ID!
+  stash: Account! # @unique
+  activeBond: BigInt! # only staked
+  unbondingVolume: BigInt! # unstaked but not yet withdrawn
+  totalReward: BigInt!
+  stakeStates: [DAppStakeState!] @derivedFrom(field:"staker")
+  rewards: [Reward!] @derivedFrom(field: "staker")
+  bonds: [Bond!] @derivedFrom(field: "staker")
+  activeStakedApps: [DAppStakeState!] @derivedFrom(field: "staker")
+}
+
+interface HasEra {
+  era: Era!
+}
+
+
+enum RewardReceiver {
+  DAPP
+  STAKER
+}
+
+type StakingReward implements IAction @entity  {
+  id: ID!
+  timestamp: DateTime!
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  accountId: ID!
+  account: Account!
+  amount: BigInt!
+  era: Era!
+  stakerId: ID!
+  staker: Staker!
+  receiverType: RewardReceiver!
+  contract: DAppContract!
+}
+
+type Withdrawal implements Action @entity {
+  id: ID!
+  timestamp: DateTime
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  accountId: ID!
+  account: Account!
+  amount: BigInt
+}
+
+
+type DAppStakeState @entity {
+  id: ID!
+  staker: Staker!
+  contract: DAppContract!
+  stakeVolume: BigInt!
+}
+
+enum BondType {
+  Bond
+  Unbond
+}
+
+type Bond implements Action @entity  {
+  id: ID!
+  timestamp: DateTime!
+  blockNumber: Int @index
+  extrinsicHash: String @index
+  accountId: ID!
+  account: Account!
+  amount: BigInt!
+  type: BondType!
+  stakerId: ID!
+  staker: Staker!
+  contract: DAppContract!
+}
+
+type Era @entity {
+  id: ID!
+  index: Int!
+  timestamp: DateTime!
+  startedAt: Int!
+  totalStakerRewardsReceived: BigInt!
+  totalAppsRewardsReceived: BigInt!
+  rewards: [Reward!] @derivedFrom(field: "era")
+}
+
+enum DAppState {
+  REGISTERED
+  UNREGISTERED
+}
+
+type DAppContract @entity {
+  id: ID!
+  developerId: ID!
+  developer: Account!
+  bondHistory: [Bond!] @derivedFrom(field: "contract")
+  activeStake: BigInt!
+  stakers: [DAppStakeState!] @derivedFrom(field: "contract")
+  state: DAppState!
+}
+
+
+### ERC
+enum ContractStandard {
+  ERC20
+  ERC721
+  ERC1155
+}
+
+enum TransferType {
+  TRANSFER
+  MINT
+  BURN
+}
+
+enum TransferDirection {
+  From
+  To
+}
+
+type Account @entity {
+  id: ID!
+
+  ftTransfers: [AccountFtTransfer] @derivedFrom(field: "account")
+  nftTransfers: [AccountNftTransfer] @derivedFrom(field: "account")
+
+  ownedTokens: [NfToken] @derivedFrom(field: "currentOwner")
+
+  balancesFToken: [AccountFTokenBalance]! @derivedFrom(field: "account")
+}
+
+type AccountFTokenBalance @entity {
+  id: ID! # <account_id>-<token_id>
+  account: Account!
+  token: FToken!
+  amount: BigInt!
+  updatedAtBlock: BigInt!
+  updatedAt: DateTime!
+}
+
+type Collection @entity {
+  id: ID! # Contract address
+  collectionType: ContractStandard! @index
+  nfts: [NfToken] @derivedFrom(field: "collection")
+  createdAtBlock: BigInt!
+  createdAt: DateTime!
+}
+
+interface Token {
+  id: ID!
+  name: String
+  symbol: String
+}
+
+# ERC721 / ERC1155 tokens (Non-Fungible Token)
+type NfToken implements Token @entity {
+  id: ID! # <token_contract_address>-<token_id>
+  nativeId: String!
+  name: String @index
+  symbol: String @index
+  collection: Collection!
+  uri: String
+  uriUpdateActions: [UriUpdateAction]! @derivedFrom(field: "token")
+  currentOwner: Account! # "to" account in transfer
+  amount: BigInt! @index
+  isBurned: Boolean! @index
+}
+
+type UriUpdateAction @entity {
+  id: ID!
+  token: NfToken!
+  newValue: String
+  oldValue: String
+  blockNumber: BigInt!
+  timestamp: DateTime!
+  txnHash: String!
+}
+
+# ERC20 tokens (Fungible Token)
+type FToken implements Token @entity {
+  id: ID! # Token contract address
+  name: String @index
+  symbol: String @index
+  decimals: Int
+}
+
+interface Transfer {
+  id: ID!
+  blockNumber: BigInt!
+  timestamp: DateTime!
+  eventIndex: Int!
+  txnHash: String!
+  from: Account!
+  to: Account!
+  amount: BigInt
+  transferType: TransferType
+}
+
+# Fungible token transfers
+type FtTransfer implements Transfer @entity {
+  id: ID!
+  blockNumber: BigInt! @index
+  timestamp: DateTime!
+  eventIndex: Int!
+  txnHash: String!
+  from: Account!
+  to: Account!
+  amount: BigInt @index
+  transferType: TransferType @index
+  token: FToken!
+}
+
+# Non-Fungible token transfers
+type NftTransfer implements Transfer @entity {
+  id: ID!
+  blockNumber: BigInt! @index
+  timestamp: DateTime!
+  eventIndex: Int!
+  txnHash: String!
+  from: Account!
+  to: Account!
+  operator: Account
+  amount: BigInt! @index
+  transferType: TransferType @index
+  token: NfToken!
+  isBatch: Boolean!
+}
+
+# entity for linking account and NFT transfer
+type AccountNftTransfer @entity {
+  id: ID!
+  transfer: NftTransfer
+  account: Account!
+  direction: TransferDirection
+}
+
+# entity for linking account and FT transfer
+type AccountFtTransfer @entity {
+  id: ID!
+  transfer: FtTransfer
+  account: Account!
+  direction: TransferDirection
+}
+
+### Uniques
+
+
+enum Status {
+  ACTIVE
+  FROZEN
+  DESTROYED
+  LISTED
+}
+
+enum EventType {
+  FORCE_CREATE
+  TRNASFER
+  MINT
+  BURN
+  FREEZE
+  THAWE
+  CREATE
+  DESTROY
+  METADATA_SET
+  METADATA_CLEAR
+  ATTRIBUTE_SET
+  ATTRIBUTE_CLEAR
+  TEAM_CHANGE
+  OWNER_CHANGE
+  BOUGHT
+  PRICE_SET
+  PRICE_REMOVED
+  MAX_SUPPLY_SET
+}
+
+enum Direction {
+  FROM
+  TO
+}
+
+type Account @entity {
+  id: ID! #Account address
+  uniqueInstances: [UniqueInstance!] @derivedFrom(field: "owner")
+  uniqueTransfers: [AccountTransfer!] @derivedFrom(field: "account")
+}
+
+type AccountTransfer @entity {
+  id: ID!
+  event: UniqueEvent!
+  account: Account!
+  direction: Direction!
+}
+
+type UniqueEvent @entity {
+  id: ID! # Event id
+  from: String @index
+  to: String @index # If tranferring / minting
+  price: BigInt @index # If bought
+  uniqueClass: UniqueClass # Class related events
+  uniqueInstance: UniqueInstance # Instance related events
+  type: EventType! @index
+  timestamp: DateTime! @index
+  blockHash: String!
+  blockNum: Int! @index
+}
+
+type UniqueClass @entity {
+  id: ID!
+  owner: String @index
+  admin: String
+  issuer: String
+  creator: String
+  freezer: String
+  status: Status! @index
+  instances: [UniqueInstance!] @derivedFrom(field: "uniqueClass")
+  events: [UniqueEvent!] @derivedFrom(field: "uniqueClass")
+  metadata: String
+  attributes: [Attribute!]!
+  maxSupply: Int
+  createdAt: DateTime! @index
+}
+
+type UniqueInstance @entity {
+  id: ID!
+  innerID: Int! @index
+  uniqueClass: UniqueClass!
+  owner: Account!
+  status: Status! @index
+  events: [UniqueEvent!] @derivedFrom(field: "uniqueInstance")
+  metadata: String
+  attributes: [Attribute!]!
+  price: BigInt! @index
+  mintedAt: DateTime! @index
+}
+
+type Attribute @jsonField {
+  key: String
+  value: String!
+}
+
+enum ProposalType {
+  Preimage
+  DemocracyProposal
+  TechCommitteeProposal
+  TreasuryProposal
+  Referendum
+  CouncilMotion
+  Bounty
+  Tip
+}
+
+enum ProposalStatus {
+  Noted
+  Proposed
+  Tabled
+  Started
+  Passed
+  NotPassed
+  Cancelled
+  Executed
+  Used
+  Invalid
+  Missing
+  Reaped
+  Approved
+  Disapproved
+  Closed
+  Awarded
+  Rejected
+  Retracted
+  Slashed
+  Active
+  Extended
+  Claimed
+}
+
+type MotionThreshold {
+  value: Int!
+}
+
+enum ReferendumThresholdType {
+  SuperMajorityApprove
+  SuperMajorityAgainst
+  SimpleMajority
+}
+
+type ReferendumThreshold {
+  type: ReferendumThresholdType!
+}
+
+union Threshold = MotionThreshold | ReferendumThreshold
+
+type Proposal @entity {
+  id: ID!
+  type: ProposalType! @index
+  hash: String @index
+  index: Int @index
+  proposer: String
+  deposit: BigInt
+  threshold: Threshold
+  proposedCall: ProposedCall
+  curator: String
+  payee: String
+  reward: BigInt
+  voting: [Vote!] @derivedFrom(field: "proposal")
+  status: ProposalStatus!
+  statusHistory: [StatusHistory!] @derivedFrom(field: "proposal")
+  createdAtBlock: Int! @index
+  createdAt: DateTime! @index
+  endedAtBlock: Int
+  endedAt: DateTime
+  updatedAtBlock: Int
+  updatedAt: DateTime
+  group: ProposalGroup
+}
+
+type StatusHistory @entity {
+  id: ID!
+  proposal: Proposal!
+  status: ProposalStatus!
+  block: Int!
+  timestamp: DateTime!
+}
+
+type ProposedCall {
+  section: String!
+  method: String!
+  args: JSON
+  description: String!
+}
+
+enum VoteDecision {
+  yes
+  no
+  abstain
+}
+
+type StandardVoteBalance {
+  value: BigInt
+}
+
+type SplitVoteBalance {
+  aye: BigInt
+  nay: BigInt
+}
+
+union VoteBalance = StandardVoteBalance | SplitVoteBalance
+
+enum VoteType {
+  Referendum
+  Motion
+}
+
+type Vote @entity {
+  id: ID!
+  voter: String
+  proposalId: ID!
+  proposal: Proposal!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  decision: VoteDecision
+  balance: VoteBalance
+  lockPeriod: Int
+  type: VoteType
+}
+
+type ProposalGroup @entity {
+  id: ID!
+  preimageHash: String @index
+  treasuryIndex: Int @index
+  bountyIndex: Int @index
+  tipHash: String @index
+  proposals: [Proposal] @derivedFrom(field: "group")
 }

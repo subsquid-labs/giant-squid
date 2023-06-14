@@ -4,12 +4,18 @@ import {Account} from "./account.model"
 import {RmrkNFT} from "./rmrkNft.model"
 import {RmrkEvent} from "./rmrkEvent.model"
 
+/**
+ * NFT type
+ */
 @Entity_()
 export class RmrkCollection {
   constructor(props?: Partial<RmrkCollection>) {
     Object.assign(this, props)
   }
 
+  /**
+   * nft name
+   */
   @Column_("text", {nullable: true})
   name!: string | undefined | null
 
